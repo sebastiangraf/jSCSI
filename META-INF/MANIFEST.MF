@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 1
+Bundle-Name: jSCSI
+Bundle-SymbolicName: org.jscsi;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-ClassPath: org.jscsi/
+Bundle-Activator: org.jscsi.ant.jSCSI
+Bundle-Vendor: jSCSI
+Bundle-Localization: plugin
+Main-Class: org.jscsi.ant.jSCSI
