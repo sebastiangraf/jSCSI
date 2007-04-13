@@ -41,7 +41,7 @@ public class WriteBufferDevice implements Device {
 
   private static final long FLUSH_TIME = 5000;
 
-  private static final int MAX_WRITE_COUNT = 20;
+  private static final int MAX_WRITE_COUNT = 10;
 
   private Map<Long, byte[]> buffer;
 
@@ -130,7 +130,7 @@ public class WriteBufferDevice implements Device {
       }
     }
     buffer.clear();
-    System.out.println("buffer flushed!");
+    //System.out.println("buffer flushed!");
   }
 
   /** {@inheritDoc} */
@@ -142,9 +142,8 @@ public class WriteBufferDevice implements Device {
   /** {@inheritDoc} */
   public void write(final long address, final byte[] data) throws Exception {
 
-    if (writeCount < MAX_WRITE_COUNT) {
-      writeCount++;
-    } else {
+    writeCount++;
+    if (writeCount >= MAX_WRITE_COUNT) {
       writeCount = 0;
       flush();
     }

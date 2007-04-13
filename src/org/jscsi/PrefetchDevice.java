@@ -118,19 +118,19 @@ public class PrefetchDevice implements Device {
         System.arraycopy(tmpData, 0, data, 0, data.length);
         for (int i = 1; i <= PREFETCH_LENGTH; i++) {
           int offset = i * data.length / getBlockSize();
-          System.out.println("prefetch: " + (address + offset));
+          // System.out.println("prefetch: " + (address + offset));
           System.arraycopy(tmpData, i * data.length, tmpData2, 0, data.length);
           buffer.put((address + offset), tmpData2);
         }
-      } else {
-        System.out.print("hit: ");
-      }
+      } // else {
+      // System.out.print("hit: ");
+      // }
     } else {
       device.read(address, data);
     }
     lastBlockAddress = address;
 
-    System.out.println("read address: " + address);
+    // System.out.println("read address: " + address);
   }
 
   /** {@inheritDoc} */
