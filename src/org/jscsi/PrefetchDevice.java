@@ -45,7 +45,7 @@ public class PrefetchDevice implements Device {
 
   private long lastBlockAddress;
 
-  private static final int PREFETCH_LENGTH = 4;
+  private static final int PREFETCH_LENGTH = 2;
 
   /**
    * Constructor to create an Prefetcher. The Device has to be initialized
