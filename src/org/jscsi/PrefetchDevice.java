@@ -34,16 +34,18 @@ import org.jscsi.utils.SoftHashMap;
  * @author Bastian Lemke
  * 
  */
-public class Prefetcher implements Device {
+public class PrefetchDevice implements Device {
 
   private final Device device;
 
   /** Thread pool for prefetching-threads. */
   private final ExecutorService executor;
 
-  private SoftHashMap buffer;
+  private SoftHashMap<Long, byte[]> buffer;
 
-  private final int PREFETCH_LENGTH = 4;
+  private long lastBlockAddress;
+
+  private static final int PREFETCH_LENGTH = 4;
 
   /**
    * Constructor to create an Prefetcher. The Device has to be initialized
@@ -55,11 +57,11 @@ public class Prefetcher implements Device {
    * @throws Exception
    *           if any error occurs
    */
-  public Prefetcher(final Device initDevice) throws Exception {
+  public PrefetchDevice(final Device initDevice) throws Exception {
 
     this.device = initDevice;
     executor = Executors.newCachedThreadPool();
-    buffer = new SoftHashMap();
+    buffer = new SoftHashMap<Long, byte[]>();
   }
 
   /** {@inheritDoc} */
@@ -93,25 +95,40 @@ public class Prefetcher implements Device {
     device.open();
   }
 
+  /**
+   * Return the actual number of blocks that are prefetched.
+   * 
+   * @return PREFETCH_LENGTH
+   */
+  public int getPrefetchLength() {
+
+    return PREFETCH_LENGTH;
+  }
+
   /** {@inheritDoc} */
   public void read(final long address, final byte[] data) throws Exception {
 
     byte[] tmpData, tmpData2 = new byte[data.length];
 
-    tmpData = (byte[]) buffer.get(address);
-    if (tmpData == null) {
-      tmpData = new byte[data.length * (PREFETCH_LENGTH+1)];
-      device.read(address, tmpData);
-      System.arraycopy(tmpData, 0, data, 0, data.length);
-      for (int i = 1; i <= PREFETCH_LENGTH; i++) {
-        int offset = i * data.length / getBlockSize();
-        System.out.println("prefetch: " + (address + offset));
-        System.arraycopy(tmpData, i * data.length, tmpData2, 0, data.length);
-        buffer.put((address + offset), tmpData2);
+    if (lastBlockAddress == (address - data.length / getBlockSize())) {
+      tmpData = (byte[]) buffer.get(address);
+      if (tmpData == null) {
+        tmpData = new byte[data.length * (PREFETCH_LENGTH + 1)];
+        device.read(address, tmpData);
+        System.arraycopy(tmpData, 0, data, 0, data.length);
+        for (int i = 1; i <= PREFETCH_LENGTH; i++) {
+          int offset = i * data.length / getBlockSize();
+          System.out.println("prefetch: " + (address + offset));
+          System.arraycopy(tmpData, i * data.length, tmpData2, 0, data.length);
+          buffer.put((address + offset), tmpData2);
+        }
+      } else {
+        System.out.print("hit: ");
       }
     } else {
-      System.out.print("hit: ");
+      device.read(address, data);
     }
+    lastBlockAddress = address;
 
     System.out.println("read address: " + address);
   }
