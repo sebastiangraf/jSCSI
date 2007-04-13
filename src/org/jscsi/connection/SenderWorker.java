@@ -121,6 +121,7 @@ final class SenderWorker implements Runnable {
     connection = initConnection;
     socketChannel = SocketChannel
         .open(new InetSocketAddress(inetAddress, port));
+    socketChannel.socket().setTcpNoDelay(true);
 
     synchronized (initSendingQueue) {
       sendingQueue = initSendingQueue;
