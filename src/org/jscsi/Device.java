@@ -84,9 +84,10 @@ public interface Device {
    * <code>data</code>
    * 
    * @param address
-   *          blockaddress to read data from.
+   *          logical blockaddress to read data from.
    * @param data
-   *          empty byte array to write read data to.
+   *          empty byte array to write read data to. This byte array must be a
+   *          multiple of blocksize.
    * @throws Exception
    *           if any error occurs.
    */
@@ -97,9 +98,10 @@ public interface Device {
    * written to blockaddress <code>address</code> on this device.
    * 
    * @param address
-   *          blockaddress to write data to.
+   *          logical blockaddress to write data to.
    * @param data
-   *          byte array with the data to write.
+   *          byte array with the data to write. This byte array must be a
+   *          multiple of blocksize.
    * @throws Exception
    *           if any error occurs.
    */
