@@ -45,7 +45,7 @@ public class PrefetchDevice implements Device {
 
   private long lastBlockAddress;
 
-  private static final int PREFETCH_LENGTH = 2;
+  private static final int PREFETCH_LENGTH_EXPONENT = 3;
 
   /**
    * Constructor to create an Prefetcher. The Device has to be initialized
@@ -102,35 +102,61 @@ public class PrefetchDevice implements Device {
    */
   public int getPrefetchLength() {
 
-    return PREFETCH_LENGTH;
+    return PREFETCH_LENGTH_EXPONENT;
   }
 
   /** {@inheritDoc} */
   public void read(final long address, final byte[] data) throws Exception {
 
-    byte[] tmpData, tmpData2 = new byte[data.length];
+    if (data.length % getBlockSize() != 0) {
+      throw new IllegalArgumentException(
+          "Number of bytes is not a multiple of the blocksize!");
+    }
 
-    if (lastBlockAddress == (address - data.length / getBlockSize())) {
-      tmpData = (byte[]) buffer.get(address);
-      if (tmpData == null) {
-        tmpData = new byte[data.length * (PREFETCH_LENGTH + 1)];
-        device.read(address, tmpData);
-        System.arraycopy(tmpData, 0, data, 0, data.length);
-        for (int i = 1; i <= PREFETCH_LENGTH; i++) {
-          int offset = i * data.length / getBlockSize();
-          // System.out.println("prefetch: " + (address + offset));
-          System.arraycopy(tmpData, i * data.length, tmpData2, 0, data.length);
-          buffer.put((address + offset), tmpData2);
+    final long extentSize = data.length / getBlockSize();
+    final long minAddress = address - (extentSize << PREFETCH_LENGTH_EXPONENT);
+    final long maxAddress = address + (extentSize << PREFETCH_LENGTH_EXPONENT);
+
+    byte[] prefetchedData = (byte[]) buffer.get(address);
+
+    if (prefetchedData == null || prefetchedData.length != data.length) {
+      if (lastBlockAddress == (address - extentSize)
+          && maxAddress < getBlockCount()) {
+        prefetchedData = new byte[(data.length << PREFETCH_LENGTH_EXPONENT) + data.length];
+
+        device.read(address, prefetchedData);
+        // copy first part to out parameter
+        System.arraycopy(prefetchedData, 0, data, 0, data.length);
+        // split prefetched data to store into buffer
+        byte[] chunkedPrefetchedData;
+        for (int i = 1; i <= (1 << PREFETCH_LENGTH_EXPONENT); i++) {
+          chunkedPrefetchedData = new byte[data.length];
+          System.arraycopy(prefetchedData, i * data.length,
+              chunkedPrefetchedData, 0, data.length);
+          buffer.put((address + i * extentSize), chunkedPrefetchedData);
         }
-      } // else {
-      // System.out.print("hit: ");
-      // }
+      } else if (lastBlockAddress == (address + extentSize) && minAddress >= 0) {
+        prefetchedData = new byte[(data.length << PREFETCH_LENGTH_EXPONENT) + data.length];
+
+        device.read(minAddress, prefetchedData);
+        // copy first part to out parameter
+        System.arraycopy(prefetchedData, prefetchedData.length - data.length,
+            data, 0, data.length);
+        // split prefetched data to store into buffer
+        byte[] chunkedPrefetchedData;
+        for (int i = 0; i < (1 << PREFETCH_LENGTH_EXPONENT); i++) {
+          chunkedPrefetchedData = new byte[data.length];
+          System.arraycopy(prefetchedData, i * data.length,
+              chunkedPrefetchedData, 0, data.length);
+          buffer.put((minAddress + i * extentSize), chunkedPrefetchedData);
+        }
+      } else {
+        device.read(address, data);
+      }
     } else {
-      device.read(address, data);
+      System.arraycopy(prefetchedData, 0, data, 0, data.length);
     }
     lastBlockAddress = address;
-
-    // System.out.println("read address: " + address);
   }
 
   /** {@inheritDoc} */

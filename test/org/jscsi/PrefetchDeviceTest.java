@@ -719,21 +719,48 @@ public class PrefetchDeviceTest {
    * @throws Exception
    *           These should never be thrown.
    */
-  @Test
-  public final void testReadWriteBeginning8kb() throws Exception {
+  //@Test
+  public final void testReadWrite8kb() throws Exception {
 
-    int prefetchLength = device.getPrefetchLength();
+    int prefetchLength = device.getPrefetchLength() + 2;
     int blockFactor = testDataBlock8kb.length / device.getBlockSize();
     long address = 0;
 
     for (int i = 0; i < prefetchLength; i++) {
-      device.write(address + i * blockFactor, testDataBlock8kb);
+      device.write((address + i * blockFactor), testDataBlock8kb);
     }
     for (int j = 0; j < prefetchLength; j++) {
       byte[] result = new byte[testDataBlock8kb.length];
-      device.read(address + j * blockFactor, result);
+      device.read((address + j * blockFactor), result);
       for (int i = 0; i < testDataBlock8kb.length; i++) {
-        assertEquals(result[i], testDataBlock8kb[i]);
+        assertEquals(testDataBlock8kb[i], result[i]);
+      }
+    }
+  }
+
+  /**
+   * Test write on the beginning of a Device.
+   * 
+   * @throws Exception
+   *           These should never be thrown.
+   */
+  @Test
+  public final void testReverseReadWrite8kb() throws Exception {
+
+    int prefetchLength = device.getPrefetchLength() + 2;
+    int blockFactor = testDataBlock8kb.length / device.getBlockSize();
+    long address = (prefetchLength - 1) * (blockFactor);
+
+    for (int i = 0; i < prefetchLength; i++) {
+      device.write((address - i * blockFactor), testDataBlock8kb);
+      System.out.println("write " + (address - i * blockFactor));
+    }
+    for (int j = 0; j < prefetchLength; j++) {
+      byte[] result = new byte[testDataBlock8kb.length];
+      device.read((address - j * blockFactor), result);
+      System.out.println("read " + (address - j * blockFactor));
+      for (int i = 0; i < testDataBlock8kb.length; i++) {
+        assertEquals(testDataBlock8kb[i], result[i]);
       }
     }
   }
