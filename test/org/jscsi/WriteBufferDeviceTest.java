@@ -722,7 +722,7 @@ public class WriteBufferDeviceTest {
     device = new WriteBufferDevice(new JSCSIDevice(TARGET_NAME));
     device.open();
 
-    int writeBlockCount = 1;
+    int writeBlockCount = 100;
     int blockFactor = testDataBlock8kb.length / device.getBlockSize();
     long address = 0;
 
@@ -736,7 +736,6 @@ public class WriteBufferDeviceTest {
       byte[] result = new byte[testDataBlock8kb.length];
       device.read(address + j * blockFactor, result);
       for (int i = 0; i < testDataBlock8kb.length; i++) {
-        System.out.println(i);
         assertEquals(result[i], testDataBlock8kb[i]);
       }
     }
