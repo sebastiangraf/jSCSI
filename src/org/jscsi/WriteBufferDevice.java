@@ -105,49 +105,56 @@ public class WriteBufferDevice implements Device {
    * 
    * @throws Exception
    */
-  private final synchronized void flush() throws Exception {
+  public final synchronized void flush() throws Exception {
 
     List<Long> sortedKeys = new ArrayList<Long>(buffer.keySet());
     Collections.sort(sortedKeys);
 
     while (sortedKeys.size() > 0) {
-      long lastKey = sortedKeys.get(0);
-      int length = buffer.get(lastKey).length;
+      long firstKey = sortedKeys.get(0);
+      int firstDataLength = buffer.get(firstKey).length;
       int i = 1;
-      while (i < sortedKeys.size() && sortedKeys.get(i) == lastKey + 1) {
+      while (i < sortedKeys.size()
+          && sortedKeys.get(i) == sortedKeys.get(i - 1)
+              + (firstDataLength / getBlockSize())) {
         i++;
       }
-      byte[] data = new byte[length * i];
+      byte[] data = new byte[firstDataLength * i];
       for (int j = 0; j < i; j++) {
-        System.arraycopy(buffer.get(sortedKeys.get(j)), 0, data, j * length,
-            length);
+        System.arraycopy(buffer.get(sortedKeys.get(j)), 0, data, j
+            * firstDataLength, firstDataLength);
       }
-      device.write(lastKey, data);
+      device.write(firstKey, data);
       if (sortedKeys.size() != 1) {
-        sortedKeys = sortedKeys.subList(i, sortedKeys.size() - 1);
+        sortedKeys = sortedKeys.subList(i, sortedKeys.size());
       } else {
         sortedKeys.clear();
       }
     }
     buffer.clear();
-    //System.out.println("buffer flushed!");
+    // System.out.println("buffer flushed!");
   }
 
   /** {@inheritDoc} */
   public void read(final long address, final byte[] data) throws Exception {
 
-    device.read(address, data);
+    byte[] bufferedData = buffer.get(address);
+    if (bufferedData != null && bufferedData.length == data.length) {
+      System.arraycopy(bufferedData, 0, data, 0, data.length);
+    } else {
+      device.read(address, data);
+    }
   }
 
   /** {@inheritDoc} */
   public void write(final long address, final byte[] data) throws Exception {
 
+    buffer.put(address, data);
     writeCount++;
     if (writeCount >= MAX_WRITE_COUNT) {
       writeCount = 0;
       flush();
     }
-    buffer.put(address, data);
   }
 
   private final class FlushThread extends Thread {
