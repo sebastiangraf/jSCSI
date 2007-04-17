@@ -37,7 +37,7 @@ public final class InitiatorTest {
   // --------------------------------------------------------------------------
 
   /** Name of the device name on the iSCSI Target. */
-  private static final String TARGET_DRIVE_NAME = "titan04";
+  private static final String TARGET_DRIVE_NAME = "disk6";
 
   /** The size (in bytes) of the buffer to use for reads and writes. */
   private static final int BUFFER_SIZE = 46 * 1024;
@@ -96,7 +96,7 @@ public final class InitiatorTest {
   @Test
   public final void testReadCapacity() throws Exception {
 
-    assertEquals((long) 20971519, initiator.getCapacity(TARGET_DRIVE_NAME));
+    assertEquals((long) 1975931, initiator.getCapacity(TARGET_DRIVE_NAME));
     assertEquals((long) 512, initiator.getBlockSize(TARGET_DRIVE_NAME));
   }
 

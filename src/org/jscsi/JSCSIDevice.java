@@ -21,6 +21,9 @@ package org.jscsi;
 
 import java.nio.ByteBuffer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * <h1>JSCSIDevice</h1>
  * 
@@ -39,7 +42,10 @@ public class JSCSIDevice implements Device {
 
   private int blockSize = -1;
 
-  private long size = -1;
+  private long blockCount = -1;
+
+  /** The Logger interface. */
+  private static final Log LOGGER = LogFactory.getLog(JSCSIDevice.class);
 
   /**
    * Constructor to create an JSCSIDevice. The Device has to be initialized
@@ -65,12 +71,15 @@ public class JSCSIDevice implements Device {
     }
 
     initiator.closeSession(target);
+    blockSize = -1;
+    blockCount = -1;
+    LOGGER.info("Closed " + getName() + ".");
   }
 
   /** {@inheritDoc} */
   public int getBlockSize() {
-    
-    if (blockSize == -1){
+
+    if (blockSize == -1) {
       throw new IllegalStateException("You first have to open the Device!");
     }
 
@@ -80,37 +89,43 @@ public class JSCSIDevice implements Device {
   /** {@inheritDoc} */
   public String getName() {
 
-    return "ISCSI_" + target;
+    return "JSCSIDevice(" + target + ")";
   }
 
   /** {@inheritDoc} */
   public long getBlockCount() {
 
-    if (size == -1){
+    if (blockCount == -1) {
       throw new IllegalStateException("You first have to open the Device!");
     }
-    
-    return size;
+
+    return blockCount;
   }
 
   /** {@inheritDoc} */
   public void open() throws Exception {
 
+    if (blockCount != -1) {
+      throw new IllegalStateException("JSCSIDevice is already opened!");
+    }
+
     initiator.createSession(target);
     blockSize = (int) initiator.getBlockSize(target);
-    size = initiator.getCapacity(target);
+    blockCount = initiator.getCapacity(target);
+
+    LOGGER.info("Initialized " + getName() + ".");
   }
 
   /** {@inheritDoc} */
   public void read(final long address, final byte[] data) throws Exception {
-    
-    if (size == -1 || blockSize == -1){
+
+    if (blockCount == -1) {
       throw new IllegalStateException("You first have to open the Device!");
     }
 
     long blocks = data.length / blockSize;
 
-    if (address < 0 || address + blocks > size) {
+    if (address < 0 || address + blocks > blockCount) {
       long adr;
       if (address < 0) {
         adr = address;
@@ -133,14 +148,14 @@ public class JSCSIDevice implements Device {
 
   /** {@inheritDoc} */
   public void write(final long address, final byte[] data) throws Exception {
-    
-    if (size == -1 || blockSize == -1){
+
+    if (blockCount == -1) {
       throw new IllegalStateException("You first have to open the Device!");
     }
 
     long blocks = data.length / blockSize;
 
-    if (address < 0 || address + blocks > size) {
+    if (address < 0 || address + blocks > blockCount) {
       long adr;
       if (address < 0) {
         adr = address;

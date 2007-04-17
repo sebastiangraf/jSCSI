@@ -23,14 +23,15 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class Raid1DeviceTest {
 
-  private static final String[] TARGET_NAMES = { "titan04", "titan05",
-      "titan06" };
+  private static final String[] targetNames = { "disk5", "disk6" };
+
+  private static final Device[] jSCSIDevices = new Device[targetNames.length];
 
   /** Number of Blocks to write */
   private static final int TEST_DATA_SIZE = 1;
@@ -43,18 +44,25 @@ public class Raid1DeviceTest {
 
   private static Random randomGenerator;
 
-  @BeforeClass
-  public static final void initialize() throws Exception {
+  public Raid1DeviceTest() throws Exception {
 
-    device = new Raid1Device(TARGET_NAMES);
+    for (int i = 0; i < targetNames.length; i++) {
+      jSCSIDevices[i] = new JSCSIDevice(targetNames[i]);
+    }
+  }
+
+  @Before
+  public final void setUp() throws Exception {
+
+    device = new Raid1Device(jSCSIDevices);
     device.open();
     randomGenerator = new Random(System.currentTimeMillis());
     testData = new byte[TEST_DATA_SIZE * device.getBlockSize()];
     randomGenerator.nextBytes(testData);
   }
 
-  @AfterClass
-  public static final void close() throws Exception {
+  @After
+  public final void tearDown() throws Exception {
 
     device.close();
   }
@@ -236,7 +244,7 @@ public class Raid1DeviceTest {
   @Test(expected = IllegalStateException.class)
   public void testWriteNotOpened() throws Exception {
 
-    Device newDevice = new Raid1Device(TARGET_NAMES);
+    Device newDevice = new Raid1Device(jSCSIDevices);
     address = 0;
     newDevice.write(address, testData);
   }
@@ -251,7 +259,7 @@ public class Raid1DeviceTest {
   @Test(expected = IllegalStateException.class)
   public void testReadNotOpened() throws Exception {
 
-    Device newDevice = new Raid1Device(TARGET_NAMES);
+    Device newDevice = new Raid1Device(jSCSIDevices);
     System.out.print(device.getBlockCount());
     address = 0;
     byte[] result = new byte[TEST_DATA_SIZE * device.getBlockSize()];
