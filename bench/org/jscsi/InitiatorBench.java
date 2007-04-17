@@ -37,6 +37,8 @@ import de.unikn.inf.disy.idefix.perfidix.Result;
  * This class is a benchmark to measure the performance of the Java implemented
  * iSCSI Initiator.
  * 
+ * TODO: move to Perfidix 2
+ * 
  * @author Volker Wildi
  */
 public class InitiatorBench extends Benchmarkable {
@@ -47,7 +49,7 @@ public class InitiatorBench extends Benchmarkable {
   private static final Log LOGGER = LogFactory.getLog(InitiatorBench.class);
 
   /** Name of the device name on the iSCSI Target. */
-  private static final String TARGET_NAME = "disk4";
+  private static final String TARGET_NAME = "disk5";
 
   /** The size (in bytes) of a single block. */
   private static final int BLOCK_SIZE = 8 * 1024;

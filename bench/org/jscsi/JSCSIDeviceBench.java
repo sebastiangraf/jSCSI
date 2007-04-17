@@ -35,20 +35,21 @@ import de.unikn.inf.disy.idefix.perfidix.Result;
  * <h1>JSCSIDeviceBench</h1>
  * <p/>
  * 
- * Benchmark to compare the jSCSI Device with Raid1 Device.
+ * Benchmark to compare the jSCSI Device with Raid1 Device. TODO: move to
+ * Perfidix 2
  * 
  * @author Bastian Lemke
  */
 public class JSCSIDeviceBench extends Benchmarkable {
 
-  private static String TARGET = "titan04";
+  private static String TARGET = "disk5";
 
   private static final int BLOCK_SIZE = 4096;
 
   private static final long ADDRESS = 0;
 
   /** Size (in blocks) of the data to used for sending. */
-  private static final int TEST_DATA_SIZE =25600;
+  private static final int TEST_DATA_SIZE = 25600;
 
   private static final int RUNS = 1000;
 
@@ -57,7 +58,7 @@ public class JSCSIDeviceBench extends Benchmarkable {
 
   private Device device;
 
-  private static Logger logger = Logger.getLogger(DeviceBench.class);
+  private static Logger logger = Logger.getLogger(JSCSIDeviceBench.class);
 
   private static String log;
 
@@ -72,7 +73,7 @@ public class JSCSIDeviceBench extends Benchmarkable {
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
 
-  public JSCSIDeviceBench() throws Exception{
+  public JSCSIDeviceBench() throws Exception {
 
     randomGenerator = new Random(System.currentTimeMillis());
     testData = new byte[TEST_DATA_SIZE * BLOCK_SIZE];

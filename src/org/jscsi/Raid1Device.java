@@ -19,17 +19,19 @@
 
 package org.jscsi;
 
-import java.nio.ByteBuffer;
 import java.util.Vector;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * <h1>Raid1Device</h1>
  * 
  * <p>
- * Implements a RAID 1 Device with several iSCSI Targets.
+ * Implements a RAID 1 Device with several Devices.
  * </p>
  * 
  * @author Bastian Lemke
@@ -37,18 +39,23 @@ import java.util.concurrent.Executors;
  */
 public class Raid1Device implements Device {
 
-  private final Initiator initiator;
+  // private final Initiator initiator;
+  // private final String[] targets;
 
-  private final String[] targets;
+  private final Device[] devices;
 
-  /** Blocksize of the targets. */
   private int blockSize = -1;
 
-  /** Available size on this Raid1Device. */
-  private long size = -1;
+  private long blockCount = -1;
 
-  /** Pointer to next target to read data from. */
-  private int targetPointer;
+  /** The Logger interface. */
+  private static final Log LOGGER = LogFactory.getLog(JSCSIDevice.class);
+
+  /**
+   * Pointer to next device to read data from. Used to distribute reads between
+   * the devices.
+   */
+  private int nextTarget;
 
   /** Thread pool for write- and read-threads. */
   private final ExecutorService executor;
@@ -60,37 +67,41 @@ public class Raid1Device implements Device {
    * Constructor to create an Raid1Device. The Device has to be initialized
    * before it can be used.
    * 
-   * @param targetNames
-   *          names of the targets
+   * @param initDevices
+   *          devices to use
    * 
    * @throws Exception
    *           if any error occurs
    */
-  public Raid1Device(final String[] targetNames) throws Exception {
+  public Raid1Device(final Device[] initDevices) throws Exception {
 
-    initiator = new Initiator(Configuration.create());
-    targets = targetNames;
-    targetPointer = 0;
-    executor = Executors.newFixedThreadPool(targets.length);
+    devices = initDevices;
+    nextTarget = 0;
+    // create one thread per device
+    executor = Executors.newFixedThreadPool(devices.length);
   }
 
   /** {@inheritDoc} */
   public void close() throws Exception {
 
-    if (initiator == null) {
+    if (blockCount == -1) {
       throw new NullPointerException();
     }
 
-    for (int i = 0; i < targets.length; i++) {
-      initiator.closeSession(targets[i]);
-    }
     executor.shutdown();
+    // TODO: check if all threads completed correctly
+    for (Device device : devices) {
+      device.close();
+    }
+    blockSize = -1;
+    blockCount = -1;
+    LOGGER.info("Closed " + getName() + ".");
   }
 
   /** {@inheritDoc} */
   public int getBlockSize() {
-    
-    if (blockSize == -1){
+
+    if (blockSize == -1) {
       throw new IllegalStateException("You first have to open the Device!");
     }
 
@@ -100,55 +111,63 @@ public class Raid1Device implements Device {
   /** {@inheritDoc} */
   public String getName() {
 
-    String name = "RAID-1";
-    for (String t : targets) {
-      name += "_" + t;
+    String name = "Raid1Device(";
+    for (Device device : devices) {
+      name += device.getName() + "+";
     }
-    return name;
+    return name.substring(0, name.length() - 1) + ")";
   }
 
   /** {@inheritDoc} */
   public long getBlockCount() {
-    
-    if (size == -1){
+
+    if (blockCount == -1) {
       throw new IllegalStateException("You first have to open the Device!");
     }
 
-    return size;
+    return blockCount;
   }
 
   /** {@inheritDoc} */
   public void open() throws Exception {
 
+    if (blockCount != -1) {
+      throw new IllegalStateException("Raid1Device is already opened!");
+    }
+
+    for (Device device : devices) {
+      device.open();
+    }
+
+    // check if all devices have the same block size
     blockSize = 0;
-    for (String t : targets) {
-      initiator.createSession(t);
+    for (Device device : devices) {
       if (blockSize == 0) {
-        blockSize = (int) initiator.getBlockSize(t);
-      } else if (blockSize != (int) initiator.getBlockSize(t)) {
+        blockSize = (int) device.getBlockSize();
+      } else if (blockSize != (int) device.getBlockSize()) {
         throw new IllegalArgumentException(
-            "All targets must have the same block size!");
+            "All devices must have the same block size!");
       }
     }
 
-    /* Find the smallest target */
-    size = Long.MAX_VALUE;
-    for (String t : targets) {
-      size = Math.min(size, initiator.getCapacity(t));
+    // find the smallest device
+    blockCount = Long.MAX_VALUE;
+    for (Device device : devices) {
+      blockCount = Math.min(blockCount, device.getBlockCount());
     }
 
   }
 
   /** {@inheritDoc} */
   public void read(final long address, final byte[] data) throws Exception {
-    
-    if (size == -1 || blockSize == -1){
+
+    if (blockCount == -1) {
       throw new IllegalStateException("You first have to open the Device!");
     }
 
     int blocks = data.length / blockSize;
 
-    if (address < 0 || address + blocks > size) {
+    if (address < 0 || address + blocks > blockCount) {
       long adr;
       if (address < 0) {
         adr = address;
@@ -163,27 +182,26 @@ public class Raid1Device implements Device {
           "Number of bytes is not a multiple of the blocksize!");
     }
 
-    int parts = (blocks >= targets.length) ? targets.length : (int) blocks;
+    int parts = (blocks >= devices.length) ? devices.length : (int) blocks;
     barrier = new CyclicBarrier(parts + 1);
     int targetBlockCount;
     Vector<byte[]> targetData = new Vector<byte[]>();
     int targetBlockAddress = (int) address;
 
     for (int i = 0; i < parts; i++) {
-      targetBlockCount = blocks / targets.length;
-      if (i < (blocks % targets.length)) {
+      targetBlockCount = blocks / devices.length;
+      if (i < (blocks % devices.length)) {
         targetBlockCount++;
       }
       targetData.add(new byte[targetBlockCount * blockSize]);
 
       /** Start Thread to read Data from Target */
       if (targetBlockCount != 0) {
-        executor.execute(new ReadThread(targets[targetPointer],
+        executor.execute(new ReadThread(devices[nextTarget],
             targetBlockAddress, targetData.get(i)));
       }
       targetBlockAddress += targetBlockCount;
-      targetPointer = (targetPointer < targets.length - 1) ? targetPointer + 1
-          : 0;
+      nextTarget = (nextTarget < devices.length - 1) ? nextTarget + 1 : 0;
     }
     barrier.await();
 
@@ -198,14 +216,14 @@ public class Raid1Device implements Device {
 
   /** {@inheritDoc} */
   public void write(final long address, final byte[] data) throws Exception {
-    
-    if (size == -1 || blockSize == -1){
+
+    if (blockCount == -1 || blockSize == -1) {
       throw new IllegalStateException("You first have to open the Device!");
     }
 
     long blocks = data.length / blockSize;
 
-    if (address < 0 || address + blocks > size) {
+    if (address < 0 || address + blocks > blockCount) {
       long adr;
       if (address < 0) {
         adr = address;
@@ -220,9 +238,9 @@ public class Raid1Device implements Device {
           "Number of bytes is not a multiple of the blocksize!");
     }
 
-    barrier = new CyclicBarrier(targets.length + 1);
-    for (int i = 0; i < targets.length; i++) {
-      executor.execute(new WriteThread(targets[i], (int) address, data));
+    barrier = new CyclicBarrier(devices.length + 1);
+    for (int i = 0; i < devices.length; i++) {
+      executor.execute(new WriteThread(devices[i], (int) address, data));
     }
     barrier.await();
   }
@@ -236,27 +254,24 @@ public class Raid1Device implements Device {
    */
   private final class ReadThread implements Runnable {
 
-    private final String target;
+    private final Device device;
 
-    private final int logicalBlockAddress;
+    private final int address;
 
     private final byte[] data;
 
-    private ReadThread(final String readTarget, final int readBlockAddress,
+    private ReadThread(final Device readDevice, final int readBlockAddress,
         final byte[] readData) {
 
-      target = readTarget;
-      logicalBlockAddress = readBlockAddress;
+      device = readDevice;
+      address = readBlockAddress;
       data = readData;
     }
 
     public void run() {
 
       try {
-        final ByteBuffer dst = ByteBuffer.allocate(data.length);
-        initiator.read(this, target, dst, logicalBlockAddress, data.length);
-        dst.rewind();
-        dst.get(data);
+        device.read(address, data);
         barrier.await();
       } catch (Exception e) {
         e.printStackTrace();
@@ -273,30 +288,28 @@ public class Raid1Device implements Device {
    */
   private final class WriteThread implements Runnable {
 
-    private final String target;
+    private final Device device;
 
-    private final int logicalBlockAddress;
+    private final int address;
 
     private final byte[] data;
 
-    private WriteThread(final String writeTarget, final int writeBlockAddress,
+    private WriteThread(final Device writeDevice, final int writeBlockAddress,
         final byte[] writeData) {
 
-      target = writeTarget;
-      logicalBlockAddress = writeBlockAddress;
+      device = writeDevice;
+      address = writeBlockAddress;
       data = writeData;
     }
 
     public void run() {
 
       try {
-        final ByteBuffer src = ByteBuffer.wrap(data);
-        initiator.write(this, target, src, logicalBlockAddress, data.length);
+        device.write(address, data);
         barrier.await();
       } catch (Exception e) {
         e.printStackTrace();
       }
-
     }
   }
 }

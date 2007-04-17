@@ -29,7 +29,7 @@ import org.junit.Test;
 
 public class JSCSIDeviceTest {
 
-  private static final String TARGET_NAME = "titan07";
+  private static final String TARGET_NAME = "disk6";
 
   /** Number of Blocks to write */
   private static final int TEST_DATA_SIZE = 1;
@@ -107,7 +107,10 @@ public class JSCSIDeviceTest {
 
   /**
    * Tests, if an exception is thrown, when data would exceed the maximum
-   * available address.
+   * available address. *
+   * 
+   * @throws Exception
+   *           These should never be thrown.
    */
   @Test(expected = IllegalArgumentException.class)
   public void testWriteOverTheEnd() throws Exception {
@@ -120,7 +123,10 @@ public class JSCSIDeviceTest {
 
   /**
    * Tests, if an exception is thrown, when data would exceed the maximum
-   * available address.
+   * available address. *
+   * 
+   * @throws Exception
+   *           These should never be thrown.
    */
   @Test(expected = IllegalArgumentException.class)
   public void testReadOverTheEnd() throws Exception {
