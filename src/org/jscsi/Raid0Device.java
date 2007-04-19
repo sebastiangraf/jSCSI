@@ -28,16 +28,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * <h1>Raid1Device</h1>
+ * <h1>Raid0Device</h1>
  * 
  * <p>
- * Implements a RAID 1 Device with several Devices.
+ * Implements a RAID 0 Device with several Devices.
  * </p>
  * 
  * @author Bastian Lemke
  * 
  */
-public class Raid1Device implements Device {
+public class Raid0Device implements Device {
 
   private final Device[] devices;
 
@@ -46,13 +46,13 @@ public class Raid1Device implements Device {
   private long blockCount = -1;
 
   /** The Logger interface. */
-  private static final Log LOGGER = LogFactory.getLog(Raid1Device.class);
+  private static final Log LOGGER = LogFactory.getLog(Raid0Device.class);
 
   /**
-   * Pointer to next device to read data from. Used to distribute reads between
-   * the devices.
+   * Size of the parts, that are distributed between the Devices. Must be a
+   * multiple of blockSize.
    */
-  private int nextTarget;
+  private static final int EXTEND_SIZE = 8192;
 
   /** Thread pool for write- and read-threads. */
   private final ExecutorService executor;
@@ -61,7 +61,7 @@ public class Raid1Device implements Device {
   private CyclicBarrier barrier;
 
   /**
-   * Constructor to create an Raid1Device. The Device has to be initialized
+   * Constructor to create an Raid0Device. The Device has to be initialized
    * before it can be used.
    * 
    * @param initDevices
@@ -70,10 +70,9 @@ public class Raid1Device implements Device {
    * @throws Exception
    *           if any error occurs
    */
-  public Raid1Device(final Device[] initDevices) throws Exception {
+  public Raid0Device(final Device[] initDevices) throws Exception {
 
     devices = initDevices;
-    nextTarget = 0;
     // create one thread per device
     executor = Executors.newFixedThreadPool(devices.length);
   }
@@ -91,7 +90,9 @@ public class Raid1Device implements Device {
     }
     blockSize = -1;
     blockCount = -1;
-    LOGGER.info("Closed " + getName() + ".");
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Closed " + getName() + ".");
+    }
   }
 
   /** {@inheritDoc} */
@@ -107,7 +108,7 @@ public class Raid1Device implements Device {
   /** {@inheritDoc} */
   public String getName() {
 
-    String name = "Raid1Device(";
+    String name = "Raid0Device(";
     for (Device device : devices) {
       name += device.getName() + "+";
     }
@@ -128,7 +129,7 @@ public class Raid1Device implements Device {
   public void open() throws Exception {
 
     if (blockCount != -1) {
-      throw new IllegalStateException("Raid1Device is already opened!");
+      throw new IllegalStateException("Raid0Device is already opened!");
     }
 
     for (Device device : devices) {
@@ -146,12 +147,22 @@ public class Raid1Device implements Device {
       }
     }
 
-    // find the smallest device
+    if (EXTEND_SIZE % blockSize != 0) {
+      throw new IllegalArgumentException(
+          "EXTEND_SIZE must be a multiple of the blocksize!");
+    }
+
+    // available space = size of smallest device * #devices
     blockCount = Long.MAX_VALUE;
     for (Device device : devices) {
       blockCount = Math.min(blockCount, device.getBlockCount());
     }
-
+    blockCount = (blockCount * blockSize / EXTEND_SIZE) * EXTEND_SIZE
+        / blockSize;
+    blockCount *= devices.length;
+    if (LOGGER.isInfoEnabled()) {
+      LOGGER.info("Opened " + getName() + ".");
+    }
   }
 
   /** {@inheritDoc} */
@@ -161,47 +172,52 @@ public class Raid1Device implements Device {
       throw new IllegalStateException("You first have to open the Device!");
     }
 
+    if (data.length % EXTEND_SIZE != 0) {
+      throw new IllegalArgumentException(
+          "Number of bytes is not a multiple of the extend size ("
+              + EXTEND_SIZE + ")!");
+    }
+
+    int fragments = data.length / EXTEND_SIZE;
     int blocks = data.length / blockSize;
+    int blockFactor = EXTEND_SIZE / blockSize;
 
     if (address < 0 || address + blocks > blockCount) {
-      long adr = address <0 ? address:address + blocks -1;
+      long adr = address < 0 ? address : address + blocks - 1;
       throw new IllegalArgumentException("Address " + adr + " out of range.");
     }
 
-    if (data.length % blockSize != 0) {
-      throw new IllegalArgumentException(
-          "Number of bytes is not a multiple of the blocksize!");
-    }
-
-    int parts = (blocks >= devices.length) ? devices.length : (int) blocks;
+    int parts = (fragments >= devices.length) ? devices.length : fragments;
     barrier = new CyclicBarrier(parts + 1);
-    int targetBlockCount;
-    Vector<byte[]> targetData = new Vector<byte[]>();
-    int targetBlockAddress = (int) address;
-
+    long actualAddress = ((address / blockFactor) / devices.length)
+        * blockFactor;
+    int actualDevice = (int) ((address / blockFactor) % devices.length);
+    Vector<byte[]> deviceData = new Vector<byte[]>();
+    int deviceBlockCount;
     for (int i = 0; i < parts; i++) {
-      targetBlockCount = blocks / devices.length;
-      if (i < (blocks % devices.length)) {
-        targetBlockCount++;
+      deviceBlockCount = fragments / devices.length * blockFactor;
+      if (i < (fragments % devices.length)) {
+        deviceBlockCount += blockFactor;
       }
-      targetData.add(new byte[targetBlockCount * blockSize]);
+      deviceData.add(new byte[deviceBlockCount * blockSize]);
 
-      /** Start Thread to read Data from Target */
-      if (targetBlockCount != 0) {
-        executor.execute(new ReadThread(devices[nextTarget],
-            targetBlockAddress, targetData.get(i)));
+      if (deviceBlockCount != 0) {
+        executor.execute(new ReadThread(devices[actualDevice], actualAddress,
+            deviceData.get(i)));
       }
-      targetBlockAddress += targetBlockCount;
-      nextTarget = (nextTarget < devices.length - 1) ? nextTarget + 1 : 0;
+      if (actualDevice == devices.length - 1) {
+        actualDevice = 0;
+        actualAddress += blockFactor;
+      } else {
+        actualDevice++;
+      }
     }
     barrier.await();
 
     /** Merge the results. */
-    int pos = 0;
-    for (int i = 0; i < targetData.size(); i++) {
-      System.arraycopy(targetData.get(i), 0, data, pos,
-          targetData.get(i).length);
-      pos += targetData.get(i).length;
+    for (int i = 0; i < fragments; i++) {
+      System.arraycopy(deviceData.get(i % devices.length), i / devices.length
+          * EXTEND_SIZE, data, i * EXTEND_SIZE, EXTEND_SIZE);
     }
   }
 
@@ -212,21 +228,50 @@ public class Raid1Device implements Device {
       throw new IllegalStateException("You first have to open the Device!");
     }
 
-    long blocks = data.length / blockSize;
+    int fragments = data.length / EXTEND_SIZE;
+    int blocks = data.length / blockSize;
+    int blockFactor = EXTEND_SIZE / blockSize;
 
     if (address < 0 || address + blocks > blockCount) {
-      long adr = address <0 ? address:address + blocks -1;
+      long adr = address < 0 ? address : address + blocks - 1;
       throw new IllegalArgumentException("Address " + adr + " out of range.");
     }
 
-    if (data.length % blockSize != 0) {
+    if (data.length % EXTEND_SIZE != 0) {
       throw new IllegalArgumentException(
-          "Number of bytes is not a multiple of the blocksize!");
+          "Number of bytes is not a multiple of the extend size ("
+              + EXTEND_SIZE + ")!");
     }
 
-    barrier = new CyclicBarrier(devices.length + 1);
-    for (int i = 0; i < devices.length; i++) {
-      executor.execute(new WriteThread(devices[i], (int) address, data));
+    int parts = (fragments >= devices.length) ? devices.length : fragments;
+    Vector<byte[]> deviceData = new Vector<byte[]>();
+    long actualAddress = ((address / blockFactor) / devices.length)
+        * blockFactor;
+    int actualDevice = (int) ((address / blockFactor) % devices.length);
+    int deviceBlockCount;
+    barrier = new CyclicBarrier(parts + 1);
+    for (int i = 0; i < parts; i++) {
+      deviceBlockCount = fragments / devices.length * blockFactor;
+      if (i < (fragments % devices.length)) {
+        deviceBlockCount += blockFactor;
+      }
+      deviceData.add(new byte[deviceBlockCount * blockSize]);
+    }
+    for (int i = 0; i < fragments; i++) {
+      System.arraycopy(data, i * EXTEND_SIZE, deviceData
+          .get(i % devices.length), i / devices.length * EXTEND_SIZE,
+          EXTEND_SIZE);
+      System.out.println(i % devices.length + " - " + i / devices.length);
+    }
+    for (int i = 0; i < parts; i++) {
+      executor.execute(new WriteThread(devices[actualDevice], actualAddress,
+          deviceData.get(i)));
+      if (actualDevice == devices.length - 1) {
+        actualDevice = 0;
+        actualAddress += blockFactor;
+      } else {
+        actualDevice++;
+      }
     }
     barrier.await();
   }
@@ -242,11 +287,11 @@ public class Raid1Device implements Device {
 
     private final Device device;
 
-    private final int address;
+    private final long address;
 
     private final byte[] data;
 
-    private ReadThread(final Device readDevice, final int readBlockAddress,
+    private ReadThread(final Device readDevice, final long readBlockAddress,
         final byte[] readData) {
 
       device = readDevice;
@@ -258,6 +303,12 @@ public class Raid1Device implements Device {
 
       try {
         device.read(address, data);
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER
+              .debug("Read " + data.length / blockSize
+                  + " blocks from address " + address + " from "
+                  + device.getName());
+        }
         barrier.await();
       } catch (Exception e) {
         e.printStackTrace();
@@ -276,11 +327,11 @@ public class Raid1Device implements Device {
 
     private final Device device;
 
-    private final int address;
+    private final long address;
 
     private final byte[] data;
 
-    private WriteThread(final Device writeDevice, final int writeBlockAddress,
+    private WriteThread(final Device writeDevice, final long writeBlockAddress,
         final byte[] writeData) {
 
       device = writeDevice;
@@ -292,10 +343,15 @@ public class Raid1Device implements Device {
 
       try {
         device.write(address, data);
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Wrote " + data.length / blockSize
+              + " blocks to address " + address + " to " + device.getName());
+        }
         barrier.await();
       } catch (Exception e) {
         e.printStackTrace();
       }
     }
+
   }
 }
