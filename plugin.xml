@@ -5,52 +5,52 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            name="ViSCSI Preferences"
-            class="viscsi.preferences.ViSCSI_Preferences"
-            id="viscsi.preferences.PreferencePage">
+            name="Whiskas Preferences"
+            class="org.jscsi.whiskas.preferences.ViSCSI_Preferences"
+            id="org.jscsi.whiskas.preferences.PreferencePage">
       </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="viscsi.preferences.PreferenceInitializer">
+            class="org.jscsi.whiskas.preferences.PreferenceInitializer">
       </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.views">
       <category
-            name="ViSCSI"
-            id="ViSCSI">
+            name="Whiskas"
+            id="Whiskas">
       </category>
       <view
-            name="ViSCSI Control Center"
+            name="Whiskas Control Center"
             icon="icons/sample.gif"
-            category="ViSCSI"
-            class="viscsi.views.Control"
-            id="viscsi.views.Control">
+            category="Whiskas"
+            class="org.jscsi.whiskas.views.Control"
+            id="org.jscsi.whiskas.views.Control">
       </view>
       <view
-            name="ViSCSI Histogram"
+            name="Whiskas Histogram"
             allowMultiple="true"
             icon="icons/sample.gif"
-            category="ViSCSI"
-            class="viscsi.views.Histogram"
-            id="viscsi.views.Histogram">
+            category="Whiskas"
+            class="org.jscsi.whiskas.views.Histogram"
+            id="org.jscsi.whiskas.views.Histogram">
       </view>
       <view
-            name="ViSCSI Pattern"
+            name="Whiskas Pattern"
             allowMultiple="true"
             icon="icons/sample.gif"
-            category="ViSCSI"
-            class="viscsi.views.Pattern"
-            id="viscsi.views.Pattern">
+            category="Whiskas"
+            class="org.jscsi.whiskas.views.Pattern"
+            id="org.jscsi.whiskas.views.Pattern">
       </view>
       <view
-            name="ViSCSI Legend"
+            name="Whiskas Legend"
             icon="icons/sample.gif"
-            category="ViSCSI"
-            class="viscsi.views.Legend"
-            id="viscsi.views.Legend">
+            category="Whiskas"
+            class="org.jscsi.whiskas.views.Legend"
+            id="org.jscsi.whiskas.views.Legend">
       </view>
    </extension>
    <extension
@@ -61,7 +61,7 @@
                ratio="0.5"
                relative="org.eclipse.ui.views.TaskList"
                relationship="right"
-               id="viscsi.views.Control">
+               id="org.jscsi.whiskas.views.Control">
          </view>
       </perspectiveExtension>
    </extension>
