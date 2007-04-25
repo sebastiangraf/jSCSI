@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="ViSCSI Preferences"
+            class="viscsi.preferences.ViSCSI_Preferences"
+            id="viscsi.preferences.PreferencePage">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="viscsi.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="ViSCSI"
+            id="ViSCSI">
+      </category>
+      <view
+            name="ViSCSI Control Center"
+            icon="icons/sample.gif"
+            category="ViSCSI"
+            class="viscsi.views.Control"
+            id="viscsi.views.Control">
+      </view>
+      <view
+            name="ViSCSI Histogram"
+            allowMultiple="true"
+            icon="icons/sample.gif"
+            category="ViSCSI"
+            class="viscsi.views.Histogram"
+            id="viscsi.views.Histogram">
+      </view>
+      <view
+            name="ViSCSI Pattern"
+            allowMultiple="true"
+            icon="icons/sample.gif"
+            category="ViSCSI"
+            class="viscsi.views.Pattern"
+            id="viscsi.views.Pattern">
+      </view>
+      <view
+            name="ViSCSI Legend"
+            icon="icons/sample.gif"
+            category="ViSCSI"
+            class="viscsi.views.Legend"
+            id="viscsi.views.Legend">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="viscsi.views.Control">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>
