@@ -62,7 +62,7 @@ import org.jscsi.whiskas.preferences.PreferenceConstants;
 
 import org.apache.log4j.spi.LoggingEvent;
 
-import viscsi.*;
+import org.jscsi.whiskas.*;
 
 public class Control extends ViewPart implements SelectionListener, Runnable,
 	DisposeListener
