@@ -19,7 +19,7 @@
 
 package org.jscsi.whiskas.views;
 
-import org.jscsi.whiskas.preferences.*;
+//import org.jscsi.whiskas.preferences.*;
 
 import java.io.File;
 import java.io.FileReader;
@@ -38,7 +38,6 @@ import java.util.ListIterator;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
@@ -57,12 +56,14 @@ import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+
+
 import org.jscsi.whiskas.Activator;
 import org.jscsi.whiskas.preferences.PreferenceConstants;
 
 import org.apache.log4j.spi.LoggingEvent;
 
-import org.jscsi.whiskas.*;
+//import org.jscsi.whiskas.*;
 
 public class Control extends ViewPart implements SelectionListener, Runnable,
 	DisposeListener
@@ -143,7 +144,7 @@ public class Control extends ViewPart implements SelectionListener, Runnable,
 		{
 			try 
 			{
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("viscsi.views.Histogram", Integer.toString(counter++), IWorkbenchPage.VIEW_ACTIVATE);
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.jscsi.whiskas.views.Histogram", Integer.toString(counter++), IWorkbenchPage.VIEW_ACTIVATE);
 			} 
 			catch (PartInitException ex) 
 			{
@@ -162,7 +163,7 @@ public class Control extends ViewPart implements SelectionListener, Runnable,
 		{
 			try 
 			{
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("viscsi.views.Pattern", Integer.toString(counter++), IWorkbenchPage.VIEW_ACTIVATE);
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.jscsi.whiskas.views.Pattern", Integer.toString(counter++), IWorkbenchPage.VIEW_ACTIVATE);
 			} 
 			catch (PartInitException ex) 
 			{
