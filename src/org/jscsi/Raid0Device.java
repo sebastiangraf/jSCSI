@@ -261,7 +261,6 @@ public class Raid0Device implements Device {
       System.arraycopy(data, i * EXTEND_SIZE, deviceData
           .get(i % devices.length), i / devices.length * EXTEND_SIZE,
           EXTEND_SIZE);
-      System.out.println(i % devices.length + " - " + i / devices.length);
     }
     for (int i = 0; i < parts; i++) {
       executor.execute(new WriteThread(devices[actualDevice], actualAddress,
