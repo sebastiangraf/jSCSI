@@ -1,4 +1,6 @@
-#Wed Oct 25 11:08:39 CEST 2006
+#Fri May 04 12:37:33 CEST 2007
 eclipse.preferences.version=1
+formatter_profile=_jscsi
+formatter_settings_version=10
 internal.default.compliance=default
 org.eclipse.jdt.ui.text.custom_code_templates=<?xml version\="1.0" encoding\="UTF-8"?>\n<templates/>
