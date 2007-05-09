@@ -79,10 +79,11 @@ public class Pattern extends ViewPart implements ControlListener, PaintListener,
 		preference.setLayout (rl2);
 		lb1 = new Label(preference, SWT.READ_ONLY);
 		lb1.setText("Device: ");
-		RowData rowd = new RowData();
-		rowd.height=45;
-		device = new List(preference, SWT.SINGLE|SWT.V_SCROLL);
-		device.setLayoutData(rowd);
+    RowData rowd = new RowData();
+    rowd.height=45;
+    rowd.width=130;
+    device = new List(preference, SWT.SINGLE|SWT.V_SCROLL);
+    device.setLayoutData(rowd);
 		visualizing = new List(preference, SWT.SINGLE);
 		visualizing.setItems(new String[] {"Read", "Write"});
 		visualizing.setSelection(0);
@@ -353,7 +354,7 @@ public class Pattern extends ViewPart implements ControlListener, PaintListener,
 		if (!equal||device.getItemCount()==0)
 		{
 			device.setItems(keys);
-			if (!d.equals(""))
+      if (!d.equals(""))
 			{
 				for (int i=0; i<device.getItemCount();i++)
 				{
