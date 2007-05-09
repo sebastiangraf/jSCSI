@@ -158,6 +158,18 @@ public class Control extends ViewPart implements SelectionListener, Runnable,
 		if (e.widget.toString().contains("Stop"))
 		{
 			running= false;
+      try
+      {
+        Thread.sleep(2000);
+        if (d!=null && d.s !=null)
+        { 
+          d.nr.stopNetworkReader();
+          d.s.close();
+        }
+        d=null;
+      }
+      catch (Exception ex)
+      {ex.printStackTrace();}
 		}
 		if (e.widget.toString().contains("Pattern"))
 		{
@@ -596,8 +608,8 @@ class Pattern_Daten
 		ctr = c;
 	}
 	/**
-	 * Falls dieses Segment häufig angesteuert wird, muss ein Zugriff wenig
-	 * zählen, dies bewerkstelligt diese Methode.
+	 * Falls dieses Segment hï¿½ufig angesteuert wird, muss ein Zugriff wenig
+	 * zï¿½hlen, dies bewerkstelligt diese Methode.
 	 */
 	public void add_importance(int pos)
 	{
@@ -620,7 +632,7 @@ class Pattern_Daten
 		}
 	}
 	/**
-	 * Falls dieses Segment häufig angesteuert wird, muss ein Zugriff schneller
+	 * Falls dieses Segment hï¿½ufig angesteuert wird, muss ein Zugriff schneller
 	 * vergessen werden, dies bewerkstelligt diese Methode.
 	 */
 	public void lose_importance()
@@ -657,7 +669,7 @@ class Pattern_Daten
 
 /**
  * Die Klasse Distribution verwaltet die Werte eines Histogramms und
- * ordnet die Sprungweiten den einzelnen Säulen zu.
+ * ordnet die Sprungweiten den einzelnen Sï¿½ulen zu.
  * @author H. Janetzko
  */
 class Histogramm_Daten
@@ -673,7 +685,7 @@ class Histogramm_Daten
 			count[i]=new Bin_data();
 	}
 	/**
-	 * Hier wird die Sprungweite übergeben und an die passende Säule 
+	 * Hier wird die Sprungweite ï¿½bergeben und an die passende Sï¿½ule 
 	 * weitergegeben.
 	 * @param value - die Sprungweite
 	 */
@@ -716,7 +728,7 @@ class Histogramm_Daten
 	}
 	/**
 	 * Diese Methode erzeugt ein float_array, das aus den Werten der 
-	 * einzelnen Säulen entsteht.
+	 * einzelnen Sï¿½ulen entsteht.
 	 * @return - das Float-Array
 	 */
 	public float[] make_float_array_cumulative()
@@ -734,8 +746,8 @@ class Histogramm_Daten
 		return result;
 	}
 	/**
-	 * Um die Zeiteinheit um eins höher zu setzen muss jede Säule auch
-	 * wissen, das es jetzt eine Zeiteinheit später ist, dies wird
+	 * Um die Zeiteinheit um eins hï¿½her zu setzen muss jede Sï¿½ule auch
+	 * wissen, das es jetzt eine Zeiteinheit spï¿½ter ist, dies wird
 	 * hier erledigt.
 	 */
 	public void nextTime()
@@ -747,7 +759,7 @@ class Histogramm_Daten
 		}
 	}
 	/**
-	 * Hier wird allen Säulen der Wert 0 zugewiesen.
+	 * Hier wird allen Sï¿½ulen der Wert 0 zugewiesen.
 	 */
 	public void reset()
 	{
@@ -762,8 +774,8 @@ class Histogramm_Daten
 }
 
 /**
- * Die Klasse Werte stellt eine einzelne Säule dar, die sich immer die letzten
- * 5 Werte merkt und anhand eines Zeitzählers die älteren vergisst, wobei
+ * Die Klasse Werte stellt eine einzelne Sï¿½ule dar, die sich immer die letzten
+ * 5 Werte merkt und anhand eines Zeitzï¿½hlers die ï¿½lteren vergisst, wobei
  * eine exponentielle Funktion zum Vergessen genommen wird.
  * @author H. Janetzko
  */
@@ -774,7 +786,7 @@ class Bin_data
 	private float cumulative_total=0;
 	private int[] value_at_time = new int[5];
 	/**
-	 * Der Wert zum aktuellen Zeitstempel wird um eins erhöht; 
+	 * Der Wert zum aktuellen Zeitstempel wird um eins erhï¿½ht; 
 	 */
 	public void increaseValue()
 	{
@@ -783,7 +795,7 @@ class Bin_data
 		cumulative_total++;
 	}
 	/**
-	 * Der Zeitzähler wird um eins hochgezählt.
+	 * Der Zeitzï¿½hler wird um eins hochgezï¿½hlt.
 	 */
 	public void increase_timestamp()
 	{
@@ -794,7 +806,7 @@ class Bin_data
 	/**
 	 * Hier wird der neue Gesamtwert ausgerechnet.
 	 * (neuester Wert*1 + zweitneuester*.5+drittneuester*0.25+
-	 * viertneuester Wert*0.125 + fünftneuester Wert*0.0625)
+	 * viertneuester Wert*0.125 + fï¿½nftneuester Wert*0.0625)
 	 */
 	public void calculateValue()
 	{
@@ -810,7 +822,7 @@ class Bin_data
 		value_at_time[timestamp]=0;
 	}
 	/**
-	 * Hier wird der Gesamtwert zurückgegeben.
+	 * Hier wird der Gesamtwert zurï¿½ckgegeben.
 	 * @return - der berechnete Gesamtwert
 	 */
 	public float get_not_cumulative_Value()
