@@ -23,6 +23,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.net.SocketHubAppender;
 import org.apache.log4j.spi.LoggingEvent;
+import org.jscsi.whiskas.LogAppender;
 
 /**
  * <h1>JSCSIDevice</h1>
@@ -46,8 +47,6 @@ public class WhiskasDevice implements Device {
   private SocketHubAppender sha;
 
   private Logger logger;
-
-  private static final int SOCKET_PORT = 1986;
 
   /**
    * Constructor to create an WhiskasDevice. The Device has to be initialized
@@ -73,8 +72,13 @@ public class WhiskasDevice implements Device {
 
     /* Generate teardown message for Whiskas */
     String logMessage = "teardown " + device.getName();
-    LoggingEvent logEvent = new LoggingEvent(Logger.class.getName(), logger,
-        Level.ALL, logMessage, null);
+    LoggingEvent logEvent =
+        new LoggingEvent(
+            Logger.class.getName(),
+            logger,
+            Level.ALL,
+            logMessage,
+            null);
     sha.append(logEvent);
 
     blockSize = -1;
@@ -118,7 +122,7 @@ public class WhiskasDevice implements Device {
 
     device.open();
 
-    sha = new SocketHubAppender(SOCKET_PORT);
+    sha = LogAppender.getInstance();
     logger = Logger.getLogger(WhiskasDevice.class);
 
     blockSize = device.getBlockSize();
@@ -133,9 +137,20 @@ public class WhiskasDevice implements Device {
     }
 
     /* Generate log message for Whiskas */
-    String logMessage = device.getName() + ",r," + address + "," + data.length;
-    LoggingEvent logEvent = new LoggingEvent(Logger.class.getName(), logger,
-        Level.ALL, logMessage, null);
+    String logMessage =
+        device.getName()
+            + ",r,"
+            + address
+            + ","
+            + data.length
+            / device.getBlockSize();
+    LoggingEvent logEvent =
+        new LoggingEvent(
+            Logger.class.getName(),
+            logger,
+            Level.ALL,
+            logMessage,
+            null);
     sha.append(logEvent);
 
     device.read(address, data);
@@ -149,9 +164,20 @@ public class WhiskasDevice implements Device {
     }
 
     /* Generate log message for Whiskas */
-    String logMessage = device.getName() + ",w," + address + "," + data.length;
-    LoggingEvent logEvent = new LoggingEvent(Logger.class.getName(), logger,
-        Level.ALL, logMessage, null);
+    String logMessage =
+        device.getName()
+            + ",w,"
+            + address
+            + ","
+            + data.length
+            / device.getBlockSize();
+    LoggingEvent logEvent =
+        new LoggingEvent(
+            Logger.class.getName(),
+            logger,
+            Level.ALL,
+            logMessage,
+            null);
     sha.append(logEvent);
 
     device.write(address, data);
