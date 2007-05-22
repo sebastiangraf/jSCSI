@@ -17,14 +17,14 @@
  * 
  */
 
-package org.jscsi;
+package org.jscsi.whiskas;
 
 import java.util.Random;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
+import org.jscsi.Device;
+import org.jscsi.DummyDevice;
+import org.jscsi.Raid0Device;
+import org.jscsi.WhiskasDevice;
 
 /**
  * <h1>WhiskasDemo</h1>
@@ -45,6 +45,9 @@ public class WhiskasDemo {
 
   /** Number of blocks on the dummy device. * */
   private static final int BLOCK_COUNT = 1000;
+
+  /** Time to wait between reads/writes. */
+  private static final int SLEEP_TIME = 10;
 
   private final byte[] data;
 
@@ -96,7 +99,7 @@ public class WhiskasDemo {
 
     for (int i = 0; i < BLOCK_COUNT; i++) {
       raid0.write(i, data);
-      Thread.sleep(10);
+      Thread.sleep(SLEEP_TIME);
     }
   }
 
@@ -104,7 +107,7 @@ public class WhiskasDemo {
 
     for (int i = 0; i < BLOCK_COUNT; i++) {
       raid0.read(i, data);
-      Thread.sleep(10);
+      Thread.sleep(SLEEP_TIME);
     }
   }
 
@@ -112,7 +115,7 @@ public class WhiskasDemo {
 
     for (int i = 0; i < BLOCK_COUNT; i++) {
       raid0.write(random.nextInt((int) BLOCK_COUNT), data);
-      Thread.sleep(10);
+      Thread.sleep(SLEEP_TIME);
     }
   }
 
@@ -120,7 +123,7 @@ public class WhiskasDemo {
 
     for (int i = 0; i < BLOCK_COUNT; i++) {
       raid0.read(random.nextInt((int) BLOCK_COUNT), data);
-      Thread.sleep(10);
+      Thread.sleep(SLEEP_TIME);
     }
   }
 
@@ -128,19 +131,23 @@ public class WhiskasDemo {
    * Main method to start the demo.
    * 
    * @param args
+   *          arguments ...
    * @throws Exception
+   *           if any error occurs
    */
-  public static void main(String[] args) throws Exception {
+  public static void main(final String[] args) throws Exception {
 
     WhiskasDemo demo = new WhiskasDemo();
 
     demo.setUp();
 
-    demo.sequentialWrite();
-    demo.sequentialRead();
-    demo.randomWrite();
-    demo.randomRead();
+    while (true) {
+      demo.sequentialWrite();
+      demo.randomWrite();
+      // demo.sequentialRead();
+      // demo.randomRead();
+    }
 
-    demo.tearDown();
+//    demo.tearDown();
   }
 }
