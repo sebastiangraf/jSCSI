@@ -90,50 +90,57 @@ public class Control extends ViewPart implements SelectionListener, Runnable,
 	}
 	public void run()
 	{
-		while(disp!=null&&!disp.isDisposed())
-		{
-			if (running)
-			{
-				if (d!=null&&d.nr!=null&&!disp.isDisposed())
-				{
-					d.getDaten();
-					disp.syncExec(new Runnable() {
-						public void run()
-						{
-							ListIterator<Idefix_Fetch_Stick> iter = Activator.getDefault().list_of_visualizer.listIterator();
-							while (iter.hasNext())
-							{
-								Idefix_Fetch_Stick ids = iter.next();
-								if (!ids.getComposite().isDisposed())
-								{
-									ids.getNewValues();
-									ids.setActive(true);
-								}
-								else
-									iter.remove();
-							}
-						}
-					});
-				}
-			}
-			else
-			{
-				ListIterator<Idefix_Fetch_Stick> iter = Activator.getDefault().list_of_visualizer.listIterator();
-				while (iter.hasNext())
-				{
-					Idefix_Fetch_Stick ids = iter.next();
-					ids.setActive(false);
-				}
-			}
-			try
-			{
-				Thread.sleep(200);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
+	  try
+	  {
+	    while(disp!=null&&!disp.isDisposed())
+	    {
+	      if (running)
+	      {
+	        if (d!=null&&d.nr!=null&&!disp.isDisposed())
+	        {
+	          d.getDaten();
+	          disp.syncExec(new Runnable() {
+	            public void run()
+	            {
+	              ListIterator<Idefix_Fetch_Stick> iter = Activator.getDefault().list_of_visualizer.listIterator();
+	              while (iter.hasNext())
+	              {
+	                Idefix_Fetch_Stick ids = iter.next();
+	                if (!ids.getComposite().isDisposed())
+	                {
+	                  ids.getNewValues();
+	                  ids.setActive(true);
+	                }
+	                else
+	                  iter.remove();
+	              }
+	            }
+	          });
+	        }
+	      }
+	      else
+	      {
+	        ListIterator<Idefix_Fetch_Stick> iter = Activator.getDefault().list_of_visualizer.listIterator();
+	        while (iter.hasNext())
+	        {
+	          Idefix_Fetch_Stick ids = iter.next();
+	          ids.setActive(false);
+	        }
+	      }
+	      try
+	      {
+	        Thread.sleep(200);
+	      }
+	      catch (Exception e)
+	      {
+	        e.printStackTrace();
+	      }
+	    }
+	  }
+	  catch (Exception e)
+	  {
+	    ;
+	  }
 	}
 	public void widgetDefaultSelected(SelectionEvent e) {}
 	public void widgetSelected(SelectionEvent e) 
@@ -210,8 +217,8 @@ public class Control extends ViewPart implements SelectionListener, Runnable,
 			if (!log.equals(""))
 			{
 				d = new Daten(log,types,time_resolution,this);
-				d.startConnection();
-				running = true;
+				if (d.startConnection())
+				  running = true;
 			}
 		}
 	}
@@ -565,19 +572,21 @@ class Daten
 			  types = null;
 		  }
 	  }
-	public void startConnection()
+	public boolean startConnection()
 	{
 		try
 		{
 			s = new Socket(scsi_server, port);
 			nr = new NetworkReader(new ObjectInputStream(s.getInputStream()), vi);
 			nr.start();
+      return true;
 		}
 		catch (Exception e)
 		{
 			MessageDialog.openError(vi.topshell, "Connection Error", "Can't connect to jSCSI Server!\n"+e.toString());
 			vi.running = false;
-		};
+      return false;
+		}
 	}
 	public void killAllThreads()
 	{
@@ -916,7 +925,7 @@ class NetworkReader extends Thread
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 	}
