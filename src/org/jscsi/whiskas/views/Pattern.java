@@ -310,17 +310,18 @@ public class Pattern extends ViewPart implements ControlListener, PaintListener,
 			int spalten_neu = (int)Math.sqrt(values_neu.length)+1;
 			if (zeilen_neu!=zeilen||spalten_neu!=spalten)
 			{
-				zeilen = zeilen_neu;
-				spalten = spalten_neu;
-				x_pos = new int[zeilen*spalten];
-				y_pos = new int[zeilen*spalten];
-				widths = new int[zeilen*spalten];
-				heights = new int[zeilen*spalten];
-				never_touched= new boolean[zeilen*spalten];
-				types = new byte[zeilen*spalten];
-				for (int i=0;i<zeilen*spalten;i++)
+				x_pos = new int[zeilen_neu*spalten_neu];
+				y_pos = new int[zeilen_neu*spalten_neu];
+				widths = new int[zeilen_neu*spalten_neu];
+				heights = new int[zeilen_neu*spalten_neu];
+				boolean[] never_touched_neu= new boolean[zeilen_neu*spalten_neu];
+				types = new byte[zeilen_neu*spalten_neu];
+				for (int i=0;i<zeilen_neu*spalten_neu;i++)
 				{
-					never_touched[i]=true;
+					if (i<zeilen*spalten)
+            never_touched_neu[i] = never_touched[i];
+          else
+            never_touched_neu[i]=true;
 					if (ctr.d.types!=null&&ctr.d.types.length>i)
 						types[i]=ctr.d.types[i];
 					if (ctr.d.types==null)
@@ -328,6 +329,9 @@ public class Pattern extends ViewPart implements ControlListener, PaintListener,
 					if (ctr.d.types!=null&&ctr.d.types.length<i)
 						types[i]=9;
 				}
+        zeilen = zeilen_neu;
+        spalten = spalten_neu;
+        never_touched = never_touched_neu;
 				Raster_anlegen();
 			}
 			values = new byte[zeilen*spalten];

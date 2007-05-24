@@ -72,13 +72,16 @@ public class WhiskasDeviceTest {
   public final void testReadWriteBeginning() throws Exception {
 
     address = 0;
-
-    device.write(address, testData);
-    byte[] result = new byte[TEST_DATA_SIZE * device.getBlockSize()];
-    device.read(address, result);
-    for (int i = 0; i < TEST_DATA_SIZE * device.getBlockSize(); i++) {
-      assertEquals(result[i], testData[i]);
+    while (true)
+    {
+      device.write(address, testData);
+      byte[] result = new byte[TEST_DATA_SIZE * device.getBlockSize()];
+      device.read(address, result);
+      for (int i = 0; i < TEST_DATA_SIZE * device.getBlockSize(); i++) {
+        assertEquals(result[i], testData[i]);
+      }
     }
+ 
   }
 
   /**
