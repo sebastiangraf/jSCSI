@@ -349,8 +349,8 @@ public class Pattern extends ViewPart implements ControlListener, PaintListener,
 			repaint_buffer();
 			c.redraw();
 		}
-		boolean equal = true;
 		String[] keys = ctr.d.pat_data_r.keySet().toArray(new String[0]);
+    boolean equal = keys.length==device.getItemCount();
 		for (int i=0; i<device.getItemCount();i++)
 		{
 			equal = equal && device.getItem(i).equals(keys[i]);

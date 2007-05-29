@@ -332,8 +332,8 @@ public class Histogram extends ViewPart implements PaintListener, ControlListene
 				type = Histogram.LINEAR;
 			else
 				type = Histogram.LOGARITHMIC;
-			boolean equal = true;
 			String[] keys = ctr.d.pat_data_r.keySet().toArray(new String[0]);
+      boolean equal = keys.length==device.getItemCount();
 			for (int i=0; i<device.getItemCount();i++)
 			{
 				equal = equal && device.getItem(i).equals(keys[i]);
