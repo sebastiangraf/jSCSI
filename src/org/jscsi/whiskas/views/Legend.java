@@ -78,7 +78,7 @@ public class Legend extends ViewPart implements ControlListener
 	public void paint_pattern(GC gc)
 	{
 		int height = c2.getClientArea().height/(cm.color.length-1);
-		System.out.println(c2.getClientArea());
+		//System.out.println(c2.getClientArea());
 		String[] s = {"Free Block","Root Block","Positional BTree Block",
 				"Keyed Trie Block", "Keyed BTree Block", 
 				"Node Block", "Name Block", "Value Block", "Histogram", "Unknown Block"};
