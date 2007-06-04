@@ -3,9 +3,8 @@ Bundle-ManifestVersion: 1
 Bundle-Name: Whiskas
 Bundle-SymbolicName: org.jscsi.whiskas;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-ClassPath: org.jscsi/,
- externals/log4j__V1.2.14.jar,
- .
+Bundle-ClassPath: externals/log4j__V1.2.14.jar,
+ org.jscsi.whiskas.jar
 Bundle-Activator: org.jscsi.whiskas.Activator
 Bundle-Vendor: University of Konstanz
 Bundle-Localization: plugin
