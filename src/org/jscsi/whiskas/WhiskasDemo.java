@@ -44,10 +44,10 @@ public class WhiskasDemo {
   private static final int BLOCK_SIZE = 8192;
 
   /** Number of blocks on the dummy device. * */
-  private static final int BLOCK_COUNT = 1000;
+  private static final int BLOCK_COUNT = 5000;
 
   /** Time to wait between reads/writes. */
-  private static final int SLEEP_TIME = 10;
+  private static final int SLEEP_TIME = 5;
 
   private final byte[] data;
 
@@ -90,31 +90,10 @@ public class WhiskasDemo {
     raid0.read(BLOCK_COUNT - 1, data);
   }
 
-  private void tearDown() throws Exception {
-
-    raid0.close();
-  }
-
-  private void sequentialWrite() throws Exception {
-
-    for (int i = 0; i < BLOCK_COUNT; i++) {
-      raid0.write(i, data);
-      Thread.sleep(SLEEP_TIME);
-    }
-  }
-
   private void sequentialRead() throws Exception {
 
     for (int i = 0; i < BLOCK_COUNT; i++) {
       raid0.read(i, data);
-      Thread.sleep(SLEEP_TIME);
-    }
-  }
-
-  private void randomWrite() throws Exception {
-
-    for (int i = 0; i < BLOCK_COUNT; i++) {
-      raid0.write(random.nextInt((int) BLOCK_COUNT), data);
       Thread.sleep(SLEEP_TIME);
     }
   }
@@ -142,12 +121,8 @@ public class WhiskasDemo {
     demo.setUp();
 
     while (true) {
-      demo.sequentialWrite();
-      demo.randomWrite();
-      // demo.sequentialRead();
-      // demo.randomRead();
+      demo.sequentialRead();
+      demo.randomRead();
     }
-
-//    demo.tearDown();
   }
 }
