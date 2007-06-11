@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.jscsi.whiskas_1.0.0.jar" id="org.jscsi.whiskas" version="1.0.0">
+      <category name="Whiskas"/>
+   </feature>
+   <category-def name="Whiskas" label="Whiskas"/>
+</site>
