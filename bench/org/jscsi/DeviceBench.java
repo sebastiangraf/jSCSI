@@ -25,16 +25,21 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.perfidix.AfterEachBenchRun;
+import org.perfidix.AfterLastBenchRun;
 import org.perfidix.Bench;
+import org.perfidix.BenchClass;
+import org.perfidix.SkipBench;
 
 /**
  * <h1>DeviceBench</h1>
  * <p/>
  * 
- * Benchmark to compare the jSCSI Device with Raid1 Device.
+ * Benchmark to compare the jSCSI Device with Raid1 and Raid0 Devices.
  * 
  * @author Bastian Lemke
  */
+@BenchClass(runs = 10)
 public class DeviceBench {
 
   private static final String[] TARGET_NAMES =
@@ -42,28 +47,25 @@ public class DeviceBench {
 
   private static final int BLOCK_SIZE = 8192;
 
+  /** Address to start read/write from. */
   private static final long START_ADDRESS = 0;
 
-  /** Size (in blocks) of the data to used for sending. */
-  private static final int TEST_DATA_SIZE = 100;
-
-  private static final int RUNS = 1;
+  /** Size (in blocks) to read/write from/to the target(s). */
+  private static final int TEST_DATA_SIZE = 1000;
 
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
 
   private Device device = null;
 
-  private static Logger logger = Logger.getLogger(DeviceBench.class);
+  private WriteBufferDevice bufferDevice = null;
 
-  private static String log;
+  private Logger logger = Logger.getLogger(DeviceBench.class);
 
   /** The random number generator to fill the buffer to send. */
   private final Random randomGenerator;
 
-  private static int benchCounter = 0;
-
-  private static int methodCounter = 0;
+  private int benchCounter = 0;
 
   /** This array contains the data. */
   private final byte[] testData;
@@ -73,136 +75,144 @@ public class DeviceBench {
 
   public DeviceBench() {
 
+    // create the test data
     randomGenerator = new Random(System.currentTimeMillis());
     testData = new byte[TEST_DATA_SIZE * BLOCK_SIZE];
     randomGenerator.nextBytes(testData);
-    logger.setLevel(Level.INFO);
+
+    logger.setLevel(Level.ALL);
     logger.addAppender(new ConsoleAppender(new PatternLayout()));
   }
 
+  @AfterLastBenchRun
   public final void tearDownMethod() throws Exception {
 
-    if (methodCounter == RUNS) {
-      methodCounter = 0;
+    if (device != null) {
       String deviceName = device.getName();
       device.close();
       logger.debug("Device " + deviceName + " closed.");
       device = null;
+    } else if (bufferDevice != null) {
+      String deviceName = bufferDevice.getName();
+      bufferDevice.close();
+      logger.debug("Device " + deviceName + " closed.");
+      bufferDevice = null;
     }
+  }
+
+  @AfterEachBenchRun
+  public final void increaseBenchCounter() {
+
     benchCounter++;
   }
 
+  @SkipBench
   public final void setUpJSCSIDevice() throws Exception {
-    if (device == null) {
-      device = new JSCSIDevice(TARGET_NAMES[0]);
-      device.open();
-    }
-    methodCounter++;
-    log = benchCounter + " : " + "JSCSIDevice - ";
+
+    device = new JSCSIDevice(TARGET_NAMES[0]);
+    device.open();
+    logger.debug("Device " + device.getName() + " opened.");
   }
 
+  @SkipBench
   public final void setUpRaid1Device_4_Targets() throws Exception {
-    if (device == null) {
-      device =
-          new Raid1Device(new Device[] {
-              new JSCSIDevice(TARGET_NAMES[0]),
-              new JSCSIDevice(TARGET_NAMES[1]),
-              new JSCSIDevice(TARGET_NAMES[2]),
-              new JSCSIDevice(TARGET_NAMES[3]) });
-      device.open();
-    }
-    methodCounter++;
-    log = benchCounter + " : " + "Raid1Device (4 Targets) - ";
+
+    device =
+        new Raid1Device(new Device[] {
+            new JSCSIDevice(TARGET_NAMES[0]),
+            new JSCSIDevice(TARGET_NAMES[1]),
+            new JSCSIDevice(TARGET_NAMES[2]),
+            new JSCSIDevice(TARGET_NAMES[3]) });
+    device.open();
+    logger.debug("Device " + device.getName() + " opened.");
   }
 
+  @SkipBench
   public final void setUpRaid0Device_4_Targets() throws Exception {
-    if (device == null) {
-      device =
-          new Raid0Device(new Device[] {
-              new JSCSIDevice(TARGET_NAMES[0]),
-              new JSCSIDevice(TARGET_NAMES[1]),
-              new JSCSIDevice(TARGET_NAMES[2]),
-              new JSCSIDevice(TARGET_NAMES[3]) });
-      device.open();
-    }
-    methodCounter++;
-    log = benchCounter + " : " + "Raid0Device (4 Targets) - ";
+
+    device =
+        new Raid0Device(new Device[] {
+            new JSCSIDevice(TARGET_NAMES[0]),
+            new JSCSIDevice(TARGET_NAMES[1]),
+            new JSCSIDevice(TARGET_NAMES[2]),
+            new JSCSIDevice(TARGET_NAMES[3]) });
+    device.open();
+    logger.debug("Device " + device.getName() + " opened.");
   }
 
+  @SkipBench
   public final void setUpJSCSIDevice_WriteBuffer() throws Exception {
-    if (device == null) {
-      device = new WriteBufferDevice(new JSCSIDevice(TARGET_NAMES[0]));
-      device.open();
-    }
-    methodCounter++;
-    log = benchCounter + " : " + "JSCSIDevice (WriteBuffer) - ";
+
+    bufferDevice = new WriteBufferDevice(new JSCSIDevice(TARGET_NAMES[0]));
+    bufferDevice.open();
+    logger.debug("Device " + bufferDevice.getName() + " opened.");
   }
-  
+
+  @SkipBench
   public final void setUpJSCSIDevice_Prefetcher() throws Exception {
-    if (device == null) {
-      device = new PrefetchDevice(new JSCSIDevice(TARGET_NAMES[0]));
-      device.open();
-    }
-    methodCounter++;
-    log = benchCounter + " : " + "JSCSIDevice (Prefetcher) - ";
-  }  
+
+    device = new PrefetchDevice(new JSCSIDevice(TARGET_NAMES[0]));
+    device.open();
+    logger.debug("Device " + device.getName() + " opened.");
+  }
 
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
 
-  @Bench(beforeEveryBenchRun = "setUpJSCSIDevice", afterEveryBenchRun = "tearDownMethod", runs = RUNS)
+  @Bench(beforeFirstBenchRun = "setUpJSCSIDevice")
   public final void write_JSCSIDevice() throws Exception {
 
     device.write(START_ADDRESS, testData);
-    logger.info(log + "write_JSCSIDevice() finished.");
+    logger.info(benchCounter + ": write_JSCSIDevice() finished.");
   }
-  
-  @Bench(beforeEveryBenchRun = "setUpJSCSIDevice_WriteBuffer", afterEveryBenchRun = "tearDownMethod", runs = RUNS)
+
+  @Bench(beforeFirstBenchRun = "setUpJSCSIDevice_WriteBuffer")
   public final void write_JSCSIDevice_WriteBuffer() throws Exception {
 
-    device.write(START_ADDRESS, testData);
-    logger.info(log + "write_JSCSIDevice_WriteBuffer() finished.");
+    bufferDevice.write(START_ADDRESS, testData);
+    bufferDevice.flush();
+    logger.info(benchCounter + ": write_JSCSIDevice_WriteBuffer() finished.");
   }
 
-  @Bench(beforeEveryBenchRun = "setUpRaid1Device_4_Targets", afterEveryBenchRun = "tearDownMethod", runs = RUNS)
+  @Bench(beforeFirstBenchRun = "setUpRaid1Device_4_Targets")
   public final void write_Raid1Device_4_Targets() throws Exception {
 
     device.write(START_ADDRESS, testData);
-    logger.info(log + "write_Raid1Device_4_Targets() finished.");
+    logger.info(benchCounter + ": write_Raid1Device_4_Targets() finished.");
   }
 
-  @Bench(beforeEveryBenchRun = "setUpRaid0Device_4_Targets", afterEveryBenchRun = "tearDownMethod", runs = RUNS)
+  @Bench(beforeFirstBenchRun = "setUpRaid0Device_4_Targets")
   public final void write_Raid0Device_4_Targets() throws Exception {
 
     device.write(START_ADDRESS, testData);
-    logger.info(log + "write_Raid0Device_4_Targets() finished.");
+    logger.info(benchCounter + ": write_Raid0Device_4_Targets() finished.");
   }
 
-  @Bench(beforeEveryBenchRun = "setUpJSCSIDevice", afterEveryBenchRun = "tearDownMethod", runs = RUNS)
+  @Bench(beforeFirstBenchRun = "setUpJSCSIDevice")
   public final void benchRead_JSCSIDevice() throws Exception {
 
     device.read(START_ADDRESS, testData);
-    logger.info(log + "benchRead_JSCSIDevice() finished.");
+    logger.info(benchCounter + ": benchRead_JSCSIDevice() finished.");
   }
-  
-  @Bench(beforeEveryBenchRun = "setUpJSCSIDevice_Prefetcher", afterEveryBenchRun = "tearDownMethod", runs = RUNS)
+
+  @Bench(beforeFirstBenchRun = "setUpJSCSIDevice_Prefetcher")
   public final void read_JSCSIDevice_Prefetcher() throws Exception {
 
     device.write(START_ADDRESS, testData);
-    logger.info(log + "read_JSCSIDevice_Prefetcher() finished.");
+    logger.info(benchCounter + ": read_JSCSIDevice_Prefetcher() finished.");
   }
 
-  @Bench(beforeEveryBenchRun = "setUpRaid1Device_4_Targets", afterEveryBenchRun = "tearDownMethod", runs = RUNS)
+  @Bench(beforeFirstBenchRun = "setUpRaid1Device_4_Targets")
   public final void read_Raid1Device_4_Targets() throws Exception {
 
     device.read(START_ADDRESS, testData);
-    logger.info(log + "read_Raid1Device_4_Targets() finished.");
+    logger.info(benchCounter + ": read_Raid1Device_4_Targets() finished.");
   }
 
-  @Bench(beforeEveryBenchRun = "setUpRaid0Device_4_Targets", afterEveryBenchRun = "tearDownMethod", runs = RUNS)
+  @Bench(beforeFirstBenchRun = "setUpRaid0Device_4_Targets")
   public final void read_Raid0Device_4_Targets() throws Exception {
 
     device.read(START_ADDRESS, testData);
-    logger.info(log + "read_Raid0Device_4_Targets() finished.");
+    logger.info(benchCounter + ": read_Raid0Device_4_Targets() finished.");
   }
 }
