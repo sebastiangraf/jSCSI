@@ -19,8 +19,10 @@
 
 package org.jscsi;
 
+import java.net.ConnectException;
 import java.util.Random;
 
+import org.jscsi.parser.exception.NoSuchSessionException;
 import org.junit.Test;
 
 /**
@@ -40,7 +42,7 @@ public class AllTargetsTest {
           "titan10",
           "titan11",
           "titan12",
-          "titan13" };
+          "titan13",};
 
   /** Number of Blocks to write */
   private static final int TEST_DATA_SIZE = 1;
@@ -54,14 +56,25 @@ public class AllTargetsTest {
   private static Random randomGenerator;
 
   @Test
-  public final void test() throws Exception {
+  public final void test() {
 
     for (String target : TARGET_NAMES) {
-      device = new JSCSIDevice(target);
-      device.open();
-      randomGenerator = new Random(System.currentTimeMillis());
-      testData = new byte[TEST_DATA_SIZE * device.getBlockSize()];
-      randomGenerator.nextBytes(testData);
+      System.out.print(target);
+      try {
+        device = new JSCSIDevice(target);
+        device.open();
+        System.out.println(" (" + device.getName() + ") --- OK");
+        randomGenerator = new Random(System.currentTimeMillis());
+        testData = new byte[TEST_DATA_SIZE * device.getBlockSize()];
+        randomGenerator.nextBytes(testData);
+      } catch (NoSuchSessionException nsse) {
+        System.out.println(" --- FAILED");
+      } catch (ConnectException ce) {
+        System.out.println(" --- FAILED");
+      } catch (Exception e) {
+
+        e.printStackTrace();
+      }
     }
   }
 }
