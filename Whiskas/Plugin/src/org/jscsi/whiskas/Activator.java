@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.jscsi.whiskas.views.Control;
-import org.jscsi.whiskas.views.Idefix_Fetch_Stick;
+import org.jscsi.whiskas.views.VisualListener;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -40,7 +40,7 @@ public class Activator extends AbstractUIPlugin {
 
   public Control c;
 
-  public LinkedList<Idefix_Fetch_Stick> list_of_visualizer;
+  public LinkedList<VisualListener> list_of_visualizer;
 
   /**
    * The constructor
@@ -48,7 +48,7 @@ public class Activator extends AbstractUIPlugin {
   public Activator() {
 
     plugin = this;
-    list_of_visualizer = new LinkedList<Idefix_Fetch_Stick>();
+    list_of_visualizer = new LinkedList<VisualListener>();
   }
 
   /*
