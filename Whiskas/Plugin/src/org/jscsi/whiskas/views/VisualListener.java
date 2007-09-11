@@ -21,9 +21,21 @@ package org.jscsi.whiskas.views;
 
 import org.eclipse.swt.widgets.Composite;
 
-public interface Idefix_Fetch_Stick 
-{
-	public Composite getComposite();
-	public void getNewValues();
-	public void setActive(boolean value);
+/**
+ * This interface is used for Pattern and Histogram.
+ * It will be used by Control.
+ * @author Halldór Janetzko
+ */
+public interface VisualListener {
+    /**
+     * This method returns parent shell of the
+     * view.
+     * @return parent shell of view
+     */
+    Composite getComposite();
+    /**
+     * Control will call this method whenever
+     * there are new values to fetch.
+     */
+    void getNewValues();
 }
