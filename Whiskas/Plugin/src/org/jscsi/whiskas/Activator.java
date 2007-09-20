@@ -28,32 +28,36 @@ import org.jscsi.whiskas.views.VisualListener;
 import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the plug-in life cycle
+ * The activator class controls the plug-in life cycle.
+ * @author Halldór Janetzko
  */
 public class Activator extends AbstractUIPlugin {
 
-  // The plug-in ID
+  /** The plug-in ID.*/
   public static final String PLUGIN_ID = "ViSCSI";
 
-  // The shared instance
+  /** The shared instance.*/
   private static Activator plugin;
 
-  public Control c;
+  /** Instance of Control Center.*/
+  public Control ctr;
 
-  public LinkedList<VisualListener> list_of_visualizer;
+  /** List of histograms and patterns.*/
+  public LinkedList < VisualListener > list_of_visualizer;
 
   /**
-   * The constructor
+   * The constructor creates an instance of the
+   * linked list.
    */
   public Activator() {
 
     plugin = this;
-    list_of_visualizer = new LinkedList<VisualListener>();
+    list_of_visualizer = new LinkedList < VisualListener > ();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /**
+   * Start of plugin.
+   * @param context
    * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
    */
   public void start(BundleContext context) throws Exception {
@@ -61,9 +65,9 @@ public class Activator extends AbstractUIPlugin {
     super.start(context);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /**
+   * End of plugin life circle.
+   * @param context
    * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
    */
   public void stop(BundleContext context) throws Exception {
@@ -73,21 +77,19 @@ public class Activator extends AbstractUIPlugin {
   }
 
   /**
-   * Returns the shared instance
-   * 
+   * Returns the shared instance.
+   *
    * @return the shared instance
    */
   public static Activator getDefault() {
-
     return plugin;
   }
 
   /**
    * Returns an image descriptor for the image file at the given plug-in
-   * relative path
-   * 
-   * @param path
-   *          the path
+   * relative path.
+   *
+   * @param path the path
    * @return the image descriptor
    */
   public static ImageDescriptor getImageDescriptor(String path) {

@@ -353,7 +353,7 @@ ControlListener, VisualListener, DisposeListener {
      * pulled from the matching hashtable of Control.
      */
     public final void getNewValues() {
-        this.ctr = Activator.getDefault().c;
+        this.ctr = Activator.getDefault().ctr;
         if (ctr.getDaten() != null) {
             String newVisualizing =
                 visualizing.getItem(visualizing.getSelectionIndex());

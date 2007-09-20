@@ -376,7 +376,7 @@ VisualListener, DisposeListener, SelectionListener, MouseMoveListener {
      * pulled from the matching hashtable.
      */
     public final void getNewValues() {
-        this.ctr = Activator.getDefault().c;
+        this.ctr = Activator.getDefault().ctr;
         if (ctr.getDaten() == null) {
             return;
         }
