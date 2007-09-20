@@ -269,7 +269,7 @@ Runnable, DisposeListener {
      * @param parent - Composite to create GUI on
      */
     public final void createPartControl(final Composite parent) {
-        Activator.getDefault().c = this;
+        Activator.getDefault().ctr = this;
         disp = parent.getDisplay();
         Composite c = new Composite(parent, SWT.NONE);
         topshell = parent.getShell();
