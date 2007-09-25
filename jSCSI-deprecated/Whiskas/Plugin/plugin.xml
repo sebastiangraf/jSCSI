@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Whiskas Preferences"
+            class="org.jscsi.whiskas.preferences.ViSCSI_Preferences"
+            id="org.jscsi.whiskas.preferences.PreferencePage">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.jscsi.whiskas.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Whiskas"
+            id="Whiskas">
+      </category>
+      <view
+            name="Whiskas Control Center"
+            icon="icons/sample.gif"
+            category="Whiskas"
+            class="org.jscsi.whiskas.views.Control"
+            id="org.jscsi.whiskas.views.Control">
+      </view>
+      <view
+            name="Whiskas Histogram"
+            allowMultiple="true"
+            icon="icons/sample.gif"
+            category="Whiskas"
+            class="org.jscsi.whiskas.views.Histogram"
+            id="org.jscsi.whiskas.views.Histogram">
+      </view>
+      <view
+            name="Whiskas Pattern"
+            allowMultiple="true"
+            icon="icons/sample.gif"
+            category="Whiskas"
+            class="org.jscsi.whiskas.views.Pattern"
+            id="org.jscsi.whiskas.views.Pattern">
+      </view>
+      <view
+            name="Whiskas Legend"
+            icon="icons/sample.gif"
+            category="Whiskas"
+            class="org.jscsi.whiskas.views.Legend"
+            id="org.jscsi.whiskas.views.Legend">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="org.jscsi.whiskas.views.Control">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>
