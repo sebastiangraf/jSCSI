@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!-- 
+  Copyright 2007 Marc Kramis
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+  $Id$
+  
+ -->
+<project name="jSCSI" default="jSCSI">
+  <property name="src.dir" value="src"/>
+  <property name="classes.dir" value="ant-classes"/>
+  <property name="externals.dir" value="externals" />
+  <property name="build.dir" value="build" />
+	<property name="version.commons-logging" value="1.1" />
+  <property name="version.junit" value="3.8.1" />
+  <property name="version.jaxen" value="1.1.-beta-5" />
+  <property name="version.jscsi" value="1.0.0" />
+  <property name="version.dom4j" value="1.6.1" />
+  <property name="version.ant" value="1.6.5" />
+  
+    <description>
+           Ant build of the perfidix project.
+    </description>
+
+    <target name="init" 
+      description="initialize the classpath path elements needed in all other tasks.">
+      <path id="jarset">
+        <pathelement location="${externals.dir}/commons-logging__V${version.commons-logging}.jar"/>
+        <pathelement location="${externals.dir}/junit__V${version.junit}.jar"/>
+        <pathelement location="${externals.dir}/dom4j__V${version.dom4j}.jar"/>
+        <pathelement location="${externals.dir}/jaxen__V${version.jaxen}.jar"/>
+        <pathelement location="${externals.dir}/ant__V${version.ant}.jar"/>
+      </path>
+    </target>
+  
+  <target name="javadoc" description="build the javadoc documentation for the whole project.">
+    <javadoc 
+      access="public" 
+      author="true" 
+      destdir="doc" 
+      doctitle="${ant.project.name} documentation" 
+      nodeprecated="false" 
+      nodeprecatedlist="false" 
+      noindex="false" 
+      nonavbar="false" 
+      packagenames="*"
+      verbose="false"
+      notree="false" 
+      source="1.5" 
+      sourcepath="src" 
+      splitindex="true" 
+      use="true" 
+      version="true">
+        <fileset dir="src" defaultexcludes="no">
+            <include name="**/*.java"/>
+            <!-- <exclude name="com/dummy/test/doc-files/**"/> -->
+          </fileset>
+      <classpath refid="jarset" />
+    </javadoc>
+  </target>  
+  
+    <target name="jSCSI" depends="jar" 
+        description="build the jscsi project from scratch">
+      <echo>build finished!</echo>
+    </target>
+  
+    <target name="compile" depends="init">
+      <echo>creating ${classes.dir}...</echo>
+        <mkdir dir="${classes.dir}" />
+      <echo>compiling ${src.dir}/ to ${classes.dir}/ ... </echo>  
+        <javac srcdir="${src.dir}" destdir="${classes.dir}">
+          <classpath refid="jarset" />
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile" description="JARs the jSCSI plugin">
+      <echo>JARing the project</echo>
+      <mkdir dir="${build.dir}"/>
+      <jar 
+          destfile="${build.dir}/${ant.project.name}__V${version.jscsi}.jar" 
+          basedir="${classes.dir}" manifest="META-INF/MANIFEST.MF" 
+        update="true"
+        >
+        <fileset dir="${classes.dir}" includes="**/*.class" id="theClasses" />
+    </jar>
+      <echo>JAR completed. removing classes directory ...</echo>
+      <delete includeEmptyDirs="true" quiet="yes">
+               <fileset dir="${classes.dir}" />
+      </delete>
+    </target>
+    
+</project>
