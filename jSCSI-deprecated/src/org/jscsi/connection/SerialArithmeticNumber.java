@@ -30,7 +30,7 @@ import org.jscsi.utils.Utils;
  * 
  * @author Volker Wildi
  */
-final class SerialArithmeticNumber implements Comparable<Integer> {
+public final class SerialArithmeticNumber implements Comparable<Integer> {
 
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
@@ -66,7 +66,7 @@ final class SerialArithmeticNumber implements Comparable<Integer> {
    * @param startValue
    *          The start value.
    */
-  SerialArithmeticNumber(final int startValue) {
+  public SerialArithmeticNumber(final int startValue) {
 
     if (startValue < 0 || startValue > MAXIMUM_VALUE) {
       throw new IllegalArgumentException(startValue + " is out of range.");
@@ -125,7 +125,7 @@ final class SerialArithmeticNumber implements Comparable<Integer> {
    * Increments the value of this <code>SerialArithmeticNumber</code>
    * instance.
    */
-  final synchronized void increment() {
+  public final synchronized void increment() {
 
     if (serialNumber == MAXIMUM_VALUE) {
       serialNumber = 0;
