@@ -183,6 +183,14 @@ public class Connection {
 	}
 
 	/**
+	 * Returns the number of received queued PDUs
+	 * @return
+	 */
+	final int getReceivingQueueSize(){		
+		return receivingQueue.size();
+	}
+	
+	/**
 	 * Retrieve and removes the next Received Protocol Data Unit. Method waits
 	 * until a PDU was received.
 	 * 

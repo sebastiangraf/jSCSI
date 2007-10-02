@@ -1,5 +1,6 @@
 package connection;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,7 +19,7 @@ import org.jscsi.parser.login.ISID;
  * times.
  * 
  * @author Marcus Specht
- *
+ * 
  */
 public class Session {
 
@@ -30,10 +31,8 @@ public class Session {
 
 	/** The <code>Configuration</code> instance for this session. */
 	// private final Configuration configuration;
-
 	/** The session is in this phase. */
 	// private IPhase phase;
-
 	/** The Target Session Identifying Handle. */
 	private short targetSessionIdentifyingHandle;
 
@@ -59,24 +58,54 @@ public class Session {
 		addConnection(connection);
 		// start TaskManger
 	}
-	
+
 	/**
 	 * Adds a Connection to this Session.
-	 * @param connection 
+	 * 
+	 * @param connection
 	 */
 	public void addConnection(Connection connection) {
-		if(connection.setReferencedSession(this)){
+		if (connection.setReferencedSession(this)) {
 			connections.put(connection.getConnectionID(), connection);
 		} else {
-			if(LOGGER.isDebugEnabled()){
-				LOGGER.debug("Tried to add a Connection which has already a referenced Session!");
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER
+						.debug("Tried to add a Connection which has already a referenced Session!");
 			}
 		}
+
+	}
+	
+	/**
+	 * An iterator over all existing <code>Connection</code>s within
+	 * this Session
+	 * @return all existing <code>Connections</code>
+	 */
+	public Iterator<Connection> getConnections(){
+		return connections.values().iterator();
+	}
+	
+	/**
+	 * Returns a <code>Connection</code> with specified
+	 * connectionID. If not found, returns null.
+	 * @param connectionID the Connection's  ID
+	 * @return an existing COnnection or null, if not found
+	 */
+	public Connection getConnection(short connectionID){
 		
+		if(connections.keySet().contains(connectionID)){
+			return connections.get(connectionID);
+		} else {
+			if(LOGGER.isDebugEnabled()){
+				LOGGER.debug("No Connection found with follwing connection ID: " + connectionID);
+			}
+			return null;
+		}
 	}
 
 	/**
 	 * Returns the Session's Initiators Session ID.
+	 * 
 	 * @return
 	 */
 	final ISID getInitiatorSessionID() {
@@ -84,28 +113,63 @@ public class Session {
 	}
 
 	/**
+	 * Set this Session's Initiator Session ID, if not already set.
+	 * 
+	 * @param isid
+	 *            InitiatorSessionID
+	 * @return false if already set, true else.
+	 */
+	final boolean setInitiatorSessionID(ISID isid) {
+		if (initiatorSessionID != null) {
+			initiatorSessionID = isid;
+			return true;
+		}
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Tried to set a session's ISID twice: old ISID is "
+					+ getInitiatorSessionID() + ", new ISID would be " + isid);
+		}
+		return false;
+	}
+
+	/**
 	 * Returns the Session's Initiator Name.
+	 * 
 	 * @return
 	 */
 	final String getInitiatorName() {
 		return initiatorName;
 	}
+	
+	final boolean setInitiatorName(String name) {
+		if (initiatorName != null) {
+			initiatorName = name;
+			return true;
+		}
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Tried to set a session's initiatorName twice: old name is "
+					+ getInitiatorName() + ", new name would be " + name);
+		}
+		return false;
+	}
 
 	/**
 	 * Returns the Session's Target Identifying Handle.
+	 * 
 	 * @return
 	 */
 	final short getTargetSessionIdentifyingHandleD() {
 		return targetSessionIdentifyingHandle;
 	}
-	
+
 	/**
-	 * Checks based on a Session's ISID and TSIH if those
-	 * parameters are equals this session's ones.
-	 * If so, the source <code>Connection</code> should be added to this
-	 * <code>Session</code> instance.
-	 * @param isid a Connection's Initiator Session ID
-	 * @param tsih a Session's Target Session Identifying Handle
+	 * Checks based on a Session's ISID and TSIH if those parameters are equals
+	 * this session's ones. If so, the source <code>Connection</code> should
+	 * be added to this <code>Session</code> instance.
+	 * 
+	 * @param isid
+	 *            a Connection's Initiator Session ID
+	 * @param tsih
+	 *            a Session's Target Session Identifying Handle
 	 * @return true if parameters are equal, false else.
 	 */
 	final boolean check¡ppropriateConnection(ISID isid, short tsih) {
@@ -118,8 +182,8 @@ public class Session {
 	}
 
 	/**
-	 * Returns the Session's actual Expected Command Sequence Number and if true,
-	 * increments the expCmdSeqNum before returning.
+	 * Returns the Session's actual Expected Command Sequence Number and if
+	 * true, increments the expCmdSeqNum before returning.
 	 * 
 	 * @param inkr
 	 *            if true, increments before return, else only return
@@ -137,6 +201,7 @@ public class Session {
 
 	/**
 	 * Returns the Session's actual expected command sequence number.
+	 * 
 	 * @return SerialArithmeticNumber representing the session's expCmdSeqNum
 	 */
 	final SerialArithmeticNumber getExpectedCommandSequence() {
