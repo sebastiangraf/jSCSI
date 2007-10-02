@@ -32,7 +32,7 @@ public class TargetTest {
 		TARGET.startListeningOnPort(3250);
 		TARGET.startListeningOnPort(3240);
 		TARGET.startListeningOnPort(3230);
-		TARGET.awaitShutdown(5);
+		TARGET.awaitShutdown(10);
 		int[] listeningPorts = TARGET.getListeningPorts();
 		Assert.assertEquals(4, listeningPorts.length);
 		TARGET.stopListeningOnPort(3260);
