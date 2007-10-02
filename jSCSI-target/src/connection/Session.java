@@ -172,7 +172,7 @@ public class Session {
 	 *            a Session's Target Session Identifying Handle
 	 * @return true if parameters are equal, false else.
 	 */
-	final boolean check¡ppropriateConnection(ISID isid, short tsih) {
+	final boolean checkAppropriateConnection(ISID isid, short tsih) {
 		if (isid.equals(initiatorSessionID)
 				&& (tsih == targetSessionIdentifyingHandle)) {
 			return true;
