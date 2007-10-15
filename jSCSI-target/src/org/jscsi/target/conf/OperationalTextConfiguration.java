@@ -19,10 +19,10 @@ import org.jscsi.target.util.Singleton;
  * @author Marcus Specht
  * 
  */
-public class KeyValuePair {
+public class OperationalTextConfiguration {
 
 	/** The Log interface. */
-	private static final Log LOGGER = LogFactory.getLog(KeyValuePair.class);
+	private static final Log LOGGER = LogFactory.getLog(OperationalTextConfiguration.class);
 	
 	/** The ResultFunctionFactory */
 	private final ResultFunctionFactory rfFactory = Singleton.getInstance(ResultFunctionFactory.class);
