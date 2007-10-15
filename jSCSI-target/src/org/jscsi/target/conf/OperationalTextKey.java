@@ -5,14 +5,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
- * This class defines standard iSCSI operational text keys and vendor specific
- * operational text keys.
+ * This class defines standard iSCSI operational text keys.
+ * Vendor specific keys can be set to, if they follow the notation rules.
  * 
- * @author apu
+ * @author Marcus Specht
  * 
  */
 public class OperationalTextKey {
+	
+	/** The Log interface. */
+	private static final Log LOGGER = LogFactory.getLog(OperationalTextKey.class);
 
 	/**
 	 * Use: During Login - Security Negotiation Senders: Initiator and Target
@@ -671,12 +677,16 @@ public class OperationalTextKey {
 		update(key, scope, sender);
 	}
 
-	public void update(String key) throws Exception {
+	public void updateKey(String key) throws Exception {
 		if (!validateKey(key)) {
 			throwNoValidKeyException(key);
 		}
 		this.key = key;
 	}
+	
+	
+	
+	
 
 	public void update(String key, String scope, String sender)
 			throws Exception {
