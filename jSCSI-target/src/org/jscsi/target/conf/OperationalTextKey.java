@@ -9,16 +9,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * This class defines standard iSCSI operational text keys.
- * Vendor specific keys can be set to, if they follow the notation rules.
+ * This class defines standard iSCSI operational text keys. Vendor specific keys
+ * can be set to, if they follow the notation rules.
  * 
  * @author Marcus Specht
  * 
  */
 public class OperationalTextKey {
-	
+
 	/** The Log interface. */
-	private static final Log LOGGER = LogFactory.getLog(OperationalTextKey.class);
+	private static final Log LOGGER = LogFactory
+			.getLog(OperationalTextKey.class);
 
 	/**
 	 * Use: During Login - Security Negotiation Senders: Initiator and Target
@@ -659,12 +660,10 @@ public class OperationalTextKey {
 	 */
 	public static final String SCOPE_CONNECTION_WIDE = "ConnectionWide";
 
-	/**
-	 * one valid value for an attribute describing the parameter's scope.
-	 */
-	public static final String SCOPE_UNDEFINED = "Undefined";
-
 	private static final int MAX_KEY_LENGTH = 63;
+
+	private final OperationalTextConfiguration globalConfig = OperationalTextConfiguration
+			.getGlobalConfig();
 
 	private String key;
 
@@ -672,41 +671,18 @@ public class OperationalTextKey {
 
 	private String sender;
 
-	public OperationalTextKey(String key, String scope, String sender)
-			throws Exception {
+	private OperationalTextKey(String key)
+			throws OperationalTextException {
+		String scope = globalConfig.getKey(key).getScope();
+		String sender = globalConfig.getKey(key).getSender();
+		update(key, scope, sender);
+	}
+	
+	private OperationalTextKey(String key, String scope, String sender) throws OperationalTextException {
 		update(key, scope, sender);
 	}
 
-	public void updateKey(String key) throws Exception {
-		if (!validateKey(key)) {
-			throwNoValidKeyException(key);
-		}
-		this.key = key;
-	}
-	
-	
-	
-	
-
-	public void update(String key, String scope, String sender)
-			throws Exception {
-		if (!validateKey(key)) {
-			throwNoValidKeyException(key);
-		}
-
-		if (!validateScope(scope)) {
-			throwNoValidScopeException(scope);
-		}
-
-		if (!validateSender(sender)) {
-			throwNoValidSenderException(sender);
-		}
-		this.key = key;
-		this.scope = scope;
-		this.sender = sender;
-	}
-
-	public String getKey() {
+	public final String getKey() {
 		return key;
 	}
 
@@ -717,6 +693,14 @@ public class OperationalTextKey {
 	public String getSender() {
 		return sender;
 	}
+	
+	public static OperationalTextKey create(String key) throws OperationalTextException{
+		return new OperationalTextKey(key);
+	}
+	
+	public static OperationalTextKey create(String key, String scope, String sender) throws OperationalTextException{
+		return new OperationalTextKey(key, scope, sender);
+	}
 
 	public static boolean validateSender(String sender) {
 		if (sender.equals(SENDER_INITIATOR) || sender.equals(SENDER_TARGET)
@@ -726,20 +710,16 @@ public class OperationalTextKey {
 		return false;
 	}
 
-	public static OperationalTextKey parse() {
-		return null;
-	}
-
 	public static boolean validateScope(String scope) {
 		if (scope.equals(SCOPE_SESSION_WIDE)
-				|| scope.equals(SCOPE_CONNECTION_WIDE)
-				|| scope.equals(SCOPE_UNDEFINED)) {
+				|| scope.equals(SCOPE_CONNECTION_WIDE)) {
 			return true;
 		}
 		return false;
 	}
 
 	public static boolean validateKey(String key) {
+		// iSCSI targets must not allow key's with length more than 64bytes (UTF8)
 		if (key.length() > MAX_KEY_LENGTH) {
 			return false;
 		}
@@ -772,25 +752,41 @@ public class OperationalTextKey {
 
 		return false;
 	}
+	
+	private final void  update(String key, String scope, String sender) throws OperationalTextException{
+		if (!validateKey(key)) {
+			throwNoValidKeyException(key);
+		}
 
+		if (!validateScope(scope)) {
+			throwNoValidScopeException(scope);
+		}
+
+		if (!validateSender(sender)) {
+			throwNoValidSenderException(sender);
+		}
+		this.key = key;
+		this.scope = scope;
+		this.sender = sender;
+	}
+	
 	private void throwNoValidSenderException(String invalidSender)
-			throws Exception {
-		throw new Exception("Not a valid iSCSI sender parameter: "
+			throws OperationalTextException {
+		throw new OperationalTextException("Not a valid iSCSI sender parameter: "
 				+ invalidSender);
 
 	}
 
 	private void throwNoValidScopeException(String invalidScope)
-			throws Exception {
-		throw new Exception("Not a valid iSCSI scope parameter: "
+			throws OperationalTextException {
+		throw new OperationalTextException("Not a valid iSCSI scope parameter: "
 				+ invalidScope);
 
 	}
 
-	private void throwNoValidKeyException(String invalidKey) throws Exception {
-		throw new Exception("Not a valid iSCSI operational text parameter: "
+	private void throwNoValidKeyException(String invalidKey) throws OperationalTextException {
+		throw new OperationalTextException("Not a valid iSCSI operational text parameter: "
 				+ invalidKey);
-
 	}
 
 }

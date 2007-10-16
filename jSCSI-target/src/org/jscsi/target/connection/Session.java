@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.target.conf.OperationalTextConfiguration;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.connection.SerialArithmeticNumber;
 import org.jscsi.parser.login.ISID;
@@ -26,14 +27,24 @@ public class Session {
 
 	/** The Logger interface. */
 	private static final Log LOGGER = LogFactory.getLog(Session.class);
+	
+	public static final String IDENTIFIER = "Session"; 
+	
+	public static final String TARGET_SESSION_IDENTIFYING_HANDLE = "TargetSessionIdentifyingHandle";
+	
+	public static final String INITIATOR_SESSION_ID = "InitiatorSessionID";
+	
+	public static final String INITIATOR_NAME = "InitiatorName";
 
 	// --------------------------------------------------------------------------
 	// --------------------------------------------------------------------------
 
 	/** The <code>Configuration</code> instance for this session. */
-	// private final Configuration configuration;
+	private final OperationalTextConfiguration configuration;
+	
 	/** The session is in this phase. */
 	// private IPhase phase;
+	
 	/** The Target Session Identifying Handle. */
 	private short targetSessionIdentifyingHandle;
 
@@ -52,6 +63,7 @@ public class Session {
 	private final Map<Short, Connection> connections;
 
 	public Session(Connection connection, short tsih) {
+		configuration = OperationalTextConfiguration.create(this);
 		expectedCommandSequenceNumber = new SerialArithmeticNumber(1);
 		maximumCommandSequenceNumber = new SerialArithmeticNumber(2);
 		targetSessionIdentifyingHandle = tsih;
@@ -102,6 +114,20 @@ public class Session {
 			}
 			return null;
 		}
+	}
+	
+	public final OperationalTextConfiguration getConfiguration(){
+		return configuration;
+	}
+	
+	public final String getIdentifier(){
+		StringBuffer result = new StringBuffer();
+		result.append(IDENTIFIER);
+		result.append(":" + TARGET_SESSION_IDENTIFYING_HANDLE + "=");
+		result.append(targetSessionIdentifyingHandle);
+		result.append(":" + INITIATOR_SESSION_ID + "=");
+		result.append(initiatorSessionID);
+		return result.toString();
 	}
 
 	/**
@@ -238,5 +264,11 @@ public class Session {
 	final SerialArithmeticNumber getMaximumCommandSequence() {
 		return incrMaximumCommandSequence(0);
 	}
+	
+	public int hashCode(){
+		return getIdentifier().hashCode();
+	}
+	
+	
 
 }
