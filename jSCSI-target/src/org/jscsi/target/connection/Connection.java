@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.target.conf.OperationalTextConfiguration;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.connection.SerialArithmeticNumber;
 import org.jscsi.target.connection.Session;
@@ -30,6 +31,10 @@ public class Connection {
 	/** The logger interface. */
 	private static final Log LOGGER = LogFactory.getLog(Connection.class);
 
+	public static final String IDENTIFIER = "Connection";
+
+	public static final String CONNECTION_ID = "ConnectionID";
+
 	/** connectionIDs null value */
 	private final short NO_ID = -1;
 	// --------------------------------------------------------------------------
@@ -40,6 +45,8 @@ public class Connection {
 	 * <code>Connection</code> instance.
 	 */
 	private Session referenceSession;
+
+	private final OperationalTextConfiguration configuration;
 
 	/**
 	 * The ID of this connection. This must be unique within a
@@ -81,6 +88,7 @@ public class Connection {
 	private final NetWorker netWorker;
 
 	public Connection(SocketChannel sChannel) {
+		configuration = OperationalTextConfiguration.create(this);
 		sendingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		receivingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		connectionID = NO_ID;
@@ -135,6 +143,19 @@ public class Connection {
 			return false;
 	}
 
+	public final Session getReferencedSession() {
+		return referenceSession;
+	}
+
+	public final String getIdentifier() {
+		StringBuffer result = new StringBuffer();
+		result.append(IDENTIFIER);
+		result.append(":" + CONNECTION_ID + "=");
+		result.append(connectionID);
+		result.append("(" + getReferencedSession().getIdentifier() + ")");
+		return result.toString();
+	}
+
 	/**
 	 * Returns the Connection's sending queue.
 	 * 
@@ -151,6 +172,15 @@ public class Connection {
 	 */
 	final Queue<ProtocolDataUnit> getReceivingQueue() {
 		return receivingQueue;
+	}
+
+	/**
+	 * Returns the Connections Configuration
+	 * 
+	 * @return
+	 */
+	public final OperationalTextConfiguration getConfiguration() {
+		return configuration;
 	}
 
 	/**
@@ -186,12 +216,13 @@ public class Connection {
 
 	/**
 	 * Returns the number of received queued PDUs
+	 * 
 	 * @return
 	 */
-	final int getReceivingQueueSize(){		
+	final int getReceivingQueueSize() {
 		return receivingQueue.size();
 	}
-	
+
 	/**
 	 * Retrieve and removes the next Received Protocol Data Unit. Method waits
 	 * until a PDU was received.
@@ -302,6 +333,9 @@ public class Connection {
 	final void somethingReceived() {
 		somethingReceived.signalAll();
 	}
-
+	
+	public int hashCode(){
+		return getIdentifier().hashCode();
+	}
 
 }

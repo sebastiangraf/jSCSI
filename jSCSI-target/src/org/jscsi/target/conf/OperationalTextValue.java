@@ -17,6 +17,8 @@ public class OperationalTextValue {
 	/** The Log interface. */
 	private static final Log LOGGER = LogFactory
 			.getLog(OperationalTextValue.class);
+	
+	private static final OperationalTextConfiguration globalConfig = OperationalTextConfiguration.getGlobalConfig();
 
 	/** The ResultFunctionFactory */
 	private static final ResultFunctionFactory rfFactory = new ResultFunctionFactory();
@@ -82,20 +84,17 @@ public class OperationalTextValue {
 	 *            value's result function type
 	 * @throws OperationalTextException
 	 */
-	public OperationalTextValue(String value, String resultType)
+	private OperationalTextValue(String value, String resultType)
 			throws OperationalTextException {
 		update(value, resultType);
-
+	}
+	
+	private OperationalTextValue(String value) throws OperationalTextException{
+		String resultType = globalConfig.getValue(value).getResultType();
+		update(value, resultType);
 	}
 
-	public void update(String value) throws OperationalTextException {
-		if (!checkValue(value)) {
-			throw new OperationalTextException("Not a valid value: " + value);
-		}
-		this.value = value;
-	}
-
-	public void update(String value, String resultType)
+	private void update(String value, String resultType)
 			throws OperationalTextException {
 		if (!checkValue(value)) {
 			throw new OperationalTextException("Not a valid value: " + value);
@@ -109,9 +108,9 @@ public class OperationalTextValue {
 		this.resultFunction = rfFactory.create(resultType);
 	}
 
-	public void update(OperationalTextValue value)
+	public void update(String value)
 			throws OperationalTextException {
-		update(value.getString(), value.getResultType());
+		update(value, resultType);
 	}
 
 	public String getResultType() {
@@ -184,12 +183,12 @@ public class OperationalTextValue {
 
 	}
 
-	public OperationalTextValue getResult(OperationalTextValue value)
+	public static OperationalTextValue getResult(OperationalTextValue valueA, OperationalTextValue valueB)
 			throws OperationalTextException {
 		OperationalTextValue result = null;
-		if (this.getResultType().equals(value.getResultType())) {
-			result = new OperationalTextValue(resultFunction.result(this
-					.getString(), value.getString()), getResultType());
+		if (valueA.getResultType().equals(valueB.getResultType())) {
+			result = new OperationalTextValue(valueA.resultFunction.result(valueA
+					.getString(), valueB.getString()), valueA.getResultType());
 		}
 		return result;
 	}
@@ -205,6 +204,16 @@ public class OperationalTextValue {
 		return result;
 	}
 
+	public static OperationalTextValue create(String value) throws OperationalTextException{
+		return new OperationalTextValue(value);
+	}
+	
+	public static OperationalTextValue create(String value, String resultType) throws OperationalTextException{
+		return new OperationalTextValue(value, resultType);
+	}
+	
+	
+	
 	/**
 	 * Checks whether the value is a numerical range or not.
 	 * 
