@@ -11,8 +11,6 @@ public interface Task
 {
    public void execute();
 
-   public void load( TargetTransportPort port, Command command, ByteBuffer output );
-   
    public Command getCommand();
    
    public Nexus getNexus();
