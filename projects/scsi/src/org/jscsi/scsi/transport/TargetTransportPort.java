@@ -34,7 +34,13 @@ public interface TargetTransportPort
     */
    void removeTarget(String targetName) throws Exception;
    
-
+   
+   boolean readData( Nexus nexus, ByteBuffer output );
+   
+   
+   boolean writeData( Nexus nexus, ByteBuffer input );
+   
+   
    /**
     * Enqueues return data to send to the initiator indicated by the given Nexus. Used by both
     * Task Routers and Logical Units, depending on the original command.
@@ -45,7 +51,7 @@ public interface TargetTransportPort
     * @param status The command status.
     * @param senseData Autosense data; <code>null</code> if a positive status was returned.
     */
-   void enqueue( Nexus nexus, ByteBuffer input, Status status, ByteBuffer senseData );
+   void writeResponse( Nexus nexus, Status status, ByteBuffer senseData );
    
 }
 

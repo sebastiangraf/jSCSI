@@ -10,7 +10,7 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 public interface Task
 {
    public void execute();
-
+   
    public Command getCommand();
    
    public Nexus getNexus();
