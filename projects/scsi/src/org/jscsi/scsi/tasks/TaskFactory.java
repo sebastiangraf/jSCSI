@@ -10,8 +10,7 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 public interface TaskFactory
 {
 
-   Task getInstance( TargetTransportPort port, Command command, ByteBuffer output )
-         throws IllegalRequestException;
+   Task getInstance( TargetTransportPort port, Command command ) throws IllegalRequestException;
    
    
 }

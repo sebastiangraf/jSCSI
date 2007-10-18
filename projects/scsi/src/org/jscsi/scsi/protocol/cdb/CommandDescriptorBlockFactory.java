@@ -20,6 +20,13 @@ public class CommandDescriptorBlockFactory
       _cdbs.put(operationCode, cdb);
    }
    
+   /**
+    * Used by iSCSI transport layer to decode CDB data off the wire.
+    * @param input
+    * @return
+    * @throws BufferUnderflowException
+    * @throws IOException
+    */
    public static CommandDescriptorBlock decode( ByteBuffer input ) 
    throws BufferUnderflowException, IOException
    {

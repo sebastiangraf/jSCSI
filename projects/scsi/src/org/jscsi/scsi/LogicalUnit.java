@@ -30,5 +30,5 @@ public interface LogicalUnit
     * @param output Any incoming data; <code>null</code> if the command did not require an incoming
     *    data transfer.
     */
-   void enqueue( TargetTransportPort port, Command command, ByteBuffer output );
+   void enqueue( TargetTransportPort port, Command command );
 }
