@@ -37,8 +37,21 @@ public abstract class SenseData
    private KCQ kcq;
    
    
-   
-   
+   public SenseData(
+         ResponseCode responseCode,
+         KCQ kcq,
+         byte[] information,
+         byte[] commandSpecificInformation,
+         SenseKeySpecificField senseKeySpecific )
+   {
+      super();
+      this.responseCode = responseCode;
+      this.information = information;
+      this.commandSpecificInformation = commandSpecificInformation;
+      this.senseKeySpecific = senseKeySpecific;
+      this.kcq = kcq;
+   }
+
    public byte getResponseCode()
    {
       return this.responseCode.code();
@@ -106,8 +119,10 @@ public abstract class SenseData
    {
       return senseKeySpecific;
    }
+   
+   public abstract void decodeSenseKeySpecific( SenseKeySpecificField field ) throws IOException;
 
-   public abstract void encode( ByteBuffer output ) throws BufferOverflowException;
+   public abstract ByteBuffer encode();
    
    
    protected abstract void decode(boolean valid, ByteBuffer input) 
@@ -175,6 +190,26 @@ public abstract class SenseData
       
       sense.decode(valid, input);
       return sense;
+   }
+
+   protected void setResponseCode(SenseException.ResponseCode responseCode)
+   {
+      this.responseCode = responseCode;
+   }
+
+   protected void setInformation(byte[] information)
+   {
+      this.information = information;
+   }
+
+   protected void setCommandSpecificInformation(byte[] commandSpecificInformation)
+   {
+      this.commandSpecificInformation = commandSpecificInformation;
+   }
+
+   protected void setKcq(KCQ kcq)
+   {
+      this.kcq = kcq;
    }
    
    

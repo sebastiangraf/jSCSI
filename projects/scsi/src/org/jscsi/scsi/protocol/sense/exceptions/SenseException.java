@@ -3,11 +3,14 @@ package org.jscsi.scsi.protocol.sense.exceptions;
 
 import java.io.IOException;
 import java.nio.BufferOverflowException;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jscsi.scsi.protocol.sense.FixedSenseData;
 import org.jscsi.scsi.protocol.sense.KCQ;
+import org.jscsi.scsi.protocol.sense.SenseData;
 import org.jscsi.scsi.protocol.sense.SenseKey;
 import org.jscsi.scsi.protocol.sense.additional.SenseKeySpecificField;
 
@@ -79,10 +82,25 @@ public abstract class SenseException extends Exception
    private static Map<KCQ,Class<? extends SenseException>> _exceptions =
       new HashMap<KCQ,Class<? extends SenseException>>();
    
-   protected static void register( KCQ kcq, Class<? extends SenseException> exception )
+   static
    {
-      _exceptions.put(kcq, exception);
+      _exceptions.put(KCQ.CAPACITY_DATA_HAS_CHANGED, CapacityDataHasChangedException.class);
+      _exceptions.put(KCQ.COMMAND_SEQUENCE_ERROR, CommandSequenceErrorException.class);
+      _exceptions.put(KCQ.INQUIRY_DATA_HAS_CHANGED, InquiryDataHasChangedException.class);
+      _exceptions.put(KCQ.INVALID_COMMAND_OPERATION_CODE, InvalidCommandOperationCodeException.class);
+      _exceptions.put(KCQ.INVALID_FIELD_IN_CDB, InvalidFieldInCDBException.class);
+      _exceptions.put(KCQ.INVALID_FIELD_IN_PARAMETER_LIST, InvalidFieldInParameterListException.class);
+      _exceptions.put(KCQ.LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE, LogicalBlockAddressOutOfRangeException.class);
+      _exceptions.put(KCQ.MODE_PARAMETERS_CHANGED, ModeParametersChangedException.class);
+      _exceptions.put(KCQ.PARAMETER_NOT_SUPPORTED, ParameterNotSupportedException.class);
+      _exceptions.put(KCQ.PARAMETERS_CHANGED, ParametersChangedException.class);
+      _exceptions.put(KCQ.PARAMETER_VALUE_INVALID, ParameterValueInvalidException.class);
+      _exceptions.put(KCQ.REPORTED_LUNS_DATA_HAS_CHANGED, ReportedLUNSDataHasChangedException.class);
+      _exceptions.put(KCQ.UNRECOVERED_READ_ERROR, UnrecoveredReadErrorException.class);
+      _exceptions.put(KCQ.WRITE_ERROR, WriteErrorException.class);
    }
+   
+   
    
    private boolean current; // whether a current error or deferred error
    private KCQ kcq;
@@ -132,9 +150,44 @@ public abstract class SenseException extends Exception
     */
    protected abstract SenseKeySpecificField getSenseKeySpecific();
    
-   public abstract void encode( ByteBuffer senseData ) throws BufferOverflowException, IOException;
+   public ByteBuffer encode()
+   {
+      // FIXME: Currently we hard code always returning fixed sense data
+      SenseData data = new FixedSenseData(
+            this.current,
+            this.kcq,
+            this.getInformation(),
+            this.getCommandSpecificInformation(),
+            this.getSenseKeySpecific() );
+      return data.encode();
+   }
    
-   
+   public static SenseException decode( ByteBuffer senseData )
+         throws BufferUnderflowException, IOException
+   {
+      
+      throw new RuntimeException("not yet implemented");
+      
+//      // FIXME: Don't currently have generic exception hierarchy
+//      // (for if specific KCQ cannot be matched)
+//      SenseData data = SenseData.decode(senseData);
+//      try
+//      {
+//         SenseException exception = _exceptions.get(data.getKCQ()).newInstance();
+//         
+//         // FIXME: We need to refactor sense exceptions so that we can set all of this
+//         // data on decoding.
+//      }
+//      catch (InstantiationException e)
+//      {
+//         throw new IOException("Could not create new exception: " + e.getMessage());
+//      }
+//      catch (IllegalAccessException e)
+//      {
+//         throw new IOException("Could not create new exception: " + e.getMessage());
+//      }
+      
+   }
    
    
 
