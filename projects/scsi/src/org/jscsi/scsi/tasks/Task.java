@@ -10,5 +10,9 @@ public interface Task
    
    public Command getCommand();
    
+   /**
+    * If this is not used anywhere, remove it.
+    * @deprecated
+    */
    public TargetTransportPort getTargetTransportPort();
 }

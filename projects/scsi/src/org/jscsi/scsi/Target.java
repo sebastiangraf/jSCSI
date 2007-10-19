@@ -2,11 +2,10 @@
 package org.jscsi.scsi;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.jscsi.authentication.AuthenticationHandler;
+import org.jscsi.scsi.authentication.AuthenticationHandler;
+import org.jscsi.scsi.protocol.mode.ModeRegistry;
 import org.jscsi.scsi.transport.TaskRouter;
 
 /**
@@ -28,11 +27,12 @@ import org.jscsi.scsi.transport.TaskRouter;
  * authentication. Authentication handlers are ignored for SCSI transport other than iSCSI. 
  * 
  */
-public class Target
+public abstract class Target
 {
    
    private String targetName;
    private TaskRouter taskRouter;
+   private ModeRegistry modeRegistry;
    
    private List<AuthenticationHandler> authHandlers;
    
@@ -46,11 +46,15 @@ public class Target
     *    login phase the target-available authentication methods are sent to the initiator in
     *    the order returned by this handler list. Callers must ensure list uniqueness.
     */
-   public Target(String targetName, TaskRouter router, List<AuthenticationHandler> handlers)
+   public Target(
+         String targetName, 
+         TaskRouter router, 
+         ModeRegistry modeRegistry,
+         List<AuthenticationHandler> handlers)
    {
-      super();
       this.targetName = targetName;
       this.taskRouter = router;
+      this.modeRegistry = modeRegistry;
       this.authHandlers = new ArrayList<AuthenticationHandler>();
       this.authHandlers.addAll(handlers);
    }
@@ -78,6 +82,11 @@ public class Target
    public List<AuthenticationHandler> getAuthenticationHandlers()
    {
       return authHandlers;
+   }
+   
+   public ModeRegistry getModeRegistry()
+   {
+      return this.modeRegistry;
    }
    
    
