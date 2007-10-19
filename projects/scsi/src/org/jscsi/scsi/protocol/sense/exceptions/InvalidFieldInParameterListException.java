@@ -1,6 +1,5 @@
 
 package org.jscsi.scsi.protocol.sense.exceptions;
-import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.sense.KCQ;
 import org.jscsi.scsi.protocol.sense.additional.FieldPointer;
 
