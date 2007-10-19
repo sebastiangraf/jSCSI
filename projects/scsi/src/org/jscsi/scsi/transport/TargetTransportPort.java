@@ -40,6 +40,8 @@ public interface TargetTransportPort
    
    boolean writeData( Nexus nexus, ByteBuffer input );
    
+   void terminateDataTransfer( Nexus nexus );
+   
    
    /**
     * Enqueues return data to send to the initiator indicated by the given Nexus. Used by both

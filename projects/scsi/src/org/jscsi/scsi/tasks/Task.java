@@ -10,7 +10,5 @@ public interface Task
    
    public Command getCommand();
    
-   public Nexus getNexus();
-   
    public TargetTransportPort getTargetTransportPort();
 }
