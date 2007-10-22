@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -25,28 +24,24 @@ public class PowerCondition extends ModePage
    }
 
    @Override
-   protected void decodeModeParameters(int dataLength, ByteBuffer input)
+   protected void decodeModeParameters(int dataLength, DataInputStream inputStream)
          throws BufferUnderflowException, IllegalArgumentException
    {
       try
       {
-         byte[] page = new byte[dataLength];
-         input.get(page);
-         DataInputStream in = new DataInputStream(new ByteArrayInputStream(page));
-
          // byte 2
-         in.readByte();
+         inputStream.readByte();
 
          // byte 3
-         int b = in.readUnsignedByte();
+         int b = inputStream.readUnsignedByte();
          this.idle = ((b >>> 1) & 1) == 1;
          this.standby = (b & 1) == 1;
 
          //bytes 4 - 7
-         this.idleConditionTimer = in.readInt();
+         this.idleConditionTimer = inputStream.readInt();
 
          // bytes 8 - 11
-         this.standbyConditionTimer = in.readInt();
+         this.standbyConditionTimer = inputStream.readInt();
       }
       catch (IOException e)
       {

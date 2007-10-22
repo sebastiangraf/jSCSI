@@ -34,9 +34,10 @@
 
 package org.jscsi.scsi.protocol.mode;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,11 +108,10 @@ public abstract class ModePageRegistry
 
    public void saveModePages(byte[] input) throws BufferUnderflowException, IOException
    {
-      int offset = 0;
-      ByteBuffer inputBuffer = ByteBuffer.wrap(input);
+      DataInputStream dataIn = new DataInputStream(new ByteArrayInputStream(input));
 
       // While all pages are not saved
-      while (offset < input.length)
+      while (dataIn.available() > 0)
       {
          boolean parametersSavable;
          int dataLength;
@@ -119,36 +119,31 @@ public abstract class ModePageRegistry
          byte pageCode;
          int subPageCode;
 
-         int b0 = input[offset + 0];
+         int b0 = dataIn.readUnsignedByte();
          parametersSavable = ((b0 >>> 7) & 0x01) == 1;
          subPageFormat = ((b0 >>> 6) & 0x01) == 1;
          pageCode = (byte) (b0 & 0x3F);
 
-         int pageLength;
+         short pageLength;
          if (subPageFormat)
          {
-            subPageCode = input[offset + 1];
-            pageLength = ((input[offset + 2] << 8) | input[offset + 3]);
+            subPageCode = dataIn.readByte();
+            pageLength = dataIn.readShort();
             dataLength = pageLength - 4;
-            inputBuffer.position(offset + 4);
          }
          else
          {
             subPageCode = -1;
-            pageLength = input[offset + 1];
+            pageLength = dataIn.readByte();
             dataLength = pageLength - 2;
-            inputBuffer.position(offset + 2);
          }
-
-         // Jump to next page
-         offset += pageLength;
 
          ModePage page = getModePage(pageCode, subPageCode);
 
          if (page != null)
          {
             page.setParametersSavable(parametersSavable);
-            page.decodeModeParameters(dataLength, inputBuffer);
+            page.decodeModeParameters(dataLength, dataIn);
          }
          else
          {
@@ -156,8 +151,6 @@ public abstract class ModePageRegistry
                   + subPageCode + ") no corresponding ModePage found");
          }
       }
-
-      assert offset == input.length;
    }
 
    public BackgroundControl getBackgroundControl()

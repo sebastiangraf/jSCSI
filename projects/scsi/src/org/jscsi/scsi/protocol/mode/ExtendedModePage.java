@@ -1,6 +1,7 @@
 
 package org.jscsi.scsi.protocol.mode;
 
+import java.io.DataInputStream;
 import java.nio.ByteBuffer;
 
 public abstract class ExtendedModePage extends ModePage
@@ -16,7 +17,7 @@ public abstract class ExtendedModePage extends ModePage
    }
 
    @Override
-   abstract protected void decodeModeParameters(int dataLength, ByteBuffer input);
+   abstract protected void decodeModeParameters(int dataLength, DataInputStream inputStream);
 
    @Override
    abstract protected void encodeModeParameters(ByteBuffer output);
