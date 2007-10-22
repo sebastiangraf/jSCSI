@@ -34,10 +34,7 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -64,7 +61,7 @@ public abstract class ModePageRegistry
       _pages.put(getParserID(pageCode, subPageCode), page);
    }
 
-   private ModePage getModePage(byte pageCode, int subPageCode)
+   public ModePage getModePage(byte pageCode, int subPageCode)
    {
       return _pages.get(getParserID(pageCode, subPageCode));
    }
@@ -108,102 +105,59 @@ public abstract class ModePageRegistry
       register(ReadWriteErrorRecovery.PAGE_CODE, readWriteErrorRecovery);
    }
 
-   public void save(byte[] input) throws BufferUnderflowException, IOException
+   public void saveModePages(byte[] input) throws BufferUnderflowException, IOException
    {
-      boolean parametersSavable;
-      int dataLength;
-      boolean subPageFormat;
-      byte pageCode;
-      int subPageCode;
-
-      int b0 = input[0];
-      parametersSavable = ((b0 >>> 7) & 0x01) == 1;
-      subPageFormat = ((b0 >>> 6) & 0x01) == 1;
-      pageCode = (byte) (b0 & 0x3F);
-
+      int offset = 0;
       ByteBuffer inputBuffer = ByteBuffer.wrap(input);
-      if (subPageFormat)
+
+      // While all pages are not saved
+      while (offset < input.length)
       {
-         subPageCode = input[1];
-         dataLength = ((input[2] << 8) | input[3]) - 4;
-         inputBuffer.position(4);
-      }
-      else
-      {
-         subPageCode = -1;
-         dataLength = input[1] - 2;
-         inputBuffer.position(2);
-      }
+         boolean parametersSavable;
+         int dataLength;
+         boolean subPageFormat;
+         byte pageCode;
+         int subPageCode;
 
-      ModePage page = getModePage(pageCode, subPageCode);
+         int b0 = input[offset + 0];
+         parametersSavable = ((b0 >>> 7) & 0x01) == 1;
+         subPageFormat = ((b0 >>> 6) & 0x01) == 1;
+         pageCode = (byte) (b0 & 0x3F);
 
-      if (page != null)
-      {
-         page.setParametersSavable(parametersSavable);
-         page.decodeModeParameters(dataLength, inputBuffer);
-      }
-      else
-      {
-         throw new RuntimeException("Invalid pageCode/subPageCode - (" + pageCode + "/"
-               + subPageCode + ") no corresponding ModePage class found");
-      }
-   }
-
-   public byte[] getEncodedModePage(byte pageCode)
-   {
-      return getEncodedModePage(pageCode, -1);
-   }
-
-   public byte[] getEncodedModePage(byte pageCode, int subPageCode) throws BufferOverflowException
-   {
-      ModePage modePage = getModePage(pageCode, subPageCode);
-
-      // Below, header is 2 bytes for page format, 4 bytes for subpage format.
-      ByteArrayOutputStream header = new ByteArrayOutputStream(modePage.getSubPageFormat() ? 4 : 2);
-      DataOutputStream out = new DataOutputStream(header);
-
-      try
-      {
-         int b0 = 0;
-
-         if (modePage.getParametersSavable())
+         int pageLength;
+         if (subPageFormat)
          {
-            b0 |= 0x80;
-         }
-         if (modePage.getSubPageFormat())
-         {
-            b0 |= 0x40;
-         }
-
-         b0 |= (modePage.getPageCode() & 0x3F);
-
-         out.writeByte(b0);
-
-         if (modePage.getSubPageFormat())
-         {
-            out.writeByte(modePage.getSubPageCode());
-            out.writeShort(modePage.getPageLength());
+            subPageCode = input[offset + 1];
+            pageLength = ((input[offset + 2] << 8) | input[offset + 3]);
+            dataLength = pageLength - 4;
+            inputBuffer.position(offset + 4);
          }
          else
          {
-            out.writeByte(modePage.getPageLength());
+            subPageCode = -1;
+            pageLength = input[offset + 1];
+            dataLength = pageLength - 2;
+            inputBuffer.position(offset + 2);
          }
 
-         // Allocate page length
-         ByteBuffer outputBuffer = ByteBuffer.allocate(modePage.getPageLength());
+         // Jump to next page
+         offset += pageLength;
 
-         // Write header
-         outputBuffer.put(header.toByteArray());
+         ModePage page = getModePage(pageCode, subPageCode);
 
-         // Write mode parameters
-         modePage.encodeModeParameters(outputBuffer);
-
-         return outputBuffer.array();
+         if (page != null)
+         {
+            page.setParametersSavable(parametersSavable);
+            page.decodeModeParameters(dataLength, inputBuffer);
+         }
+         else
+         {
+            throw new RuntimeException("Invalid pageCode/subPageCode - (" + pageCode + "/"
+                  + subPageCode + ") no corresponding ModePage found");
+         }
       }
-      catch (IOException e)
-      {
-         throw new RuntimeException("Unable to encode mode page.");
-      }
+
+      assert offset == input.length;
    }
 
    public BackgroundControl getBackgroundControl()
