@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.protocol.mode;
 
 import java.io.ByteArrayInputStream;
@@ -10,14 +11,9 @@ import java.nio.ByteBuffer;
 
 public class ReadWriteErrorRecovery extends ModePage
 {
-   private static final int PAGE_CODE = 0x01;
-   private static final int PAGE_LENGTH = 0x0A;
-   
-   static
-   {
-      ModePage.register((byte)PAGE_CODE, ReadWriteErrorRecovery.class);
-   }
-   
+   public static final byte PAGE_CODE = 0x01;
+   public static final int PAGE_LENGTH = 0x0A;
+
    private boolean AWRE;
    private boolean ARRE;
    private boolean TB;
@@ -29,22 +25,22 @@ public class ReadWriteErrorRecovery extends ModePage
    private int readRetryCount;
    private int writeRetryCount;
    private int recoveryTimeLimit;
-      
+
    public ReadWriteErrorRecovery()
    {
-      super((byte)PAGE_CODE);
+      super(PAGE_CODE);
    }
-   
+
    @Override
    protected void decodeModeParameters(int dataLength, ByteBuffer input)
-   throws BufferUnderflowException, IllegalArgumentException
+         throws BufferUnderflowException, IllegalArgumentException
    {
       try
       {
          byte[] page = new byte[dataLength];
          input.get(page);
          DataInputStream in = new DataInputStream(new ByteArrayInputStream(page));
-         
+
          // byte 2
          int b = in.readUnsignedByte();
          this.AWRE = ((b >>> 7) & 1) == 1;
@@ -55,28 +51,28 @@ public class ReadWriteErrorRecovery extends ModePage
          this.PER = ((b >>> 2) & 1) == 1;
          this.DTE = ((b >>> 1) & 1) == 1;
          this.DCR = (b & 1) == 1;
-         
+
          // byte 3
          this.readRetryCount = in.readUnsignedByte();
-         
+
          // byte 4
          in.readByte();
-         
+
          // byte 5
          in.readByte();
-         
+
          // byte 6
          in.readByte();
-         
+
          // byte 7
          in.readByte();
-         
+
          // byte 8
          this.writeRetryCount = in.readUnsignedByte();
-         
+
          // byte 9
          in.readByte();
-         
+
          // bytes 10 - 11
          this.recoveryTimeLimit = in.readUnsignedShort();
       }
@@ -91,10 +87,10 @@ public class ReadWriteErrorRecovery extends ModePage
    {
       ByteArrayOutputStream page = new ByteArrayOutputStream(this.getPageLength());
       DataOutputStream out = new DataOutputStream(page);
-      
+
       try
       {
-         
+
          // byte 2
          int b = 0;
          if (this.AWRE)
@@ -130,31 +126,31 @@ public class ReadWriteErrorRecovery extends ModePage
             b |= 0x01;
          }
          out.writeByte(b);
-         
+
          // byte 3
          out.writeByte(this.readRetryCount);
-         
+
          // byte 4
          out.writeByte(0);
-         
+
          // byte 5
          out.writeByte(0);
-         
+
          // byte 6
          out.writeByte(0);
-         
+
          // byte 7
          out.writeByte(0);
-         
+
          // byte 8
          out.write(this.writeRetryCount);
-         
+
          // byte 9
          out.writeByte(0);
-         
+
          // bytes 10 - 11
          out.writeShort(this.recoveryTimeLimit);
-         
+
          output.put(page.toByteArray());
       }
       catch (IOException e)

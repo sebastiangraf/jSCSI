@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.protocol.mode;
 
 import java.io.ByteArrayInputStream;
@@ -10,45 +11,40 @@ import java.nio.ByteBuffer;
 
 public class PowerCondition extends ModePage
 {
-   private static final int PAGE_CODE = 0x1A;
-   private static final int PAGE_LENGTH = 0x0A;
-   
-   static
-   {
-      ModePage.register((byte)PAGE_CODE, PowerCondition.class);
-   }
+   public static final byte PAGE_CODE = 0x1A;
+   public static final int PAGE_LENGTH = 0x0A;
 
    private boolean idle;
    private boolean standby;
    private int idleConditionTimer;
    private int standbyConditionTimer;
-   
+
    public PowerCondition()
    {
-      super((byte)PAGE_CODE);
+      super(PAGE_CODE);
    }
-   
+
    @Override
    protected void decodeModeParameters(int dataLength, ByteBuffer input)
-   throws BufferUnderflowException, IllegalArgumentException
+         throws BufferUnderflowException, IllegalArgumentException
    {
       try
       {
          byte[] page = new byte[dataLength];
          input.get(page);
          DataInputStream in = new DataInputStream(new ByteArrayInputStream(page));
-    
+
          // byte 2
          in.readByte();
-         
+
          // byte 3
          int b = in.readUnsignedByte();
          this.idle = ((b >>> 1) & 1) == 1;
          this.standby = (b & 1) == 1;
-         
+
          //bytes 4 - 7
          this.idleConditionTimer = in.readInt();
-         
+
          // bytes 8 - 11
          this.standbyConditionTimer = in.readInt();
       }
@@ -63,12 +59,12 @@ public class PowerCondition extends ModePage
    {
       ByteArrayOutputStream page = new ByteArrayOutputStream(this.getPageLength());
       DataOutputStream out = new DataOutputStream(page);
-      
+
       try
       {
          // byte 2
          out.writeByte(0);
-         
+
          // byte 3
          int b = 0;
          if (this.idle)
@@ -80,13 +76,13 @@ public class PowerCondition extends ModePage
             b |= 1;
          }
          out.writeByte(b);
-         
+
          // bytes 4 - 7
          out.writeInt(this.idleConditionTimer);
-         
+
          // bytes 8 - 11
          out.writeInt(this.standbyConditionTimer);
-    
+
          output.put(page.toByteArray());
       }
       catch (IOException e)
