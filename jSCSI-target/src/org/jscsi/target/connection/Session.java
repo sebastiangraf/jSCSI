@@ -8,6 +8,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.conf.OperationalTextConfiguration;
 import org.jscsi.target.connection.Connection;
+import org.jscsi.target.parameter.connection.SessionPhase;
+import org.jscsi.target.parameter.connection.SessionType;
 import org.jscsi.connection.SerialArithmeticNumber;
 import org.jscsi.parser.login.ISID;
 
@@ -52,6 +54,10 @@ public class Session {
 	private ISID initiatorSessionID;
 
 	private String initiatorName;
+	
+	private SessionPhase sessionPhase;
+	
+	private SessionType sessionType;
 
 	/** The Command Sequence Number of this session. */
 	private final SerialArithmeticNumber expectedCommandSequenceNumber;
@@ -177,6 +183,22 @@ public class Session {
 					+ getInitiatorName() + ", new name would be " + name);
 		}
 		return false;
+	}
+	
+	public final void setSessionPhase(SessionPhase phase){ 
+		sessionPhase = phase;
+	}
+	
+	public final void setSessionType(SessionType type){
+		sessionType = type;
+	}
+	
+	public final SessionPhase getSessionPhase(){
+		return sessionPhase;
+	}
+	
+	public final SessionType getSessionType(){
+		return sessionType;
 	}
 
 	/**
