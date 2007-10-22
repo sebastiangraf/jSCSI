@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -30,38 +29,34 @@ public class BackgroundControl extends ModePage
    }
 
    @Override
-   protected void decodeModeParameters(int dataLength, ByteBuffer input)
+   protected void decodeModeParameters(int dataLength, DataInputStream inputStream)
          throws BufferUnderflowException, IllegalArgumentException
    {
       try
       {
-         byte[] page = new byte[dataLength];
-         input.get(page);
-         DataInputStream in = new DataInputStream(new ByteArrayInputStream(page));
-
          // byte 4
-         int b = in.readUnsignedByte();
+         int b = inputStream.readUnsignedByte();
          this.S_L_FULL = ((b >>> 2) & 1) == 1;
          this.LOWIR = ((b >>> 1) & 1) == 1;
          this.EN_BMS = b == 1;
 
          // byte 5
-         this.EN_PS = in.readUnsignedByte() == 1;
+         this.EN_PS = inputStream.readUnsignedByte() == 1;
 
          // bytes 6 - 7
-         this.backgroundMediumScanIntervalTime = in.readUnsignedShort();
+         this.backgroundMediumScanIntervalTime = inputStream.readUnsignedShort();
 
          // bytes 8 - 9
-         this.backgroundPrescanTimeLimit = in.readUnsignedShort();
+         this.backgroundPrescanTimeLimit = inputStream.readUnsignedShort();
 
          // bytes 10 - 11
-         this.minimumIdleTimeBeforeBackgroundScan = in.readUnsignedShort();
+         this.minimumIdleTimeBeforeBackgroundScan = inputStream.readUnsignedShort();
 
          // bytes 12 - 13
-         this.maximumTimeToSuspectBackgroundScan = in.readUnsignedShort();
+         this.maximumTimeToSuspectBackgroundScan = inputStream.readUnsignedShort();
 
          // bytes 14 - 15
-         in.readShort();
+         inputStream.readShort();
       }
       catch (IOException e)
       {

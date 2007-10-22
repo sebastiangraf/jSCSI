@@ -2,6 +2,7 @@
 package org.jscsi.scsi.protocol.mode;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.BufferOverflowException;
@@ -88,7 +89,7 @@ public abstract class ModePage
     * @throws Exception
     *            If the input byte buffer was too short or contained invalid information.
     */
-   protected abstract void decodeModeParameters(int dataLength, ByteBuffer input)
+   protected abstract void decodeModeParameters(int dataLength, DataInputStream inputStream)
          throws BufferUnderflowException, IllegalArgumentException;
 
    public byte[] getEncoded() throws BufferOverflowException

@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -26,17 +25,13 @@ public class ControlExtension extends ModePage
    }
 
    @Override
-   protected void decodeModeParameters(int dataLength, ByteBuffer input)
+   protected void decodeModeParameters(int dataLength, DataInputStream inputStream)
          throws BufferUnderflowException, IllegalArgumentException
    {
       try
       {
-         byte[] page = new byte[dataLength];
-         input.get(page);
-         DataInputStream in = new DataInputStream(new ByteArrayInputStream(page));
-
-         int b5 = in.readUnsignedByte();
-         int b6 = in.readUnsignedByte();
+         int b5 = inputStream.readUnsignedByte();
+         int b6 = inputStream.readUnsignedByte();
 
          // byte 5
          this.TCMOS = ((b5 >>> 3) & 1) == 1;

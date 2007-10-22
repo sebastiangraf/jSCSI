@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -32,34 +31,30 @@ public class DisconnectReconnect extends ModePage
    }
 
    @Override
-   protected void decodeModeParameters(int dataLength, ByteBuffer input)
+   protected void decodeModeParameters(int dataLength, DataInputStream inputStream)
          throws BufferUnderflowException, IllegalArgumentException
    {
       try
       {
-         byte[] page = new byte[dataLength];
-         input.get(page);
-         DataInputStream in = new DataInputStream(new ByteArrayInputStream(page));
-
-         this.bufferFullRatio = in.readUnsignedByte();
-         this.bufferEmptyRatio = in.readUnsignedByte();
-         this.busInactivityLimit = in.readUnsignedShort();
-         this.disconnectTimeLimit = in.readUnsignedShort();
-         this.connectTimeLimit = in.readUnsignedShort();
-         this.maximumBurstSize = in.readUnsignedShort();
+         this.bufferFullRatio = inputStream.readUnsignedByte();
+         this.bufferEmptyRatio = inputStream.readUnsignedByte();
+         this.busInactivityLimit = inputStream.readUnsignedShort();
+         this.disconnectTimeLimit = inputStream.readUnsignedShort();
+         this.connectTimeLimit = inputStream.readUnsignedShort();
+         this.maximumBurstSize = inputStream.readUnsignedShort();
 
          // byte 12
-         int b12 = in.readUnsignedByte();
+         int b12 = inputStream.readUnsignedByte();
          this.EMDP = ((b12 >>> 7) & 1) == 1;
          this.fairArbitration = ((b12 >>> 4) & 7);
          this.DIMM = ((b12 >>> 3) & 1) == 1;
          this.DTDC = (b12 & 7);
 
          // byte 13
-         in.readByte();
+         inputStream.readByte();
 
          // bytes 14 - 15
-         this.firstBurstSize = in.readUnsignedShort();
+         this.firstBurstSize = inputStream.readUnsignedShort();
       }
       catch (IOException e)
       {

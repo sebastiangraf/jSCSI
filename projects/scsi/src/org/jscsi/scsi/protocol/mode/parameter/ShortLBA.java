@@ -1,6 +1,7 @@
 
 package org.jscsi.scsi.protocol.mode.parameter;
 
+import java.io.DataInputStream;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
@@ -15,7 +16,7 @@ public class ShortLBA extends ModePage
    }
 
    @Override
-   protected void decodeModeParameters(int dataLength, ByteBuffer input)
+   protected void decodeModeParameters(int dataLength, DataInputStream inputStream)
          throws BufferUnderflowException, IllegalArgumentException
    {
       // TODO Auto-generated method stub

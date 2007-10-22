@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -51,17 +50,13 @@ public class Caching extends ModePage
    }
 
    @Override
-   protected void decodeModeParameters(int dataLength, ByteBuffer input)
+   protected void decodeModeParameters(int dataLength, DataInputStream inputStream)
          throws BufferUnderflowException, IllegalArgumentException
    {
       try
       {
-         byte[] page = new byte[dataLength];
-         input.get(page);
-         DataInputStream in = new DataInputStream(new ByteArrayInputStream(page));
-
          // byte 2
-         int b = in.readUnsignedByte();
+         int b = inputStream.readUnsignedByte();
          this.IC = ((b >>> 7) & 1) == 1;
          this.ABPF = ((b >>> 6) & 1) == 1;
          this.CAP = ((b >>> 5) & 1) == 1;
@@ -72,24 +67,24 @@ public class Caching extends ModePage
          this.RCD = (b & 1) == 1;
 
          // byte 3
-         b = in.readUnsignedByte();
+         b = inputStream.readUnsignedByte();
          this.demandReadRetentionPriority = ((b >>> 4) & 0xF);
          this.writeRetentionPriority = (b & 0xF);
 
          // bytes 4 - 5
-         this.disablePrefetchTransferLength = in.readUnsignedShort();
+         this.disablePrefetchTransferLength = inputStream.readUnsignedShort();
 
          // bytes 6 - 7
-         this.minimumPrefetch = in.readUnsignedShort();
+         this.minimumPrefetch = inputStream.readUnsignedShort();
 
          // bytes 8 - 9
-         this.maximumPrefetch = in.readUnsignedShort();
+         this.maximumPrefetch = inputStream.readUnsignedShort();
 
          // bytes 10 - 11
-         this.maximumPrefetchCeiling = in.readUnsignedShort();
+         this.maximumPrefetchCeiling = inputStream.readUnsignedShort();
 
          // byte 12
-         b = in.readUnsignedByte();
+         b = inputStream.readUnsignedByte();
          this.FSW = ((b >>> 7) & 1) == 1;
          this.LBCSS = ((b >>> 6) & 1) == 1;
          this.DRA = ((b >>> 5) & 1) == 1;
@@ -97,18 +92,18 @@ public class Caching extends ModePage
          this.NV_DIS = (b & 1) == 1;
 
          // byte 13
-         this.numberOfCacheSegments = in.readUnsignedByte();
+         this.numberOfCacheSegments = inputStream.readUnsignedByte();
 
          // bytes 14 - 15
-         this.cacheSegmentSize = in.readUnsignedShort();
+         this.cacheSegmentSize = inputStream.readUnsignedShort();
 
          // byte 16
-         in.readByte();
+         inputStream.readByte();
 
          // bytes 17 - 19
-         in.readByte();
-         in.readByte();
-         in.readByte();
+         inputStream.readByte();
+         inputStream.readByte();
+         inputStream.readByte();
       }
       catch (IOException e)
       {

@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -32,17 +31,13 @@ public class ReadWriteErrorRecovery extends ModePage
    }
 
    @Override
-   protected void decodeModeParameters(int dataLength, ByteBuffer input)
+   protected void decodeModeParameters(int dataLength, DataInputStream inputStream)
          throws BufferUnderflowException, IllegalArgumentException
    {
       try
       {
-         byte[] page = new byte[dataLength];
-         input.get(page);
-         DataInputStream in = new DataInputStream(new ByteArrayInputStream(page));
-
          // byte 2
-         int b = in.readUnsignedByte();
+         int b = inputStream.readUnsignedByte();
          this.AWRE = ((b >>> 7) & 1) == 1;
          this.ARRE = ((b >>> 6) & 1) == 1;
          this.TB = ((b >>> 5) & 1) == 1;
@@ -53,28 +48,28 @@ public class ReadWriteErrorRecovery extends ModePage
          this.DCR = (b & 1) == 1;
 
          // byte 3
-         this.readRetryCount = in.readUnsignedByte();
+         this.readRetryCount = inputStream.readUnsignedByte();
 
          // byte 4
-         in.readByte();
+         inputStream.readByte();
 
          // byte 5
-         in.readByte();
+         inputStream.readByte();
 
          // byte 6
-         in.readByte();
+         inputStream.readByte();
 
          // byte 7
-         in.readByte();
+         inputStream.readByte();
 
          // byte 8
-         this.writeRetryCount = in.readUnsignedByte();
+         this.writeRetryCount = inputStream.readUnsignedByte();
 
          // byte 9
-         in.readByte();
+         inputStream.readByte();
 
          // bytes 10 - 11
-         this.recoveryTimeLimit = in.readUnsignedShort();
+         this.recoveryTimeLimit = inputStream.readUnsignedShort();
       }
       catch (IOException e)
       {

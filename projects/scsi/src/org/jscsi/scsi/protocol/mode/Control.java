@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -37,19 +36,15 @@ public class Control extends ModePage
    }
 
    @Override
-   protected void decodeModeParameters(int dataLength, ByteBuffer input)
+   protected void decodeModeParameters(int dataLength, DataInputStream inputStream)
          throws BufferUnderflowException, IllegalArgumentException
    {
       try
       {
-         byte[] page = new byte[dataLength];
-         input.get(page);
-         DataInputStream in = new DataInputStream(new ByteArrayInputStream(page));
-
-         int b1 = in.readUnsignedByte();
-         int b2 = in.readUnsignedByte();
-         int b3 = in.readUnsignedByte();
-         int b4 = in.readUnsignedByte();
+         int b1 = inputStream.readUnsignedByte();
+         int b2 = inputStream.readUnsignedByte();
+         int b3 = inputStream.readUnsignedByte();
+         int b4 = inputStream.readUnsignedByte();
 
          // byte 1
          this.TST = (b1 >>> 5) & 0x07;
@@ -73,10 +68,10 @@ public class Control extends ModePage
          this.TAS = ((b4 >>> 6) & 0x01) == 1;
          this.AUTOLOAD_MODE = b4 & 0x07;
 
-         in.readShort();
+         inputStream.readShort();
 
-         this.BUSY_TIMEOUT_PERIOD = in.readUnsignedShort();
-         this.EXTENDED_SELF_TEST_COMPLETION_TIME = in.readUnsignedShort();
+         this.BUSY_TIMEOUT_PERIOD = inputStream.readUnsignedShort();
+         this.EXTENDED_SELF_TEST_COMPLETION_TIME = inputStream.readUnsignedShort();
       }
       catch (IOException e)
       {

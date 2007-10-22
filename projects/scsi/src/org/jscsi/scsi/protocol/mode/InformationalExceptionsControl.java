@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -30,17 +29,13 @@ public class InformationalExceptionsControl extends ModePage
    }
 
    @Override
-   protected void decodeModeParameters(int dataLength, ByteBuffer input)
+   protected void decodeModeParameters(int dataLength, DataInputStream inputStream)
          throws BufferUnderflowException, IllegalArgumentException
    {
       try
       {
-         byte[] page = new byte[dataLength];
-         input.get(page);
-         DataInputStream in = new DataInputStream(new ByteArrayInputStream(page));
-
          // byte 2
-         int b = in.readUnsignedByte();
+         int b = inputStream.readUnsignedByte();
          this.PERF = ((b >>> 7) & 1) == 1;
          this.EBF = ((b >>> 5) & 1) == 1;
          this.EWASC = ((b >>> 4) & 1) == 1;
@@ -49,13 +44,13 @@ public class InformationalExceptionsControl extends ModePage
          this.LOGERR = (b & 1) == 1;
 
          // byte 3
-         this.MRIE = in.readUnsignedByte();
+         this.MRIE = inputStream.readUnsignedByte();
 
          //bytes 4 - 7
-         this.intervalTimer = in.readInt();
+         this.intervalTimer = inputStream.readInt();
 
          // bytes 8 - 11
-         this.reportCount = in.readInt();
+         this.reportCount = inputStream.readInt();
       }
       catch (IOException e)
       {
