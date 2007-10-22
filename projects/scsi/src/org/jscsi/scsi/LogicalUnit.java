@@ -1,8 +1,6 @@
 
 package org.jscsi.scsi;
 
-import java.nio.ByteBuffer;
-
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
@@ -31,4 +29,6 @@ public interface LogicalUnit
     *    data transfer.
     */
    void enqueue( TargetTransportPort port, Command command );
+   
+   void setModePageFactory(ModePageFactory factory);
 }
