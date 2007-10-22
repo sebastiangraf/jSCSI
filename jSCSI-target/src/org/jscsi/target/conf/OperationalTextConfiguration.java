@@ -166,9 +166,9 @@ public class OperationalTextConfiguration {
 		return result;
 	}
 
-	public static OperationalTextConfiguration create(Connection connection) {
+	public static OperationalTextConfiguration create(Connection connection) throws OperationalTextException {
 		OperationalTextConfiguration result = new OperationalTextConfiguration(
-				OperationalTextConfiguration.CONNECTION_WIDE, connection.getConfiguration());
+				OperationalTextConfiguration.CONNECTION_WIDE, connection.getReferencedSession().getConfiguration());
 		return result;
 	}
 
