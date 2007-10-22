@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 
 public class ModeSelect6 extends AbstractCommandDescriptorBlock
 {
-   private static final int OPERATION_CODE = 0x15;
+   public static final int OPERATION_CODE = 0x15;
 
    private boolean pageFormat;
    private boolean savePages;
