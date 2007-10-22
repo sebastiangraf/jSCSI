@@ -1,11 +1,7 @@
 package org.jscsi.target.task;
 
-public class AbstractTask {
-	
+public class Operation {
 
-	
-	
-	
 	
 	
 }

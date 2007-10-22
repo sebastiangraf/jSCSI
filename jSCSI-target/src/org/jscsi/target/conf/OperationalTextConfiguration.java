@@ -45,11 +45,11 @@ public class OperationalTextConfiguration {
 	/** The file name, which contains all global settings. */
 	private static final String XML_CONF_FILE_ADRESS = CONFIGURATION_DIR
 			+ "iscsi.xml";
-	
+
 	private static final String GLOBAL_WIDE = "global";
-	
+
 	private static final String SESSION_WIDE = "session";
-	
+
 	private static final String CONNECTION_WIDE = "connection";
 
 	/** iSCSI's key value delimiter */
@@ -65,11 +65,11 @@ public class OperationalTextConfiguration {
 	private final OperationalTextConfiguration parentConfiguration;
 
 	private final Map<OperationalTextKey, OperationalTextValue> localConfig;
-	
-	private final String identifier;
 
-	private OperationalTextConfiguration(String identifier,
-			OperationalTextConfiguration parentConfig) {
+	private final String configType;
+
+	private OperationalTextConfiguration(String configType,
+			OperationalTextConfiguration parentConfig){
 		if (globalParser == null) {
 			globalParser = new GlobalConfigParser(XML_CONF_FILE_ADRESS,
 					XSD_VALIDATE_FILE_ADRESS);
@@ -77,81 +77,108 @@ public class OperationalTextConfiguration {
 		if (globalConfig == null) {
 			globalConfig = parseGlobalConfig();
 		}
-		this.identifier = identifier;
+		this.configType = configType;
+		
 		localConfig = new HashMap<OperationalTextKey, OperationalTextValue>();
 		parentConfiguration = parentConfig;
 	}
-	
-	private OperationalTextConfiguration getParentConfiguration(){
+
+	private OperationalTextConfiguration getParentConfiguration() {
 		return parentConfiguration;
 	}
-	
-	private String getConfigType(){
-		if(){
-			
-		}
-		return identifier.split(":")[0];
+
+	private String getConfigType() {
+		return configType;
 	}
-	
-	private Map<OperationalTextKey, OperationalTextValue> getConfigMap(){
+
+	private Map<OperationalTextKey, OperationalTextValue> getConfigMap() {
 		return localConfig;
 	}
 
-	
-	public OperationalTextKey getKey(String key){
+
+	/**
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public OperationalTextKey getKey(String key) {
 		return null;
 	}
-	
-	public OperationalTextValue getValue(String value){
+
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public OperationalTextValue getValue(String value) {
 		return null;
 	}
-	
-	public OperationalTextValue getValue(OperationalTextValue value){
+
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public OperationalTextValue getValue(OperationalTextValue value) {
 		return null;
 	}
-	
-	public void update(String key, String value){
-		
+
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void update(String key, String value) {
+
 	}
 	
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 */
 	public void update(OperationalTextKey key, OperationalTextValue value) {
-		
+
 	}
 	
-	public void reset(){
-		
+	/**
+	 * 
+	 */
+	public void reset() {
+
 	}
 
 	public void reset(OperationalTextKey key) {
 
 	}
-	
-	public boolean equals(OperationalTextConfiguration config){
-		if(this.getConfigMap().entrySet().containsAll(config.getConfigMap().entrySet())){
+
+	public boolean equals(OperationalTextConfiguration config) {
+		if (this.getConfigMap().entrySet().containsAll(
+				config.getConfigMap().entrySet())) {
 			return true;
 		}
 		return false;
 	}
-	
-	public static OperationalTextConfiguration create(Session session) {
+
+	public static OperationalTextConfiguration create(Session session) throws OperationalTextException {
 		OperationalTextConfiguration result = new OperationalTextConfiguration(
-				session.getIdentifier(), globalConfig);
+				OperationalTextConfiguration.SESSION_WIDE, globalConfig);
 		return result;
 	}
 
 	public static OperationalTextConfiguration create(Connection connection) {
 		OperationalTextConfiguration result = new OperationalTextConfiguration(
-				connection.getIdentifier(), connection.getConfiguration());
+				OperationalTextConfiguration.CONNECTION_WIDE, connection.getConfiguration());
 		return result;
 	}
-	
-	public static OperationalTextConfiguration getGlobalConfig(){
-		if(globalConfig == null){
+
+	public static OperationalTextConfiguration getGlobalConfig() {
+		if (globalConfig == null) {
 			globalConfig = parseGlobalConfig();
 		}
 		return globalConfig;
 	}
-	
+
 	public static OperationalTextConfiguration parseGlobalConfig() {
 		return globalParser.parse();
 	}
@@ -165,11 +192,10 @@ public class OperationalTextConfiguration {
 		return result.toString();
 	}
 
-	public static String toString(
-			OperationalTextConfiguration config){
+	public static String toString(OperationalTextConfiguration config) {
 		StringBuffer result = new StringBuffer();
-		Iterator<Entry<OperationalTextKey, OperationalTextValue>> pairs = config.getConfigMap()
-				.entrySet().iterator();
+		Iterator<Entry<OperationalTextKey, OperationalTextValue>> pairs = config
+				.getConfigMap().entrySet().iterator();
 		while (pairs.hasNext()) {
 			result.append(toString(pairs.next().getKey(), pairs.next()
 					.getValue()));
@@ -190,7 +216,7 @@ public class OperationalTextConfiguration {
 		}
 
 		public synchronized OperationalTextConfiguration parse() {
-
+			//don't forget to set GlOBAL_WIDE;
 			return null;
 		}
 

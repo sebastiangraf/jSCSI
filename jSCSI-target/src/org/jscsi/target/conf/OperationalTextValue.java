@@ -298,12 +298,12 @@ public class OperationalTextValue {
 		return false;
 	}
 
-	public static void throwNotAValidValueException(String value)
+	private static void throwNotAValidValueException(String value)
 			throws OperationalTextException {
 		throw new OperationalTextException("Not a valid Value: " + value);
 	}
 
-	public static void throwNotAValidResultTypeException(String resultType)
+	private static void throwNotAValidResultTypeException(String resultType)
 			throws OperationalTextException {
 		throw new OperationalTextException("Not a valid resultType: "
 				+ resultType);
