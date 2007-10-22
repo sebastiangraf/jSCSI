@@ -1,6 +1,10 @@
 
 package org.jscsi.scsi.protocol.mode;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
@@ -87,4 +91,53 @@ public abstract class ModePage
    protected abstract void decodeModeParameters(int dataLength, ByteBuffer input)
          throws BufferUnderflowException, IllegalArgumentException;
 
+   public byte[] getEncoded() throws BufferOverflowException
+   {
+      // Below, header is 2 bytes for page format, 4 bytes for subpage format.
+      ByteArrayOutputStream header = new ByteArrayOutputStream(getSubPageFormat() ? 4 : 2);
+      DataOutputStream out = new DataOutputStream(header);
+
+      try
+      {
+         int b0 = 0;
+
+         if (getParametersSavable())
+         {
+            b0 |= 0x80;
+         }
+         if (getSubPageFormat())
+         {
+            b0 |= 0x40;
+         }
+
+         b0 |= (getPageCode() & 0x3F);
+
+         out.writeByte(b0);
+
+         if (getSubPageFormat())
+         {
+            out.writeByte(getSubPageCode());
+            out.writeShort(getPageLength());
+         }
+         else
+         {
+            out.writeByte(getPageLength());
+         }
+
+         // Allocate page length
+         ByteBuffer outputBuffer = ByteBuffer.allocate(getPageLength());
+
+         // Write header
+         outputBuffer.put(header.toByteArray());
+
+         // Write mode parameters
+         encodeModeParameters(outputBuffer);
+
+         return outputBuffer.array();
+      }
+      catch (IOException e)
+      {
+         throw new RuntimeException("Unable to encode mode page.");
+      }
+   }
 }

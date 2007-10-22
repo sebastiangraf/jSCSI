@@ -36,12 +36,10 @@ package org.jscsi.scsi.protocol.mode;
 
 public class StaticModePageRegistry extends ModePageRegistry
 {
-
    @Override
    protected void populateModePages()
    {
       // TODO Auto-generated method stub
 
    }
-
 }
