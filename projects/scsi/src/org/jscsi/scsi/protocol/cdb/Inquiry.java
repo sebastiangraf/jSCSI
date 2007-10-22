@@ -18,7 +18,7 @@ public class Inquiry extends AbstractCommandDescriptorBlock
 
    static
    {
-      CommandDescriptorBlockFactory.register(OPERATION_CODE, ReportLuns.class);
+      
    }
    
    public Inquiry()

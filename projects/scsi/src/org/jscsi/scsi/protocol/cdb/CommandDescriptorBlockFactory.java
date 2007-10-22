@@ -15,6 +15,23 @@ public class CommandDescriptorBlockFactory
    private static Map<Integer,Class<? extends CommandDescriptorBlock>> _cdbs =
       new HashMap<Integer,Class<? extends CommandDescriptorBlock>>();
    
+   static
+   {
+      CommandDescriptorBlockFactory.register(Inquiry.OPERATION_CODE, Inquiry.class);
+      CommandDescriptorBlockFactory.register(ModeSelect10.OPERATION_CODE, ModeSelect10.class);
+      CommandDescriptorBlockFactory.register(ModeSelect6.OPERATION_CODE, ModeSelect6.class);
+      CommandDescriptorBlockFactory.register(Inquiry.OPERATION_CODE, Inquiry.class);
+      CommandDescriptorBlockFactory.register(Inquiry.OPERATION_CODE, Inquiry.class);
+      CommandDescriptorBlockFactory.register(Inquiry.OPERATION_CODE, Inquiry.class);
+      CommandDescriptorBlockFactory.register(Inquiry.OPERATION_CODE, Inquiry.class);
+      CommandDescriptorBlockFactory.register(Inquiry.OPERATION_CODE, Inquiry.class);
+      CommandDescriptorBlockFactory.register(Inquiry.OPERATION_CODE, Inquiry.class);
+      CommandDescriptorBlockFactory.register(Inquiry.OPERATION_CODE, Inquiry.class);
+      CommandDescriptorBlockFactory.register(Inquiry.OPERATION_CODE, Inquiry.class);
+      CommandDescriptorBlockFactory.register(Inquiry.OPERATION_CODE, Inquiry.class);
+      CommandDescriptorBlockFactory.register(Inquiry.OPERATION_CODE, Inquiry.class);
+   }
+   
    protected static void register(int operationCode, Class<? extends CommandDescriptorBlock> cdb)
    {
       _cdbs.put(operationCode, cdb);

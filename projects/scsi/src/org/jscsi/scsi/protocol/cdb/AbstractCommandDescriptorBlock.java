@@ -1,10 +1,9 @@
-
 package org.jscsi.scsi.protocol.cdb;
+
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-
 
 // TODO: Describe class or interface
 public abstract class AbstractCommandDescriptorBlock implements CommandDescriptorBlock
@@ -54,10 +53,4 @@ public abstract class AbstractCommandDescriptorBlock implements CommandDescripto
    public abstract int getOperationCode();
    public abstract long getTransferLength();
    public abstract int size();
-   
-   
-
-
 }
-
-
