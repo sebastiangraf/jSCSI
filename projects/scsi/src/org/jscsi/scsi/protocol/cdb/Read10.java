@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 
 public class Read10 extends AbstractCommandDescriptorBlock
 {
-   private static final int OPERATION_CODE = 0x28;
+   public static final int OPERATION_CODE = 0x28;
 
    private boolean dpo;
    private boolean fua;

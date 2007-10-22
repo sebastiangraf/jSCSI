@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 
 public class Read6 extends AbstractCommandDescriptorBlock
 {
-   private static final int OPERATION_CODE = 0x08;
+   public static final int OPERATION_CODE = 0x08;
    
    private long lba;
    private int transferLength;
