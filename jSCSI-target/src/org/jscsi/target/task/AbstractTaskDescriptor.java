@@ -13,15 +13,15 @@ import org.jscsi.target.parameter.pdu.Opcode;
 
 /**
  * A task descriptor is used by an iSCSI target environment to
- * create an appropriate task, analyzing an initializing PDUs. 
+ * create an appropriate task, analyzing an initializing PDU. 
  * This class is only representing an abstract TaskDescriptor.
  * A working descriptor needs to extend this one,
- * load this constructor with well chosen parameters and place it in a directory
+ * loading this constructor with well chosen parameters and place it in a directory
  * the target environment is using to load task descriptors.
  * @author Marcus Specht
  *
  */
-public class AbstractTaskDescriptor implements TaskDescriptor{
+public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 	
 	
 	/** the described task */
@@ -36,37 +36,57 @@ public class AbstractTaskDescriptor implements TaskDescriptor{
 	/** all allowed SessionPhases */
 	private final Set<SessionPhase> allowedSessionPhases;
 	
-	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, SessionPhase phase, Class refTask){
+	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, SessionPhase phase, Class refTask) throws OperationException{
 		this.opcode = opcode;
 		allowedSessionTypes = new HashSet<SessionType>();
 		allowedSessionPhases = new HashSet<SessionPhase>();
 		allowedSessionTypes.add(type);
 		allowedSessionPhases.add(phase);
 		this.refTask = refTask;
+		try {
+			Class.forName(refTask.getName());
+		} catch (ClassNotFoundException e) {
+			throw new OperationException("Couldn't find the referenced Task: " + refTask.getName());
+		}
 		
 	}
 	
-	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, SessionPhase phase, Class refTask){
+	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, SessionPhase phase, Class refTask) throws OperationException{
 		this.opcode = opcode;
 		allowedSessionPhases = new HashSet<SessionPhase>();
 		allowedSessionTypes = types;
 		allowedSessionPhases.add(phase);
 		this.refTask = refTask;
+		try {
+			Class.forName(refTask.getName());
+		} catch (ClassNotFoundException e) {
+			throw new OperationException("Couldn't find the referenced Task: " + refTask.getName());
+		}
 	}
 	
-	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, Set<SessionPhase> phases, Class refTask){
+	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, Set<SessionPhase> phases, Class refTask) throws OperationException{
 		this.opcode = opcode;
 		allowedSessionTypes = new HashSet<SessionType>();
 		allowedSessionPhases = phases;
 		allowedSessionTypes.add(type);
 		this.refTask = refTask;
+		try {
+			Class.forName(refTask.getName());
+		} catch (ClassNotFoundException e) {
+			throw new OperationException("Couldn't find the referenced Task: " + refTask.getName());
+		}
 	}
 	
-	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, Set<SessionPhase> phases, Class refTask){
+	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, Set<SessionPhase> phases, Class refTask) throws OperationException{
 		this.opcode = opcode;
 		this.allowedSessionTypes = types;
 		this.allowedSessionPhases = phases;
 		this.refTask = refTask;
+		try {
+			Class.forName(refTask.getName());
+		} catch (ClassNotFoundException e) {
+			throw new OperationException("Couldn't find the referenced Task: " + refTask.getName());
+		}
 	}
 	
 	/**
@@ -111,6 +131,14 @@ public class AbstractTaskDescriptor implements TaskDescriptor{
 			e.printStackTrace();
 		}
 		return task;
+	}
+	
+	/**
+	 * Returns the Task.class which is described by this TaskDescriptor.
+	 * @return described Task.class
+	 */
+	public Class getReferencedTask(){
+		return refTask;
 	}
 	
 	

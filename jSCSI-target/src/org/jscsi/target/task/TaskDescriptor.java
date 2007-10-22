@@ -10,4 +10,6 @@ public interface TaskDescriptor {
 	
 	public Task createTask();
 	
+	public Class getReferencedTask();
+	
 }

@@ -513,7 +513,7 @@ public class OperationalTextKey {
 
 	/**
 	 * Use: FFPO<br/> Senders: Initiator<br/> Scope: SW <p/> For a complete
-	 * description, see Appendix D. - SendTargets Operation -.
+	 * description, see Appendix D. - SendTargets AbstractOperation -.
 	 */
 	public static final String SEND_TARGETS = "SendTargets";
 
@@ -556,7 +556,7 @@ public class OperationalTextKey {
 	 * TargetAddress=[1080:0:0:0:8:800:200C:417A],65<br/>
 	 * TargetAddress=[1080::8:800:200C:417A]:5003,1 <br/>
 	 * TargetAddress=computingcenter.example.com,23 <p/> Use of the
-	 * portal-group-tag is described in Appendix D. - SendTargets Operation -.
+	 * portal-group-tag is described in Appendix D. - SendTargets AbstractOperation -.
 	 * The formats for the port and portal-group-tag are the same as the one
 	 * specified in Section 12.9 TargetPortalGroupTag.
 	 */
