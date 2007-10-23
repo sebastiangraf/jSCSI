@@ -89,11 +89,12 @@ public class OperationalTextValue {
 		update(value, resultType);
 	}
 	
-	private OperationalTextValue(String value) throws OperationalTextException{
-		String resultType = globalConfig.getValue(value).getResultType();
+	private OperationalTextValue(String key) throws OperationalTextException{
+		String value = globalConfig.getKey(key).getValue().getString();
+		String resultType = globalConfig.getKey(key).getValue().getResultType();
 		update(value, resultType);
 	}
-
+	
 	private void update(String value, String resultType)
 			throws OperationalTextException {
 		if (!checkValue(value)) {
@@ -204,8 +205,8 @@ public class OperationalTextValue {
 		return result;
 	}
 
-	public static OperationalTextValue create(String value) throws OperationalTextException{
-		return new OperationalTextValue(value);
+	public static OperationalTextValue create(String key) throws OperationalTextException{
+		return new OperationalTextValue(key);
 	}
 	
 	public static OperationalTextValue create(String value, String resultType) throws OperationalTextException{

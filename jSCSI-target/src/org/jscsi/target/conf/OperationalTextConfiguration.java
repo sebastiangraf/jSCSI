@@ -1,24 +1,22 @@
 package org.jscsi.target.conf;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.naming.ConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.parser.datasegment.ResultFunctionFactory;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.Session;
-import org.jscsi.target.util.Singleton;
 
 /**
- * Describes a standard iSCSI key-value-pair used in iSCSI. Multiple Values are
- * supported. Only value representation is String. E.g.: "KEY=VALUE"
- * "KEY=VALUE,VALUE"
+ * The OperationalTextConfiguration represents a standard system to work with
+ * iSCSI text parameter. The global used iSCSI parameters are stored within a
+ * xml file and will be loaded at startup. Connections and Sessions use these
+ * parameters to negotiate a working I-T-Nexus.
  * 
  * @author Marcus Specht
  * 
@@ -46,11 +44,11 @@ public class OperationalTextConfiguration {
 	private static final String XML_CONF_FILE_ADRESS = CONFIGURATION_DIR
 			+ "iscsi.xml";
 
-	private static final String GLOBAL_WIDE = "global";
+	private static final String CONFIG_TYPE_GLOBAL = "global";
 
-	private static final String SESSION_WIDE = "session";
+	private static final String CONFIG_TYPE_SESSION = "session";
 
-	private static final String CONNECTION_WIDE = "connection";
+	private static final String CONFIG_TYPE_CONNECTION = "connection";
 
 	/** iSCSI's key value delimiter */
 	public static final String KEY_VALUE_DELIMITER = "=";
@@ -62,14 +60,12 @@ public class OperationalTextConfiguration {
 
 	private static OperationalTextConfiguration globalConfig;
 
-	private final OperationalTextConfiguration parentConfiguration;
-
-	private final Map<OperationalTextKey, OperationalTextValue> localConfig;
+	private final Set<OperationalTextKey> localConfig;
 
 	private final String configType;
 
 	private OperationalTextConfiguration(String configType,
-			OperationalTextConfiguration parentConfig){
+			OperationalTextConfiguration parentConfig) {
 		if (globalParser == null) {
 			globalParser = new GlobalConfigParser(XML_CONF_FILE_ADRESS,
 					XSD_VALIDATE_FILE_ADRESS);
@@ -78,97 +74,98 @@ public class OperationalTextConfiguration {
 			globalConfig = parseGlobalConfig();
 		}
 		this.configType = configType;
-		
-		localConfig = new HashMap<OperationalTextKey, OperationalTextValue>();
-		parentConfiguration = parentConfig;
+
+		localConfig = new HashSet<OperationalTextKey>();
 	}
 
-	private OperationalTextConfiguration getParentConfiguration() {
-		return parentConfiguration;
-	}
-
-	private String getConfigType() {
-		return configType;
-	}
-
-	private Map<OperationalTextKey, OperationalTextValue> getConfigMap() {
+	private Set<OperationalTextKey> getConfigSet() {
 		return localConfig;
 	}
 
+	public void addKey(OperationalTextKey key) throws OperationalTextException {
+		if (!localConfig.contains(key)) {
+			localConfig.add(key);
+		} else {
+			throw new OperationalTextException(
+					"Confiduration already contains key: " + key.getKey());
+		}
+
+	}
 
 	/**
 	 * 
 	 * @param key
 	 * @return
+	 * @throws ConfigurationException
 	 */
-	public OperationalTextKey getKey(String key) {
-		return null;
+	public OperationalTextKey getKey(String key)
+			throws OperationalTextException {
+		Iterator<OperationalTextKey> keys = getConfigSet().iterator();
+		while (keys.hasNext()) {
+			OperationalTextKey testedKey = keys.next();
+			if (testedKey.getKey().equals(key)) {
+				return testedKey;
+			}
+		}
+		throw new OperationalTextException(
+				"Configuration doesn't contain Key: " + key);
 	}
 
-	/**
-	 * 
-	 * @param value
-	 * @return
-	 */
-	public OperationalTextValue getValue(String value) {
-		return null;
-	}
-
-	/**
-	 * 
-	 * @param value
-	 * @return
-	 */
-	public OperationalTextValue getValue(OperationalTextValue value) {
-		return null;
-	}
-
-	/**
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void update(String key, String value) {
-
-	}
-	
-	/**
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void update(OperationalTextKey key, OperationalTextValue value) {
-
-	}
-	
 	/**
 	 * 
 	 */
 	public void reset() {
+		if (!configType.equals(OperationalTextConfiguration.CONFIG_TYPE_GLOBAL)) {
+			localConfig.clear();
+			Iterator<OperationalTextKey> globalKeys = globalConfig
+					.getConfigSet().iterator();
+			while (globalKeys.hasNext()) {
+				OperationalTextKey newKey = globalKeys.next();
+				if (configType
+						.equals(OperationalTextConfiguration.CONFIG_TYPE_CONNECTION)) {
+					if (newKey.getScope().equals(
+							OperationalTextKey.SCOPE_CONNECTION_WIDE)) {
+						localConfig.add(OperationalTextKey.copy(newKey));
+					}
+				}
+				if (configType
+						.equals(OperationalTextConfiguration.CONFIG_TYPE_SESSION)) {
+					if (newKey.getScope().equals(
+							OperationalTextKey.SCOPE_SESSION_WIDE)) {
+						localConfig.add(OperationalTextKey.copy(newKey));
+					}
+				}
+			}
+		}
+	}
+
+	public void reset(String key) {
 
 	}
 
-	public void reset(OperationalTextKey key) {
+	public void delete() {
 
 	}
 
 	public boolean equals(OperationalTextConfiguration config) {
-		if (this.getConfigMap().entrySet().containsAll(
-				config.getConfigMap().entrySet())) {
+		if (this.getConfigSet().containsAll(config.getConfigSet())) {
 			return true;
 		}
 		return false;
 	}
 
-	public static OperationalTextConfiguration create(Session session) throws OperationalTextException {
+	public static OperationalTextConfiguration create(Session session) {
 		OperationalTextConfiguration result = new OperationalTextConfiguration(
-				OperationalTextConfiguration.SESSION_WIDE, globalConfig);
+				OperationalTextConfiguration.CONFIG_TYPE_SESSION, globalConfig);
+		result.reset();
 		return result;
 	}
 
-	public static OperationalTextConfiguration create(Connection connection) throws OperationalTextException {
+	public static OperationalTextConfiguration create(Connection connection) {
 		OperationalTextConfiguration result = new OperationalTextConfiguration(
-				OperationalTextConfiguration.CONNECTION_WIDE, connection.getReferencedSession().getConfiguration());
+				OperationalTextConfiguration.CONFIG_TYPE_CONNECTION, connection
+						.getReferencedSession().getConfiguration());
+		result.reset();
 		return result;
 	}
 
@@ -183,8 +180,7 @@ public class OperationalTextConfiguration {
 		return globalParser.parse();
 	}
 
-	public static String toString(OperationalTextKey key,
-			OperationalTextValue value) {
+	public static String toString(String key, String value) {
 		StringBuffer result = new StringBuffer();
 		result.append(key.toString());
 		result.append(KEY_VALUE_DELIMITER);
@@ -194,11 +190,10 @@ public class OperationalTextConfiguration {
 
 	public static String toString(OperationalTextConfiguration config) {
 		StringBuffer result = new StringBuffer();
-		Iterator<Entry<OperationalTextKey, OperationalTextValue>> pairs = config
-				.getConfigMap().entrySet().iterator();
+		Iterator<OperationalTextKey> pairs = config.getConfigSet().iterator();
 		while (pairs.hasNext()) {
 			result.append(toString(pairs.next().getKey(), pairs.next()
-					.getValue()));
+					.getValue().getString()));
 			result.append(PAIR_DELIMITER);
 		}
 		result.deleteCharAt(result.length() - 1);
@@ -216,7 +211,7 @@ public class OperationalTextConfiguration {
 		}
 
 		public synchronized OperationalTextConfiguration parse() {
-			//don't forget to set GlOBAL_WIDE;
+			// don't forget to set GlOBAL_WIDE;
 			return null;
 		}
 

@@ -556,9 +556,9 @@ public class OperationalTextKey {
 	 * TargetAddress=[1080:0:0:0:8:800:200C:417A],65<br/>
 	 * TargetAddress=[1080::8:800:200C:417A]:5003,1 <br/>
 	 * TargetAddress=computingcenter.example.com,23 <p/> Use of the
-	 * portal-group-tag is described in Appendix D. - SendTargets AbstractOperation -.
-	 * The formats for the port and portal-group-tag are the same as the one
-	 * specified in Section 12.9 TargetPortalGroupTag.
+	 * portal-group-tag is described in Appendix D. - SendTargets
+	 * AbstractOperation -. The formats for the port and portal-group-tag are
+	 * the same as the one specified in Section 12.9 TargetPortalGroupTag.
 	 */
 	public static final String TARGET_ADDRESS = "TargetAddress";
 
@@ -660,20 +660,26 @@ public class OperationalTextKey {
 	private final OperationalTextConfiguration globalConfig = OperationalTextConfiguration
 			.getGlobalConfig();
 
+	/** the key's String representation */
 	private String key;
 
+	/** the scopes's String representation */
 	private String scope;
 
+	/** the sender's String representation */
 	private String sender;
 
-	private OperationalTextKey(String key)
-			throws OperationalTextException {
+	/** the jey's value */
+	private OperationalTextValue value;
+
+	private OperationalTextKey(String key) throws OperationalTextException {
 		String scope = globalConfig.getKey(key).getScope();
 		String sender = globalConfig.getKey(key).getSender();
 		update(key, scope, sender);
 	}
-	
-	private OperationalTextKey(String key, String scope, String sender) throws OperationalTextException {
+
+	private OperationalTextKey(String key, String scope, String sender)
+			throws OperationalTextException {
 		update(key, scope, sender);
 	}
 
@@ -688,14 +694,40 @@ public class OperationalTextKey {
 	public String getSender() {
 		return sender;
 	}
-	
-	public static OperationalTextKey create(String key) throws OperationalTextException{
+
+	public OperationalTextValue getValue() {
+		return value;
+	}
+
+	public final void setValue(OperationalTextValue value) {
+		this.value = value;
+	}
+
+	public static OperationalTextKey copy(OperationalTextKey key) {
+		OperationalTextKey copy = null;
+		try {
+			copy = OperationalTextKey.create(key.getKey(), key.getScope(), key
+					.getSender());
+			OperationalTextValue copiedValue = OperationalTextValue.create(key
+					.getValue().getString(), key.getValue().getResultType());
+			copy.setValue(copiedValue);
+		} catch (OperationalTextException e) {
+			// can be ignored, because key already exists, i.e. a validation
+			// error cannot occur
+		}
+		return copy;
+	}
+
+	public static OperationalTextKey create(String key)
+			throws OperationalTextException {
 		return new OperationalTextKey(key);
 	}
-	
-	public static OperationalTextKey create(String key, String scope, String sender) throws OperationalTextException{
+
+	public static OperationalTextKey create(String key, String scope,
+			String sender) throws OperationalTextException {
 		return new OperationalTextKey(key, scope, sender);
 	}
+	
 
 	public static boolean validateSender(String sender) {
 		if (sender.equals(SENDER_INITIATOR) || sender.equals(SENDER_TARGET)
@@ -714,7 +746,8 @@ public class OperationalTextKey {
 	}
 
 	public static boolean validateKey(String key) {
-		// iSCSI targets must not allow key's with length more than 64bytes (UTF8)
+		// iSCSI targets must not allow key's with length more than 64bytes
+		// (UTF8)
 		if (key.length() > MAX_KEY_LENGTH) {
 			return false;
 		}
@@ -747,8 +780,9 @@ public class OperationalTextKey {
 
 		return false;
 	}
-	
-	private final void  update(String key, String scope, String sender) throws OperationalTextException{
+
+	private final void update(String key, String scope, String sender)
+			throws OperationalTextException {
 		if (!validateKey(key)) {
 			throwNoValidKeyException(key);
 		}
@@ -764,24 +798,25 @@ public class OperationalTextKey {
 		this.scope = scope;
 		this.sender = sender;
 	}
-	
+
 	private void throwNoValidSenderException(String invalidSender)
 			throws OperationalTextException {
-		throw new OperationalTextException("Not a valid iSCSI sender parameter: "
-				+ invalidSender);
+		throw new OperationalTextException(
+				"Not a valid iSCSI sender parameter: " + invalidSender);
 
 	}
 
 	private void throwNoValidScopeException(String invalidScope)
 			throws OperationalTextException {
-		throw new OperationalTextException("Not a valid iSCSI scope parameter: "
-				+ invalidScope);
+		throw new OperationalTextException(
+				"Not a valid iSCSI scope parameter: " + invalidScope);
 
 	}
 
-	private void throwNoValidKeyException(String invalidKey) throws OperationalTextException {
-		throw new OperationalTextException("Not a valid iSCSI operational text parameter: "
-				+ invalidKey);
+	private void throwNoValidKeyException(String invalidKey)
+			throws OperationalTextException {
+		throw new OperationalTextException(
+				"Not a valid iSCSI operational text parameter: " + invalidKey);
 	}
 
 }
