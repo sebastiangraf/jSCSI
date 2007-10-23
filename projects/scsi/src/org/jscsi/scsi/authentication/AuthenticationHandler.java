@@ -1,11 +1,6 @@
 
-package org.jscsi.authentication;
-import java.util.List;
+package org.jscsi.scsi.authentication;
 import java.util.Map;
-import java.util.Set;
-
-import org.jscsi.scsi.ActivationHandler;
-import org.jscsi.scsi.LogicalUnit;
 
 /**
  * A pluggable interface for handling iSCSI login phase authentication. Implementations perform

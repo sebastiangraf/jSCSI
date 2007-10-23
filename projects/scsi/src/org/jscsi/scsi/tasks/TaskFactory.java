@@ -1,7 +1,5 @@
 
 package org.jscsi.scsi.tasks;
-import java.nio.ByteBuffer;
-
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.transport.TargetTransportPort;

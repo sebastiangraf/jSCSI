@@ -1,11 +1,8 @@
 
 package org.jscsi.scsi.transport;
 
-import java.nio.ByteBuffer;
-
 import org.jscsi.scsi.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.tasks.Status;
 
 /**
  * Within a SCSI Target, the Task Router sits between the Target Ports and Logical Units.

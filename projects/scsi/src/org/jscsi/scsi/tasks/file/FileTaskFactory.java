@@ -1,6 +1,5 @@
 package org.jscsi.scsi.tasks.file;
 
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 

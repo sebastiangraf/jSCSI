@@ -1,7 +1,5 @@
 
 package org.jscsi.scsi.tasks;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Valid task attributes as defined in SAM-3 section 8.6.1.
