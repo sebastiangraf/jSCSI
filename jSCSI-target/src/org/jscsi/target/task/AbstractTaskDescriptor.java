@@ -1,6 +1,5 @@
 package org.jscsi.target.task;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +8,6 @@ import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.parameter.connection.SessionPhase;
 import org.jscsi.target.parameter.connection.SessionType;
-import org.jscsi.target.parameter.pdu.Opcode;
 
 /**
  * A task descriptor is used by an iSCSI target environment to
@@ -25,7 +23,7 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 	
 	
 	/** the described task */
-	private final Class refTask;
+	private final Class<? extends AbstractTask> refTask;
 	
 	/** the valid OperationCode */
 	private final OperationCode opcode;
@@ -36,7 +34,7 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 	/** all allowed SessionPhases */
 	private final Set<SessionPhase> allowedSessionPhases;
 	
-	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, SessionPhase phase, Class refTask) throws OperationException{
+	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, SessionPhase phase, Class<? extends AbstractTask> refTask) throws OperationException{
 		this.opcode = opcode;
 		allowedSessionTypes = new HashSet<SessionType>();
 		allowedSessionPhases = new HashSet<SessionPhase>();
@@ -51,7 +49,7 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 		
 	}
 	
-	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, SessionPhase phase, Class refTask) throws OperationException{
+	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, SessionPhase phase, Class<? extends AbstractTask> refTask) throws OperationException{
 		this.opcode = opcode;
 		allowedSessionPhases = new HashSet<SessionPhase>();
 		allowedSessionTypes = types;
@@ -64,7 +62,7 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 		}
 	}
 	
-	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, Set<SessionPhase> phases, Class refTask) throws OperationException{
+	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, Set<SessionPhase> phases, Class<? extends AbstractTask> refTask) throws OperationException{
 		this.opcode = opcode;
 		allowedSessionTypes = new HashSet<SessionType>();
 		allowedSessionPhases = phases;
@@ -77,7 +75,7 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 		}
 	}
 	
-	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, Set<SessionPhase> phases, Class refTask) throws OperationException{
+	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, Set<SessionPhase> phases, Class<? extends AbstractTask> refTask) throws OperationException{
 		this.opcode = opcode;
 		this.allowedSessionTypes = types;
 		this.allowedSessionPhases = phases;
@@ -114,21 +112,15 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 	/**
 	 * Returns a new task Instance
 	 *@return the new Task Instance
+	 * @throws OperationException 
 	 */
-	public Task createTask() {
+	public Task createTask() throws OperationException {
 		String className = refTask.getName();
 		Task task = null;
 		try {
 			task = (Task) Class.forName(className).newInstance();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new OperationException("Couldn't find referenced Task Operation: " + refTask.getName());
 		}
 		return task;
 	}
@@ -137,7 +129,7 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 	 * Returns the Task.class which is described by this TaskDescriptor.
 	 * @return described Task.class
 	 */
-	public Class getReferencedTask(){
+	public Class<? extends AbstractTask> getReferencedTask(){
 		return refTask;
 	}
 	

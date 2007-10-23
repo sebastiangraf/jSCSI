@@ -8,8 +8,8 @@ public interface TaskDescriptor {
 
 	public boolean check(Connection con, ProtocolDataUnit initialPDU);
 	
-	public Task createTask();
+	public Task createTask() throws OperationException;
 	
-	public Class getReferencedTask();
+	public Class<? extends AbstractTask> getReferencedTask();
 	
 }

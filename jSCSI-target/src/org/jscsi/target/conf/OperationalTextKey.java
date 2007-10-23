@@ -1,11 +1,14 @@
 package org.jscsi.target.conf;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
  * This class defines standard iSCSI operational text keys. Vendor specific keys
- * can be set to, if they follow the notation rules.
+ * can be set too, if they follow the notation rules.
  * 
  * @author Marcus Specht
  * 
@@ -727,9 +730,29 @@ public class OperationalTextKey {
 			String sender) throws OperationalTextException {
 		return new OperationalTextKey(key, scope, sender);
 	}
-	
 
-	public static boolean validateSender(String sender) {
+	public static Set<OperationalTextKey> fromString(String textParameters)
+			throws OperationalTextException {
+		Set<OperationalTextKey> result = new HashSet<OperationalTextKey>();
+		//split to all pairs
+		String[] buffer = textParameters
+				.split(OperationalTextConfiguration.PAIR_DELIMITER);
+		for (int i = 0; i < buffer.length; i++) {
+			//split to [key][value]
+			String[] pair = buffer[i]
+					.split(OperationalTextConfiguration.KEY_VALUE_DELIMITER);
+			//create key and value, add to result Set
+			OperationalTextKey key = OperationalTextKey.create(pair[0]);
+			OperationalTextValue value = OperationalTextValue.create(key
+					.getKey());
+			value.update(pair[1]);
+			key.setValue(value);
+			result.add(key);
+		}
+		return result;
+	}
+
+	private static boolean validateSender(String sender) {
 		if (sender.equals(SENDER_INITIATOR) || sender.equals(SENDER_TARGET)
 				|| sender.equals(SENDER_BOTH)) {
 			return true;
@@ -737,7 +760,7 @@ public class OperationalTextKey {
 		return false;
 	}
 
-	public static boolean validateScope(String scope) {
+	private static boolean validateScope(String scope) {
 		if (scope.equals(SCOPE_SESSION_WIDE)
 				|| scope.equals(SCOPE_CONNECTION_WIDE)) {
 			return true;
@@ -745,7 +768,7 @@ public class OperationalTextKey {
 		return false;
 	}
 
-	public static boolean validateKey(String key) {
+	private static boolean validateKey(String key) {
 		// iSCSI targets must not allow key's with length more than 64bytes
 		// (UTF8)
 		if (key.length() > MAX_KEY_LENGTH) {
@@ -816,7 +839,7 @@ public class OperationalTextKey {
 	private void throwNoValidKeyException(String invalidKey)
 			throws OperationalTextException {
 		throw new OperationalTextException(
-				"Not a valid iSCSI operational text parameter: " + invalidKey);
+				"Not a valid iSCSI operational text key parameter: " + invalidKey);
 	}
 
 }

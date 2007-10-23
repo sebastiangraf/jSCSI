@@ -3,6 +3,7 @@ package org.jscsi.target.task;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+@SuppressWarnings("serial")
 public class OperationException extends Exception {
 	
 	/** The logger interface. */
