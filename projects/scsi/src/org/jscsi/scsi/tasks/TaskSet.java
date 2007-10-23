@@ -1,14 +1,11 @@
 
-
 package org.jscsi.scsi.tasks;
-import org.apache.log4j.Logger;
 
-// TODO: Describe class or interface
+import org.jscsi.scsi.protocol.Command;
+
 public interface TaskSet
 {
-
    void addTask(Command command, TaskAttribute attribute);
-   
 }
 
 

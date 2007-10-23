@@ -1,5 +1,5 @@
-
 package org.jscsi.scsi.protocol.sense.exceptions;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -21,7 +21,6 @@ public abstract class MediumErrorException extends SenseException
    protected abstract int getActualRetryCount();
 
    protected abstract long getLogicalBlockAddress();
-   
    
    @Override
    protected byte[] getInformation()
@@ -58,7 +57,7 @@ public abstract class MediumErrorException extends SenseException
       try
       {
          out.writeLong(0);
-         out.writeLong(logicalBlockAddress);
+         out.writeLong(lba);
          out.close();
       }
       catch (IOException e)

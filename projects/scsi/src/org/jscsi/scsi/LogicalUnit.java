@@ -2,6 +2,7 @@
 package org.jscsi.scsi;
 
 import org.jscsi.scsi.protocol.Command;
+import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 /**
@@ -30,5 +31,5 @@ public interface LogicalUnit
     */
    void enqueue( TargetTransportPort port, Command command );
    
-   void setModePageFactory(ModePageFactory factory);
+   void setModePageFactory(ModePageRegistry registry);
 }
