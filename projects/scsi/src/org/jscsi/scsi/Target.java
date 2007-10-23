@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jscsi.scsi.authentication.AuthenticationHandler;
-import org.jscsi.scsi.protocol.mode.ModeRegistry;
+import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.transport.TaskRouter;
 
 /**
@@ -32,7 +32,7 @@ public abstract class Target
    
    private String targetName;
    private TaskRouter taskRouter;
-   private ModeRegistry modeRegistry;
+   private ModePageRegistry modePageRegistry;
    
    private List<AuthenticationHandler> authHandlers;
    
@@ -49,12 +49,12 @@ public abstract class Target
    public Target(
          String targetName, 
          TaskRouter router, 
-         ModeRegistry modeRegistry,
+         ModePageRegistry modePageRegistry,
          List<AuthenticationHandler> handlers)
    {
       this.targetName = targetName;
       this.taskRouter = router;
-      this.modeRegistry = modeRegistry;
+      this.modePageRegistry = modePageRegistry;
       this.authHandlers = new ArrayList<AuthenticationHandler>();
       this.authHandlers.addAll(handlers);
    }
@@ -84,9 +84,9 @@ public abstract class Target
       return authHandlers;
    }
    
-   public ModeRegistry getModeRegistry()
+   public ModePageRegistry getModeRegistry()
    {
-      return this.modeRegistry;
+      return this.modePageRegistry;
    }
    
    
