@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jscsi.scsi.protocol.Command;
+import org.jscsi.scsi.protocol.cdb.CommandDescriptorBlock;
+import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,15 +22,16 @@ import org.junit.Test;
  */
 public class TaskManagerTest
 {
-   
    public static abstract class TestTask implements Task
    {
+      private Command command;
       private long delay;
       private Boolean done = false;
       
-      public TestTask( long delay )
+      public TestTask( TaskAttribute attribute, long delay )
       {
          this.delay = delay;
+         this.command = new Command( (Nexus)null, (CommandDescriptorBlock)null, attribute, 0, 0 );
       }
       
       /**
@@ -87,7 +90,7 @@ public class TaskManagerTest
       
       public Command getCommand()
       {
-         return null;
+         return this.command;
       }
 
       public TargetTransportPort getTargetTransportPort()
@@ -104,7 +107,7 @@ public class TaskManagerTest
       
       public SimpleTask( List<TestTask> taskSet, long delay )
       {
-         super(delay);
+         super(TaskAttribute.SIMPLE, delay);
          
          synchronized ( taskSet )
          {
@@ -173,7 +176,7 @@ public class TaskManagerTest
       
       public HeadOfQueueTask( List<TestTask> taskSet, long delay )
       {
-         super(delay);
+         super(TaskAttribute.HEAD_OF_QUEUE, delay);
          
          synchronized ( taskSet )
          {
@@ -234,7 +237,7 @@ public class TaskManagerTest
       
       public OrderedTask( List<TestTask> taskSet, long delay )
       {
-         super(delay);
+         super(TaskAttribute.ORDERED, delay);
          
          synchronized ( taskSet )
          {
@@ -511,6 +514,7 @@ public class TaskManagerTest
             false,
             true );
    }
+   
 
 }
 
