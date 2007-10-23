@@ -33,7 +33,6 @@
 //---------------------
 
 package org.jscsi.scsi.lu;
-import org.apache.log4j.Logger;
 import org.jscsi.scsi.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.transport.TargetTransportPort;
@@ -41,14 +40,11 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 // TODO: Describe class or interface
 public abstract class GenericLogicalUnit implements LogicalUnit
 {
-   private static Logger _logger = Logger.getLogger(GenericLogicalUnit.class);
-
    public void enqueue(TargetTransportPort port, Command command)
    {
       // TODO Auto-generated method stub
 
    }
-
 }
 
 

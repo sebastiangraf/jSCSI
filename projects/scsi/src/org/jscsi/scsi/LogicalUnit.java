@@ -31,5 +31,5 @@ public interface LogicalUnit
     */
    void enqueue( TargetTransportPort port, Command command );
    
-   void setModePageFactory(ModePageRegistry registry);
+   void setModePageRegistry(ModePageRegistry modePageRegistry);
 }

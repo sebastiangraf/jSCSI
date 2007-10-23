@@ -33,12 +33,10 @@
 //---------------------
 
 package org.jscsi.scsi.protocol.inquiry;
-import org.apache.log4j.Logger;
 
 // TODO: Describe class or interface
 public abstract class InquiryDataRegistry
 {
-   private static Logger _logger = Logger.getLogger(InquiryDataRegistry.class);
 
 }
 
