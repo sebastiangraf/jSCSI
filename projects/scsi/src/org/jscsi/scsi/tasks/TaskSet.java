@@ -40,7 +40,7 @@ public class TaskSet
    }
    
    ////////////////////////////////////////////////////////////////////////////
-   // protected accessors
+   // protected queue accessors
    
    /**
     * Non-blocking method for acquiring the next queued task.

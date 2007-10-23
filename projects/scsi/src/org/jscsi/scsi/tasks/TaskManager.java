@@ -3,8 +3,6 @@ package org.jscsi.scsi.tasks;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.jscsi.scsi.exceptions.TaskManagerException;
-
 public class TaskManager extends TaskSet implements Runnable
 {
 
@@ -40,7 +38,7 @@ public class TaskManager extends TaskSet implements Runnable
       _executor.shutdown();
    }
    
-   public void stop()
+   public void shutdown()
    {
       _running = false;
    }
@@ -50,6 +48,4 @@ public class TaskManager extends TaskSet implements Runnable
       super();
       _executor = Executors.newFixedThreadPool(numThreads);
    }
-   
-   
 }
