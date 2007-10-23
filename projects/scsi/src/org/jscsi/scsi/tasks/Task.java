@@ -3,9 +3,9 @@ package org.jscsi.scsi.tasks;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
-public interface Task
+public interface Task extends Runnable
 {
-   public void execute();
+   public void run();
    
    public Command getCommand();
    
@@ -14,4 +14,7 @@ public interface Task
     * @deprecated
     */
    public TargetTransportPort getTargetTransportPort();
+   
+   public int setPriority();
+   public int getPriority();
 }

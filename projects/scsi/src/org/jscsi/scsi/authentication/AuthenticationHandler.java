@@ -45,5 +45,3 @@ public interface AuthenticationHandler
    boolean proceed();
    
 }
-
-

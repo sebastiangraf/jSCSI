@@ -17,4 +17,22 @@ public class WriteFileTask extends FileTask
       return null;
    }
 
+   public int getPriority()
+   {
+      // TODO Auto-generated method stub
+      return 0;
+   }
+
+   public void run()
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   public int setPriority()
+   {
+      // TODO Auto-generated method stub
+      return 0;
+   }
+
 }
