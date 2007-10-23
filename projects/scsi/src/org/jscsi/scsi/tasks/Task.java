@@ -15,6 +15,4 @@ public interface Task extends Runnable
     */
    public TargetTransportPort getTargetTransportPort();
    
-   public int setPriority();
-   public int getPriority();
 }

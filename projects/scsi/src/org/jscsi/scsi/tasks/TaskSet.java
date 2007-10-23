@@ -90,7 +90,7 @@ public class TaskSet
       }
       else if (attribute == TaskAttribute.SIMPLE && _soTaskState == TaskAttribute.SIMPLE)
       {
-         int priority = task.getPriority();
+         int priority = task.getCommand().getTaskPriority();
          
          if (priority == 0)
          {

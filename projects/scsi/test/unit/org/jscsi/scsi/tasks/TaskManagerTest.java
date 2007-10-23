@@ -1,0 +1,517 @@
+
+package org.jscsi.scsi.tasks;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jscsi.scsi.protocol.Command;
+import org.jscsi.scsi.transport.TargetTransportPort;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+/**
+ * Tests task manager implementations for proper execution ordering.
+ */
+public class TaskManagerTest
+{
+   
+   public static abstract class TestTask implements Task
+   {
+      private long delay;
+      private Boolean done = false;
+      
+      public TestTask( long delay )
+      {
+         this.delay = delay;
+      }
+      
+      /**
+       * Returns <code>true</code> if the task has finished executing; <code>false</code>
+       * otherwise.
+       */
+      public boolean isDone()
+      {
+         synchronized ( this )
+         {
+            return this.done;
+         }
+      }
+      
+      /**
+       * Returns <code>true</code> if the task was executed in the proper order;
+       * <code>false</code> otherwise.
+       */
+      public abstract boolean isProper();
+      
+      /**
+       * Checks for proper execution in a static task set. If tasks are added to a Task Manager's
+       * queue set after execution has begun this method may cause improper results to be returned
+       * from {@link #isProper()}.
+       * 
+       */
+      protected abstract void checkProperExecution();
+      
+      /**
+       * Resets task completion state.
+       */
+      public void reset()
+      {
+         this.done = false;
+      }
+      
+      
+      public void run()
+      {
+         this.checkProperExecution();
+         
+         try
+         {
+            Thread.sleep(this.delay);
+         }
+         catch (InterruptedException e)
+         {
+            e.printStackTrace();
+         }
+         synchronized ( this )
+         {
+            this.done = true;
+            this.notifyAll();
+         }
+      }
+      
+      public Command getCommand()
+      {
+         return null;
+      }
+
+      public TargetTransportPort getTargetTransportPort()
+      {
+         return null;
+      }
+   }
+   
+   public static class SimpleTask extends TestTask
+   {
+      private List<TestTask> taskSet;
+      private int index;
+      private Boolean properStart = false;
+      
+      public SimpleTask( List<TestTask> taskSet, long delay )
+      {
+         super(delay);
+         
+         synchronized ( taskSet )
+         {
+            this.index = taskSet.size();
+            taskSet.add(this);
+         }
+         this.taskSet = taskSet;
+      }
+      
+      @Override
+      protected void checkProperExecution()
+      {
+         synchronized ( this.taskSet )
+         {
+            this.properStart = true;
+            for ( int i = 0; i < this.index; i++ )
+            {
+               TestTask t = this.taskSet.get(i);
+               if ( (t instanceof HeadOfQueueTask) && (! t.isDone()) )
+               {
+                  this.properStart = false;
+               }
+               else if ( (t instanceof OrderedTask) && (! t.isDone()) )
+               {
+                  this.properStart = false;
+               }
+            }
+            for ( int i = this.index + 1; i < this.taskSet.size(); i++ )
+            {
+               TestTask t = this.taskSet.get(i);
+               if ( (t instanceof HeadOfQueueTask) && (! t.isDone()) )
+               {
+                  this.properStart = false;
+               }
+               else if ( (t instanceof OrderedTask) && t.isDone() )
+               {
+                  this.properStart = false;
+               }
+            }
+         }  
+      }
+
+      public boolean isProper()
+      {
+         return this.properStart;
+      }
+
+      @Override
+      public void reset()
+      {
+         super.reset();
+         this.properStart = false;
+      }
+      
+      
+   }
+   
+   
+   public static class HeadOfQueueTask extends TestTask
+   {
+
+      private List<TestTask> taskSet;
+      private int index;
+      private Boolean properStart = false;
+      
+      
+      public HeadOfQueueTask( List<TestTask> taskSet, long delay )
+      {
+         super(delay);
+         
+         synchronized ( taskSet )
+         {
+            this.index = taskSet.size();
+            taskSet.add(this);
+         }
+         this.taskSet = taskSet;
+      }
+
+      public boolean isProper()
+      {
+         return this.properStart;
+      }
+      
+      @Override
+      protected void checkProperExecution()
+      {
+         synchronized ( this.taskSet )
+         {
+            this.properStart = true;
+            for ( int i = 0; i < this.index; i++ )
+            {
+               TestTask t = this.taskSet.get(i);
+               if ( (t instanceof HeadOfQueueTask) && (! t.isDone()) )
+               {
+                  this.properStart = false;
+               }
+               else if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
+               {
+                  this.properStart = false;
+               }
+            }
+            for ( int i = this.index + 1; i < this.taskSet.size(); i++ )
+            {
+               TestTask t = this.taskSet.get(i);
+               if ( t.isDone() )
+               {
+                  this.properStart = false;
+               }
+            }
+         }
+      }
+      
+      @Override
+      public void reset()
+      {
+         super.reset();
+         this.properStart = false;
+      }
+      
+   }
+   
+   public static class OrderedTask extends TestTask
+   {
+      private List<TestTask> taskSet;
+      private int index;
+      private Boolean properStart = false;
+      
+      public OrderedTask( List<TestTask> taskSet, long delay )
+      {
+         super(delay);
+         
+         synchronized ( taskSet )
+         {
+            this.index = taskSet.size();
+            taskSet.add(this);
+         }
+         this.taskSet = taskSet;
+      }
+
+      @Override
+      protected void checkProperExecution()
+      {
+         synchronized ( this.taskSet )
+         {
+            this.properStart = true;
+            for ( int i = 0; i < this.index; i++ )
+            {
+               TestTask t = this.taskSet.get(i);
+               if ( ! t.isDone() )
+               {
+                  this.properStart = false;
+               }
+            }
+            for ( int i = this.index + 1; i < this.taskSet.size(); i++ )
+            {
+               TestTask t = this.taskSet.get(i);
+               if ( (t instanceof HeadOfQueueTask) && (! t.isDone()) )
+               {
+                  this.properStart = false;
+               }
+               else if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
+               {
+                  this.properStart = false;
+               }
+            }
+         }
+      }
+
+      @Override
+      public boolean isProper()
+      {
+         return this.properStart;
+      }
+      
+      @Override
+      public void reset()
+      {
+         super.reset();
+         this.properStart = false;
+      }
+      
+      
+   }
+   
+   
+   
+   @BeforeClass
+   public static void setUpBeforeClass() throws Exception
+   {
+   }
+
+   @AfterClass
+   public static void tearDownAfterClass() throws Exception
+   {
+   }
+
+   @Before
+   public void setUp() throws Exception
+   {
+   }
+
+   @After
+   public void tearDown() throws Exception
+   {
+   }
+   
+   
+   
+   /*
+    * Below we test the TestTask classes for detection capability. The following
+    * table shows insertion orders and execution orders on those sets. Those execution
+    * orders which are incorrect are marked with 'Failure'.
+    * 
+    * H - Head of Queue Tasks
+    * O - Ordered Tasks
+    * S - Simple Tasks
+    * 
+    *    Insertion    Execution    Result
+    *    -----------  -----------  -----------
+    *     H, 0         H, O
+    *                  O, H         Failure
+    *    -----------  -----------  -----------
+    *     H, S         H, S
+    *                  S, H         Failure
+    *    -----------  -----------  -----------
+    *     O, H         O, H         Failure
+    *                  H, O
+    *    -----------  -----------  -----------
+    *     O, S         O, S
+    *                  S, O         Failure
+    *    -----------  -----------  -----------
+    *     S, H         S, H         Failure
+    *                  H, S 
+    *    -----------  -----------  -----------
+    *     S, O         S, O
+    *                  O, S         Failure
+    *    -----------  -----------  -----------
+    *     H[1], H[2]   [1], [2]
+    *                  [2], [1]     Failure
+    *    -----------  -----------  -----------
+    *     S[1], S[2]   [1], [2]
+    *                  [2], [1]
+    *    -----------  -----------  -----------
+    *     O[1], O[2]   [1], [2]
+    *                  [2], [1]     Failure
+    *    -----------  -----------  -----------
+    */
+   
+   /**
+    * @param first A first task.
+    * @param second A second task which is part of the same task set as the first task.
+    * @param failForward True if execution in order should fail.
+    * @param failReverse True if execution in reverse should fail.
+    */
+   private void internalBinaryTest(
+         TestTask first,
+         TestTask second,
+         boolean failForward,
+         boolean failReverse )
+   {
+      first.run();
+      second.run();
+      
+      if ( failForward )
+      {
+         if ( first.isProper() && second.isProper() )
+         {
+            fail("Both tasks executed properly; expected failure");
+         }
+      }
+      else
+      {
+         assertTrue( "First task executed improperly", first.isProper()  );
+         assertTrue( "Second task executed improperly", second.isProper() );
+      }
+      
+      first.reset();
+      second.reset();
+      
+      second.run();
+      first.run();
+      
+      if ( failReverse )
+      {
+         if ( first.isProper() && second.isProper() )
+         {
+            fail("Both tasks executed properly; expected failure");
+         }
+      }
+      else
+      {
+         assertTrue( "First task executed improperly", first.isProper()  );
+         assertTrue( "Second task executed improperly", second.isProper() );
+      }
+      
+      
+   }
+   
+   
+   @Test
+   public void internalTest_HO()
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      
+      internalBinaryTest(
+            new HeadOfQueueTask(taskSet, 0),
+            new OrderedTask(taskSet, 0),
+            false,
+            true );
+   }
+   
+   @Test
+   public void internalTest_HS()
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      
+      internalBinaryTest(
+            new HeadOfQueueTask(taskSet, 0),
+            new SimpleTask(taskSet, 0),
+            false,
+            true );
+   }
+   
+   @Test
+   public void internalTest_OH()
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      
+      internalBinaryTest(
+            new OrderedTask(taskSet, 0),
+            new HeadOfQueueTask(taskSet, 0),
+            true,
+            false );
+   }
+   
+   @Test
+   public void internalTest_OS()
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      
+      internalBinaryTest(
+            new OrderedTask(taskSet, 0),
+            new SimpleTask(taskSet, 0),
+            false,
+            true );
+   }
+   
+   @Test
+   public void internalTest_SH()
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      
+      internalBinaryTest(
+            new SimpleTask(taskSet, 0),
+            new HeadOfQueueTask(taskSet, 0),
+            true,
+            false );
+   }
+   
+   @Test
+   public void internalTest_SO()
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      
+      internalBinaryTest(
+            new SimpleTask(taskSet, 0),
+            new OrderedTask(taskSet, 0),
+            false,
+            true );
+   }
+   
+   @Test
+   public void internalTest_H1H2()
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      
+      internalBinaryTest(
+            new HeadOfQueueTask(taskSet, 0),
+            new HeadOfQueueTask(taskSet, 0),
+            false,
+            true );
+   }
+   
+   @Test
+   public void internalTest_S1S2()
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      
+      internalBinaryTest(
+            new SimpleTask(taskSet, 0),
+            new SimpleTask(taskSet, 0),
+            false,
+            false );
+   }
+   
+   @Test
+   public void internalTest_O1O2()
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      
+      internalBinaryTest(
+            new OrderedTask(taskSet, 0),
+            new OrderedTask(taskSet, 0),
+            false,
+            true );
+   }
+
+}
+
+
