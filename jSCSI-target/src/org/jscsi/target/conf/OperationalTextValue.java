@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.parser.datasegment.IResultFunction;
 import org.jscsi.parser.datasegment.ResultFunctionFactory;
-import org.jscsi.target.util.Singleton;
+
 
 /**
  * This class defines standard iSCSI operational text values.
@@ -298,7 +298,8 @@ public class OperationalTextValue {
 		}
 		return false;
 	}
-
+	
+	/*
 	private static void throwNotAValidValueException(String value)
 			throws OperationalTextException {
 		throw new OperationalTextException("Not a valid Value: " + value);
@@ -309,7 +310,8 @@ public class OperationalTextValue {
 		throw new OperationalTextException("Not a valid resultType: "
 				+ resultType);
 	}
-
+	*/
+	
 	/*
 	 * private static boolean isValidValue(OperationalTextValue value){ return
 	 * true; }

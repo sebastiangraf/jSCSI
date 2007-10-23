@@ -8,7 +8,6 @@ import javax.naming.ConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.parser.datasegment.ResultFunctionFactory;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.Session;
 
@@ -211,7 +210,7 @@ public class OperationalTextConfiguration {
 		}
 
 		public synchronized OperationalTextConfiguration parse() {
-			// don't forget to set GlOBAL_WIDE;
+			// don't forget to mark created globalConfig as GlOBAL_WIDE;
 			return null;
 		}
 

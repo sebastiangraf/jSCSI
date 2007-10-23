@@ -122,5 +122,13 @@ public abstract class AbstractOperation implements Operation {
 		return restarted;
 	}
 
+	public void tagFinished(){
+		finished = true;
+	}
+	
+	public boolean finished() {
+		return finished;
+	}
+
 
 }

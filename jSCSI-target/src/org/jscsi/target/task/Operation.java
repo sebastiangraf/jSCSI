@@ -56,6 +56,12 @@ public interface Operation {
 	 * @return true if restarted, false else.
 	 */
 	public boolean awaitRestart(long nanosTimeout);
+	
+	/**
+	 * Checks whether the Operation finished or not.
+	 * @return true if finished, false else.
+	 */
+	public boolean finished();
 
 	
 }
