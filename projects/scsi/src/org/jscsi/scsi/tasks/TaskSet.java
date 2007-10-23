@@ -26,9 +26,10 @@ public class TaskSet
       _taskAdded = new Object();
    }
    
-   public void submitTask(Task task, TaskAttribute attribute)
+   public void submitTask(Task task)
    throws TaskSetException
    {
+      TaskAttribute attribute = task.getCommand().getTaskAttribute();
       if (attribute == TaskAttribute.HEAD_OF_QUEUE)
       {
          this._addHeadOfQueue(task);
