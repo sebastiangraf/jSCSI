@@ -19,15 +19,14 @@ public class TaskSet
    ////////////////////////////////////////////////////////////////////////////
    // interface
    
-   public void Taskset()
+   public TaskSet()
    {
       _headOfQueue = Collections.synchronizedList(new LinkedList<Task>());
       _simplePriorityMap = Collections.synchronizedMap(new HashMap<Integer, Integer>());
       _taskAdded = new Object();
    }
    
-   public void submitTask(Task task)
-   throws TaskSetException
+   public void submitTask(Task task) throws TaskSetException
    {
       TaskAttribute attribute = task.getCommand().getTaskAttribute();
       if (attribute == TaskAttribute.HEAD_OF_QUEUE)
@@ -118,6 +117,9 @@ public class TaskSet
    private void _addHeadOfQueue(Task task)
    {
       _headOfQueue.add(0, task);
-      _taskAdded.notify();
+      synchronized ( _taskAdded )
+      {
+         _taskAdded.notify();
+      }
    }
 }
