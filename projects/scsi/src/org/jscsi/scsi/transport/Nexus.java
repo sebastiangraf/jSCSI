@@ -122,6 +122,58 @@ public class Nexus
    {
       return taskTag;
    }
+
+
+
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result =
+            prime * result
+                  + ((initiatorPortIdentifier == null) ? 0 : initiatorPortIdentifier.hashCode());
+      result = prime * result + (int) (logicalUnitNumber ^ (logicalUnitNumber >>> 32));
+      result =
+            prime * result + ((targetPortIdentifier == null) ? 0 : targetPortIdentifier.hashCode());
+      result = prime * result + (int) (taskTag ^ (taskTag >>> 32));
+      return result;
+   }
+
+
+
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      final Nexus other = (Nexus) obj;
+      if (initiatorPortIdentifier == null)
+      {
+         if (other.initiatorPortIdentifier != null)
+            return false;
+      }
+      else if (!initiatorPortIdentifier.equals(other.initiatorPortIdentifier))
+         return false;
+      if (logicalUnitNumber != other.logicalUnitNumber)
+         return false;
+      if (targetPortIdentifier == null)
+      {
+         if (other.targetPortIdentifier != null)
+            return false;
+      }
+      else if (!targetPortIdentifier.equals(other.targetPortIdentifier))
+         return false;
+      if (taskTag != other.taskTag)
+         return false;
+      return true;
+   }
+   
+   
    
    
    
