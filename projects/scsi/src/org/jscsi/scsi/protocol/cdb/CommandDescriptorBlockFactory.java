@@ -58,7 +58,7 @@ public class CommandDescriptorBlockFactory
          IOException
    {
       byte[] opcode = new byte[1];
-      input.get(opcode);
+      input.duplicate().get(opcode); // Read in the operation code without changing the position
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(opcode));
 
       int operationCode = in.readUnsignedByte();
