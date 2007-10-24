@@ -66,7 +66,7 @@ public abstract class AbstractTask implements Task
       return this._targetPort;
    }
 
-   // protected setters to be used by GridTaskFactory
+   // protected setters
    protected void setTargetTransportPort(TargetTransportPort targetPort)
    {
       this._targetPort = targetPort;
