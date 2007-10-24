@@ -49,8 +49,6 @@ public class GenericTaskManagerTest extends TaskManagerTest
          last.wait(10000);
       }
       
-//      Thread.sleep(5000);
-      
       manager.shutdown();
       thread.join();
       

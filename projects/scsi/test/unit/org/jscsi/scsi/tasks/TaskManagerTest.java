@@ -1,4 +1,3 @@
-
 package org.jscsi.scsi.tasks;
 
 import static org.junit.Assert.assertTrue;
@@ -23,8 +22,6 @@ import org.junit.Test;
  */
 public class TaskManagerTest
 {
-   private static Logger _logger = Logger.getLogger(TaskManagerTest.class);
-   
    public static abstract class TestTask implements Task
    {
       private static Logger _logger = Logger.getLogger(TestTask.class);
@@ -221,7 +218,6 @@ public class TaskManagerTest
       @Override
       protected void checkProperExecution()
       {
-         _logger.debug(">>>>> checking for proper execution");
          synchronized ( this.taskSet )
          {
 
@@ -255,7 +251,6 @@ public class TaskManagerTest
          {
             _logger.error("Task not started properly");
          }
-         _logger.debug(" <<<<< checking for proper execution: " + this.properStart + ", object: " + this);
       }
       
       public String reason()
