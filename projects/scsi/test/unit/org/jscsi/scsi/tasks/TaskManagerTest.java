@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.CommandDescriptorBlock;
 import org.jscsi.scsi.transport.Nexus;
@@ -22,8 +23,12 @@ import org.junit.Test;
  */
 public class TaskManagerTest
 {
+   private static Logger _logger = Logger.getLogger(TaskManagerTest.class);
+   
    public static abstract class TestTask implements Task
    {
+      private static Logger _logger = Logger.getLogger(TestTask.class);
+      
       private Command command;
       private long delay;
       private Boolean done = false;
@@ -32,6 +37,7 @@ public class TaskManagerTest
       {
          this.delay = delay;
          this.command = new Command( (Nexus)null, (CommandDescriptorBlock)null, attribute, 0, 0 );
+         _logger.debug("constructed TestTask: " + this);
       }
       
       /**
@@ -76,6 +82,8 @@ public class TaskManagerTest
       
       public void run()
       {
+         assert this.done == false: "This task has already been executed!";
+         _logger.debug("executing task: " + this);
          this.checkProperExecution();
          
          try

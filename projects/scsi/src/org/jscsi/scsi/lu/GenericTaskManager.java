@@ -62,7 +62,8 @@ public class GenericTaskManager implements TaskManager, TaskSet
          nextTask = null;
          try
          {
-            nextTask = _popTask(1);
+            nextTask = _popTask(500);
+            _logger.debug("TaskManager discovered pending task: " + nextTask);
          }
          catch (InterruptedException e)
          {
@@ -71,6 +72,7 @@ public class GenericTaskManager implements TaskManager, TaskSet
          if (nextTask != null)
          {
             _executor.submit(nextTask);
+            _logger.debug("TaskManager executed task: " + nextTask);
          }
       }
       _executor.shutdown();
