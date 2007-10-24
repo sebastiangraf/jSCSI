@@ -1,37 +1,24 @@
+
 package org.jscsi.scsi.tasks.file;
 
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.tasks.Task;
+import org.jscsi.scsi.tasks.AbstractTask;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
-public abstract class FileTask implements Task
+public abstract class FileTask extends AbstractTask
 {
-   // Data   
-   protected TargetTransportPort _targetPort;
-   protected Command _command;
-
    protected FileDevice _device;
 
    public FileTask()
    {
+      super();
    }
 
    // Constructors
-   public FileTask(TargetTransportPort targetPort, FileDevice device)
+   public FileTask(TargetTransportPort targetPort, Command command, FileDevice device)
    {
-      this._targetPort = targetPort;
+      super(targetPort, command);
       this._device = device;
-   }
-
-   // Methods common to all GridTasks
-   public Command getCommand()
-   {
-      return this._command;
-   }
-
-   public TargetTransportPort getTargetTransportPort()
-   {
-      return this._targetPort;
    }
 
    public FileDevice getFileDevice()
@@ -39,19 +26,19 @@ public abstract class FileTask implements Task
       return this._device;
    }
 
-   // package protected setters to be used by GridTaskFactory
-   void setTargetTransportPort(TargetTransportPort targetPort)
-   {
-      this._targetPort = targetPort;
-   }
-
    void setFileDevice(FileDevice device)
    {
       this._device = device;
    }
-
-   void setCommand(Command command)
+   
+   // protected setters to be used by FileTaskFactory
+   protected void setTargetTransportPort(TargetTransportPort targetPort)
    {
-      this._command = command;
+      super.setTargetTransportPort(targetPort);
+   }
+
+   protected void setCommand(Command command)
+   {
+      super.setCommand(command);
    }
 }
