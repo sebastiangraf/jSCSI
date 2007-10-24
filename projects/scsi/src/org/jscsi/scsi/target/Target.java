@@ -1,5 +1,5 @@
 
-package org.jscsi.scsi;
+package org.jscsi.scsi.target;
 
 import java.util.ArrayList;
 import java.util.List;

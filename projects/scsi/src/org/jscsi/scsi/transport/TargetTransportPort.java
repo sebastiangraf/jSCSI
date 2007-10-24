@@ -2,7 +2,7 @@
 package org.jscsi.scsi.transport;
 import java.nio.ByteBuffer;
 
-import org.jscsi.scsi.Target;
+import org.jscsi.scsi.target.Target;
 import org.jscsi.scsi.tasks.Status;
 
 /**

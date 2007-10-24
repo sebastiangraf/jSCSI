@@ -1,5 +1,5 @@
 
-package org.jscsi.scsi;
+package org.jscsi.scsi.lu;
 
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;

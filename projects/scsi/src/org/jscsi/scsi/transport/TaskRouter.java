@@ -1,7 +1,7 @@
 
 package org.jscsi.scsi.transport;
 
-import org.jscsi.scsi.LogicalUnit;
+import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
 
 /**
