@@ -5,7 +5,6 @@ import java.util.concurrent.Executors;
 
 public class TaskManager extends TaskSet implements Runnable
 {
-
    // TODO: can be interrupted safely?
    
    // Tasks executed() within the actual Manager

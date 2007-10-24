@@ -21,7 +21,9 @@ public class TaskSet
    
    public TaskSet()
    {
+      System.out.println("Constructing TaskSet");
       _headOfQueue = Collections.synchronizedList(new LinkedList<Task>());
+      _soTaskQueue = Collections.synchronizedList(new LinkedList<Task>());
       _simplePriorityMap = Collections.synchronizedMap(new HashMap<Integer, Integer>());
       _taskAdded = new Object();
    }
@@ -111,7 +113,10 @@ public class TaskSet
          _soTaskQueue.add(task);
       }
       _soTaskState = attribute;
-      _taskAdded.notify();
+      synchronized (_taskAdded)
+      {
+         _taskAdded.notify();
+      }
    }
    
    private void _addHeadOfQueue(Task task)
