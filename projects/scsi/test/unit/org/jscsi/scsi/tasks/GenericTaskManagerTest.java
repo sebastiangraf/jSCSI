@@ -1,6 +1,7 @@
 package org.jscsi.scsi.tasks;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,21 +49,22 @@ public class GenericTaskManagerTest extends TaskManagerTest
          last.wait(10000);
       }
       
+//      Thread.sleep(5000);
+      
       manager.shutdown();
       thread.join();
       
       for ( int i = 0; i < taskSet.size(); i++ )
       {
          TestTask t = taskSet.get(i);
+
          if ( !t.isDone() )
          {
             fail("Task " + i + " not executed: " + t.getClass().getName() );
          }
          else
          {
-            assertTrue( 
-                  "Task " + i + " failed: " + t.reason() + ": " + t.getClass().getName(),
-                  t.isProper() );
+            assertTrue("Task " + i + " failed (" +t.isProper() + "): " + t.reason() + ": " + t.getClass().getName(), t.isProper() );
          }  
       }  
    }
