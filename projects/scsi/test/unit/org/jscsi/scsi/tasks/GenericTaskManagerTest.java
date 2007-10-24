@@ -1,7 +1,5 @@
-
 package org.jscsi.scsi.tasks;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -40,8 +38,10 @@ public class GenericTaskManagerTest extends TaskManagerTest
       Thread thread = new Thread(manager);
       thread.start();
       
-      last.wait(10000);
-      
+      synchronized (last)
+      {
+         last.wait(10000);
+      }
       
    }
    
