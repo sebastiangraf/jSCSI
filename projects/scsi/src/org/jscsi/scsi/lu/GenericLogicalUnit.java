@@ -33,7 +33,6 @@
 //---------------------
 
 package org.jscsi.scsi.lu;
-import org.jscsi.scsi.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
