@@ -10,24 +10,25 @@ import java.nio.ByteBuffer;
 
 public class ReadCapacity16 extends AbstractCommandDescriptorBlock
 {
-   private static final int OPERATION_CODE = 0x9E;
+   public static final int OPERATION_CODE = 0x9E;
 
    private long lba;
    private int serviceAction;
    private int allocationLength;
    private boolean pmi;
 
-   static
-   {
-      CommandDescriptorBlockFactory.register(OPERATION_CODE, ReadCapacity16.class);
-   }
-   
    public ReadCapacity16()
    {
       super();
    }
-   
-   public ReadCapacity16(long lba, int serviceAction, int allocationLength, boolean pmi, boolean linked, boolean normalACA)
+
+   public ReadCapacity16(
+         long lba,
+         int serviceAction,
+         int allocationLength,
+         boolean pmi,
+         boolean linked,
+         boolean normalACA)
    {
       super(linked, normalACA);
 
@@ -36,18 +37,19 @@ public class ReadCapacity16 extends AbstractCommandDescriptorBlock
       this.allocationLength = allocationLength;
       this.pmi = pmi;
    }
-   
+
    public ReadCapacity16(long lba, int serviceAction, int allocationLength, boolean pmi)
    {
       this(lba, serviceAction, allocationLength, pmi, false, false);
    }
-   
+
+   @Override
    public void decode(ByteBuffer input) throws IllegalArgumentException
    {
       byte[] cdb = new byte[this.size()];
       input.get(cdb);
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
-      
+
       try
       {
          int operationCode = in.readUnsignedByte();
@@ -57,9 +59,10 @@ public class ReadCapacity16 extends AbstractCommandDescriptorBlock
          this.pmi = (in.readByte() & 0x01) != 0;
          super.setControl(in.readUnsignedByte());
 
-         if ( operationCode != OPERATION_CODE )
+         if (operationCode != OPERATION_CODE)
          {
-            throw new IllegalArgumentException("Invalid operation code: " + Integer.toHexString(operationCode));
+            throw new IllegalArgumentException("Invalid operation code: "
+                  + Integer.toHexString(operationCode));
          }
       }
       catch (IOException e)
@@ -67,13 +70,13 @@ public class ReadCapacity16 extends AbstractCommandDescriptorBlock
          throw new IllegalArgumentException("Error reading input data.");
       }
    }
-   
+
    @Override
    public void encode(ByteBuffer output)
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
-      
+
       try
       {
          out.writeByte(OPERATION_CODE);
@@ -82,7 +85,7 @@ public class ReadCapacity16 extends AbstractCommandDescriptorBlock
          out.writeInt(this.allocationLength);
          out.writeByte(this.pmi ? 1 : 0);
          out.writeByte(super.getControl());
-         
+
          output.put(cdb.toByteArray());
       }
       catch (IOException e)
@@ -119,5 +122,40 @@ public class ReadCapacity16 extends AbstractCommandDescriptorBlock
    public int size()
    {
       return 16;
+   }
+
+   public long getLba()
+   {
+      return lba;
+   }
+
+   public void setLba(long lba)
+   {
+      this.lba = lba;
+   }
+
+   public int getServiceAction()
+   {
+      return serviceAction;
+   }
+
+   public void setServiceAction(int serviceAction)
+   {
+      this.serviceAction = serviceAction;
+   }
+
+   public boolean isPmi()
+   {
+      return pmi;
+   }
+
+   public void setPmi(boolean pmi)
+   {
+      this.pmi = pmi;
+   }
+
+   public void setAllocationLength(int allocationLength)
+   {
+      this.allocationLength = allocationLength;
    }
 }

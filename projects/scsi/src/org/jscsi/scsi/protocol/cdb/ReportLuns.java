@@ -10,40 +10,36 @@ import java.nio.ByteBuffer;
 
 public class ReportLuns extends AbstractCommandDescriptorBlock
 {
-   private static final int OPERATION_CODE = 0xA0;
-   
+   public static final int OPERATION_CODE = 0xA0;
+
    private int selectReport;
    private int allocationLength;
-   
-   static
-   {
-      CommandDescriptorBlockFactory.register(OPERATION_CODE, ReportLuns.class);
-   }
-   
+
    public ReportLuns()
    {
       super();
    }
-   
+
    public ReportLuns(int selectReport, int allocationLength, boolean linked, boolean normalACA)
    {
       super(linked, normalACA);
-      
+
       this.selectReport = selectReport;
       this.allocationLength = allocationLength;
    }
-   
+
    public ReportLuns(int selectReport, int allocationLength)
    {
       this(selectReport, allocationLength, false, false);
    }
-   
+
+   @Override
    public void decode(ByteBuffer input) throws IllegalArgumentException
    {
       byte[] cdb = new byte[this.size()];
       input.get(cdb);
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
-      
+
       try
       {
          int operationCode = in.readUnsignedByte();
@@ -56,9 +52,10 @@ public class ReportLuns extends AbstractCommandDescriptorBlock
          in.readByte(); // RESERVED block
          super.setControl(in.readUnsignedByte());
 
-         if ( operationCode != OPERATION_CODE )
+         if (operationCode != OPERATION_CODE)
          {
-            throw new IllegalArgumentException("Invalid operation code: " + Integer.toHexString(operationCode));
+            throw new IllegalArgumentException("Invalid operation code: "
+                  + Integer.toHexString(operationCode));
          }
       }
       catch (IOException e)
@@ -66,13 +63,13 @@ public class ReportLuns extends AbstractCommandDescriptorBlock
          throw new IllegalArgumentException("Error reading input data.");
       }
    }
-   
+
    @Override
    public void encode(ByteBuffer output)
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
-      
+
       try
       {
          out.writeByte(OPERATION_CODE);
@@ -84,7 +81,7 @@ public class ReportLuns extends AbstractCommandDescriptorBlock
          out.writeInt(this.allocationLength);
          out.writeByte(0);
          out.writeByte(super.getControl());
-         
+
          output.put(cdb.toByteArray());
       }
       catch (IOException e)
@@ -121,5 +118,20 @@ public class ReportLuns extends AbstractCommandDescriptorBlock
    public int size()
    {
       return 12;
+   }
+
+   public int getSelectReport()
+   {
+      return selectReport;
+   }
+
+   public void setSelectReport(int selectReport)
+   {
+      this.selectReport = selectReport;
+   }
+
+   public void setAllocationLength(int allocationLength)
+   {
+      this.allocationLength = allocationLength;
    }
 }

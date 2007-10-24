@@ -12,67 +12,62 @@ import java.nio.ByteBuffer;
 public class Read6 extends AbstractCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x08;
-   
+
    private long lba;
    private int transferLength;
 
-   static
-   {
-      CommandDescriptorBlockFactory.register(OPERATION_CODE, Read6.class);
-   }
-   
    public Read6()
    {
       super();
    }
-   
+
    public Read6(long logicalBlockAddress, long transferLength, boolean linked, boolean normalACA)
    {
       super(linked, normalACA);
-      if ( transferLength > 256 )
+      if (transferLength > 256)
       {
          throw new IllegalArgumentException("Transfer length out of bounds for command type");
       }
-      if ( logicalBlockAddress > 2097152 )
+      if (logicalBlockAddress > 2097152)
       {
          throw new IllegalArgumentException("Logical Block Address out of bounds for command type");
       }
       this.lba = logicalBlockAddress;
-      this.transferLength = (int)transferLength;
+      this.transferLength = (int) transferLength;
    }
-   
+
    public Read6(long logicalBlockAddress, long transferLength)
    {
       this(logicalBlockAddress, transferLength, false, false);
    }
-   
-   public void decode(ByteBuffer input)
-         throws BufferUnderflowException, IllegalArgumentException
+
+   @Override
+   public void decode(ByteBuffer input) throws BufferUnderflowException, IllegalArgumentException
    {
       byte[] cdb = new byte[this.size()];
       input.get(cdb);
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
-      
+
       try
       {
          int operationCode = in.readUnsignedByte();
-         
+
          long msb = in.readUnsignedByte() & 0x1F;
          long lss = in.readUnsignedShort();
          this.lba = (msb << 32) | lss;
-         
+
          this.transferLength = in.readUnsignedByte();
          super.setControl(in.readUnsignedByte());
-         
-         if ( this.transferLength == 0 )
+
+         if (this.transferLength == 0)
          {
             this.transferLength = 256;
          }
-         
-         if ( operationCode != OPERATION_CODE )
+
+         if (operationCode != OPERATION_CODE)
          {
-            throw new IllegalArgumentException(
-                  "Invalid operation code: " + Integer.toHexString(operationCode));
+            throw new IllegalArgumentException("Invalid operation code: "
+                  + Integer.toHexString(operationCode));
          }
       }
       catch (IOException e)
@@ -80,24 +75,24 @@ public class Read6 extends AbstractCommandDescriptorBlock
          throw new IllegalArgumentException("Error reading input data.");
       }
    }
-   
+
    @Override
    public void encode(ByteBuffer output)
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
-      
+
       try
       {
          out.writeByte(OPERATION_CODE);
-         
-         int msb = (int)(this.lba >>> 32) & 0x1F;
-         int lss = (int)this.lba & 0xFFFF;
+
+         int msb = (int) (this.lba >>> 32) & 0x1F;
+         int lss = (int) this.lba & 0xFFFF;
          out.writeByte(msb);
          out.writeShort(lss);
          out.writeByte(this.transferLength);
          out.writeByte(super.getControl());
-         
+
          output.put(cdb.toByteArray());
       }
       catch (IOException e)
@@ -134,5 +129,20 @@ public class Read6 extends AbstractCommandDescriptorBlock
    public int size()
    {
       return 6;
+   }
+
+   public long getLba()
+   {
+      return lba;
+   }
+
+   public void setLba(long lba)
+   {
+      this.lba = lba;
+   }
+
+   public void setTransferLength(int transferLength)
+   {
+      this.transferLength = transferLength;
    }
 }

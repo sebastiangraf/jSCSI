@@ -15,37 +15,68 @@ public class ModeSelect6 extends AbstractCommandDescriptorBlock
    private boolean pageFormat;
    private boolean savePages;
    private int parameterListLength;
-   
-   static
+
+   public boolean isPageFormat()
    {
-      CommandDescriptorBlockFactory.register(OPERATION_CODE, ModeSelect6.class);
+      return pageFormat;
    }
-   
+
+   public void setPageFormat(boolean pageFormat)
+   {
+      this.pageFormat = pageFormat;
+   }
+
+   public boolean isSavePages()
+   {
+      return savePages;
+   }
+
+   public void setSavePages(boolean savePages)
+   {
+      this.savePages = savePages;
+   }
+
+   public int getParameterListLength()
+   {
+      return parameterListLength;
+   }
+
+   public void setParameterListLength(int parameterListLength)
+   {
+      this.parameterListLength = parameterListLength;
+   }
+
    public ModeSelect6()
    {
       super();
    }
-   
-   public ModeSelect6(boolean pageFormat, boolean savePages, int parameterListLength, boolean linked, boolean normalACA)
+
+   public ModeSelect6(
+         boolean pageFormat,
+         boolean savePages,
+         int parameterListLength,
+         boolean linked,
+         boolean normalACA)
    {
       super(linked, normalACA);
       this.pageFormat = pageFormat;
       this.savePages = savePages;
       this.parameterListLength = parameterListLength;
    }
-   
+
    public ModeSelect6(boolean pageFormat, boolean savePages, int parameterListLength)
    {
       this(pageFormat, savePages, parameterListLength, false, false);
    }
-   
+
+   @Override
    public void decode(ByteBuffer input) throws IllegalArgumentException
    {
       byte[] cdb = new byte[this.size()];
       input.get(cdb);
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
       int tmp;
-      
+
       try
       {
          int operationCode = in.readUnsignedByte();
@@ -56,9 +87,10 @@ public class ModeSelect6 extends AbstractCommandDescriptorBlock
          this.parameterListLength = in.readUnsignedByte();
          super.setControl(in.readUnsignedByte());
 
-         if ( operationCode != OPERATION_CODE )
+         if (operationCode != OPERATION_CODE)
          {
-            throw new IllegalArgumentException("Invalid operation code: " + Integer.toHexString(operationCode));
+            throw new IllegalArgumentException("Invalid operation code: "
+                  + Integer.toHexString(operationCode));
          }
       }
       catch (IOException e)
@@ -66,21 +98,21 @@ public class ModeSelect6 extends AbstractCommandDescriptorBlock
          throw new IllegalArgumentException("Error reading input data.");
       }
    }
-   
+
    @Override
    public void encode(ByteBuffer output)
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
-      
+
       try
       {
          out.writeByte(OPERATION_CODE);
-         out.writeByte((int)((this.savePages ? 0x01 : 0x00) | (this.pageFormat ? 0x10 : 0x00)));
+         out.writeByte(((this.savePages ? 0x01 : 0x00) | (this.pageFormat ? 0x10 : 0x00)));
          out.writeShort(0);
          out.writeByte(this.parameterListLength);
          out.writeByte(super.getControl());
-         
+
          output.put(cdb.toByteArray());
       }
       catch (IOException e)

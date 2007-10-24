@@ -16,17 +16,17 @@ public class Inquiry extends AbstractCommandDescriptorBlock
    private int pageCode;
    private int allocationLength;
 
-   static
-   {
-      
-   }
-   
    public Inquiry()
    {
       super();
    }
-   
-   public Inquiry(boolean evpd, byte pageCode, short allocationLength, boolean linked, boolean normalACA)
+
+   public Inquiry(
+         boolean evpd,
+         byte pageCode,
+         short allocationLength,
+         boolean linked,
+         boolean normalACA)
    {
       super(linked, normalACA);
 
@@ -34,18 +34,19 @@ public class Inquiry extends AbstractCommandDescriptorBlock
       this.pageCode = pageCode;
       this.allocationLength = allocationLength;
    }
-   
+
    public Inquiry(boolean evpd, byte pageCode, short allocationLength)
    {
       this(evpd, pageCode, allocationLength, false, false);
    }
-   
+
+   @Override
    public void decode(ByteBuffer input) throws IllegalArgumentException
    {
       byte[] cdb = new byte[this.size()];
       input.get(cdb);
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
-      
+
       try
       {
          int operationCode = in.readUnsignedByte();
@@ -54,9 +55,10 @@ public class Inquiry extends AbstractCommandDescriptorBlock
          this.allocationLength = in.readShort();
          super.setControl(in.readUnsignedByte());
 
-         if ( operationCode != OPERATION_CODE )
+         if (operationCode != OPERATION_CODE)
          {
-            throw new IllegalArgumentException("Invalid operation code: " + Integer.toHexString(operationCode));
+            throw new IllegalArgumentException("Invalid operation code: "
+                  + Integer.toHexString(operationCode));
          }
       }
       catch (IOException e)
@@ -64,13 +66,13 @@ public class Inquiry extends AbstractCommandDescriptorBlock
          throw new IllegalArgumentException("Error reading input data.");
       }
    }
-   
+
    @Override
    public void encode(ByteBuffer output)
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
-      
+
       try
       {
          out.writeByte(OPERATION_CODE);
@@ -78,7 +80,7 @@ public class Inquiry extends AbstractCommandDescriptorBlock
          out.writeByte(this.pageCode);
          out.writeShort(this.allocationLength);
          out.writeByte(super.getControl());
-         
+
          output.put(cdb.toByteArray());
       }
       catch (IOException e)
@@ -115,5 +117,30 @@ public class Inquiry extends AbstractCommandDescriptorBlock
    public int size()
    {
       return 6;
+   }
+
+   public boolean isEvpd()
+   {
+      return evpd;
+   }
+
+   public void setEvpd(boolean evpd)
+   {
+      this.evpd = evpd;
+   }
+
+   public int getPageCode()
+   {
+      return pageCode;
+   }
+
+   public void setPageCode(int pageCode)
+   {
+      this.pageCode = pageCode;
+   }
+
+   public void setAllocationLength(int allocationLength)
+   {
+      this.allocationLength = allocationLength;
    }
 }
