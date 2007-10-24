@@ -48,4 +48,14 @@ public abstract class FileTask extends AbstractTask
    {
       super.setCommand(command);
    }
+
+   protected void setModePageRegistry(ModePageRegistry modePageRegistry)
+   {
+      super.setModePageRegistry(modePageRegistry);
+   }
+
+   protected void setInquiryDataRegistry(InquiryDataRegistry inquiryDataRegistry)
+   {
+      super.setInquiryDataRegistry(inquiryDataRegistry);
+   }
 }

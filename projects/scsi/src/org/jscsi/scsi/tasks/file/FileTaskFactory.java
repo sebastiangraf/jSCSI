@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.tasks.file;
 
 import java.util.HashMap;
@@ -13,6 +14,8 @@ import org.jscsi.scsi.protocol.cdb.Write10;
 import org.jscsi.scsi.protocol.cdb.Write12;
 import org.jscsi.scsi.protocol.cdb.Write16;
 import org.jscsi.scsi.protocol.cdb.Write6;
+import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
+import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.transport.TargetTransportPort;
@@ -20,7 +23,7 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 public class FileTaskFactory implements TaskFactory
 {
    private static Map<Class<? extends CommandDescriptorBlock>, Class<? extends FileTask>> _tasks =
-      new HashMap<Class<? extends CommandDescriptorBlock>, Class<? extends FileTask>>();
+         new HashMap<Class<? extends CommandDescriptorBlock>, Class<? extends FileTask>>();
 
    private FileDevice _device;
 
@@ -42,10 +45,14 @@ public class FileTaskFactory implements TaskFactory
    }
 
    // throws IllegalRequestException
-   public Task getInstance(TargetTransportPort port, Command command)
+   public Task getInstance(
+         TargetTransportPort port,
+         Command command,
+         ModePageRegistry modePageRegistry,
+         InquiryDataRegistry inquiryDataRegistry)
    {
       Class<? extends FileTask> taskClass =
-         _tasks.get(command.getCommandDescriptorBlock().getClass());
+            _tasks.get(command.getCommandDescriptorBlock().getClass());
 
       if (taskClass != null)
       {
@@ -65,6 +72,8 @@ public class FileTaskFactory implements TaskFactory
 
          fileTask.setCommand(command);
          fileTask.setTargetTransportPort(port);
+         fileTask.setModePageRegistry(modePageRegistry);
+         fileTask.setInquiryDataRegistry(inquiryDataRegistry);
          fileTask.setFileDevice(_device);
 
          return fileTask;
