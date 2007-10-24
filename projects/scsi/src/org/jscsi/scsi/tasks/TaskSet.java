@@ -6,10 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import org.jscsi.scsi.exceptions.TaskSetException;
 
 public class TaskSet
 {
+   private static Logger _logger = Logger.getLogger(TaskSet.class);
+   
    private List<Task> _headOfQueue; // Queue of Head of Queue tasks
    private List<Task> _soTaskQueue; // Simple/Ordered (SO) Task Queue
    private TaskAttribute _soTaskState = null; // Simple/Ordered Task Queue state
@@ -21,7 +25,6 @@ public class TaskSet
    
    public TaskSet()
    {
-      System.out.println("Constructing TaskSet");
       _headOfQueue = Collections.synchronizedList(new LinkedList<Task>());
       _soTaskQueue = Collections.synchronizedList(new LinkedList<Task>());
       _simplePriorityMap = Collections.synchronizedMap(new HashMap<Integer, Integer>());
@@ -39,6 +42,7 @@ public class TaskSet
       {
          this._addSOTask(task, attribute);
       }
+      _logger.debug("TaskSet queued new task <object: " + task + ", attribute: " + attribute + ">");
    }
    
    ////////////////////////////////////////////////////////////////////////////
@@ -70,8 +74,13 @@ public class TaskSet
       Task retval = null;
       
       if (_headOfQueue.size() == 0 && _soTaskQueue.size() == 0)
-         _taskAdded.wait(timeout);
-         
+      {
+         synchronized (_taskAdded)
+         {
+            _taskAdded.wait(timeout);
+         }
+      }
+
       if (_headOfQueue.size() > 0)
       {
          retval = _headOfQueue.remove(0);
