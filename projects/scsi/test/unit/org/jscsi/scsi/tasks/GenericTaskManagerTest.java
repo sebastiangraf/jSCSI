@@ -1,6 +1,6 @@
 package org.jscsi.scsi.tasks;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +21,9 @@ public class GenericTaskManagerTest extends TaskManagerTest
       List<TestTask> taskSet = new ArrayList<TestTask>();
       new HeadOfQueueTask(taskSet, 0);
       new SimpleTask(taskSet, 0);
-      Task last = new OrderedTask(taskSet, 100);
+      new OrderedTask(taskSet, 100);
       
-      GenericTaskManager manager = new GenericTaskManager(1);  // TODO: Should we test with more threads?
+      GenericTaskManager manager = new GenericTaskManager(10); // 10 threads is an arbitrary value here
       
       for ( Task t : taskSet )
       {
@@ -41,7 +41,9 @@ public class GenericTaskManagerTest extends TaskManagerTest
       Thread thread = new Thread(manager);
       thread.start();
       
-      synchronized (last)
+      Task last = taskSet.get(taskSet.size()-1);
+      
+      synchronized ( last )
       {
          last.wait(10000);
       }
@@ -49,5 +51,23 @@ public class GenericTaskManagerTest extends TaskManagerTest
       manager.shutdown();
       thread.join();
       
-   }  
+      for ( int i = 0; i < taskSet.size(); i++ )
+      {
+         TestTask t = taskSet.get(i);
+         if ( t.isDone() )
+         {
+            fail("Task " + i + " not executed: " + t.getClass().getName() );
+         }
+         else
+         {
+            assertTrue( 
+                  "Task " + i + " failed: " + t.reason() + ": " + t.getClass().getName(),
+                  ! t.isProper() );
+         }
+         
+      }
+      
+   }
+   
+   
 }

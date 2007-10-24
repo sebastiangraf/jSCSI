@@ -53,6 +53,11 @@ public class TaskManagerTest
       public abstract boolean isProper();
       
       /**
+       * Returns reason for improper execution.
+       */
+      public abstract String reason();
+      
+      /**
        * Checks for proper execution in a static task set. If tasks are added to a Task Manager's
        * queue set after execution has begun this method may cause improper results to be returned
        * from {@link #isProper()}.
@@ -104,6 +109,7 @@ public class TaskManagerTest
       private List<TestTask> taskSet;
       private int index;
       private Boolean properStart = false;
+      private String reason;
       
       public SimpleTask( List<TestTask> taskSet, long delay )
       {
@@ -129,10 +135,12 @@ public class TaskManagerTest
                if ( (t instanceof HeadOfQueueTask) && (! t.isDone()) )
                {
                   this.properStart = false;
+                  this.reason = "Previously inserted Head Of Queue Task not finished";
                }
                else if ( (t instanceof OrderedTask) && (! t.isDone()) )
                {
                   this.properStart = false;
+                  this.reason = "Previously inserted Ordered Task not finished";
                }
             }
             for ( int i = this.index + 1; i < this.taskSet.size(); i++ )
@@ -141,10 +149,12 @@ public class TaskManagerTest
                if ( (t instanceof HeadOfQueueTask) && (! t.isDone()) )
                {
                   this.properStart = false;
+                  this.reason = "Later inserted Head Of Queue Task not finished";
                }
                else if ( (t instanceof OrderedTask) && t.isDone() )
                {
                   this.properStart = false;
+                  this.reason = "Later inserted Ordered Task preemptively finished";
                }
             }
          }  
@@ -153,6 +163,11 @@ public class TaskManagerTest
       public boolean isProper()
       {
          return this.properStart;
+      }
+      
+      public String reason()
+      {
+         return this.reason;
       }
 
       @Override
@@ -172,6 +187,7 @@ public class TaskManagerTest
       private List<TestTask> taskSet;
       private int index;
       private Boolean properStart = false;
+      private String reason;
       
       
       public HeadOfQueueTask( List<TestTask> taskSet, long delay )
@@ -203,10 +219,12 @@ public class TaskManagerTest
                if ( (t instanceof HeadOfQueueTask) && (! t.isDone()) )
                {
                   this.properStart = false;
+                  this.reason = "Previously inserted Head Of Queue Task not finished";
                }
                else if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
                {
                   this.properStart = false;
+                  this.reason = "Previously inserted task preemptively finished";
                }
             }
             for ( int i = this.index + 1; i < this.taskSet.size(); i++ )
@@ -215,9 +233,15 @@ public class TaskManagerTest
                if ( t.isDone() )
                {
                   this.properStart = false;
+                  this.reason = "Later inserted task preemptively finished";
                }
             }
          }
+      }
+      
+      public String reason()
+      {
+         return this.reason;
       }
       
       @Override
@@ -234,6 +258,7 @@ public class TaskManagerTest
       private List<TestTask> taskSet;
       private int index;
       private Boolean properStart = false;
+      private String reason;
       
       public OrderedTask( List<TestTask> taskSet, long delay )
       {
@@ -259,6 +284,7 @@ public class TaskManagerTest
                if ( ! t.isDone() )
                {
                   this.properStart = false;
+                  this.reason = "Previously inserted Task not finished";
                }
             }
             for ( int i = this.index + 1; i < this.taskSet.size(); i++ )
@@ -267,10 +293,12 @@ public class TaskManagerTest
                if ( (t instanceof HeadOfQueueTask) && (! t.isDone()) )
                {
                   this.properStart = false;
+                  this.reason = "Later inserted Head Of Queue Task not finished";
                }
                else if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
                {
                   this.properStart = false;
+                  this.reason = "Later inserted Task preemptively finished";
                }
             }
          }
@@ -280,6 +308,11 @@ public class TaskManagerTest
       public boolean isProper()
       {
          return this.properStart;
+      }
+      
+      public String reason()
+      {
+         return this.reason;
       }
       
       @Override
