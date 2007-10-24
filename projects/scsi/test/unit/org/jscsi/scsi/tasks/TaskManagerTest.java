@@ -226,10 +226,10 @@ public class TaskManagerTest
             for ( int i = 0; i < this.index; i++ )
             {
                TestTask t = this.taskSet.get(i);
-               if ( (t instanceof HeadOfQueueTask) && (! t.isDone()) )
+               if ( (t instanceof HeadOfQueueTask) && t.isDone() )
                {
                   this.properStart = false;
-                  this.reason = "Previously inserted Head Of Queue Task not finished";
+                  this.reason = "Previously inserted Head Of Queue Task finished preemptively";
                }
                else if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
                {
@@ -240,10 +240,16 @@ public class TaskManagerTest
             for ( int i = this.index + 1; i < this.taskSet.size(); i++ )
             {
                TestTask t = this.taskSet.get(i);
-               if ( t.isDone() )
+               if ( (t instanceof HeadOfQueueTask) && (!t.isDone()) )
+               {
+                  this.properStart = false;
+                  this.reason = "Later inserted Head Of Queue Task not finished";
+               }
+               else if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
                {
                   this.properStart = false;
                   this.reason = "Later inserted task preemptively finished";
+                  
                }
             }
          }
@@ -395,8 +401,8 @@ public class TaskManagerTest
     *     S, O         S, O
     *                  O, S         Failure
     *    -----------  -----------  -----------
-    *     H[1], H[2]   [1], [2]
-    *                  [2], [1]     Failure
+    *     H[1], H[2]   [1], [2]     Failure
+    *                  [2], [1]     
     *    -----------  -----------  -----------
     *     S[1], S[2]   [1], [2]
     *                  [2], [1]
@@ -537,8 +543,8 @@ public class TaskManagerTest
       internalBinaryTest(
             new HeadOfQueueTask(taskSet, 0),
             new HeadOfQueueTask(taskSet, 0),
-            false,
-            true );
+            true,
+            false );
    }
    
    @Test
