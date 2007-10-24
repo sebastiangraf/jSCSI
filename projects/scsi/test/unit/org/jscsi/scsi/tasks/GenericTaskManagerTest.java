@@ -10,7 +10,6 @@ import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.lu.GenericTaskManager;
 import org.junit.Test;
 
-// TODO: Describe class or interface
 public class GenericTaskManagerTest extends TaskManagerTest
 {
    
@@ -50,9 +49,5 @@ public class GenericTaskManagerTest extends TaskManagerTest
       manager.shutdown();
       thread.join();
       
-   }
-   
-   
+   }  
 }
-
-
