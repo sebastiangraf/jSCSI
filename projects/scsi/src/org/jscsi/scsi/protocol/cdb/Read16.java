@@ -13,23 +13,25 @@ import java.nio.ByteBuffer;
 public class Read16 extends Read10
 {
    public static final int OPERATION_CODE = 0x88;
-   
+
    private int groupNumber;
    private long logicalBlockAddress;
    private long transferLength;
-   
-   static
-   {
-      CommandDescriptorBlockFactory.register(OPERATION_CODE, Write16.class);
-   }
-   
+
    protected Read16()
    {
       super();
    }
-   
-   public Read16(long logicalBlockAddress, long transferLength, int groupNumber, boolean dpo,
-                 boolean fua, boolean fua_nv, boolean linked, boolean normalACA )
+
+   public Read16(
+         long logicalBlockAddress,
+         long transferLength,
+         int groupNumber,
+         boolean dpo,
+         boolean fua,
+         boolean fua_nv,
+         boolean linked,
+         boolean normalACA)
    {
       super(dpo, fua, fua_nv, linked, normalACA);
       // Don't check out of bounds, LONG_MAX is less than ULONG_MAX
@@ -37,12 +39,12 @@ public class Read16 extends Read10
       this.logicalBlockAddress = logicalBlockAddress;
       this.groupNumber = groupNumber;
    }
-   
+
    public Read16(long logicalBlockAddress, long transferLength)
    {
       this(logicalBlockAddress, transferLength, 0, false, false, false, false, false);
-   }   
-   
+   }
+
    @Override
    public void decode(ByteBuffer input) throws BufferUnderflowException, IOException
    {
@@ -52,18 +54,18 @@ public class Read16 extends Read10
 
       int operationCode = in.readUnsignedByte();
       super.decodeByte1(in.readUnsignedByte());
-      
+
       // CAUTION: Signed longs represent unsigned longs
       this.logicalBlockAddress = in.readLong();
       this.transferLength = in.readLong();
-      
+
       this.groupNumber = in.readUnsignedByte() & 0x1F;
       super.setControl(in.readUnsignedByte());
-      
-      if ( operationCode != OPERATION_CODE )
+
+      if (operationCode != OPERATION_CODE)
       {
-         throw new IllegalArgumentException(
-               "Invalid operation code: " + Integer.toHexString(operationCode));
+         throw new IllegalArgumentException("Invalid operation code: "
+               + Integer.toHexString(operationCode));
       }
    }
 
@@ -72,20 +74,20 @@ public class Read16 extends Read10
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
-      
+
       try
       {
          out.writeByte(OPERATION_CODE);
-         
+
          out.writeByte(super.encodeByte1());
-         
+
          // CAUTION: Signed longs represent unsigned longs
          out.writeLong(this.logicalBlockAddress);
          out.writeLong(this.transferLength);
-         
+
          out.writeByte(this.groupNumber & 0x1F);
          out.writeByte(super.getControl());
-         
+
          output.put(cdb.toByteArray());
       }
       catch (IOException e)
@@ -111,31 +113,30 @@ public class Read16 extends Read10
    {
       return this.logicalBlockAddress;
    }
-   
+
    public BigInteger getFullLogicalBlockAddress()
    {
-      if ( this.logicalBlockAddress > 0 )
+      if (this.logicalBlockAddress > 0)
       {
          return BigInteger.valueOf(this.logicalBlockAddress);
       }
       else
       {
-         return BigInteger
-                     .valueOf(this.logicalBlockAddress)
-                     .abs()
-                     .add( BigInteger.valueOf(1).shiftLeft(63) );
+         return BigInteger.valueOf(this.logicalBlockAddress).abs().add(
+               BigInteger.valueOf(1).shiftLeft(63));
       }
    }
-   
+
    public BigInteger getFullTransferLength()
    {
-      if ( this.transferLength > 0 )
+      if (this.transferLength > 0)
       {
          return BigInteger.valueOf(this.transferLength);
       }
       else
       {
-         return BigInteger.valueOf(this.transferLength).abs().add( BigInteger.valueOf(1).shiftLeft(63));
+         return BigInteger.valueOf(this.transferLength).abs().add(
+               BigInteger.valueOf(1).shiftLeft(63));
       }
    }
 
@@ -155,5 +156,22 @@ public class Read16 extends Read10
    public int size()
    {
       return 16;
+   }
+
+   @Override
+   public void setGroupNumber(int groupNumber)
+   {
+      this.groupNumber = groupNumber;
+   }
+
+   public void setLogicalBlockAddress(long logicalBlockAddress)
+   {
+      this.logicalBlockAddress = logicalBlockAddress;
+   }
+
+   @Override
+   public void setTransferLength(long transferLength)
+   {
+      this.transferLength = transferLength;
    }
 }

@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.protocol.cdb;
 
 import java.io.ByteArrayInputStream;
@@ -11,15 +12,10 @@ import java.nio.ByteBuffer;
 public class RequestSense extends AbstractCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x03;
-   
-   private int allocationLength; // Limited to UBYTE_MAX
+
+   private int allocationLength;
    private boolean descriptorFormat;
-   
-   static
-   {
-      CommandDescriptorBlockFactory.register(OPERATION_CODE, RequestSense.class);
-   }
-   
+
    public RequestSense()
    {
       super();
@@ -29,30 +25,29 @@ public class RequestSense extends AbstractCommandDescriptorBlock
          long allocationLength,
          boolean useDescriptorFormat,
          boolean linked,
-         boolean normalACA )
+         boolean normalACA)
    {
       super(linked, normalACA);
-      if ( allocationLength > 256 )
+      if (allocationLength > 256)
       {
          throw new IllegalArgumentException("Allocation length out of bounds for command type");
       }
-      this.allocationLength = (int)allocationLength;
+      this.allocationLength = (int) allocationLength;
       this.descriptorFormat = useDescriptorFormat;
    }
-   
+
    public RequestSense(long allocationLength, boolean useDescriptorFormat)
    {
       this(allocationLength, useDescriptorFormat, false, false);
    }
-   
-   
-   public void decode(ByteBuffer input)
-         throws BufferUnderflowException, IllegalArgumentException
+
+   @Override
+   public void decode(ByteBuffer input) throws BufferUnderflowException, IllegalArgumentException
    {
       byte[] cdb = new byte[this.size()];
       input.get(cdb);
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
-      
+
       try
       {
          int operationCode = in.readUnsignedByte();
@@ -61,11 +56,11 @@ public class RequestSense extends AbstractCommandDescriptorBlock
          in.readShort();
          this.allocationLength = in.readUnsignedByte();
          super.setControl(in.readUnsignedByte());
-         
-         if ( operationCode != OPERATION_CODE )
+
+         if (operationCode != OPERATION_CODE)
          {
-            throw new IllegalArgumentException(
-                  "Invalid operation code: " + Integer.toHexString(operationCode));
+            throw new IllegalArgumentException("Invalid operation code: "
+                  + Integer.toHexString(operationCode));
          }
       }
       catch (IOException e)
@@ -73,17 +68,17 @@ public class RequestSense extends AbstractCommandDescriptorBlock
          throw new IllegalArgumentException("Error reading input data.");
       }
    }
-   
+
    @Override
    public void encode(ByteBuffer output)
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
-      
+
       try
       {
          out.writeByte(OPERATION_CODE);
-         if ( this.descriptorFormat )
+         if (this.descriptorFormat)
          {
             out.writeByte(1);
          }
@@ -94,14 +89,13 @@ public class RequestSense extends AbstractCommandDescriptorBlock
          out.writeShort(0);
          out.writeByte(this.allocationLength);
          out.writeByte(super.getControl());
-         
+
          output.put(cdb.toByteArray());
       }
       catch (IOException e)
       {
          throw new RuntimeException("Unable to encode CDB.");
       }
-
    }
 
    @Override
@@ -134,4 +128,18 @@ public class RequestSense extends AbstractCommandDescriptorBlock
       return 6;
    }
 
+   public boolean isDescriptorFormat()
+   {
+      return descriptorFormat;
+   }
+
+   public void setDescriptorFormat(boolean descriptorFormat)
+   {
+      this.descriptorFormat = descriptorFormat;
+   }
+
+   public void setAllocationLength(int allocationLength)
+   {
+      this.allocationLength = allocationLength;
+   }
 }

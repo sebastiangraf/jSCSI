@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.protocol.cdb;
 
 import java.io.ByteArrayInputStream;
@@ -16,38 +17,38 @@ public class ReceiveDiagnosticResults extends AbstractCommandDescriptorBlock
    private boolean pcv;
    private int pageCode;
    private int allocationLength;
-   
-   static
-   {
-      CommandDescriptorBlockFactory.register(OPERATION_CODE, SendDiagnostic.class);
-   }
-   
+
    protected ReceiveDiagnosticResults()
    {
       super();
    }
-   
-   public ReceiveDiagnosticResults(boolean pcv, int pageCode, int allocationLength, boolean linked, boolean normalACA)
+
+   public ReceiveDiagnosticResults(
+         boolean pcv,
+         int pageCode,
+         int allocationLength,
+         boolean linked,
+         boolean normalACA)
    {
       super(linked, normalACA);
-      
-      this.pcv= pcv;
+
+      this.pcv = pcv;
       this.pageCode = pageCode;
       this.allocationLength = allocationLength;
    }
-   
+
    public ReceiveDiagnosticResults(boolean pcv, int pageCode, int allocationLength)
    {
       this(pcv, pageCode, allocationLength, false, false);
    }
-   
+
    @Override
    public void decode(ByteBuffer input) throws BufferUnderflowException, IOException
    {
       byte[] cdb = new byte[this.size()];
       input.get(cdb);
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
-      
+
       try
       {
          int operationCode = in.readUnsignedByte();
@@ -56,9 +57,10 @@ public class ReceiveDiagnosticResults extends AbstractCommandDescriptorBlock
          this.allocationLength = in.readUnsignedShort();
          super.setControl(in.readUnsignedByte());
 
-         if ( operationCode != OPERATION_CODE )
+         if (operationCode != OPERATION_CODE)
          {
-            throw new IllegalArgumentException("Invalid operation code: " + Integer.toHexString(operationCode));
+            throw new IllegalArgumentException("Invalid operation code: "
+                  + Integer.toHexString(operationCode));
          }
       }
       catch (IOException e)
@@ -72,7 +74,7 @@ public class ReceiveDiagnosticResults extends AbstractCommandDescriptorBlock
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
-      
+
       try
       {
          out.writeByte(OPERATION_CODE);
@@ -80,7 +82,7 @@ public class ReceiveDiagnosticResults extends AbstractCommandDescriptorBlock
          out.writeByte(this.pageCode);
          out.writeShort(this.allocationLength);
          out.writeByte(super.getControl());
-         
+
          output.put(cdb.toByteArray());
       }
       catch (IOException e)
@@ -117,5 +119,30 @@ public class ReceiveDiagnosticResults extends AbstractCommandDescriptorBlock
    public int size()
    {
       return 6;
+   }
+
+   public boolean isPcv()
+   {
+      return pcv;
+   }
+
+   public void setPcv(boolean pcv)
+   {
+      this.pcv = pcv;
+   }
+
+   public int getPageCode()
+   {
+      return pageCode;
+   }
+
+   public void setPageCode(int pageCode)
+   {
+      this.pageCode = pageCode;
+   }
+
+   public void setAllocationLength(int allocationLength)
+   {
+      this.allocationLength = allocationLength;
    }
 }

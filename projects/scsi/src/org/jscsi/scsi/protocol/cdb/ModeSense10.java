@@ -18,22 +18,25 @@ public class ModeSense10 extends AbstractCommandDescriptorBlock
    private int pageCode;
    private int subPageCode;
    private long allocationLength;
-   
-   static
-   {
-      CommandDescriptorBlockFactory.register(OPERATION_CODE, ModeSense10.class);
-   }
-   
+
    public ModeSense10()
    {
       super();
    }
-   
-   public ModeSense10(boolean dbd, boolean llbaa, int pageControl, int pageCode, int subPageCode, long allocationLength, boolean linked, boolean normalACA)
+
+   public ModeSense10(
+         boolean dbd,
+         boolean llbaa,
+         int pageControl,
+         int pageCode,
+         int subPageCode,
+         long allocationLength,
+         boolean linked,
+         boolean normalACA)
    {
       super(linked, normalACA);
-      
-      if ( allocationLength > 65536 )
+
+      if (allocationLength > 65536)
       {
          throw new IllegalArgumentException("Allocation length out of bounds for command type");
       }
@@ -42,21 +45,28 @@ public class ModeSense10 extends AbstractCommandDescriptorBlock
       this.pageControl = pageControl;
       this.pageCode = pageCode;
       this.subPageCode = subPageCode;
-      this.allocationLength = (int)allocationLength;
+      this.allocationLength = (int) allocationLength;
    }
-   
-   public ModeSense10(boolean dbd, boolean llbaa, int pageControl, int pageCode, int subPageCode, long allocationLength)
+
+   public ModeSense10(
+         boolean dbd,
+         boolean llbaa,
+         int pageControl,
+         int pageCode,
+         int subPageCode,
+         long allocationLength)
    {
       this(dbd, llbaa, pageControl, pageCode, subPageCode, allocationLength, false, false);
    }
-   
+
+   @Override
    public void decode(ByteBuffer input) throws IllegalArgumentException
    {
       byte[] cdb = new byte[this.size()];
       input.get(cdb);
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
       int tmp;
-      
+
       try
       {
          int operationCode = in.readUnsignedByte();
@@ -69,15 +79,15 @@ public class ModeSense10 extends AbstractCommandDescriptorBlock
          this.pageControl = tmp >>> 6;
          this.subPageCode = in.readUnsignedByte();
          in.readShort(); // first part of RESERVED block
-         in.readByte();  // remaining RESERVED block
-         this.allocationLength = (long)in.readUnsignedShort();
+         in.readByte(); // remaining RESERVED block
+         this.allocationLength = in.readUnsignedShort();
 
          super.setControl(in.readUnsignedByte());
 
-         if ( operationCode != OPERATION_CODE )
+         if (operationCode != OPERATION_CODE)
          {
-            throw new IllegalArgumentException(
-                  "Invalid operation code: " + Integer.toHexString(operationCode));
+            throw new IllegalArgumentException("Invalid operation code: "
+                  + Integer.toHexString(operationCode));
          }
       }
       catch (IOException e)
@@ -85,23 +95,23 @@ public class ModeSense10 extends AbstractCommandDescriptorBlock
          throw new IllegalArgumentException("Error reading input data.");
       }
    }
-   
+
    @Override
    public void encode(ByteBuffer output)
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
-      
+
       try
       {
          out.writeByte(OPERATION_CODE);
-         out.writeByte((int)((this.llbaa ? 0x10 : 0x00) | (this.dbd ? 0x04 : 0x00)));
+         out.writeByte(((this.llbaa ? 0x10 : 0x00) | (this.dbd ? 0x04 : 0x00)));
          out.writeByte(this.pageControl | this.pageCode);
          out.writeByte(this.subPageCode);
          out.writeShort(0);
-         out.writeByte((int)this.allocationLength);
+         out.writeByte((int) this.allocationLength);
          out.writeByte(super.getControl());
-         
+
          output.put(cdb.toByteArray());
       }
       catch (IOException e)
@@ -138,5 +148,60 @@ public class ModeSense10 extends AbstractCommandDescriptorBlock
    public int size()
    {
       return 10;
+   }
+
+   public boolean isDbd()
+   {
+      return dbd;
+   }
+
+   public void setDbd(boolean dbd)
+   {
+      this.dbd = dbd;
+   }
+
+   public boolean isLlbaa()
+   {
+      return llbaa;
+   }
+
+   public void setLlbaa(boolean llbaa)
+   {
+      this.llbaa = llbaa;
+   }
+
+   public int getPageControl()
+   {
+      return pageControl;
+   }
+
+   public void setPageControl(int pageControl)
+   {
+      this.pageControl = pageControl;
+   }
+
+   public int getPageCode()
+   {
+      return pageCode;
+   }
+
+   public void setPageCode(int pageCode)
+   {
+      this.pageCode = pageCode;
+   }
+
+   public int getSubPageCode()
+   {
+      return subPageCode;
+   }
+
+   public void setSubPageCode(int subPageCode)
+   {
+      this.subPageCode = subPageCode;
+   }
+
+   public void setAllocationLength(long allocationLength)
+   {
+      this.allocationLength = allocationLength;
    }
 }

@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.protocol.cdb;
 
 import java.io.ByteArrayInputStream;
@@ -12,62 +13,57 @@ public class ReportSupportedTaskManagementFunctions extends AbstractCommandDescr
 {
    public static final int OPERATION_CODE = 0xA3;
    public static final int SERVICE_ACTION = 0x0D;
-   
-   private long allocationLength; // Limited to USHORT_MAX
-   
-   static
-   {
-      CommandDescriptorBlockFactory.register(OPERATION_CODE, ReportSupportedTaskManagementFunctions.class);
-   }
-   
+
+   private long allocationLength;
+
    public ReportSupportedTaskManagementFunctions()
    {
       super();
    }
-   
+
    public ReportSupportedTaskManagementFunctions(
          long allocationLength,
          boolean linked,
-         boolean normalACA )
+         boolean normalACA)
    {
       super(linked, normalACA);
-      if ( allocationLength > 65536 )
+      if (allocationLength > 65536)
       {
          throw new IllegalArgumentException("Allocation length out of bounds for command type");
       }
-      this.allocationLength = (int)allocationLength;
+      this.allocationLength = (int) allocationLength;
    }
-   
-   public ReportSupportedTaskManagementFunctions( long allocationLength )
+
+   public ReportSupportedTaskManagementFunctions(long allocationLength)
    {
       this(allocationLength, false, false);
    }
-   
-   public void decode(ByteBuffer input)
-         throws BufferUnderflowException, IllegalArgumentException
+
+   @Override
+   public void decode(ByteBuffer input) throws BufferUnderflowException, IllegalArgumentException
    {
       byte[] cdb = new byte[this.size()];
       input.get(cdb);
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
-      
+
       try
       {
          int operationCode = in.readUnsignedByte();
          int serviceAction = in.readUnsignedByte() & 0x1F;
          in.readShort();
-         this.allocationLength = (long)in.readUnsignedShort();
+         this.allocationLength = in.readUnsignedShort();
          in.readByte();
          super.setControl(in.readUnsignedByte());
-         
-         if ( operationCode != OPERATION_CODE )
+
+         if (operationCode != OPERATION_CODE)
          {
-            throw new IllegalArgumentException(
-                  "Invalid operation code: " + Integer.toHexString(operationCode));
+            throw new IllegalArgumentException("Invalid operation code: "
+                  + Integer.toHexString(operationCode));
          }
-         if ( serviceAction != SERVICE_ACTION )
+         if (serviceAction != SERVICE_ACTION)
          {
-            throw new IllegalArgumentException(
-                  "Invalid service action: " + Integer.toHexString(serviceAction));
+            throw new IllegalArgumentException("Invalid service action: "
+                  + Integer.toHexString(serviceAction));
          }
       }
       catch (IOException e)
@@ -75,22 +71,22 @@ public class ReportSupportedTaskManagementFunctions extends AbstractCommandDescr
          throw new IllegalArgumentException("Error reading input data.");
       }
    }
-   
+
    @Override
    public void encode(ByteBuffer output)
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
-      
+
       try
       {
          out.writeByte(OPERATION_CODE);
          out.writeByte(SERVICE_ACTION);
          out.writeShort(0);
-         out.writeShort((int)this.allocationLength);
+         out.writeShort((int) this.allocationLength);
          out.writeByte(0);
          out.writeByte(super.getControl());
-         
+
          output.put(cdb.toByteArray());
       }
       catch (IOException e)
@@ -129,4 +125,8 @@ public class ReportSupportedTaskManagementFunctions extends AbstractCommandDescr
       return 12;
    }
 
+   public void setAllocationLength(long allocationLength)
+   {
+      this.allocationLength = allocationLength;
+   }
 }

@@ -11,41 +11,42 @@ import java.nio.ByteBuffer;
 public class ModeSelect10 extends AbstractCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x55;
-   
+
    private boolean pageFormat;
    private boolean savePages;
    private int parameterListLength;
-   
-   static
-   {
-      CommandDescriptorBlockFactory.register(OPERATION_CODE, ModeSelect10.class);
-   }
-   
+
    protected ModeSelect10()
    {
       super();
    }
-   
-   public ModeSelect10(boolean pageFormat, boolean savePages, int parameterListLength, boolean linked, boolean normalACA)
+
+   public ModeSelect10(
+         boolean pageFormat,
+         boolean savePages,
+         int parameterListLength,
+         boolean linked,
+         boolean normalACA)
    {
       super(linked, normalACA);
       this.pageFormat = pageFormat;
       this.savePages = savePages;
       this.parameterListLength = parameterListLength;
    }
-   
+
    public ModeSelect10(boolean pageFormat, boolean savePages, int parameterListLength)
    {
       this(pageFormat, savePages, parameterListLength, false, false);
    }
-   
+
+   @Override
    public void decode(ByteBuffer input) throws IllegalArgumentException
    {
       byte[] cdb = new byte[this.size()];
       input.get(cdb);
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
       int tmp;
-      
+
       try
       {
          int operationCode = in.readUnsignedByte();
@@ -57,9 +58,10 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
          this.parameterListLength = in.readUnsignedShort();
          super.setControl(in.readUnsignedByte());
 
-         if ( operationCode != OPERATION_CODE )
+         if (operationCode != OPERATION_CODE)
          {
-            throw new IllegalArgumentException("Invalid operation code: " + Integer.toHexString(operationCode));
+            throw new IllegalArgumentException("Invalid operation code: "
+                  + Integer.toHexString(operationCode));
          }
       }
       catch (IOException e)
@@ -67,22 +69,22 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
          throw new IllegalArgumentException("Error reading input data.");
       }
    }
-   
+
    @Override
    public void encode(ByteBuffer output)
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
-      
+
       try
       {
          out.writeByte(OPERATION_CODE);
-         out.writeByte((int)((this.savePages ? 0x01 : 0x00) | (this.pageFormat ? 0x10 : 0x00)));
+         out.writeByte(((this.savePages ? 0x01 : 0x00) | (this.pageFormat ? 0x10 : 0x00)));
          out.writeInt(0);
          out.writeByte(0);
          out.writeShort(this.parameterListLength);
          out.writeByte(super.getControl());
-         
+
          output.put(cdb.toByteArray());
       }
       catch (IOException e)
@@ -119,5 +121,35 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
    public int size()
    {
       return 10;
+   }
+
+   public boolean isPageFormat()
+   {
+      return pageFormat;
+   }
+
+   public void setPageFormat(boolean pageFormat)
+   {
+      this.pageFormat = pageFormat;
+   }
+
+   public boolean isSavePages()
+   {
+      return savePages;
+   }
+
+   public void setSavePages(boolean savePages)
+   {
+      this.savePages = savePages;
+   }
+
+   public int getParameterListLength()
+   {
+      return parameterListLength;
+   }
+
+   public void setParameterListLength(int parameterListLength)
+   {
+      this.parameterListLength = parameterListLength;
    }
 }

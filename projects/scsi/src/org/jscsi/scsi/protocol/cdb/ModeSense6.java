@@ -10,34 +10,36 @@ import java.nio.ByteBuffer;
 
 public class ModeSense6 extends AbstractCommandDescriptorBlock
 {
-   private static final int OPERATION_CODE = 0x1A;
-      
+   public static final int OPERATION_CODE = 0x1A;
+
    public static final int PC_CURRENT_VALUES = 0x00;
    public static final int PC_CHANGEABLE_VALUES = 0x01;
    public static final int PC_DEFAULT_VALUES = 0x03;
    public static final int PC_SAVED_VALUES = 0x04;
-   
+
    private boolean dbd;
    private int pageControl;
    private int pageCode;
    private int subPageCode;
    private long allocationLength;
-   
-   static
-   {
-      CommandDescriptorBlockFactory.register(OPERATION_CODE, ModeSense6.class);
-   }
-   
+
    public ModeSense6()
    {
       super();
    }
-   
-   public ModeSense6(boolean dbd, int pageControl, int pageCode, int subPageCode, long allocationLength, boolean linked, boolean normalACA)
+
+   public ModeSense6(
+         boolean dbd,
+         int pageControl,
+         int pageCode,
+         int subPageCode,
+         long allocationLength,
+         boolean linked,
+         boolean normalACA)
    {
       super(linked, normalACA);
-      
-      if ( allocationLength > 65536 )
+
+      if (allocationLength > 65536)
       {
          throw new IllegalArgumentException("Allocation length out of bounds for command type");
       }
@@ -46,21 +48,27 @@ public class ModeSense6 extends AbstractCommandDescriptorBlock
       this.pageControl = pageControl;
       this.pageCode = pageCode;
       this.subPageCode = subPageCode;
-      this.allocationLength = (int)allocationLength;
+      this.allocationLength = (int) allocationLength;
    }
-   
-   public ModeSense6(boolean dbd, int pageControl, int pageCode, int subPageCode, long allocationLength)
+
+   public ModeSense6(
+         boolean dbd,
+         int pageControl,
+         int pageCode,
+         int subPageCode,
+         long allocationLength)
    {
       this(dbd, pageControl, pageCode, subPageCode, allocationLength, false, false);
    }
-   
+
+   @Override
    public void decode(ByteBuffer input) throws IllegalArgumentException
    {
       byte[] cdb = new byte[this.size()];
       input.get(cdb);
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
       int tmp;
-      
+
       try
       {
          int operationCode = in.readUnsignedByte();
@@ -69,14 +77,14 @@ public class ModeSense6 extends AbstractCommandDescriptorBlock
          this.pageCode = tmp & 0x3F;
          this.pageControl = tmp >>> 6;
          this.subPageCode = in.readUnsignedByte();
-         this.allocationLength = (long)in.readUnsignedShort();
+         this.allocationLength = in.readUnsignedShort();
 
          super.setControl(in.readUnsignedByte());
 
-         if ( operationCode != OPERATION_CODE )
+         if (operationCode != OPERATION_CODE)
          {
-            throw new IllegalArgumentException(
-                  "Invalid operation code: " + Integer.toHexString(operationCode));
+            throw new IllegalArgumentException("Invalid operation code: "
+                  + Integer.toHexString(operationCode));
          }
       }
       catch (IOException e)
@@ -84,22 +92,22 @@ public class ModeSense6 extends AbstractCommandDescriptorBlock
          throw new IllegalArgumentException("Error reading input data.");
       }
    }
-   
+
    @Override
    public void encode(ByteBuffer output)
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
-      
+
       try
       {
          out.writeByte(OPERATION_CODE);
          out.writeByte(this.dbd ? 0x04 : 0x00);
          out.writeByte(this.pageControl | this.pageCode);
          out.writeByte(this.subPageCode);
-         out.writeByte((int)this.allocationLength);
+         out.writeByte((int) this.allocationLength);
          out.writeByte(super.getControl());
-         
+
          output.put(cdb.toByteArray());
       }
       catch (IOException e)
@@ -136,5 +144,50 @@ public class ModeSense6 extends AbstractCommandDescriptorBlock
    public int size()
    {
       return 6;
+   }
+
+   public boolean isDbd()
+   {
+      return dbd;
+   }
+
+   public void setDbd(boolean dbd)
+   {
+      this.dbd = dbd;
+   }
+
+   public int getPageControl()
+   {
+      return pageControl;
+   }
+
+   public void setPageControl(int pageControl)
+   {
+      this.pageControl = pageControl;
+   }
+
+   public int getPageCode()
+   {
+      return pageCode;
+   }
+
+   public void setPageCode(int pageCode)
+   {
+      this.pageCode = pageCode;
+   }
+
+   public int getSubPageCode()
+   {
+      return subPageCode;
+   }
+
+   public void setSubPageCode(int subPageCode)
+   {
+      this.subPageCode = subPageCode;
+   }
+
+   public void setAllocationLength(long allocationLength)
+   {
+      this.allocationLength = allocationLength;
    }
 }
