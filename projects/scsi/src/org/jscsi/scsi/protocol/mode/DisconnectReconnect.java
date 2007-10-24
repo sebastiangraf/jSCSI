@@ -111,4 +111,114 @@ public class DisconnectReconnect extends ModePage
    {
       return PAGE_LENGTH;
    }
+
+   public int getBufferFullRatio()
+   {
+      return this.bufferFullRatio;
+   }
+
+   public void setBufferFullRatio(int bufferFullRatio)
+   {
+      this.bufferFullRatio = bufferFullRatio;
+   }
+
+   public int getBufferEmptyRatio()
+   {
+      return this.bufferEmptyRatio;
+   }
+
+   public void setBufferEmptyRatio(int bufferEmptyRatio)
+   {
+      this.bufferEmptyRatio = bufferEmptyRatio;
+   }
+
+   public int getBusInactivityLimit()
+   {
+      return this.busInactivityLimit;
+   }
+
+   public void setBusInactivityLimit(int busInactivityLimit)
+   {
+      this.busInactivityLimit = busInactivityLimit;
+   }
+
+   public int getDisconnectTimeLimit()
+   {
+      return this.disconnectTimeLimit;
+   }
+
+   public void setDisconnectTimeLimit(int disconnectTimeLimit)
+   {
+      this.disconnectTimeLimit = disconnectTimeLimit;
+   }
+
+   public int getConnectTimeLimit()
+   {
+      return this.connectTimeLimit;
+   }
+
+   public void setConnectTimeLimit(int connectTimeLimit)
+   {
+      this.connectTimeLimit = connectTimeLimit;
+   }
+
+   public int getMaximumBurstSize()
+   {
+      return this.maximumBurstSize;
+   }
+
+   public void setMaximumBurstSize(int maximumBurstSize)
+   {
+      this.maximumBurstSize = maximumBurstSize;
+   }
+
+   public boolean isEMDP()
+   {
+      return this.EMDP;
+   }
+
+   public void setEMDP(boolean emdp)
+   {
+      this.EMDP = emdp;
+   }
+
+   public int getFairArbitration()
+   {
+      return this.fairArbitration;
+   }
+
+   public void setFairArbitration(int fairArbitration)
+   {
+      this.fairArbitration = fairArbitration;
+   }
+
+   public boolean isDIMM()
+   {
+      return this.DIMM;
+   }
+
+   public void setDIMM(boolean dimm)
+   {
+      this.DIMM = dimm;
+   }
+
+   public int getDTDC()
+   {
+      return this.DTDC;
+   }
+
+   public void setDTDC(int dtdc)
+   {
+      this.DTDC = dtdc;
+   }
+
+   public int getFirstBurstSize()
+   {
+      return this.firstBurstSize;
+   }
+
+   public void setFirstBurstSize(int firstBurstSize)
+   {
+      this.firstBurstSize = firstBurstSize;
+   }
 }

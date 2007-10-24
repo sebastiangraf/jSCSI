@@ -124,4 +124,84 @@ public class BackgroundControl extends ModePage
    {
       return PAGE_LENGTH;
    }
+
+   public boolean isS_L_FULL()
+   {
+      return this.S_L_FULL;
+   }
+
+   public void setS_L_FULL(boolean s_l_full)
+   {
+      this.S_L_FULL = s_l_full;
+   }
+
+   public boolean isLOWIR()
+   {
+      return this.LOWIR;
+   }
+
+   public void setLOWIR(boolean lowir)
+   {
+      this.LOWIR = lowir;
+   }
+
+   public boolean isEN_BMS()
+   {
+      return this.EN_BMS;
+   }
+
+   public void setEN_BMS(boolean en_bms)
+   {
+      this.EN_BMS = en_bms;
+   }
+
+   public boolean isEN_PS()
+   {
+      return this.EN_PS;
+   }
+
+   public void setEN_PS(boolean en_ps)
+   {
+      this.EN_PS = en_ps;
+   }
+
+   public int getBackgroundMediumScanIntervalTime()
+   {
+      return this.backgroundMediumScanIntervalTime;
+   }
+
+   public void setBackgroundMediumScanIntervalTime(int backgroundMediumScanIntervalTime)
+   {
+      this.backgroundMediumScanIntervalTime = backgroundMediumScanIntervalTime;
+   }
+
+   public int getBackgroundPrescanTimeLimit()
+   {
+      return this.backgroundPrescanTimeLimit;
+   }
+
+   public void setBackgroundPrescanTimeLimit(int backgroundPrescanTimeLimit)
+   {
+      this.backgroundPrescanTimeLimit = backgroundPrescanTimeLimit;
+   }
+
+   public int getMinimumIdleTimeBeforeBackgroundScan()
+   {
+      return this.minimumIdleTimeBeforeBackgroundScan;
+   }
+
+   public void setMinimumIdleTimeBeforeBackgroundScan(int minimumIdleTimeBeforeBackgroundScan)
+   {
+      this.minimumIdleTimeBeforeBackgroundScan = minimumIdleTimeBeforeBackgroundScan;
+   }
+
+   public int getMaximumTimeToSuspectBackgroundScan()
+   {
+      return this.maximumTimeToSuspectBackgroundScan;
+   }
+
+   public void setMaximumTimeToSuspectBackgroundScan(int maximumTimeToSuspectBackgroundScan)
+   {
+      this.maximumTimeToSuspectBackgroundScan = maximumTimeToSuspectBackgroundScan;
+   }
 }

@@ -91,4 +91,44 @@ public class PowerCondition extends ModePage
    {
       return PAGE_LENGTH;
    }
+
+   public boolean isIdle()
+   {
+      return this.idle;
+   }
+
+   public void setIdle(boolean idle)
+   {
+      this.idle = idle;
+   }
+
+   public boolean isStandby()
+   {
+      return this.standby;
+   }
+
+   public void setStandby(boolean standby)
+   {
+      this.standby = standby;
+   }
+
+   public int getIdleConditionTimer()
+   {
+      return this.idleConditionTimer;
+   }
+
+   public void setIdleConditionTimer(int idleConditionTimer)
+   {
+      this.idleConditionTimer = idleConditionTimer;
+   }
+
+   public int getStandbyConditionTimer()
+   {
+      return this.standbyConditionTimer;
+   }
+
+   public void setStandbyConditionTimer(int standbyConditionTimer)
+   {
+      this.standbyConditionTimer = standbyConditionTimer;
+   }
 }

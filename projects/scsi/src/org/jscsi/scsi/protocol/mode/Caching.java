@@ -220,4 +220,214 @@ public class Caching extends ModePage
    {
       return PAGE_LENGTH;
    }
+
+   public boolean isIC()
+   {
+      return this.IC;
+   }
+
+   public void setIC(boolean ic)
+   {
+      this.IC = ic;
+   }
+
+   public boolean isABPF()
+   {
+      return this.ABPF;
+   }
+
+   public void setABPF(boolean abpf)
+   {
+      this.ABPF = abpf;
+   }
+
+   public boolean isCAP()
+   {
+      return this.CAP;
+   }
+
+   public void setCAP(boolean cap)
+   {
+      this.CAP = cap;
+   }
+
+   public boolean isDISC()
+   {
+      return this.DISC;
+   }
+
+   public void setDISC(boolean disc)
+   {
+      this.DISC = disc;
+   }
+
+   public boolean isSIZE()
+   {
+      return this.SIZE;
+   }
+
+   public void setSIZE(boolean size)
+   {
+      this.SIZE = size;
+   }
+
+   public boolean isWCE()
+   {
+      return this.WCE;
+   }
+
+   public void setWCE(boolean wce)
+   {
+      this.WCE = wce;
+   }
+
+   public boolean isMF()
+   {
+      return this.MF;
+   }
+
+   public void setMF(boolean mf)
+   {
+      this.MF = mf;
+   }
+
+   public boolean isRCD()
+   {
+      return this.RCD;
+   }
+
+   public void setRCD(boolean rcd)
+   {
+      this.RCD = rcd;
+   }
+
+   public int getDemandReadRetentionPriority()
+   {
+      return this.demandReadRetentionPriority;
+   }
+
+   public void setDemandReadRetentionPriority(int demandReadRetentionPriority)
+   {
+      this.demandReadRetentionPriority = demandReadRetentionPriority;
+   }
+
+   public int getWriteRetentionPriority()
+   {
+      return this.writeRetentionPriority;
+   }
+
+   public void setWriteRetentionPriority(int writeRetentionPriority)
+   {
+      this.writeRetentionPriority = writeRetentionPriority;
+   }
+
+   public int getDisablePrefetchTransferLength()
+   {
+      return this.disablePrefetchTransferLength;
+   }
+
+   public void setDisablePrefetchTransferLength(int disablePrefetchTransferLength)
+   {
+      this.disablePrefetchTransferLength = disablePrefetchTransferLength;
+   }
+
+   public int getMinimumPrefetch()
+   {
+      return this.minimumPrefetch;
+   }
+
+   public void setMinimumPrefetch(int minimumPrefetch)
+   {
+      this.minimumPrefetch = minimumPrefetch;
+   }
+
+   public int getMaximumPrefetch()
+   {
+      return this.maximumPrefetch;
+   }
+
+   public void setMaximumPrefetch(int maximumPrefetch)
+   {
+      this.maximumPrefetch = maximumPrefetch;
+   }
+
+   public int getMaximumPrefetchCeiling()
+   {
+      return this.maximumPrefetchCeiling;
+   }
+
+   public void setMaximumPrefetchCeiling(int maximumPrefetchCeiling)
+   {
+      this.maximumPrefetchCeiling = maximumPrefetchCeiling;
+   }
+
+   public boolean isFSW()
+   {
+      return this.FSW;
+   }
+
+   public void setFSW(boolean fsw)
+   {
+      this.FSW = fsw;
+   }
+
+   public boolean isLBCSS()
+   {
+      return this.LBCSS;
+   }
+
+   public void setLBCSS(boolean lbcss)
+   {
+      this.LBCSS = lbcss;
+   }
+
+   public boolean isDRA()
+   {
+      return this.DRA;
+   }
+
+   public void setDRA(boolean dra)
+   {
+      this.DRA = dra;
+   }
+
+   public int getCustom()
+   {
+      return this.custom;
+   }
+
+   public void setCustom(int custom)
+   {
+      this.custom = custom;
+   }
+
+   public boolean isNV_DIS()
+   {
+      return this.NV_DIS;
+   }
+
+   public void setNV_DIS(boolean nv_dis)
+   {
+      this.NV_DIS = nv_dis;
+   }
+
+   public int getNumberOfCacheSegments()
+   {
+      return this.numberOfCacheSegments;
+   }
+
+   public void setNumberOfCacheSegments(int numberOfCacheSegments)
+   {
+      this.numberOfCacheSegments = numberOfCacheSegments;
+   }
+
+   public int getCacheSegmentSize()
+   {
+      return this.cacheSegmentSize;
+   }
+
+   public void setCacheSegmentSize(int cacheSegmentSize)
+   {
+      this.cacheSegmentSize = cacheSegmentSize;
+   }
 }

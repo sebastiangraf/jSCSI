@@ -159,4 +159,114 @@ public class ReadWriteErrorRecovery extends ModePage
    {
       return PAGE_LENGTH;
    }
+
+   public boolean isAWRE()
+   {
+      return this.AWRE;
+   }
+
+   public void setAWRE(boolean awre)
+   {
+      this.AWRE = awre;
+   }
+
+   public boolean isARRE()
+   {
+      return this.ARRE;
+   }
+
+   public void setARRE(boolean arre)
+   {
+      this.ARRE = arre;
+   }
+
+   public boolean isTB()
+   {
+      return this.TB;
+   }
+
+   public void setTB(boolean tb)
+   {
+      this.TB = tb;
+   }
+
+   public boolean isRC()
+   {
+      return this.RC;
+   }
+
+   public void setRC(boolean rc)
+   {
+      this.RC = rc;
+   }
+
+   public boolean isEER()
+   {
+      return this.EER;
+   }
+
+   public void setEER(boolean eer)
+   {
+      this.EER = eer;
+   }
+
+   public boolean isPER()
+   {
+      return this.PER;
+   }
+
+   public void setPER(boolean per)
+   {
+      this.PER = per;
+   }
+
+   public boolean isDTE()
+   {
+      return this.DTE;
+   }
+
+   public void setDTE(boolean dte)
+   {
+      this.DTE = dte;
+   }
+
+   public boolean isDCR()
+   {
+      return this.DCR;
+   }
+
+   public void setDCR(boolean dcr)
+   {
+      this.DCR = dcr;
+   }
+
+   public int getReadRetryCount()
+   {
+      return this.readRetryCount;
+   }
+
+   public void setReadRetryCount(int readRetryCount)
+   {
+      this.readRetryCount = readRetryCount;
+   }
+
+   public int getWriteRetryCount()
+   {
+      return this.writeRetryCount;
+   }
+
+   public void setWriteRetryCount(int writeRetryCount)
+   {
+      this.writeRetryCount = writeRetryCount;
+   }
+
+   public int getRecoveryTimeLimit()
+   {
+      return this.recoveryTimeLimit;
+   }
+
+   public void setRecoveryTimeLimit(int recoveryTimeLimit)
+   {
+      this.recoveryTimeLimit = recoveryTimeLimit;
+   }
 }
