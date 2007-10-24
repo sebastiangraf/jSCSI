@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.Configuration;
+import org.jscsi.target.conf.OperationalTextConfiguration;
 import org.jscsi.target.util.Singleton;
 
 
@@ -35,12 +36,12 @@ public class Target {
 	private final Map<Integer, SocketListener> socketListeners;
 	
 	/** the targets configuration*/
-	private final Configuration config;
+	private final OperationalTextConfiguration config;
 	
 	
 	
 	/** */
-	public Target(Configuration conf) {
+	public Target(OperationalTextConfiguration conf) {
 		config = conf;
 		try {
 			SESSION_MANAGER = Singleton.getInstance(SessionManager.class);

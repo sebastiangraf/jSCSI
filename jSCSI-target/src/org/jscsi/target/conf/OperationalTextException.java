@@ -2,7 +2,6 @@ package org.jscsi.target.conf;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.target.task.OperationException;
 
 /**
  * Every exception thrown working with iSCSI operational-text-keys, -values, -pairs.
