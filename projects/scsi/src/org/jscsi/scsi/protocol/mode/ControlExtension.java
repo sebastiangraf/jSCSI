@@ -93,4 +93,44 @@ public class ControlExtension extends ModePage
    {
       return PAGE_LENGTH;
    }
+
+   public boolean isTCMOS()
+   {
+      return this.TCMOS;
+   }
+
+   public void setTCMOS(boolean tcmos)
+   {
+      this.TCMOS = tcmos;
+   }
+
+   public boolean isSCSIP()
+   {
+      return this.SCSIP;
+   }
+
+   public void setSCSIP(boolean scsip)
+   {
+      this.SCSIP = scsip;
+   }
+
+   public boolean isIALUAE()
+   {
+      return this.IALUAE;
+   }
+
+   public void setIALUAE(boolean ialuae)
+   {
+      this.IALUAE = ialuae;
+   }
+
+   public int getInitialPriority()
+   {
+      return this.initialPriority;
+   }
+
+   public void setInitialPriority(int initialPriority)
+   {
+      this.initialPriority = initialPriority;
+   }
 }

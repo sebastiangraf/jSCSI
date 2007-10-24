@@ -169,4 +169,164 @@ public class Control extends ModePage
    {
       return PAGE_LENGTH;
    }
+
+   public int getTST()
+   {
+      return this.TST;
+   }
+
+   public void setTST(int tst)
+   {
+      this.TST = tst;
+   }
+
+   public boolean isTMF_ONLY()
+   {
+      return this.TMF_ONLY;
+   }
+
+   public void setTMF_ONLY(boolean tmf_only)
+   {
+      this.TMF_ONLY = tmf_only;
+   }
+
+   public boolean isD_SENSE()
+   {
+      return this.D_SENSE;
+   }
+
+   public void setD_SENSE(boolean d_sense)
+   {
+      this.D_SENSE = d_sense;
+   }
+
+   public boolean isGLTSD()
+   {
+      return this.GLTSD;
+   }
+
+   public void setGLTSD(boolean gltsd)
+   {
+      this.GLTSD = gltsd;
+   }
+
+   public boolean isRLEC()
+   {
+      return this.RLEC;
+   }
+
+   public void setRLEC(boolean rlec)
+   {
+      this.RLEC = rlec;
+   }
+
+   public int getQUEUE_ALGORIHTM_MODIFIER()
+   {
+      return this.QUEUE_ALGORIHTM_MODIFIER;
+   }
+
+   public void setQUEUE_ALGORIHTM_MODIFIER(int queue_algorihtm_modifier)
+   {
+      this.QUEUE_ALGORIHTM_MODIFIER = queue_algorihtm_modifier;
+   }
+
+   public int getQERR()
+   {
+      return this.QERR;
+   }
+
+   public void setQERR(int qerr)
+   {
+      this.QERR = qerr;
+   }
+
+   public boolean isVS()
+   {
+      return this.VS;
+   }
+
+   public void setVS(boolean vs)
+   {
+      this.VS = vs;
+   }
+
+   public boolean isRAC()
+   {
+      return this.RAC;
+   }
+
+   public void setRAC(boolean rac)
+   {
+      this.RAC = rac;
+   }
+
+   public int getUA_INTLCK_CTRL()
+   {
+      return this.UA_INTLCK_CTRL;
+   }
+
+   public void setUA_INTLCK_CTRL(int ua_intlck_ctrl)
+   {
+      this.UA_INTLCK_CTRL = ua_intlck_ctrl;
+   }
+
+   public boolean isSWP()
+   {
+      return this.SWP;
+   }
+
+   public void setSWP(boolean swp)
+   {
+      this.SWP = swp;
+   }
+
+   public boolean isATO()
+   {
+      return this.ATO;
+   }
+
+   public void setATO(boolean ato)
+   {
+      this.ATO = ato;
+   }
+
+   public boolean isTAS()
+   {
+      return this.TAS;
+   }
+
+   public void setTAS(boolean tas)
+   {
+      this.TAS = tas;
+   }
+
+   public int getAUTOLOAD_MODE()
+   {
+      return this.AUTOLOAD_MODE;
+   }
+
+   public void setAUTOLOAD_MODE(int autoload_mode)
+   {
+      this.AUTOLOAD_MODE = autoload_mode;
+   }
+
+   public int getBUSY_TIMEOUT_PERIOD()
+   {
+      return this.BUSY_TIMEOUT_PERIOD;
+   }
+
+   public void setBUSY_TIMEOUT_PERIOD(int busy_timeout_period)
+   {
+      this.BUSY_TIMEOUT_PERIOD = busy_timeout_period;
+   }
+
+   public int getEXTENDED_SELF_TEST_COMPLETION_TIME()
+   {
+      return this.EXTENDED_SELF_TEST_COMPLETION_TIME;
+   }
+
+   public void setEXTENDED_SELF_TEST_COMPLETION_TIME(int extended_self_test_completion_time)
+   {
+      this.EXTENDED_SELF_TEST_COMPLETION_TIME = extended_self_test_completion_time;
+   }
 }

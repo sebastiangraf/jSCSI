@@ -116,4 +116,94 @@ public class InformationalExceptionsControl extends ModePage
    {
       return PAGE_LENGTH;
    }
+
+   public boolean isPERF()
+   {
+      return this.PERF;
+   }
+
+   public void setPERF(boolean perf)
+   {
+      this.PERF = perf;
+   }
+
+   public boolean isEBF()
+   {
+      return this.EBF;
+   }
+
+   public void setEBF(boolean ebf)
+   {
+      this.EBF = ebf;
+   }
+
+   public boolean isEWASC()
+   {
+      return this.EWASC;
+   }
+
+   public void setEWASC(boolean ewasc)
+   {
+      this.EWASC = ewasc;
+   }
+
+   public boolean isDEXCPT()
+   {
+      return this.DEXCPT;
+   }
+
+   public void setDEXCPT(boolean dexcpt)
+   {
+      this.DEXCPT = dexcpt;
+   }
+
+   public boolean isTEST()
+   {
+      return this.TEST;
+   }
+
+   public void setTEST(boolean test)
+   {
+      this.TEST = test;
+   }
+
+   public boolean isLOGERR()
+   {
+      return this.LOGERR;
+   }
+
+   public void setLOGERR(boolean logerr)
+   {
+      this.LOGERR = logerr;
+   }
+
+   public int getMRIE()
+   {
+      return this.MRIE;
+   }
+
+   public void setMRIE(int mrie)
+   {
+      this.MRIE = mrie;
+   }
+
+   public int getIntervalTimer()
+   {
+      return this.intervalTimer;
+   }
+
+   public void setIntervalTimer(int intervalTimer)
+   {
+      this.intervalTimer = intervalTimer;
+   }
+
+   public int getReportCount()
+   {
+      return this.reportCount;
+   }
+
+   public void setReportCount(int reportCount)
+   {
+      this.reportCount = reportCount;
+   }
 }
