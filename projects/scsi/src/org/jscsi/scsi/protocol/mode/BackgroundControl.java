@@ -1,4 +1,3 @@
-
 package org.jscsi.scsi.protocol.mode;
 
 import java.io.ByteArrayOutputStream;
