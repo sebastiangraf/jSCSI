@@ -1,15 +1,5 @@
 <!DOCTYPE log4j:configuration SYSTEM "http://logging.apache.org/log4j/docs/api/org/apache/log4j/xml/log4j.dtd">
 <log4j:configuration debug="false">
-
-	<appender name="File" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="output/slice-server/logs/slice-server.log"/>
-		<param name="Threshold" value="all"/>
-		<param name="Append" value="false"/>
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%t] %c - %m%n"/>
-		</layout>
-	</appender>
-
 	<appender name="Console" class="org.apache.log4j.ConsoleAppender">
 		<param name="Threshold" value="all"/>
 		<layout class="org.apache.log4j.PatternLayout">
@@ -20,7 +10,5 @@
 	<root>
 		<priority value="debug"/>
 		<appender-ref ref="Console"/>
-		<appender-ref ref="File"/>
 	</root>
-
 </log4j:configuration>
