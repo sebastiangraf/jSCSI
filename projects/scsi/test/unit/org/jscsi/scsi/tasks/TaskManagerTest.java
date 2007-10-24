@@ -83,6 +83,7 @@ public class TaskManagerTest
       public void run()
       {
          assert this.done == false: "This task has already been executed!";
+
          _logger.debug("executing task: " + this);
          this.checkProperExecution();
          
@@ -192,10 +193,12 @@ public class TaskManagerTest
    public static class HeadOfQueueTask extends TestTask
    {
 
+      private static Logger _logger = Logger.getLogger(HeadOfQueueTask.class);
+      
       private List<TestTask> taskSet;
       private int index;
-      private Boolean properStart = false;
-      private String reason;
+      private boolean properStart = true;
+      private String reason = "Unknown reason";
       
       
       public HeadOfQueueTask( List<TestTask> taskSet, long delay )
@@ -218,9 +221,12 @@ public class TaskManagerTest
       @Override
       protected void checkProperExecution()
       {
+         _logger.debug(">>>>> checking for proper execution");
          synchronized ( this.taskSet )
          {
+
             this.properStart = true;
+
             for ( int i = 0; i < this.index; i++ )
             {
                TestTask t = this.taskSet.get(i);
@@ -245,11 +251,19 @@ public class TaskManagerTest
                }
             }
          }
+         if (!this.properStart)
+         {
+            _logger.error("Task not started properly");
+         }
+         _logger.debug(" <<<<< checking for proper execution: " + this.properStart + ", object: " + this);
       }
       
       public String reason()
       {
-         return this.reason;
+         synchronized (this.taskSet)
+         {
+            return this.reason;
+         }
       }
       
       @Override
