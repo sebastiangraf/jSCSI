@@ -23,7 +23,7 @@ public class GenericTaskManagerTest extends TaskManagerTest
       new SimpleTask(taskSet, 0);
       new OrderedTask(taskSet, 100);
       
-      GenericTaskManager manager = new GenericTaskManager(10); // 10 threads is an arbitrary value here
+      GenericTaskManager manager = new GenericTaskManager(1); // 10 threads is an arbitrary value here
       
       for ( Task t : taskSet )
       {
@@ -54,7 +54,7 @@ public class GenericTaskManagerTest extends TaskManagerTest
       for ( int i = 0; i < taskSet.size(); i++ )
       {
          TestTask t = taskSet.get(i);
-         if ( t.isDone() )
+         if ( !t.isDone() )
          {
             fail("Task " + i + " not executed: " + t.getClass().getName() );
          }
@@ -62,12 +62,8 @@ public class GenericTaskManagerTest extends TaskManagerTest
          {
             assertTrue( 
                   "Task " + i + " failed: " + t.reason() + ": " + t.getClass().getName(),
-                  ! t.isProper() );
-         }
-         
-      }
-      
+                  t.isProper() );
+         }  
+      }  
    }
-   
-   
 }
