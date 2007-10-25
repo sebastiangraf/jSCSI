@@ -103,6 +103,10 @@ public class NetWorker {
 		sender.interrupt();
 	}
 
+	final void sendPDU(ProtocolDataUnit pdu){
+		
+	}
+	
 	/**
 	 * Signals the SenderWorker that there is a PDU he can send.
 	 */

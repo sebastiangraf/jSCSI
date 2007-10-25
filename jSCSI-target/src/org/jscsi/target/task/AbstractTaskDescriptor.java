@@ -6,7 +6,7 @@ import java.util.Set;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.target.connection.Connection;
-import org.jscsi.target.parameter.connection.SessionPhase;
+import org.jscsi.target.parameter.connection.Phase;
 import org.jscsi.target.parameter.connection.SessionType;
 
 /**
@@ -32,12 +32,12 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 	private final Set<SessionType> allowedSessionTypes;
 	
 	/** all allowed SessionPhases */
-	private final Set<SessionPhase> allowedSessionPhases;
+	private final Set<Phase> allowedSessionPhases;
 	
-	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, SessionPhase phase, Class<? extends AbstractTask> refTask) throws OperationException{
+	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, Phase phase, Class<? extends AbstractTask> refTask) throws OperationException{
 		this.opcode = opcode;
 		allowedSessionTypes = new HashSet<SessionType>();
-		allowedSessionPhases = new HashSet<SessionPhase>();
+		allowedSessionPhases = new HashSet<Phase>();
 		allowedSessionTypes.add(type);
 		allowedSessionPhases.add(phase);
 		this.refTask = refTask;
@@ -49,9 +49,9 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 		
 	}
 	
-	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, SessionPhase phase, Class<? extends AbstractTask> refTask) throws OperationException{
+	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, Phase phase, Class<? extends AbstractTask> refTask) throws OperationException{
 		this.opcode = opcode;
-		allowedSessionPhases = new HashSet<SessionPhase>();
+		allowedSessionPhases = new HashSet<Phase>();
 		allowedSessionTypes = types;
 		allowedSessionPhases.add(phase);
 		this.refTask = refTask;
@@ -62,7 +62,7 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 		}
 	}
 	
-	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, Set<SessionPhase> phases, Class<? extends AbstractTask> refTask) throws OperationException{
+	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, Set<Phase> phases, Class<? extends AbstractTask> refTask) throws OperationException{
 		this.opcode = opcode;
 		allowedSessionTypes = new HashSet<SessionType>();
 		allowedSessionPhases = phases;
@@ -75,7 +75,7 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 		}
 	}
 	
-	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, Set<SessionPhase> phases, Class<? extends AbstractTask> refTask) throws OperationException{
+	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, Set<Phase> phases, Class<? extends AbstractTask> refTask) throws OperationException{
 		this.opcode = opcode;
 		this.allowedSessionTypes = types;
 		this.allowedSessionPhases = phases;

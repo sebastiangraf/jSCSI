@@ -10,7 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.conf.OperationalTextConfiguration;
 import org.jscsi.target.connection.Connection;
-import org.jscsi.target.parameter.connection.SessionPhase;
+import org.jscsi.target.parameter.connection.Phase;
 import org.jscsi.target.parameter.connection.SessionType;
 import org.jscsi.connection.SerialArithmeticNumber;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -24,6 +24,7 @@ import org.jscsi.parser.login.ISID;
  * Initiator to an iSCSI Target. Each session can contains of several
  * connections. This allows a better usage of bandwidth and decreases latency
  * times.
+ * 
  * @author Marcus Specht
  * 
  */
@@ -31,13 +32,13 @@ public class Session {
 
 	/** The Logger interface. */
 	private static final Log LOGGER = LogFactory.getLog(Session.class);
-	
-	public static final String IDENTIFIER = "Session"; 
-	
+
+	public static final String IDENTIFIER = "Session";
+
 	public static final String TARGET_SESSION_IDENTIFYING_HANDLE = "TargetSessionIdentifyingHandle";
-	
+
 	public static final String INITIATOR_SESSION_ID = "InitiatorSessionID";
-	
+
 	public static final String INITIATOR_NAME = "InitiatorName";
 
 	// --------------------------------------------------------------------------
@@ -45,10 +46,10 @@ public class Session {
 
 	/** The <code>Configuration</code> instance for this session. */
 	private final OperationalTextConfiguration configuration;
-	
-	/** The session is in this phase. */
-	// private IPhase phase;
-	
+
+	/** Session's Phase */
+	private short SessionPhase;
+
 	/** The Target Session Identifying Handle. */
 	private short targetSessionIdentifyingHandle;
 
@@ -56,37 +57,30 @@ public class Session {
 	private ISID initiatorSessionID;
 
 	private String initiatorName;
-	
-	private SessionPhase sessionPhase;
-	
+
+	/** the session's phase */
+	private Phase phase;
+
+	/** the session's type */
 	private SessionType sessionType;
 
 	/** The Command Sequence Number of this session. */
-	private final SerialArithmeticNumber expectedCommandSequenceNumber;
+	private SerialArithmeticNumber expectedCommandSequenceNumber;
 
 	/** The Maximum Command Sequence Number of this session. */
-	private final SerialArithmeticNumber maximumCommandSequenceNumber;
+	private SerialArithmeticNumber maximumCommandSequenceNumber;
 
-	/** A List object with all open connections and there connectionIDs. */
-	private final Map<Short, Connection> connections;
-	
-	/**
-	 * The receiving queue filled with <code>ProtocolDataUnit</code>s, which
-	 * are received.
-	 */
-	private final Queue<ProtocolDataUnit> receivingQueue;
+	/** connections are mapped to their receiving Queues */
+	private final Map<Connection, Queue<ProtocolDataUnit>> connections;
 
 	public Session(Connection connection, short tsih) {
 		configuration = OperationalTextConfiguration.create(this);
-		expectedCommandSequenceNumber = new SerialArithmeticNumber(1);
-		maximumCommandSequenceNumber = new SerialArithmeticNumber(2);
 		targetSessionIdentifyingHandle = tsih;
-		connections = new ConcurrentHashMap<Short, Connection>();
+		connections = new ConcurrentHashMap<Connection, Queue<ProtocolDataUnit>>();
 		addConnection(connection);
-		receivingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		// start TaskManger
 	}
-
+	
 	/**
 	 * Adds a Connection to this Session.
 	 * 
@@ -94,7 +88,7 @@ public class Session {
 	 */
 	public void addConnection(Connection connection) {
 		if (connection.setReferencedSession(this)) {
-			connections.put(connection.getConnectionID(), connection);
+			connections.put(connection, connection.getReceivingQueue());
 		} else {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER
@@ -104,121 +98,6 @@ public class Session {
 
 	}
 	
-	/**
-	 * An iterator over all existing <code>Connection</code>s within
-	 * this Session
-	 * @return all existing <code>Connections</code>
-	 */
-	public Iterator<Connection> getConnections(){
-		return connections.values().iterator();
-	}
-	
-	/**
-	 * Returns a <code>Connection</code> with specified
-	 * connectionID. If not found, returns null.
-	 * @param connectionID the Connection's  ID
-	 * @return an existing COnnection or null, if not found
-	 */
-	public Connection getConnection(short connectionID){
-		
-		if(connections.keySet().contains(connectionID)){
-			return connections.get(connectionID);
-		} else {
-			if(LOGGER.isDebugEnabled()){
-				LOGGER.debug("No Connection found with follwing connection ID: " + connectionID);
-			}
-			return null;
-		}
-	}
-	
-	public final OperationalTextConfiguration getConfiguration(){
-		return configuration;
-	}
-	
-	public final String getIdentifier(){
-		StringBuffer result = new StringBuffer();
-		result.append(IDENTIFIER);
-		result.append(":" + TARGET_SESSION_IDENTIFYING_HANDLE + "=");
-		result.append(targetSessionIdentifyingHandle);
-		result.append(":" + INITIATOR_SESSION_ID + "=");
-		result.append(initiatorSessionID);
-		return result.toString();
-	}
-
-	/**
-	 * Returns the Session's Initiators Session ID.
-	 * 
-	 * @return
-	 */
-	final ISID getInitiatorSessionID() {
-		return initiatorSessionID;
-	}
-
-	/**
-	 * Set this Session's Initiator Session ID, if not already set.
-	 * 
-	 * @param isid
-	 *            InitiatorSessionID
-	 * @return false if already set, true else.
-	 */
-	final boolean setInitiatorSessionID(ISID isid) {
-		if (initiatorSessionID != null) {
-			initiatorSessionID = isid;
-			return true;
-		}
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Tried to set a session's ISID twice: old ISID is "
-					+ getInitiatorSessionID() + ", new ISID would be " + isid);
-		}
-		return false;
-	}
-
-	/**
-	 * Returns the Session's Initiator Name.
-	 * 
-	 * @return
-	 */
-	final String getInitiatorName() {
-		return initiatorName;
-	}
-	
-	final boolean setInitiatorName(String name) {
-		if (initiatorName != null) {
-			initiatorName = name;
-			return true;
-		}
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Tried to set a session's initiatorName twice: old name is "
-					+ getInitiatorName() + ", new name would be " + name);
-		}
-		return false;
-	}
-	
-	public final void setSessionPhase(SessionPhase phase){ 
-		sessionPhase = phase;
-	}
-	
-	public final void setSessionType(SessionType type){
-		sessionType = type;
-	}
-	
-	public final SessionPhase getSessionPhase(){
-		return sessionPhase;
-	}
-	
-	public final SessionType getSessionType(){
-		return sessionType;
-	}
-
-	/**
-	 * Returns the Session's Target Identifying Handle.
-	 * 
-	 * @return
-	 */
-	final short getTargetSessionIdentifyingHandleD() {
-		return targetSessionIdentifyingHandle;
-	}
-
 	/**
 	 * Checks based on a Session's ISID and TSIH if those parameters are equals
 	 * this session's ones. If so, the source <code>Connection</code> should
@@ -238,7 +117,103 @@ public class Session {
 			return false;
 		}
 	}
+	
+	public boolean containsConnection(Connection connection){
+		return connections.keySet().contains(connection);
+	}
+	
+	/**
+	 * An iterator over all existing <code>Connection</code>s within this
+	 * Session
+	 * 
+	 * @return all existing <code>Connections</code>
+	 */
+	public Iterator<Connection> getConnections() {
+		return connections.keySet().iterator();
+	}
 
+	/**
+	 * Returns a <code>Connection</code> with specified connectionID. If not
+	 * found, returns null.
+	 * 
+	 * @param connectionID
+	 *            the Connection's ID
+	 * @return an existing COnnection or null, if not found
+	 */
+	public Connection getConnection(short connectionID) {
+
+		Iterator<Connection> testedCons = connections.keySet().iterator();
+		while (testedCons.hasNext()) {
+			Connection tested = testedCons.next();
+			if (tested.getConnectionID() == connectionID) {
+				return tested;
+			}
+		}
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("No Connection found with follwing connection ID: "
+					+ connectionID);
+		}
+		return null;
+	}
+
+	public final OperationalTextConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	/**
+	 * Returns the Session's Initiators Session ID.
+	 * 
+	 * @return
+	 */
+	final ISID getInitiatorSessionID() {
+		return initiatorSessionID;
+	}
+
+	/**
+	 * Returns the Session's Initiator Name.
+	 * 
+	 * @return
+	 */
+	final String getInitiatorName() {
+		return initiatorName;
+	}
+	
+	/**
+	 * Returns the Session's actual expected command sequence number.
+	 * 
+	 * @return SerialArithmeticNumber representing the session's expCmdSeqNum
+	 */
+	final SerialArithmeticNumber getExpectedCommandSequence() {
+		return incrExpectedCommandSequence(false);
+	}
+	
+	/**
+	 * Returns the Session's actual Maximum Command Sequence Number.
+	 * 
+	 * @return SerialArithmeticNumber representing the session's maxCmdSeqNum
+	 */
+	final SerialArithmeticNumber getMaximumCommandSequence() {
+		return incrMaximumCommandSequence(0);
+	}
+	
+	public final Phase getSessionPhase() {
+		return phase;
+	}
+
+	public final SessionType getSessionType() {
+		return sessionType;
+	}
+	
+	/**
+	 * Returns the Session's Target Identifying Handle.
+	 * 
+	 * @return
+	 */
+	final short getTargetSessionIdentifyingHandleD() {
+		return targetSessionIdentifyingHandle;
+	}
+	
+	
 	/**
 	 * Returns the Session's actual Expected Command Sequence Number and if
 	 * true, increments the expCmdSeqNum before returning.
@@ -257,14 +232,7 @@ public class Session {
 		}
 	}
 
-	/**
-	 * Returns the Session's actual expected command sequence number.
-	 * 
-	 * @return SerialArithmeticNumber representing the session's expCmdSeqNum
-	 */
-	final SerialArithmeticNumber getExpectedCommandSequence() {
-		return incrExpectedCommandSequence(false);
-	}
+	
 
 	/**
 	 * Returns the Session's actual Maximum Command Sequence Number and if sumX
@@ -287,19 +255,106 @@ public class Session {
 
 	}
 
+	
+
 	/**
-	 * Returns the Session's actual Maximum Command Sequence Number.
+	 * Set this Session's Initiator Session ID, if not already set.
 	 * 
-	 * @return SerialArithmeticNumber representing the session's maxCmdSeqNum
+	 * @param isid
+	 *            InitiatorSessionID
+	 * @return false if already set, true else.
 	 */
-	final SerialArithmeticNumber getMaximumCommandSequence() {
-		return incrMaximumCommandSequence(0);
+	final boolean setInitiatorSessionID(ISID isid) {
+		if (initiatorSessionID != null) {
+			initiatorSessionID = isid;
+			return true;
+		}
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Tried to set a session's ISID twice: old ISID is "
+					+ getInitiatorSessionID() + ", new ISID would be " + isid);
+		}
+		return false;
 	}
+
 	
-	public int hashCode(){
-		return getIdentifier().hashCode();
+
+	final boolean setInitiatorName(String name) {
+		if (initiatorName != null) {
+			initiatorName = name;
+			return true;
+		}
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER
+					.debug("Tried to set a session's initiatorn name twice: old name is "
+							+ getInitiatorName()
+							+ ", new name would be "
+							+ name);
+		}
+		return false;
 	}
+
+	public final void setSessionPhase(Phase phase) {
+		phase = phase;
+	}
+
+	public final void setSessionType(SessionType type) {
+		sessionType = type;
+	}
+
+	
+
+	
+
+	
+
+	
+
 	
 	
+	final void signalReceivedPDU(){
+		
+	}
+
+	final void sendPDU(Connection connection, ProtocolDataUnit pdu) {
+
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((initiatorName == null) ? 0 : initiatorName.hashCode());
+		result = prime
+				* result
+				+ ((initiatorSessionID == null) ? 0 : initiatorSessionID
+						.hashCode());
+		result = prime * result + targetSessionIdentifyingHandle;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Session other = (Session) obj;
+		if (initiatorName == null) {
+			if (other.initiatorName != null)
+				return false;
+		} else if (!initiatorName.equals(other.initiatorName))
+			return false;
+		if (initiatorSessionID == null) {
+			if (other.initiatorSessionID != null)
+				return false;
+		} else if (!initiatorSessionID.equals(other.initiatorSessionID))
+			return false;
+		if (targetSessionIdentifyingHandle != other.targetSessionIdentifyingHandle)
+			return false;
+		return true;
+	}
 
 }
