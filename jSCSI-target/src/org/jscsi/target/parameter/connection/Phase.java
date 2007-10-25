@@ -1,6 +1,6 @@
 package org.jscsi.target.parameter.connection;
 
-public enum SessionPhase {
+public enum Phase {
 	
 	
 	/**
@@ -26,7 +26,7 @@ public enum SessionPhase {
 	
 	private final int currentPhase;
 	
-	private SessionPhase(int phase){
+	private Phase(int phase){
 		currentPhase = phase;
 	}
 	

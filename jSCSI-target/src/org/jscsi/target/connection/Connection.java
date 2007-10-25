@@ -34,8 +34,7 @@ public class Connection {
 
 	public static final String CONNECTION_ID = "ConnectionID";
 
-	/** connectionIDs null value */
-	private final short NO_ID = -1;
+	
 	// --------------------------------------------------------------------------
 	// --------------------------------------------------------------------------
 
@@ -52,7 +51,10 @@ public class Connection {
 	 * <code>Session</code>.
 	 */
 	private short connectionID;
-
+	
+	/** if the Connection already got a connectionID */
+	private boolean hasConnectionID;
+	
 	/**
 	 * The Status Sequence Number, which is used from the initiator to control
 	 * status sequencing and other.
@@ -90,7 +92,8 @@ public class Connection {
 		configuration = OperationalTextConfiguration.create(this);
 		sendingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		receivingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
-		connectionID = NO_ID;
+		connectionID = -1;
+		hasConnectionID = false;
 		statusSequenceNumber = new SerialArithmeticNumber(1);
 		netWorker = new NetWorker(sChannel, this);
 		netWorker.startListening();
@@ -134,10 +137,14 @@ public class Connection {
 	 */
 	final boolean setConnectionID(short cid) {
 		// NO_ID means that the Connection has not yet a ConnectionID
-		if (connectionID == NO_ID) {
+
+		if (hasConnectionID == false) {
 			connectionID = cid;
+			hasConnectionID = true;
 			return true;
+
 		}
+		
 		return false;
 	}
 
@@ -157,6 +164,18 @@ public class Connection {
 			return true;
 		} else
 			return false;
+	}
+	
+	final void receivePDU(ProtocolDataUnit pdu){
+		getReferencedSession().receivePDU(this, pdu);
+	}
+	
+	final void sendPDU(Object caller, ProtocolDataUnit pdu){
+		if(caller instanceof Session){
+			netWorker.send(pdu);
+		}else{
+			getReferencedSession().sendPDU(this, pdu);
+		}
 	}
 
 	
@@ -317,7 +336,7 @@ public class Connection {
 	 * 
 	 * @return
 	 */
-	private final Queue<ProtocolDataUnit> getReceivingQueue() {
+	final Queue<ProtocolDataUnit> getReceivingQueue() {
 		return receivingQueue;
 	}
 
