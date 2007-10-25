@@ -1,4 +1,4 @@
-package org.jscsi.scsi.lu;
+package org.jscsi.scsi.tasks.management;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,10 +12,8 @@ import org.apache.log4j.Logger;
 import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskAttribute;
-import org.jscsi.scsi.tasks.TaskManager;
-import org.jscsi.scsi.tasks.TaskSet;
 
-public class GenericTaskManager implements TaskManager, TaskSet
+public class GeneralTaskManager implements TaskManager, TaskSet
 {
    
    private static Logger _logger = Logger.getLogger(TaskSet.class);
@@ -38,7 +36,7 @@ public class GenericTaskManager implements TaskManager, TaskSet
    /////////////////////////////////////////////////////////////////////////////
    // constructor(s)
    
-   public GenericTaskManager(int numThreads)
+   public GeneralTaskManager(int numThreads)
    {
       _executor = Executors.newFixedThreadPool(numThreads);
       

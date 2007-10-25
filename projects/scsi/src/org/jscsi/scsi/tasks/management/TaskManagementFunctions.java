@@ -1,4 +1,4 @@
-package org.jscsi.scsi.tasks;
+package org.jscsi.scsi.tasks.management;
 
 /**
  * This enumerations defines all valid task management functions, which 
