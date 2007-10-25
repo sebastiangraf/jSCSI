@@ -1,8 +1,8 @@
-
-package org.jscsi.scsi.transport;
+package org.jscsi.scsi.tasks;
 
 import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
+import org.jscsi.scsi.transport.TargetTransportPort;
 
 /**
  * Within a SCSI Target, the Task Router sits between the Target Ports and Logical Units.
@@ -34,7 +34,7 @@ public interface TaskRouter
     * @param lu The Logical Unit.
     * @throws Exception If the LUN is already assigned.
     */
-   void registerLogicalUnit( long number, LogicalUnit lu ) throws Exception;
+   void registerLogicalUnit( long id, LogicalUnit lu ) throws Exception;
    
    /**
     * Remove a Logical Unit from the task router. After removal no further commands will be
@@ -43,7 +43,7 @@ public interface TaskRouter
     * @param number The LUN.
     * @throws Exception If the LUN is not valid.
     */
-   void removeLogicalUnit( long number ) throws Exception;
+   void removeLogicalUnit( long id ) throws Exception;
    
    
    /**
@@ -66,5 +66,3 @@ public interface TaskRouter
    void nexusLost();
    
 }
-
-

@@ -1,4 +1,3 @@
-
 package org.jscsi.scsi.transport;
 
 /**
@@ -10,14 +9,11 @@ package org.jscsi.scsi.transport;
  */
 public class Nexus
 {
-   
    private String initiatorPortIdentifier;
    private String targetPortIdentifier;
    
    private long logicalUnitNumber;
    private long taskTag;
-   
-   
    
    /**
     * Contruct an I_T Nexus identification. L and Q are set to invalid (negative) values.
@@ -32,8 +28,6 @@ public class Nexus
       this.logicalUnitNumber = -1;
       this.taskTag = -1;
    }
-   
-   
    
    /**
     * Construct an I_T_L Nexus identification. Q is set to an invalid (negative) value.
@@ -89,8 +83,6 @@ public class Nexus
       this.taskTag = taskTag;
    }
    
-
-
    /**
     * The Initiator Port Identifier.
     */
@@ -123,8 +115,6 @@ public class Nexus
       return taskTag;
    }
 
-
-
    @Override
    public int hashCode()
    {
@@ -139,8 +129,6 @@ public class Nexus
       result = prime * result + (int) (taskTag ^ (taskTag >>> 32));
       return result;
    }
-
-
 
    @Override
    public boolean equals(Object obj)
@@ -172,13 +160,4 @@ public class Nexus
          return false;
       return true;
    }
-   
-   
-   
-   
-   
-
-
 }
-
-

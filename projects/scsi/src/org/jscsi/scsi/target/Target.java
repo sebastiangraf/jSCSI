@@ -1,12 +1,13 @@
-
 package org.jscsi.scsi.target;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jscsi.scsi.authentication.AuthenticationHandler;
+import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
-import org.jscsi.scsi.transport.TaskRouter;
+import org.jscsi.scsi.tasks.TaskRouter;
+import org.jscsi.scsi.transport.TargetTransportPort;
 
 /**
  * A SCSI Target. The Target class provides a Target Name, a Task Router, and zero or more
@@ -35,6 +36,8 @@ public abstract class Target
    private ModePageRegistry modePageRegistry;
    
    private List<AuthenticationHandler> authHandlers;
+
+   abstract void enqueue( TargetTransportPort port, Command command );
    
    /**
     * Constructs a new target with a given name, task router, and set of authentication handlers.
@@ -46,11 +49,7 @@ public abstract class Target
     *    login phase the target-available authentication methods are sent to the initiator in
     *    the order returned by this handler list. Callers must ensure list uniqueness.
     */
-   public Target(
-         String targetName, 
-         TaskRouter router, 
-         ModePageRegistry modePageRegistry,
-         List<AuthenticationHandler> handlers)
+   public Target(String targetName, TaskRouter router, ModePageRegistry modePageRegistry, List<AuthenticationHandler> handlers)
    {
       this.targetName = targetName;
       this.taskRouter = router;
@@ -88,9 +87,4 @@ public abstract class Target
    {
       return this.modePageRegistry;
    }
-   
-   
-   
-   
-
 }

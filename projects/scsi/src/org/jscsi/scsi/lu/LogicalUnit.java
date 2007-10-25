@@ -1,4 +1,3 @@
-
 package org.jscsi.scsi.lu;
 
 import org.jscsi.scsi.protocol.Command;
