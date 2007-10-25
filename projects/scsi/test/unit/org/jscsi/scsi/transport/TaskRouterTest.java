@@ -19,6 +19,7 @@ import org.jscsi.scsi.protocol.sense.exceptions.LogicalUnitNotSupportedException
 import org.jscsi.scsi.target.Target;
 import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.TaskAttribute;
+import org.jscsi.scsi.tasks.TaskRouter;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

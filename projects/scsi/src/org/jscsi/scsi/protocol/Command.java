@@ -43,8 +43,11 @@ public class Command
     * @throws BufferUnderflowException If the 
     * @throws IOException
     */
-   public Command(Nexus nexus, ByteBuffer commandDescriptorBlock, TaskAttribute taskAttribute,
-                  long commandReferenceNumber, int taskPriority)
+   public Command(Nexus nexus,
+                  ByteBuffer commandDescriptorBlock,
+                  TaskAttribute taskAttribute,
+                  long commandReferenceNumber,
+                  int taskPriority)
    throws BufferUnderflowException, IOException
    {
       super();
@@ -55,8 +58,11 @@ public class Command
       this.taskPriority = taskPriority;
    }
 
-   public Command(Nexus nexus, CommandDescriptorBlock commandDescriptorBlock, TaskAttribute taskAttribute,
-                  long commandReferenceNumber, int taskPriority)
+   public Command(Nexus nexus, 
+                  CommandDescriptorBlock commandDescriptorBlock,
+                  TaskAttribute taskAttribute,
+                  long commandReferenceNumber,
+                  int taskPriority)
    {
       super();
       this.nexus = nexus;
