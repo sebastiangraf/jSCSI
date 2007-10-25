@@ -2,7 +2,9 @@ package org.jscsi.target.connection;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +13,7 @@ import org.jscsi.target.connection.Connection;
 import org.jscsi.target.parameter.connection.SessionPhase;
 import org.jscsi.target.parameter.connection.SessionType;
 import org.jscsi.connection.SerialArithmeticNumber;
+import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.ISID;
 
 /**
@@ -21,7 +24,6 @@ import org.jscsi.parser.login.ISID;
  * Initiator to an iSCSI Target. Each session can contains of several
  * connections. This allows a better usage of bandwidth and decreases latency
  * times.
- * 
  * @author Marcus Specht
  * 
  */
@@ -67,6 +69,12 @@ public class Session {
 
 	/** A List object with all open connections and there connectionIDs. */
 	private final Map<Short, Connection> connections;
+	
+	/**
+	 * The receiving queue filled with <code>ProtocolDataUnit</code>s, which
+	 * are received.
+	 */
+	private final Queue<ProtocolDataUnit> receivingQueue;
 
 	public Session(Connection connection, short tsih) {
 		configuration = OperationalTextConfiguration.create(this);
@@ -75,6 +83,7 @@ public class Session {
 		targetSessionIdentifyingHandle = tsih;
 		connections = new ConcurrentHashMap<Short, Connection>();
 		addConnection(connection);
+		receivingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		// start TaskManger
 	}
 
