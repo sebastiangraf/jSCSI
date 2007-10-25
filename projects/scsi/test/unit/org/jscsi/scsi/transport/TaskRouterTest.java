@@ -41,8 +41,6 @@ public abstract class TaskRouterTest
    
    public static class TestTargetTransportPort implements TargetTransportPort
    {
-      private static Logger _logger = Logger.getLogger(TestTargetTransportPort.class);
-
       private Nexus expectedNexus;
       private Status expectedStatus;
       private ByteBuffer expectedSenseData;
