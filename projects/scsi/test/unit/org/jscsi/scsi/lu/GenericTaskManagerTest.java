@@ -1,4 +1,4 @@
-package org.jscsi.scsi.tasks;
+package org.jscsi.scsi.lu;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -8,7 +8,8 @@ import java.util.List;
 
 import org.apache.log4j.xml.DOMConfigurator;
 import org.jscsi.scsi.exceptions.TaskSetException;
-import org.jscsi.scsi.lu.GenericTaskManager;
+import org.jscsi.scsi.tasks.Task;
+import org.jscsi.scsi.tasks.TaskManagerTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
