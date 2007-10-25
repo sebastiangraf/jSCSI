@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.CommandDescriptorBlock;
@@ -22,6 +23,10 @@ import org.junit.Test;
  */
 public class TaskManagerTest
 {
+   static
+   {
+      BasicConfigurator.configure();
+   }
    public static abstract class TestTask implements Task
    {
       private static Logger _logger = Logger.getLogger(TestTask.class);

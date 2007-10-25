@@ -1,5 +1,4 @@
-
-package org.jscsi.scsi.transport;
+package org.jscsi.scsi.target;
 
 import static org.junit.Assert.fail;
 
@@ -8,35 +7,119 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.ReportLuns;
 import org.jscsi.scsi.protocol.cdb.TestUnitReady;
+import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
+import org.jscsi.scsi.protocol.inquiry.StaticInquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
+import org.jscsi.scsi.protocol.mode.StaticModePageRegistry;
 import org.jscsi.scsi.protocol.sense.SenseData;
+import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.protocol.sense.exceptions.LogicalUnitNotSupportedException;
-import org.jscsi.scsi.target.Target;
+import org.jscsi.scsi.tasks.AbstractTask;
 import org.jscsi.scsi.tasks.Status;
+import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskAttribute;
+import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.TaskRouter;
+import org.jscsi.scsi.transport.Nexus;
+import org.jscsi.scsi.transport.TargetTransportPort;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-// TODO: Describe class or interface
-public abstract class TaskRouterTest
+public class GeneralTaskRouterTest
 {
+   private static Logger _logger = Logger.getLogger(DummyTask.class);
    
-   public abstract TaskRouter getTaskRouterInstance();
+   ////////////////////////////////////////////////////////////////////////////
+   // dummy task implementation
+   
+   private static class DummyTask extends AbstractTask implements TaskFactory
+   {
+      private static Logger _logger = Logger.getLogger(DummyTask.class);
+
+
+      ////////////////////////////////////////////////////////////////////////////
+      // constructor(s)
+      
+      public DummyTask()
+      {
+         super();
+      }
+
+      public DummyTask(TargetTransportPort targetPort,
+                       Command command,
+                       ModePageRegistry modePageRegistry,
+                       InquiryDataRegistry inquiryDataRegistry)
+      {
+         super(targetPort, command, modePageRegistry, inquiryDataRegistry);
+      }
+
+
+      ////////////////////////////////////////////////////////////////////////////
+      // protected setters to be used by DummyTaskFactory
+
+      protected void setTargetTransportPort(TargetTransportPort targetPort)
+      {
+         super.setTargetTransportPort(targetPort);
+      }
+
+      protected void setCommand(Command command)
+      {
+         super.setCommand(command);
+      }
+      
+      protected void setModePageRegistry(ModePageRegistry modePageRegistry)
+      {
+         super.setModePageRegistry(modePageRegistry);
+      }
+
+      protected void setInquiryDataRegistry(InquiryDataRegistry inquiryDataRegistry)
+      {
+         super.setInquiryDataRegistry(inquiryDataRegistry);
+      }
+
+      
+      /////////////////////////////////////////////////////////////////////////////
+      // Runnable implementation
+
+      public void run()
+      {
+         _logger.debug("running dummy task");
+      }
+
+      /////////////////////////////////////////////////////////////////////////
+      // TaskFactory implementation
+      
+      public Task getInstance(TargetTransportPort port,
+                              Command command,
+                              ModePageRegistry modePageRegistry,
+                              InquiryDataRegistry inquiryDataRegistry)
+      throws IllegalRequestException
+      {
+         return this;
+      }
+   }
    
    
+   
+   
+   
+   public TaskRouter getTaskRouterInstance()
+   {
+      return new GeneralTaskRouter(new DummyTask(), new StaticModePageRegistry(), new StaticInquiryDataRegistry());
+   }
+  
    public interface SuccessCallback
    {
-      public void success();
-      
+      public void success();      
       public void failure(String reason);
    }
    
@@ -163,6 +246,7 @@ public abstract class TaskRouterTest
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
    {
+      BasicConfigurator.configure();
    }
 
    @AfterClass
@@ -232,7 +316,7 @@ public abstract class TaskRouterTest
          fail("Exception occurred during Logical Unit registration: " + e.getMessage());
       }
       
-      router.enqueue(ttp, TaskRouterTest.getTestUnitReadyCommand(nexus));
+      router.enqueue(ttp, GeneralTaskRouterTest.getTestUnitReadyCommand(nexus));
    }
    
    @Test
@@ -286,7 +370,7 @@ public abstract class TaskRouterTest
          fail("Exception occurred during Logical Unit registration: " + e.getMessage());
       }
       
-      router.enqueue(ttp, TaskRouterTest.getTestUnitReadyCommand(nexus));
+      router.enqueue(ttp, GeneralTaskRouterTest.getTestUnitReadyCommand(nexus));
    }
    
    @Test
@@ -339,14 +423,10 @@ public abstract class TaskRouterTest
             fail("Exception occurred during Logical Unit registration: " + e.getMessage());
          }
          
-         router.enqueue(ttp, TaskRouterTest.getTestUnitReadyCommand(nexus));
+         router.enqueue(ttp, GeneralTaskRouterTest.getTestUnitReadyCommand(nexus));
    }
    
    // TODO: I_T nexus task test (need interface for target task executor first)
-   
-   
-   
-   
 
 }
 
