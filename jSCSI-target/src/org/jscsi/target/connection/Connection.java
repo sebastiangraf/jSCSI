@@ -15,6 +15,7 @@ import org.jscsi.target.connection.Connection;
 import org.jscsi.connection.SerialArithmeticNumber;
 import org.jscsi.target.connection.Session;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.parser.login.ISID;
 
 /**
  * <h1>Connection</h1>
@@ -30,8 +31,6 @@ public class Connection {
 
 	/** The logger interface. */
 	private static final Log LOGGER = LogFactory.getLog(Connection.class);
-
-	public static final String IDENTIFIER = "Connection";
 
 	public static final String CONNECTION_ID = "ConnectionID";
 
@@ -98,19 +97,32 @@ public class Connection {
 	}
 
 	/**
-	 * Assign a Session to this Connection instance. This is allowed only once.
+	 * Return the Connection's CID.
 	 * 
-	 * @param session
-	 * @return false if this connection already has a Session referenced, true
-	 *         else
+	 * @return ConnectionID
 	 */
-	final boolean assignSession(Session session) {
-		if (referenceSession == null) {
-			referenceSession = session;
-			return true;
-		}
-		return false;
+	final short getConnectionID() {
+		return connectionID;
+	}
 
+
+
+	/**
+	 * Returns the Connections Configuration
+	 * 
+	 * @return
+	 */
+	public final OperationalTextConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	/**
+	 * Get the Connection's referenced Session.
+	 * 
+	 * @return referenced Session
+	 */
+	public final Session getReferencedSession() {
+		return referenceSession;
 	}
 
 	/**
@@ -129,6 +141,10 @@ public class Connection {
 		return false;
 	}
 
+	final void inkrConnectionID() {
+		connectionID++;
+	}
+
 	/**
 	 * Set the Connection's referenced Session if not already set
 	 * 
@@ -143,45 +159,7 @@ public class Connection {
 			return false;
 	}
 
-	public final Session getReferencedSession() {
-		return referenceSession;
-	}
-
-	public final String getIdentifier() {
-		StringBuffer result = new StringBuffer();
-		result.append(IDENTIFIER);
-		result.append(":" + CONNECTION_ID + "=");
-		result.append(connectionID);
-		result.append("(" + getReferencedSession().getIdentifier() + ")");
-		return result.toString();
-	}
-
-	/**
-	 * Returns the Connection's sending queue.
-	 * 
-	 * @return
-	 */
-	final Queue<ProtocolDataUnit> getSendingQueue() {
-		return sendingQueue;
-	}
-
-	/**
-	 * Returns the Connections receiving Queue
-	 * 
-	 * @return
-	 */
-	final Queue<ProtocolDataUnit> getReceivingQueue() {
-		return receivingQueue;
-	}
-
-	/**
-	 * Returns the Connections Configuration
-	 * 
-	 * @return
-	 */
-	public final OperationalTextConfiguration getConfiguration() {
-		return configuration;
-	}
+	
 
 	/**
 	 * Sends the Protocol Data Unit.
@@ -203,15 +181,6 @@ public class Connection {
 		sendingQueue.addAll(pdus);
 		// inform the NetWorker he has work to do
 		netWorker.somethingToSend();
-	}
-
-	/**
-	 * Return the Connection's CID.
-	 * 
-	 * @return ConnectionID
-	 */
-	final short getConnectionID() {
-		return connectionID;
 	}
 
 	/**
@@ -315,7 +284,7 @@ public class Connection {
 	 *            if true, increments StatusSequenceNumber before returning
 	 * @return
 	 */
-	final SerialArithmeticNumber getStatusSequenceNumber(boolean inkr) {
+	private final SerialArithmeticNumber getStatusSequenceNumber(boolean inkr) {
 		synchronized (statusSequenceNumber) {
 			if (inkr) {
 				statusSequenceNumber.increment();
@@ -325,7 +294,7 @@ public class Connection {
 			}
 		}
 	}
-
+	
 	/**
 	 * If Threads are waiting to get a received ProtocolDataUnit, this method is
 	 * called to signal any received PDU.
@@ -334,8 +303,61 @@ public class Connection {
 		somethingReceived.signalAll();
 	}
 	
-	public int hashCode(){
-		return getIdentifier().hashCode();
+	/**
+	 * Returns the Connection's sending queue.
+	 * 
+	 * @return
+	 */
+	private final Queue<ProtocolDataUnit> getSendingQueue() {
+		return sendingQueue;
+	}
+
+	/**
+	 * Returns the Connections receiving Queue
+	 * 
+	 * @return
+	 */
+	private final Queue<ProtocolDataUnit> getReceivingQueue() {
+		return receivingQueue;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + connectionID;
+		result = prime
+				* result
+
+				+ ((getReferencedSession().getInitiatorName() == null) ? 0
+						: getReferencedSession().getInitiatorName().hashCode());
+
+		result = prime * result
+				+ getReferencedSession().getTargetSessionIdentifyingHandleD();
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Connection other = (Connection) obj;
+		if (connectionID != other.connectionID)
+			return false;
+		if (getReferencedSession().getInitiatorName() == null) {
+			if (other.getReferencedSession().getInitiatorName() != null)
+				return false;
+		} else if (!getReferencedSession().getInitiatorName().equals(
+				other.getReferencedSession().getInitiatorName()))
+			return false;
+		if (getReferencedSession().getTargetSessionIdentifyingHandleD() != other
+				.getReferencedSession().getTargetSessionIdentifyingHandleD())
+			return false;
+		return true;
 	}
 
 }
