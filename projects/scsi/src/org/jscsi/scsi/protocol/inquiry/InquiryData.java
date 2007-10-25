@@ -68,6 +68,9 @@ public abstract class InquiryData
    private byte[] t10vendorId = new byte[8]; // 8 bytes
    private byte[] productId = new byte[16]; // 16 bytes
    private byte[] productRevisionLevel = new byte[4]; // 4 bytes
+   private byte clocking; // 2 bits
+   private boolean qas; // 1 bit
+   private boolean ius; // 1 bit
    
    public InquiryData()
    {
@@ -76,7 +79,7 @@ public abstract class InquiryData
    
    public byte[] encode()
    {
-      byte[] encodedData = new byte[36];
+      byte[] encodedData = new byte[57];
       
       /////////////////////////////////////////////////////////////////////////
       // Add Peripheral Qualifier
@@ -150,6 +153,13 @@ public abstract class InquiryData
       // Add Product Revision Level
       System.arraycopy(productRevisionLevel, 0, encodedData, 32, productId.length);
       
+      /////////////////////////////////////////////////////////////////////////
+      // Add clocking
+      encodedData[56] = (byte) ((this.clocking & 0x03) << 2);
+      // Add qas
+      encodedData[56] |= (byte) (this.qas ? (1<<1) : 0x00);
+      // Add ius
+      encodedData[56] |= (byte) (this.ius ? 0x01 : 0x00);
       
       return encodedData;
    }
@@ -416,6 +426,37 @@ public abstract class InquiryData
       int copyLength = bytes.length > productRevisionLevel.length
                        ? productRevisionLevel.length : bytes.length;
       System.arraycopy(bytes, 0, productRevisionLevel, 0, copyLength);
+   }
+ 
+
+   public byte getClocking()
+   {
+      return clocking;
+   }
+
+   public void setClocking(byte clocking)
+   {
+      this.clocking = clocking;
+   }
+
+   public boolean isQas()
+   {
+      return qas;
+   }
+
+   public void setQas(boolean qas)
+   {
+      this.qas = qas;
+   }
+
+   public boolean isIus()
+   {
+      return ius;
+   }
+
+   public void setIus(boolean ius)
+   {
+      this.ius = ius;
    }
    
 }

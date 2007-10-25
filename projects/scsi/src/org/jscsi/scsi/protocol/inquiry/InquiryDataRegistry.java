@@ -34,13 +34,11 @@
 
 package org.jscsi.scsi.protocol.inquiry;
 
-import java.util.HashMap;
-import java.util.Map;
 
-// TODO: Describe class or interface
+// Contains instances of InquiryData objects
 public abstract class InquiryDataRegistry
 {
-   private Map<Long, InquiryData> inquiries = new HashMap<Long, InquiryData>();
+   protected InquiryData inquiryData = null;
    
 }
 
