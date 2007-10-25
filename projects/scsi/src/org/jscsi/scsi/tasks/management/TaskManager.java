@@ -1,5 +1,5 @@
 
-package org.jscsi.scsi.tasks;
+package org.jscsi.scsi.tasks.management;
 
 public interface TaskManager extends Runnable
 {
