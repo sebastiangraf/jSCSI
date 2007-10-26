@@ -34,9 +34,6 @@ public class FieldPointer implements SenseKeySpecificField
       this.bitPointer = -1;
       this.fieldPointer = -1;
    }
-   
-   
-   
 
    public boolean isCommandData()
    {
@@ -55,25 +52,42 @@ public class FieldPointer implements SenseKeySpecificField
 
    public FieldPointer decode(ByteBuffer buffer) throws IOException
    {
-      // TODO Auto-generated method stub
-      return null;
+      byte[] encodedData = new byte[3];
+      
+      buffer.get(encodedData);
+      
+      boolean commandData = (encodedData[0] >> 6) == 1;
+      
+      byte bitPointer = (byte) (encodedData[0] & 0x03);
+      
+      int fieldPointer = encodedData[2]; // 8 LSBs
+      fieldPointer |= (encodedData[1] << 8);
+      
+      return new FieldPointer(commandData, bitPointer, fieldPointer);
    }
 
    public void decode(byte[] header, ByteBuffer buffer) throws IOException
    {
-      // TODO Auto-generated method stub
-      
+      FieldPointer fieldPointer = decode(buffer);
+      this.commandData = fieldPointer.isCommandData();
+      this.bitPointer = fieldPointer.getBitPointer();
+      this.fieldPointer = fieldPointer.getFieldPointer();
    }
 
    public byte[] encode()
    {
-      // TODO Auto-generated method stub
-      return null;
+      byte[] encodedData = new byte[3];
+      
+      encodedData[0] = (byte) (1<<7);
+      encodedData[0] |= (byte) (commandData ? (1<<6) : 0);
+      encodedData[0] |= (byte) ((this.bitPointer != 0) ? (1<<3) : 0);
+      encodedData[0] |= (byte) (this.bitPointer & 0x03);
+      
+      encodedData[1] = (byte) ((this.fieldPointer >> 8) & 0xFF);
+      encodedData[2] = (byte) (this.fieldPointer & 0xFF);
+      
+      return encodedData;
    }
-
-
-   
-   
 
 }
 
