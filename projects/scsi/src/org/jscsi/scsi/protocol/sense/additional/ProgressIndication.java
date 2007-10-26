@@ -33,20 +33,33 @@ public class ProgressIndication implements SenseKeySpecificField
 
    public ProgressIndication decode(ByteBuffer buffer) throws IOException
    {
-      // TODO Auto-generated method stub
-      return null;
+      byte[] encodedData = new byte[3];
+      
+      buffer.get(encodedData);
+      
+      int progressIndication = encodedData[2]; // 8 LSBs
+      progressIndication |= (encodedData[1] << 8);
+      
+      return new ProgressIndication(progressIndication);
    }
 
    public void decode(byte[] header, ByteBuffer buffer) throws IOException
    {
-      // TODO Auto-generated method stub
-      
+      ProgressIndication progressIndication = decode(buffer);
+      this.progressIndication = progressIndication.getProgressIndication();
    }
 
    public byte[] encode()
    {
-      // TODO Auto-generated method stub
-      return null;
+      byte[] encodedData = new byte[3];
+      
+      encodedData[0] = (byte) 0x80;
+      
+      encodedData[1] = (byte) ((this.progressIndication >> 8) & 0xFF);
+      
+      encodedData[2] = (byte) (this.progressIndication & 0xFF);
+      
+      return encodedData;
    }
 
 
