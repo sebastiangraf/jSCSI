@@ -12,28 +12,25 @@ import org.jscsi.scsi.protocol.Encodable;
 // TODO: Describe class or interface
 public class NoSenseKeySpecific implements SenseKeySpecificField
 {
+   private static byte[] readData = new byte[3];
    
    public NoSenseKeySpecific() {}
 
    public NoSenseKeySpecific decode(ByteBuffer buffer) throws IOException
    {
-      // TODO Auto-generated method stub
-      return null;
+      buffer.get(readData);
+      return new NoSenseKeySpecific();
    }
 
    public void decode(byte[] header, ByteBuffer buffer) throws IOException
    {
-      // TODO Auto-generated method stub
-      
+      decode(buffer);
    }
 
    public byte[] encode()
    {
-      // TODO Auto-generated method stub
-      return null;
+      return new byte[3];
    }
-
-   
 
 }
 
