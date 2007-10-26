@@ -96,8 +96,8 @@ public class ModeSense6 extends AbstractCommandDescriptorBlock
       try
       {
          out.writeByte(OPERATION_CODE);
-         out.writeByte(this.dbd ? 0x04 : 0x00);
-         out.writeByte(this.pageControl | this.pageCode);
+         out.writeByte(this.dbd ? 0x08 : 0x00);
+         out.writeByte((this.pageControl << 6) | this.pageCode);
          out.writeByte(this.subPageCode);
          out.writeByte((int) this.allocationLength);
          out.writeByte(super.getControl());
