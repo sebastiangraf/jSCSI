@@ -29,6 +29,7 @@ public class GeneralTaskManagerTest
    {
       BasicConfigurator.configure();
    }
+
    public static abstract class TestTask implements Task
    {
       private static Logger _logger = Logger.getLogger(TestTask.class);

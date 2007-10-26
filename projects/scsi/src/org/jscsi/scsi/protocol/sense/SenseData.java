@@ -1,4 +1,3 @@
-
 package org.jscsi.scsi.protocol.sense;
 
 import java.io.ByteArrayInputStream;
@@ -15,7 +14,6 @@ import org.jscsi.scsi.protocol.sense.additional.SenseKeySpecificField;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException.ResponseCode;
 
-// TODO: Describe class or interface
 public abstract class SenseData
 {
    private SenseException.ResponseCode responseCode;
@@ -28,13 +26,11 @@ public abstract class SenseData
     * - ILI          (don't currently support READ LONG, WRITE LONG commands
     */
    
-   
-   private byte[] information;                     // if null VALID set to zero
+   private byte[] information;
    private byte[] commandSpecificInformation;
    private SenseKeySpecificField senseKeySpecific;
    
    private KCQ kcq;
-   
    
    public SenseData(
          ResponseCode responseCode,
@@ -210,10 +206,5 @@ public abstract class SenseData
    {
       this.kcq = kcq;
    }
-   
-   
-   
-   
+
 }
-
-

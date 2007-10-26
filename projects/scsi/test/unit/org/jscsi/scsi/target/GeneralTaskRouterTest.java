@@ -36,6 +36,11 @@ import org.junit.Test;
 
 public class GeneralTaskRouterTest
 {
+   static
+   {
+      BasicConfigurator.configure();
+   }
+   
    private static Logger _logger = Logger.getLogger(DummyTask.class);
    
    ////////////////////////////////////////////////////////////////////////////
@@ -246,7 +251,6 @@ public class GeneralTaskRouterTest
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
    {
-      BasicConfigurator.configure();
    }
 
    @AfterClass
