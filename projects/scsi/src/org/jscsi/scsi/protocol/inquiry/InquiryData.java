@@ -47,7 +47,7 @@ public abstract class InquiryData
    private byte peripheralDeviceType; // 5 bits
    private boolean rmb; // 1 bit
    private int version; // 8 bits
-   private boolean normAsa; // 1 bit
+   private boolean normACA; // 1 bit
    private boolean hiSup; // 1 bit
    private byte responseDataFormat; // 4 bits
    private int additionalLength = 36 - 4; // 8 bits
@@ -97,7 +97,7 @@ public abstract class InquiryData
       
       /////////////////////////////////////////////////////////////////////////
       // Add NormACA
-      encodedData[3] = (byte) (this.normAsa ? 0x20 : 0x00);
+      encodedData[3] = (byte) (this.normACA ? 0x20 : 0x00);
       // Add HiSup
       encodedData[3] |= (byte) (this.hiSup ? 0x10 : 0x00);
       // Response Data Format
@@ -166,7 +166,52 @@ public abstract class InquiryData
    
    public void decode(ByteBuffer buffer)
    {
+      byte[] header = new byte[5];
+      buffer.get(header);
       
+      this.peripheralQualifier = (byte) ((header[0] >> 5) & 0x07);
+      this.peripheralDeviceType = (byte) (header[0] & 0x1F);
+      
+      this.rmb = ((header[1] >> 7) & 1) == 1;
+      
+      this.version = (header[2] & 0xFF);
+      
+      this.normACA = ((header[3] >> 5) & 1) == 1;
+      this.hiSup = ((header[3] >> 4) & 1) == 1;
+      this.responseDataFormat = (byte) (header[3] & 0x0F);
+      
+      this.additionalLength = header[4];
+      
+      byte[] payload = new byte[additionalLength];
+      
+      buffer.get(payload);
+      
+      this.sccs = ((payload[5] >> 7) & 1) == 1;
+      this.acc = ((payload[5] >> 6) & 1) == 1;
+      this.tpgs = (byte) ((payload[5] >> 4) & 0x03);
+      this.threepc = ((payload[5] >> 3) & 1) == 1;
+      this.protect = (payload[5] & 1) == 1;
+      
+      this.bque = ((payload[6] >> 7) & 1) == 1;
+      this.encServ = ((payload[6] >> 6) & 1) == 1;
+      this.multiP = ((payload[6] >> 4) & 1) == 1;
+      this.mChngr = ((payload[6] >> 3) & 1) == 1;
+      this.addr16 = (payload[6] & 1) == 1;
+      
+      this.wbus16 = ((payload[7] >> 5) & 1) == 1;
+      this.sync = ((payload[7] >> 4) & 1) == 1;
+      this.linked = ((payload[7] >> 3) & 1) == 1;
+      this.mChngr = ((payload[7] >> 1) & 1) == 1;
+      
+      System.arraycopy(payload, 8, t10vendorId, 0, t10vendorId.length);
+      
+      System.arraycopy(payload, 16, productId, 0, productId.length);
+      
+      System.arraycopy(payload, 32, productRevisionLevel, 0, productId.length);
+      
+      this.clocking = (byte) ((payload[56] >> 2) & 0x03);
+      this.qas = ((payload[56] >> 1) & 1) == 1;
+      this.ius = (payload[56] & 1) == 1;
    }
 
    public byte getPeripheralQualifier()
@@ -209,14 +254,14 @@ public abstract class InquiryData
       this.version = version;
    }
 
-   public boolean isNormAsa()
+   public boolean isNormACA()
    {
-      return normAsa;
+      return normACA;
    }
 
-   public void setNormAsa(boolean normAsa)
+   public void setNormACA(boolean normACA)
    {
-      this.normAsa = normAsa;
+      this.normACA = normACA;
    }
 
    public boolean isHiSup()
