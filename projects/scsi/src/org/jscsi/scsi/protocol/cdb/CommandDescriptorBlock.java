@@ -1,13 +1,10 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.IOException;
-import java.nio.BufferOverflowException;
-import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
+import org.jscsi.scsi.protocol.Encodable;
 
 // TODO: Describe class or interface
-public interface CommandDescriptorBlock
+public interface CommandDescriptorBlock extends Encodable
 {
    int getOperationCode();
 
@@ -34,16 +31,6 @@ public interface CommandDescriptorBlock
    boolean isNormalACA();
 
    public void setNormalACA(boolean normalACA);
-
-   /**
-    * Serializes a CDB to the current position in a byte buffer.
-    */
-   void encode(ByteBuffer output) throws BufferOverflowException;
-
-   /**
-    * Deserializes a CDB from the current position in a byte buffer.
-    */
-   void decode(ByteBuffer input) throws BufferUnderflowException, IOException;
 
    /**
     * Returns CDB serialization size in bytes.

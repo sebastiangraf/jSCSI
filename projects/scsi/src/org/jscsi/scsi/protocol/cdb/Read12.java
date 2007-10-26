@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
+import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
+
 public class Read12 extends Read10
 {
    public static final int OPERATION_CODE = 0xA8;
@@ -52,11 +54,9 @@ public class Read12 extends Read10
    }
 
    @Override
-   public void decode(ByteBuffer input) throws BufferUnderflowException, IOException
+   public void decode(byte[] header, ByteBuffer input) throws IOException
    {
-      byte[] cdb = new byte[this.size()];
-      input.get(cdb);
-      DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
+      DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
       int operationCode = in.readUnsignedByte();
       super.decodeByte1(in.readUnsignedByte());
@@ -74,13 +74,13 @@ public class Read12 extends Read10
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IllegalArgumentException("Invalid operation code: "
+         throw new IOException("Invalid operation code: "
                + Integer.toHexString(operationCode));
       }
    }
 
    @Override
-   public void encode(ByteBuffer output)
+   public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
@@ -104,7 +104,7 @@ public class Read12 extends Read10
          out.writeByte(this.groupNumber & 0x1F);
          out.writeByte(super.getControl());
 
-         output.put(cdb.toByteArray());
+         return cdb.toByteArray();
       }
       catch (IOException e)
       {

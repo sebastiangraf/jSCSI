@@ -10,6 +10,8 @@ import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
+import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
+
 public class Write6 extends AbstractCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x0A;
@@ -43,12 +45,12 @@ public class Write6 extends AbstractCommandDescriptorBlock
    }
 
    @Override
-   public void decode(ByteBuffer input) throws BufferUnderflowException, IOException
+   public void decode(byte[] header, ByteBuffer input) throws IOException
    {
-      byte[] cdb = new byte[this.size() - 1];
-      input.get(cdb);
-      DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
+      DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
+      int operationCode = in.readUnsignedByte();
+      
       long msb = in.readUnsignedByte() & 0x1F;
       long lss = in.readUnsignedShort();
       this.logicalBlockAddress = (msb >>> 32) | lss;
@@ -60,10 +62,15 @@ public class Write6 extends AbstractCommandDescriptorBlock
       }
       super.setControl(in.readUnsignedByte());
 
+      if (operationCode != OPERATION_CODE)
+      {
+         throw new IOException("Invalid operation code: "
+               + Integer.toHexString(operationCode));
+      }
    }
 
    @Override
-   public void encode(ByteBuffer output) throws BufferOverflowException
+   public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
@@ -86,7 +93,7 @@ public class Write6 extends AbstractCommandDescriptorBlock
          }
          out.writeByte(super.getControl());
 
-         output.put(cdb.toByteArray());
+         return cdb.toByteArray();
       }
       catch (IOException e)
       {

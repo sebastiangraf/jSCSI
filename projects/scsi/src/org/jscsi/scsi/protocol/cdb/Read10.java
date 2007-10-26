@@ -8,6 +8,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
+
 public class Read10 extends AbstractCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x28;
@@ -58,11 +60,9 @@ public class Read10 extends AbstractCommandDescriptorBlock
    }
 
    @Override
-   public void decode(ByteBuffer input) throws IOException
+   public void decode(byte[] header, ByteBuffer input) throws IOException
    {
-      byte[] cdb = new byte[this.size()];
-      input.get(cdb);
-      DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
+      DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
       int operationCode = in.readUnsignedByte();
       this.decodeByte1(in.readUnsignedByte());
@@ -77,13 +77,13 @@ public class Read10 extends AbstractCommandDescriptorBlock
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IllegalArgumentException("Invalid operation code: "
+         throw new IOException("Invalid operation code: "
                + Integer.toHexString(operationCode));
       }
    }
 
    @Override
-   public void encode(ByteBuffer output)
+   public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
@@ -102,7 +102,7 @@ public class Read10 extends AbstractCommandDescriptorBlock
          out.writeShort((int) this.transferLength);
          out.writeByte(super.getControl());
 
-         output.put(cdb.toByteArray());
+         return cdb.toByteArray();
       }
       catch (IOException e)
       {

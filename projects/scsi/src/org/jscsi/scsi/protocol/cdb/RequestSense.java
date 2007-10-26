@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
+import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
+
 public class RequestSense extends AbstractCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x03;
@@ -42,35 +44,26 @@ public class RequestSense extends AbstractCommandDescriptorBlock
    }
 
    @Override
-   public void decode(ByteBuffer input) throws BufferUnderflowException, IllegalArgumentException
+   public void decode(byte[] header, ByteBuffer input) throws IOException
    {
-      byte[] cdb = new byte[this.size()];
-      input.get(cdb);
-      DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
+      DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
-      try
-      {
-         int operationCode = in.readUnsignedByte();
-         int format = in.readUnsignedByte() & 0x01;
-         this.descriptorFormat = (format == 1);
-         in.readShort();
-         this.allocationLength = in.readUnsignedByte();
-         super.setControl(in.readUnsignedByte());
+      int operationCode = in.readUnsignedByte();
+      int format = in.readUnsignedByte() & 0x01;
+      this.descriptorFormat = (format == 1);
+      in.readShort();
+      this.allocationLength = in.readUnsignedByte();
+      super.setControl(in.readUnsignedByte());
 
-         if (operationCode != OPERATION_CODE)
-         {
-            throw new IllegalArgumentException("Invalid operation code: "
-                  + Integer.toHexString(operationCode));
-         }
-      }
-      catch (IOException e)
+      if (operationCode != OPERATION_CODE)
       {
-         throw new IllegalArgumentException("Error reading input data.");
+         throw new IOException("Invalid operation code: "
+               + Integer.toHexString(operationCode));
       }
    }
 
    @Override
-   public void encode(ByteBuffer output)
+   public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
@@ -90,7 +83,7 @@ public class RequestSense extends AbstractCommandDescriptorBlock
          out.writeByte(this.allocationLength);
          out.writeByte(super.getControl());
 
-         output.put(cdb.toByteArray());
+         return cdb.toByteArray();
       }
       catch (IOException e)
       {

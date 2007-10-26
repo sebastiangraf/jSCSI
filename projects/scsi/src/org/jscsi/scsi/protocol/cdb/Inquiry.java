@@ -1,18 +1,19 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
+
 public class Inquiry extends AbstractCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x12;
 
-   private boolean evpd;
+   private boolean EVPD;
    private int pageCode;
    private int allocationLength;
 
@@ -30,7 +31,7 @@ public class Inquiry extends AbstractCommandDescriptorBlock
    {
       super(linked, normalACA);
 
-      this.evpd = evpd;
+      this.EVPD = evpd;
       this.pageCode = pageCode;
       this.allocationLength = allocationLength;
    }
@@ -41,34 +42,25 @@ public class Inquiry extends AbstractCommandDescriptorBlock
    }
 
    @Override
-   public void decode(ByteBuffer input) throws IllegalArgumentException
+   public void decode(byte[] header, ByteBuffer input) throws IOException
    {
-      byte[] cdb = new byte[this.size()];
-      input.get(cdb);
-      DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
+      DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
-      try
-      {
-         int operationCode = in.readUnsignedByte();
-         this.evpd = (in.readUnsignedByte() & 0x01) == 0x01;
-         this.pageCode = in.readUnsignedByte();
-         this.allocationLength = in.readShort();
-         super.setControl(in.readUnsignedByte());
+      int operationCode = in.readUnsignedByte();
+      this.EVPD = (in.readUnsignedByte() & 0x01) == 0x01;
+      this.pageCode = in.readUnsignedByte();
+      this.allocationLength = in.readUnsignedShort();
+      super.setControl(in.readUnsignedByte());
 
-         if (operationCode != OPERATION_CODE)
-         {
-            throw new IllegalArgumentException("Invalid operation code: "
-                  + Integer.toHexString(operationCode));
-         }
-      }
-      catch (IOException e)
+      if (operationCode != OPERATION_CODE)
       {
-         throw new IllegalArgumentException("Error reading input data.");
+         throw new IOException("Invalid operation code: "
+               + Integer.toHexString(operationCode));
       }
    }
 
    @Override
-   public void encode(ByteBuffer output)
+   public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
@@ -76,12 +68,12 @@ public class Inquiry extends AbstractCommandDescriptorBlock
       try
       {
          out.writeByte(OPERATION_CODE);
-         out.writeByte(this.evpd ? 0x01 : 0x00);
+         out.writeByte(this.EVPD ? 0x01 : 0x00);
          out.writeByte(this.pageCode);
          out.writeShort(this.allocationLength);
          out.writeByte(super.getControl());
 
-         output.put(cdb.toByteArray());
+         return cdb.toByteArray();
       }
       catch (IOException e)
       {
@@ -119,14 +111,14 @@ public class Inquiry extends AbstractCommandDescriptorBlock
       return 6;
    }
 
-   public boolean isEvpd()
+   public boolean isEVPD()
    {
-      return evpd;
+      return EVPD;
    }
 
-   public void setEvpd(boolean evpd)
+   public void setEVPD(boolean evpd)
    {
-      this.evpd = evpd;
+      this.EVPD = evpd;
    }
 
    public int getPageCode()

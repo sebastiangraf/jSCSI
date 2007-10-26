@@ -24,18 +24,23 @@ public abstract class AbstractCommandDescriptorBlock implements CommandDescripto
 
    protected void setControl(int control)
    {
-      // TODO: Implement this
+      this.normalACA = (control & 0x04) > 0;
+      this.linked = (control & 0x01) > 0;
    }
 
    protected int getControl()
    {
-      // TODO: Implement this
-      return 0;
+      int control = 0;
+      control |= this.linked ? 0x01 : 0x00;
+      control |= this.normalACA ? 0x04 : 0x00;
+      return control;
    }
 
-   public abstract void decode(ByteBuffer input) throws BufferUnderflowException, IOException;
+   
 
-   public abstract void encode(ByteBuffer output) throws BufferOverflowException;
+   public abstract void decode(byte[] header, ByteBuffer buffer) throws IOException;
+
+   public abstract byte[] encode();
 
    public abstract long getAllocationLength();
 

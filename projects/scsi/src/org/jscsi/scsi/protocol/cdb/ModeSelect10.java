@@ -8,6 +8,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
+
 public class ModeSelect10 extends AbstractCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x55;
@@ -40,38 +42,31 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
    }
 
    @Override
-   public void decode(ByteBuffer input) throws IllegalArgumentException
+   public void decode(byte[] header, ByteBuffer input) throws IOException
    {
-      byte[] cdb = new byte[this.size()];
-      input.get(cdb);
-      DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
+      DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
       int tmp;
 
-      try
-      {
-         int operationCode = in.readUnsignedByte();
-         tmp = in.readUnsignedByte();
-         this.savePages = (tmp & 0x01) != 0;
-         this.pageFormat = (tmp >>> 4) != 0;
-         tmp = in.readInt();
-         tmp = in.readByte();
-         this.parameterListLength = in.readUnsignedShort();
-         super.setControl(in.readUnsignedByte());
 
-         if (operationCode != OPERATION_CODE)
-         {
-            throw new IllegalArgumentException("Invalid operation code: "
-                  + Integer.toHexString(operationCode));
-         }
-      }
-      catch (IOException e)
+      int operationCode = in.readUnsignedByte();
+      tmp = in.readUnsignedByte();
+      this.savePages = (tmp & 0x01) != 0;
+      this.pageFormat = (tmp >>> 4) != 0;
+      tmp = in.readInt();
+      tmp = in.readByte();
+      this.parameterListLength = in.readUnsignedShort();
+      super.setControl(in.readUnsignedByte());
+
+      if (operationCode != OPERATION_CODE)
       {
-         throw new IllegalArgumentException("Error reading input data.");
+         throw new IOException("Invalid operation code: "
+               + Integer.toHexString(operationCode));
       }
+
    }
 
    @Override
-   public void encode(ByteBuffer output)
+   public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
@@ -85,7 +80,7 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
          out.writeShort(this.parameterListLength);
          out.writeByte(super.getControl());
 
-         output.put(cdb.toByteArray());
+         return cdb.toByteArray();
       }
       catch (IOException e)
       {

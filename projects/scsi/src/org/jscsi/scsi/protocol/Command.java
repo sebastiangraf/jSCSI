@@ -25,6 +25,8 @@ import org.jscsi.scsi.transport.Nexus;
 public class Command
 {
    
+   private static CommandDescriptorBlockFactory _factory = new CommandDescriptorBlockFactory();
+   
    private Nexus nexus;
    private CommandDescriptorBlock commandDescriptorBlock;
    private TaskAttribute taskAttribute;
@@ -52,7 +54,7 @@ public class Command
    {
       super();
       this.nexus = nexus;
-      this.commandDescriptorBlock = CommandDescriptorBlockFactory.decode(commandDescriptorBlock);
+      this.commandDescriptorBlock = _factory.decode(commandDescriptorBlock);
       this.taskAttribute = taskAttribute;
       this.commandReferenceNumber = commandReferenceNumber;
       this.taskPriority = taskPriority;
