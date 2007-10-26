@@ -10,6 +10,8 @@ import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
+import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
+
 public class ReceiveDiagnosticResults extends AbstractCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x1C;
@@ -43,34 +45,25 @@ public class ReceiveDiagnosticResults extends AbstractCommandDescriptorBlock
    }
 
    @Override
-   public void decode(ByteBuffer input) throws BufferUnderflowException, IOException
+   public void decode(byte[] header, ByteBuffer input) throws IOException
    {
-      byte[] cdb = new byte[this.size()];
-      input.get(cdb);
-      DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
+      DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
-      try
-      {
-         int operationCode = in.readUnsignedByte();
-         this.pcv = (in.readUnsignedByte() & 1) == 1;
-         this.pageCode = in.readUnsignedByte();
-         this.allocationLength = in.readUnsignedShort();
-         super.setControl(in.readUnsignedByte());
+      int operationCode = in.readUnsignedByte();
+      this.pcv = (in.readUnsignedByte() & 1) == 1;
+      this.pageCode = in.readUnsignedByte();
+      this.allocationLength = in.readUnsignedShort();
+      super.setControl(in.readUnsignedByte());
 
-         if (operationCode != OPERATION_CODE)
-         {
-            throw new IllegalArgumentException("Invalid operation code: "
-                  + Integer.toHexString(operationCode));
-         }
-      }
-      catch (IOException e)
+      if (operationCode != OPERATION_CODE)
       {
-         throw new IllegalArgumentException("Error reading input data.");
+         throw new IOException("Invalid operation code: "
+               + Integer.toHexString(operationCode));
       }
    }
 
    @Override
-   public void encode(ByteBuffer output) throws BufferOverflowException
+   public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
@@ -83,7 +76,7 @@ public class ReceiveDiagnosticResults extends AbstractCommandDescriptorBlock
          out.writeShort(this.allocationLength);
          out.writeByte(super.getControl());
 
-         output.put(cdb.toByteArray());
+         return cdb.toByteArray();
       }
       catch (IOException e)
       {

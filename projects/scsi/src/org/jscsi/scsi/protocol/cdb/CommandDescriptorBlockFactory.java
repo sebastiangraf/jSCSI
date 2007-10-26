@@ -9,7 +9,9 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommandDescriptorBlockFactory
+import org.jscsi.scsi.protocol.Serializer;
+
+public class CommandDescriptorBlockFactory implements Serializer
 {
    private static Map<Integer, Class<? extends CommandDescriptorBlock>> _cdbs =
          new HashMap<Integer, Class<? extends CommandDescriptorBlock>>();
@@ -54,8 +56,8 @@ public class CommandDescriptorBlockFactory
     * @throws BufferUnderflowException
     * @throws IOException
     */
-   public static CommandDescriptorBlock decode(ByteBuffer input) throws BufferUnderflowException,
-         IOException
+   @SuppressWarnings("unchecked")
+   public CommandDescriptorBlock decode(ByteBuffer input) throws IOException
    {
       byte[] opcode = new byte[1];
       input.duplicate().get(opcode); // Read in the operation code without changing the position
@@ -66,7 +68,7 @@ public class CommandDescriptorBlockFactory
       try
       {
          CommandDescriptorBlock cdb = _cdbs.get(operationCode).newInstance();
-         cdb.decode(input);
+         cdb.decode(null, input);
          return cdb;
       }
       catch (InstantiationException e)

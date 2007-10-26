@@ -8,6 +8,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
+
 public class ReportLuns extends AbstractCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0xA0;
@@ -34,38 +36,29 @@ public class ReportLuns extends AbstractCommandDescriptorBlock
    }
 
    @Override
-   public void decode(ByteBuffer input) throws IllegalArgumentException
+   public void decode(byte[] header, ByteBuffer input) throws IOException
    {
-      byte[] cdb = new byte[this.size()];
-      input.get(cdb);
-      DataInputStream in = new DataInputStream(new ByteArrayInputStream(cdb));
+      DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
-      try
-      {
-         int operationCode = in.readUnsignedByte();
-         in.readByte(); // RESERVED block
-         this.selectReport = in.readUnsignedByte();
-         in.readByte(); // RESERVED block
-         in.readByte(); // RESERVED block
-         in.readByte(); // RESERVED block
-         this.allocationLength = in.readInt();
-         in.readByte(); // RESERVED block
-         super.setControl(in.readUnsignedByte());
+      int operationCode = in.readUnsignedByte();
+      in.readByte(); // RESERVED block
+      this.selectReport = in.readUnsignedByte();
+      in.readByte(); // RESERVED block
+      in.readByte(); // RESERVED block
+      in.readByte(); // RESERVED block
+      this.allocationLength = in.readInt();
+      in.readByte(); // RESERVED block
+      super.setControl(in.readUnsignedByte());
 
-         if (operationCode != OPERATION_CODE)
-         {
-            throw new IllegalArgumentException("Invalid operation code: "
-                  + Integer.toHexString(operationCode));
-         }
-      }
-      catch (IOException e)
+      if (operationCode != OPERATION_CODE)
       {
-         throw new IllegalArgumentException("Error reading input data.");
+         throw new IOException("Invalid operation code: "
+               + Integer.toHexString(operationCode));
       }
    }
 
    @Override
-   public void encode(ByteBuffer output)
+   public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
       DataOutputStream out = new DataOutputStream(cdb);
@@ -82,7 +75,7 @@ public class ReportLuns extends AbstractCommandDescriptorBlock
          out.writeByte(0);
          out.writeByte(super.getControl());
 
-         output.put(cdb.toByteArray());
+         return cdb.toByteArray();
       }
       catch (IOException e)
       {
