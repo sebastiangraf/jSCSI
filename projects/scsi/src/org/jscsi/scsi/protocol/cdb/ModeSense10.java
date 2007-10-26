@@ -100,11 +100,12 @@ public class ModeSense10 extends AbstractCommandDescriptorBlock
       try
       {
          out.writeByte(OPERATION_CODE);
-         out.writeByte(((this.llbaa ? 0x10 : 0x00) | (this.dbd ? 0x04 : 0x00)));
-         out.writeByte(this.pageControl | this.pageCode);
+         out.writeByte(((this.llbaa ? 0x10 : 0x00) | (this.dbd ? 0x08 : 0x00)));
+         out.writeByte((this.pageControl << 6) | this.pageCode);
          out.writeByte(this.subPageCode);
          out.writeShort(0);
-         out.writeByte((int) this.allocationLength);
+         out.writeByte(0);
+         out.writeShort((int) this.allocationLength);
          out.writeByte(super.getControl());
 
          return cdb.toByteArray();
