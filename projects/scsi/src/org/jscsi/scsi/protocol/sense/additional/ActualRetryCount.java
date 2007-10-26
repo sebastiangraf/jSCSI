@@ -32,23 +32,34 @@ public class ActualRetryCount implements SenseKeySpecificField
 
    public void decode(byte[] header, ByteBuffer buffer) throws IOException
    {
-      // TODO Auto-generated method stub
-      
+      ActualRetryCount actualRetryAccount = decode(buffer);
+      this.actualRetryCount = actualRetryAccount.getActualRetryCount();
    }
 
    public byte[] encode()
    {
-      // TODO Auto-generated method stub
-      return null;
+      byte[] encodedData = new byte[3];
+      
+      encodedData[0] = (byte) 0x80;
+      
+      encodedData[1] = (byte) ((this.actualRetryCount >> 8) & 0xFF);
+      
+      encodedData[2] = (byte) (this.actualRetryCount & 0xFF);
+      
+      return encodedData;
    }
 
    public ActualRetryCount decode(ByteBuffer buffer) throws IOException
    {
-      // TODO Auto-generated method stub
-      return null;
+      byte[] encodedData = new byte[3];
+      
+      buffer.get(encodedData);
+      
+      int retryCount = encodedData[2]; // 8 LSBs
+      retryCount |= (encodedData[1] << 8);
+      
+      return new ActualRetryCount(retryCount);
    }
-
-
 
 }
 
