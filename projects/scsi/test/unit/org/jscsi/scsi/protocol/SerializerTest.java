@@ -580,117 +580,146 @@ public class SerializerTest {
 			
 	}
 	
+	
+	private Exception checkEncodableFields( EncodableSpec spec, Encodable encodable )
+	{
+      String checkResult = null;
+      try {
+        for (TagValue tv : spec.tagList)
+        {
+           if (tv.getTag().equals("reserved"))
+              continue;
+           // find access method and compare the value.
+           String prefix = null;
+           if (tv.getBits() > 1) {
+              // the field is more than 1 bit, hence the type of the field is a Number.
+              prefix = "get";
+              Method accessMethod = encodable.getClass().getMethod(prefix + tv.getTag());
+              Object valObj = accessMethod.invoke(encodable);
+              Number val = (Number) valObj;
+              Long valInput = (Long) tv.getIntValue(); 
+              if (accessMethod.getReturnType().equals("long"))
+              {
+                 // return value of the field is long
+                 if (valInput.longValue() == val.longValue())
+                 {
+                    System.out.format("Success: %s : %X == %X %n", tv.getTag(), val, tv.getIntValue());
+                 } 
+                 else 
+                 {
+                    System.out.format("Fail: %s : %X != %X %n", val, tv.getTag(), tv.getIntValue());
+                    checkResult = "Non-matching field detected";
+                 }
+              } else {
+                 // return value of the field is int
+                 if (val.intValue() == valInput.intValue())
+                 {
+                    System.out.format("Success: %s : %X == %X %n", tv.getTag(), val, tv.getIntValue());
+                 } 
+                 else 
+                 {
+                    System.out.format("Fail: %s : %X != %X %n", tv.getTag(), val, tv.getIntValue());
+                    checkResult = "Non-matching field detected";
+                 }
+              }
+           } else {
+              // the width of the field is one bit, hence the type is boolean.
+              prefix = "is";
+              Method accessMethod = encodable.getClass().getMethod(prefix + tv.getTag());
+              Object valObj = accessMethod.invoke(encodable);
+              Boolean val = (Boolean) valObj;
+              Long valInput = (Long) tv.getIntValue();
+              if ( ((valInput == 1) && (val)) || ((valInput == 0) && !val))
+              {
+                 System.out.format("Success: %s : %b == %X %n", tv.getTag(), val, tv.getIntValue());
+              }
+              else {
+                 System.out.format("Fail: %s : %b != %X %n", tv.getTag(), val, tv.getIntValue());
+                 checkResult = "Non-matching field detected";
+              }
+           }
+        }
+      } catch (Exception ex)
+      {
+        ex.printStackTrace();
+        return ex;
+      }
+      
+      if ( checkResult != null )
+      {
+         return new RuntimeException(checkResult);
+      }
+      else
+      {
+         return null;
+      }
+	}
+	
+	// Returns an Exception or an Encodable, caller has to check
+	private Object executeDecodingTest( Serializer serializer, EncodableSpec spec, byte[] data )
+	{
+	      for (byte b : data) {
+	         System.out.format("%02X ", b);
+	      }
+	      System.out.println();
+	      
+	      // Run the serializer with the data as input.
+	      Encodable encodable = null;
+	      try
+	      {
+	         encodable = serializer.decode(ByteBuffer.wrap(data));
+	         
+	         if ( encodable == null )
+	         {
+	            return new RuntimeException(
+	                  "Serializer did not return encodable object (returned null)");
+	         }
+	      }
+	      catch (Exception ex)
+	      {
+	         ex.printStackTrace();
+	         return ex;
+	      }
+	      
+	      // verify that the returned encodable object is the same as the specification indicates
+	      if ( ! spec.getClassObject().isInstance(encodable) )
+	      {
+	         System.out.format(
+	               "Fail: returned class %s is not instance of %s %n", 
+	               encodable.getClass().getName(),
+	               spec.getClassObject().getName() );
+	         return new RuntimeException(
+	               "Returned instance does not match specification class:"
+	               + encodable.getClass().getName() );
+	      }
+	      
+	      // verify the correctness by checking each tag and its value.
+	      Exception checkResult = checkEncodableFields( spec, encodable );
+	      
+	      return checkResult == null ? encodable : checkResult;
+	}
 	protected Exception executeTest(Serializer serializer, EncodableSpec spec, byte[] data)
 	{
-		System.out.println(spec.getName());
-
-		for (byte b : data) {
-			System.out.format("%02X ", b);
-		}
-		System.out.println();
-		
-		// Run the serializer with the data as input.
-		Encodable encodable = null;
-      try
+	   System.out.println("Check decode: " + spec.getName());
+      Object obj = executeDecodingTest(serializer, spec, data);
+      if ( obj instanceof Exception || obj == null )
       {
-         encodable = serializer.decode(ByteBuffer.wrap(data));
-         
-         if ( encodable == null )
+         return (Exception)obj;
+      }
+      else if ( obj instanceof Encodable )
+      {
+         System.out.println("Check encode: " + spec.getName());
+         data = ((Encodable)obj).encode();
+         obj = executeDecodingTest(serializer, spec, data);
+         if ( obj == null || obj instanceof Encodable )
          {
-            return new RuntimeException(
-                  "Serializer did not return encodable object (returned null)");
+            return null;
+         }
+         else if ( obj instanceof Exception )
+         {
+            return (Exception)obj;
          }
       }
-      catch (Exception ex)
-      {
-       	ex.printStackTrace();
-       	return ex;
-      }
-      
-      // verify that the returned encodable object is the same as the specification indicates
-      if ( ! spec.getClassObject().isInstance(encodable) )
-      {
-         System.out.format(
-               "Fail: returned class %s is not instance of %s %n", 
-               encodable.getClass().getName(),
-               spec.getClassObject().getName() );
-         return new RuntimeException(
-               "Returned instance does not match specification class:"
-               + encodable.getClass().getName() );
-      }
-      
-		// verify the correctness by checking each tag and its value.
-      
-      String checkResult = null;
-	    try {
-	    	for (TagValue tv : spec.tagList)
-	    	{
-	    		if (tv.getTag().equals("reserved"))
-	    			continue;
-	    		// find access method and compare the value.
-	    		String prefix = null;
-	    		if (tv.getBits() > 1) {
-	    			// the field is more than 1 bit, hence the type of the field is a Number.
-	    			prefix = "get";
-		    		Method accessMethod = encodable.getClass().getMethod(prefix + tv.getTag());
-		    		Object valObj = accessMethod.invoke(encodable);
-	    			Number val = (Number) valObj;
-	    			Long valInput = (Long) tv.getIntValue(); 
-		    		if (accessMethod.getReturnType().equals("long"))
-		    		{
-		    			// return value of the field is long
-		    			if (valInput.longValue() == val.longValue())
-		    			{
-		    				System.out.format("Success: %s : %X == %X %n", tv.getTag(), val, tv.getIntValue());
-		    			} 
-		    			else 
-		    			{
-		    				System.out.format("Fail: %s : %X != %X %n", val, tv.getTag(), tv.getIntValue());
-		    				checkResult = "Non-matching field detected";
-		    			}
-		    		} else {
-		    			// return value of the field is int
-		    			if (val.intValue() == valInput.intValue())
-		    			{
-		    				System.out.format("Success: %s : %X == %X %n", tv.getTag(), val, tv.getIntValue());
-		    			} 
-		    			else 
-		    			{
-		    				System.out.format("Fail: %s : %X != %X %n", tv.getTag(), val, tv.getIntValue());
-                     checkResult = "Non-matching field detected";
-		    			}
-		    		}
-	    		} else {
-	    			// the width of the field is one bit, hence the type is boolean.
-	    			prefix = "is";
-		    		Method accessMethod = encodable.getClass().getMethod(prefix + tv.getTag());
-		    		Object valObj = accessMethod.invoke(encodable);
-	    			Boolean val = (Boolean) valObj;
-	    			Long valInput = (Long) tv.getIntValue();
-	    			if ( ((valInput == 1) && (val)) || ((valInput == 0) && !val))
-	    			{
-	    				System.out.format("Success: %s : %b == %X %n", tv.getTag(), val, tv.getIntValue());
-	    			}
-	    			else {
-	    				System.out.format("Fail: %s : %b != %X %n", tv.getTag(), val, tv.getIntValue());
-                  checkResult = "Non-matching field detected";
-	    			}
-	    		}
-	    	}
-	    } catch (Exception ex)
-	    {
-	    	ex.printStackTrace();
-	    	return ex;
-	    }
-	    
-	    if ( checkResult != null )
-	    {
-	       return new RuntimeException(checkResult);
-	    }
-	    else
-	    {
-	       return null;
-	    }
-	    
+      throw new RuntimeException("Improper object type returned.");
 	}
 }
