@@ -7,15 +7,12 @@ import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 
-// TODO: Describe class or interface
-public abstract interface SenseKeySpecificField
-{
+import org.jscsi.scsi.protocol.Encodable;
+import org.jscsi.scsi.protocol.Serializer;
 
-   public abstract void decode( DataInputStream input )
-         throws BufferUnderflowException, IOException;
-   
-   public abstract void encode( DataOutputStream output ) throws BufferOverflowException;
-   
+// TODO: Describe class or interface
+public abstract interface SenseKeySpecificField extends Encodable, Serializer
+{
    
 }
 
