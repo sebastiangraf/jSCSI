@@ -9,13 +9,13 @@ import java.util.List;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.tasks.Task;
-import org.jscsi.scsi.tasks.TaskManagerTest;
 import org.jscsi.scsi.tasks.management.GeneralTaskManager;
+import org.jscsi.scsi.tasks.management.GeneralTaskManagerTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class GenericTaskManagerTest extends TaskManagerTest
+public class GenericTaskManagerTest extends GeneralTaskManagerTest
 {
    
    public static final int MANAGER_THREAD_COUNT = 1; // 1 thread is an arbitrary value

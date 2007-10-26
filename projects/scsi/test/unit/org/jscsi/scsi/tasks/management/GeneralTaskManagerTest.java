@@ -1,4 +1,4 @@
-package org.jscsi.scsi.tasks;
+package org.jscsi.scsi.tasks.management;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -10,6 +10,8 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.CommandDescriptorBlock;
+import org.jscsi.scsi.tasks.Task;
+import org.jscsi.scsi.tasks.TaskAttribute;
 import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
 import org.junit.After;
@@ -21,7 +23,7 @@ import org.junit.Test;
 /**
  * Tests task manager implementations for proper execution ordering.
  */
-public class TaskManagerTest
+public class GeneralTaskManagerTest
 {
    static
    {
