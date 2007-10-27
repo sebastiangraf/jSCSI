@@ -1,12 +1,10 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
@@ -15,26 +13,23 @@ public class Read12 extends Read10
 {
    public static final int OPERATION_CODE = 0xA8;
 
-   private int groupNumber;
-   private long logicalBlockAddress;
-   private long transferLength;
-
    protected Read12()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
    public Read12(
-         long logicalBlockAddress,
-         long transferLength,
          int groupNumber,
          boolean dpo,
          boolean fua,
          boolean fua_nv,
          boolean linked,
-         boolean normalACA)
+         boolean normalACA,
+         long logicalBlockAddress,
+         long transferLength)
    {
-      super(dpo, fua, fua_nv, linked, normalACA);
+      super(OPERATION_CODE, groupNumber, dpo, fua, fua_nv, linked, normalACA, logicalBlockAddress,
+            transferLength);
       if (transferLength > 4294967296L)
       {
          throw new IllegalArgumentException("Transfer length out of bounds for command type");
@@ -43,14 +38,11 @@ public class Read12 extends Read10
       {
          throw new IllegalArgumentException("Logical Block Address out of bounds for command type");
       }
-      this.transferLength = transferLength;
-      this.logicalBlockAddress = logicalBlockAddress;
-      this.groupNumber = groupNumber;
    }
 
    public Read12(long logicalBlockAddress, long transferLength)
    {
-      this(logicalBlockAddress, transferLength, 0, false, false, false, false, false);
+      this(0, false, false, false, false, false, logicalBlockAddress, transferLength);
    }
 
    @Override
@@ -63,19 +55,18 @@ public class Read12 extends Read10
 
       long mss = in.readUnsignedShort();
       long lss = in.readUnsignedShort();
-      this.logicalBlockAddress = (mss >>> 32) | lss;
+      setLogicalBlockAddress((mss >>> 32) | lss);
 
       mss = in.readUnsignedShort();
       lss = in.readUnsignedShort();
-      this.transferLength = (mss >>> 32) | lss;
+      setTransferLength((mss >>> 32) | lss);
 
-      this.groupNumber = in.readUnsignedByte() & 0x1F;
+      setGroupNumber(in.readUnsignedByte() & 0x1F);
       super.setControl(in.readUnsignedByte());
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IOException("Invalid operation code: "
-               + Integer.toHexString(operationCode));
+         throw new IOException("Invalid operation code: " + Integer.toHexString(operationCode));
       }
    }
 
@@ -91,17 +82,17 @@ public class Read12 extends Read10
 
          out.writeByte(super.encodeByte1());
 
-         int mss = (int) (this.logicalBlockAddress << 32);
-         int lss = (int) this.logicalBlockAddress & 0xFFFF;
+         int mss = (int) (getLogicalBlockAddress() << 32);
+         int lss = (int) getLogicalBlockAddress() & 0xFFFF;
          out.writeShort(mss);
          out.writeShort(lss);
 
-         mss = (int) (this.transferLength << 32);
-         lss = (int) this.transferLength & 0xFFFF;
+         mss = (int) (getTransferLength() << 32);
+         lss = (int) getTransferLength() & 0xFFFF;
          out.writeShort(mss);
          out.writeShort(lss);
 
-         out.writeByte(this.groupNumber & 0x1F);
+         out.writeByte(getGroupNumber() & 0x1F);
          out.writeByte(super.getControl());
 
          return cdb.toByteArray();
@@ -113,55 +104,8 @@ public class Read12 extends Read10
    }
 
    @Override
-   public long getAllocationLength()
-   {
-      return 0;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return this.logicalBlockAddress;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return this.transferLength;
-   }
-
-   @Override
    public int size()
    {
       return 12;
-   }
-
-   @Override
-   public int getGroupNumber()
-   {
-      return this.groupNumber;
-   }
-
-   @Override
-   public void setGroupNumber(int groupNumber)
-   {
-      this.groupNumber = groupNumber;
-   }
-
-   public void setLogicalBlockAddress(long logicalBlockAddress)
-   {
-      this.logicalBlockAddress = logicalBlockAddress;
-   }
-
-   @Override
-   public void setTransferLength(long transferLength)
-   {
-      this.transferLength = transferLength;
    }
 }

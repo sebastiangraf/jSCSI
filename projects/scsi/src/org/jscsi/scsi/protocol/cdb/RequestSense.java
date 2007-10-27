@@ -1,68 +1,61 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class RequestSense extends AbstractCommandDescriptorBlock
+public class RequestSense extends AbstractParameterCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x03;
 
-   private int allocationLength;
-   private boolean descriptorFormat;
+   private boolean DESC;
 
    public RequestSense()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
    public RequestSense(
-         long allocationLength,
          boolean useDescriptorFormat,
          boolean linked,
-         boolean normalACA)
+         boolean normalACA,
+         long allocationLength)
    {
-      super(linked, normalACA);
+      super(OPERATION_CODE, linked, normalACA, allocationLength);
       if (allocationLength > 256)
       {
          throw new IllegalArgumentException("Allocation length out of bounds for command type");
       }
-      this.allocationLength = (int) allocationLength;
-      this.descriptorFormat = useDescriptorFormat;
+      this.DESC = useDescriptorFormat;
    }
 
-   public RequestSense(long allocationLength, boolean useDescriptorFormat)
+   public RequestSense(boolean useDescriptorFormat, long allocationLength)
    {
-      this(allocationLength, useDescriptorFormat, false, false);
+      this(useDescriptorFormat, false, false, allocationLength);
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
       int operationCode = in.readUnsignedByte();
       int format = in.readUnsignedByte() & 0x01;
-      this.descriptorFormat = (format == 1);
+      this.DESC = (format == 1);
       in.readShort();
-      this.allocationLength = in.readUnsignedByte();
+      setAllocationLength(in.readUnsignedByte());
       super.setControl(in.readUnsignedByte());
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IOException("Invalid operation code: "
-               + Integer.toHexString(operationCode));
+         throw new IOException("Invalid operation code: " + Integer.toHexString(operationCode));
       }
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -71,7 +64,7 @@ public class RequestSense extends AbstractCommandDescriptorBlock
       try
       {
          out.writeByte(OPERATION_CODE);
-         if (this.descriptorFormat)
+         if (this.DESC)
          {
             out.writeByte(1);
          }
@@ -80,7 +73,7 @@ public class RequestSense extends AbstractCommandDescriptorBlock
             out.writeByte(0);
          }
          out.writeShort(0);
-         out.writeByte(this.allocationLength);
+         out.writeByte((int) getAllocationLength());
          out.writeByte(super.getControl());
 
          return cdb.toByteArray();
@@ -91,48 +84,18 @@ public class RequestSense extends AbstractCommandDescriptorBlock
       }
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return this.allocationLength;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return 0;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return 0;
-   }
-
-   @Override
    public int size()
    {
       return 6;
    }
 
-   public boolean isDescriptorFormat()
+   public boolean isDESC()
    {
-      return descriptorFormat;
+      return this.DESC;
    }
 
-   public void setDescriptorFormat(boolean descriptorFormat)
+   public void setDESC(boolean desc)
    {
-      this.descriptorFormat = descriptorFormat;
-   }
-
-   public void setAllocationLength(int allocationLength)
-   {
-      this.allocationLength = allocationLength;
+      this.DESC = desc;
    }
 }

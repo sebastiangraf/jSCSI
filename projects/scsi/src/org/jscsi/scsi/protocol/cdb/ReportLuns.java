@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -10,32 +9,29 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ReportLuns extends AbstractCommandDescriptorBlock
+public class ReportLuns extends AbstractParameterCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0xA0;
 
    private int selectReport;
-   private int allocationLength;
 
    public ReportLuns()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
-   public ReportLuns(int selectReport, int allocationLength, boolean linked, boolean normalACA)
+   public ReportLuns(int selectReport, boolean linked, boolean normalACA, int allocationLength)
    {
-      super(linked, normalACA);
+      super(OPERATION_CODE, linked, normalACA, allocationLength);
 
       this.selectReport = selectReport;
-      this.allocationLength = allocationLength;
    }
 
    public ReportLuns(int selectReport, int allocationLength)
    {
-      this(selectReport, allocationLength, false, false);
+      this(selectReport, false, false, allocationLength);
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
@@ -46,18 +42,16 @@ public class ReportLuns extends AbstractCommandDescriptorBlock
       in.readByte(); // RESERVED block
       in.readByte(); // RESERVED block
       in.readByte(); // RESERVED block
-      this.allocationLength = in.readInt();
+      setAllocationLength(in.readInt());
       in.readByte(); // RESERVED block
       super.setControl(in.readUnsignedByte());
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IOException("Invalid operation code: "
-               + Integer.toHexString(operationCode));
+         throw new IOException("Invalid operation code: " + Integer.toHexString(operationCode));
       }
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -71,7 +65,7 @@ public class ReportLuns extends AbstractCommandDescriptorBlock
          out.writeByte(0);
          out.writeByte(0);
          out.writeByte(0);
-         out.writeInt(this.allocationLength);
+         out.writeInt((int) getAllocationLength());
          out.writeByte(0);
          out.writeByte(super.getControl());
 
@@ -83,31 +77,6 @@ public class ReportLuns extends AbstractCommandDescriptorBlock
       }
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return this.allocationLength;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return 0;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return 0;
-   }
-
-   @Override
    public int size()
    {
       return 12;
@@ -115,16 +84,11 @@ public class ReportLuns extends AbstractCommandDescriptorBlock
 
    public int getSelectReport()
    {
-      return selectReport;
+      return this.selectReport;
    }
 
    public void setSelectReport(int selectReport)
    {
       this.selectReport = selectReport;
-   }
-
-   public void setAllocationLength(int allocationLength)
-   {
-      this.allocationLength = allocationLength;
    }
 }

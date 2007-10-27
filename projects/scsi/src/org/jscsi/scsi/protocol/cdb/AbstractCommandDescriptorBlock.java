@@ -1,23 +1,20 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.IOException;
-import java.nio.BufferOverflowException;
-import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
-
 public abstract class AbstractCommandDescriptorBlock implements CommandDescriptorBlock
 {
-
+   private int operationCode;
    private boolean linked;
    private boolean normalACA;
 
-   protected AbstractCommandDescriptorBlock()
+   protected AbstractCommandDescriptorBlock(int operationCode)
    {
+      this.operationCode = operationCode;
    }
 
-   protected AbstractCommandDescriptorBlock(boolean linked, boolean normalACA)
+   protected AbstractCommandDescriptorBlock(int operationCode, boolean linked, boolean normalACA)
    {
+      this.operationCode = operationCode;
       this.linked = linked;
       this.normalACA = normalACA;
    }
@@ -35,22 +32,6 @@ public abstract class AbstractCommandDescriptorBlock implements CommandDescripto
       control |= this.normalACA ? 0x04 : 0x00;
       return control;
    }
-
-   
-
-   public abstract void decode(byte[] header, ByteBuffer buffer) throws IOException;
-
-   public abstract byte[] encode();
-
-   public abstract long getAllocationLength();
-
-   public abstract long getLogicalBlockAddress();
-
-   public abstract int getOperationCode();
-
-   public abstract long getTransferLength();
-
-   public abstract int size();
 
    public boolean isLinked()
    {
@@ -70,5 +51,10 @@ public abstract class AbstractCommandDescriptorBlock implements CommandDescripto
    public void setNormalACA(boolean normalACA)
    {
       this.normalACA = normalACA;
+   }
+
+   public int getOperationCode()
+   {
+      return this.operationCode;
    }
 }

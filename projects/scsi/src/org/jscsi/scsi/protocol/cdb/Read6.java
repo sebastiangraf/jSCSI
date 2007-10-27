@@ -1,31 +1,26 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class Read6 extends AbstractCommandDescriptorBlock
+public class Read6 extends AbstractTransferCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x08;
 
-   private long lba;
-   private int transferLength;
-
    public Read6()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
-   public Read6(long logicalBlockAddress, long transferLength, boolean linked, boolean normalACA)
+   public Read6(boolean linked, boolean normalACA, long logicalBlockAddress, long transferLength)
    {
-      super(linked, normalACA);
+      super(OPERATION_CODE, linked, normalACA, logicalBlockAddress, transferLength);
       if (transferLength > 256)
       {
          throw new IllegalArgumentException("Transfer length out of bounds for command type");
@@ -34,16 +29,13 @@ public class Read6 extends AbstractCommandDescriptorBlock
       {
          throw new IllegalArgumentException("Logical Block Address out of bounds for command type");
       }
-      this.lba = logicalBlockAddress;
-      this.transferLength = (int) transferLength;
    }
 
    public Read6(long logicalBlockAddress, long transferLength)
    {
-      this(logicalBlockAddress, transferLength, false, false);
+      this(false, false, logicalBlockAddress, transferLength);
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
@@ -52,24 +44,22 @@ public class Read6 extends AbstractCommandDescriptorBlock
 
       long msb = in.readUnsignedByte() & 0x1F;
       long lss = in.readUnsignedShort();
-      this.lba = (msb << 32) | lss;
+      setLogicalBlockAddress((msb << 32) | lss);
 
-      this.transferLength = in.readUnsignedByte();
+      setTransferLength(in.readUnsignedByte());
       super.setControl(in.readUnsignedByte());
 
-      if (this.transferLength == 0)
+      if (getTransferLength() == 0)
       {
-         this.transferLength = 256;
+         setTransferLength(256);
       }
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IOException("Invalid operation code: "
-               + Integer.toHexString(operationCode));
+         throw new IOException("Invalid operation code: " + Integer.toHexString(operationCode));
       }
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -79,11 +69,11 @@ public class Read6 extends AbstractCommandDescriptorBlock
       {
          out.writeByte(OPERATION_CODE);
 
-         int msb = (int) (this.lba >>> 32) & 0x1F;
-         int lss = (int) this.lba & 0xFFFF;
+         int msb = (int) (getLogicalBlockAddress() >>> 32) & 0x1F;
+         int lss = (int) getLogicalBlockAddress() & 0xFFFF;
          out.writeByte(msb);
          out.writeShort(lss);
-         out.writeByte(this.transferLength);
+         out.writeByte((int) getTransferLength());
          out.writeByte(super.getControl());
 
          return cdb.toByteArray();
@@ -94,48 +84,8 @@ public class Read6 extends AbstractCommandDescriptorBlock
       }
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return 0;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return this.lba;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return this.transferLength;
-   }
-
-   @Override
    public int size()
    {
       return 6;
-   }
-
-   public long getLba()
-   {
-      return lba;
-   }
-
-   public void setLba(long lba)
-   {
-      this.lba = lba;
-   }
-
-   public void setTransferLength(int transferLength)
-   {
-      this.transferLength = transferLength;
    }
 }

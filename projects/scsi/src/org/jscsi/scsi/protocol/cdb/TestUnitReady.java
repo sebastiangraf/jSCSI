@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,15 +15,14 @@ public class TestUnitReady extends AbstractCommandDescriptorBlock
 
    public TestUnitReady()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
    public TestUnitReady(boolean linked, boolean normalACA)
    {
-      super(linked, normalACA);
+      super(OPERATION_CODE, linked, normalACA);
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
@@ -35,12 +33,10 @@ public class TestUnitReady extends AbstractCommandDescriptorBlock
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IOException("Invalid operation code: "
-               + Integer.toHexString(operationCode));
+         throw new IOException("Invalid operation code: " + Integer.toHexString(operationCode));
       }
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -61,31 +57,6 @@ public class TestUnitReady extends AbstractCommandDescriptorBlock
 
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return 0;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return 0;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return 0;
-   }
-
-   @Override
    public int size()
    {
       return 6;
