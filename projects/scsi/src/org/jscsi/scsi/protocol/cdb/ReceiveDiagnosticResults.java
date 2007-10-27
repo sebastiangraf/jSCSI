@@ -1,68 +1,60 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.BufferOverflowException;
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ReceiveDiagnosticResults extends AbstractCommandDescriptorBlock
+public class ReceiveDiagnosticResults extends AbstractParameterCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x1C;
 
-   private boolean pcv;
+   private boolean PCV;
    private int pageCode;
-   private int allocationLength;
 
    protected ReceiveDiagnosticResults()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
    public ReceiveDiagnosticResults(
          boolean pcv,
          int pageCode,
-         int allocationLength,
          boolean linked,
-         boolean normalACA)
+         boolean normalACA,
+         int allocationLength)
    {
-      super(linked, normalACA);
+      super(OPERATION_CODE, linked, normalACA, allocationLength);
 
-      this.pcv = pcv;
+      this.PCV = pcv;
       this.pageCode = pageCode;
-      this.allocationLength = allocationLength;
    }
 
    public ReceiveDiagnosticResults(boolean pcv, int pageCode, int allocationLength)
    {
-      this(pcv, pageCode, allocationLength, false, false);
+      this(pcv, pageCode, false, false, allocationLength);
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
       int operationCode = in.readUnsignedByte();
-      this.pcv = (in.readUnsignedByte() & 1) == 1;
+      this.PCV = (in.readUnsignedByte() & 1) == 1;
       this.pageCode = in.readUnsignedByte();
-      this.allocationLength = in.readUnsignedShort();
+      setAllocationLength(in.readUnsignedShort());
       super.setControl(in.readUnsignedByte());
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IOException("Invalid operation code: "
-               + Integer.toHexString(operationCode));
+         throw new IOException("Invalid operation code: " + Integer.toHexString(operationCode));
       }
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -71,9 +63,9 @@ public class ReceiveDiagnosticResults extends AbstractCommandDescriptorBlock
       try
       {
          out.writeByte(OPERATION_CODE);
-         out.writeByte((this.pcv == true) ? 1 : 0);
+         out.writeByte((this.PCV == true) ? 1 : 0);
          out.writeByte(this.pageCode);
-         out.writeShort(this.allocationLength);
+         out.writeShort((int) getAllocationLength());
          out.writeByte(super.getControl());
 
          return cdb.toByteArray();
@@ -84,58 +76,28 @@ public class ReceiveDiagnosticResults extends AbstractCommandDescriptorBlock
       }
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return this.allocationLength;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return 0;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return 0;
-   }
-
-   @Override
    public int size()
    {
       return 6;
    }
 
-   public boolean isPcv()
+   public boolean isPCV()
    {
-      return pcv;
+      return this.PCV;
    }
 
-   public void setPcv(boolean pcv)
+   public void setPCV(boolean pcv)
    {
-      this.pcv = pcv;
+      this.PCV = pcv;
    }
 
    public int getPageCode()
    {
-      return pageCode;
+      return this.pageCode;
    }
 
    public void setPageCode(int pageCode)
    {
       this.pageCode = pageCode;
-   }
-
-   public void setAllocationLength(int allocationLength)
-   {
-      this.allocationLength = allocationLength;
    }
 }

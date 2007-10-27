@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -10,20 +9,19 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ModeSense10 extends AbstractCommandDescriptorBlock
+public class ModeSense10 extends AbstractParameterCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x5A;
 
-   private boolean dbd;
-   private boolean llbaa;
-   private int pageControl;
+   private boolean DBD;
+   private boolean LLBAA;
+   private int PC;
    private int pageCode;
    private int subPageCode;
-   private long allocationLength;
 
    public ModeSense10()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
    public ModeSense10(
@@ -32,22 +30,21 @@ public class ModeSense10 extends AbstractCommandDescriptorBlock
          int pageControl,
          int pageCode,
          int subPageCode,
-         long allocationLength,
          boolean linked,
-         boolean normalACA)
+         boolean normalACA,
+         long allocationLength)
    {
-      super(linked, normalACA);
+      super(OPERATION_CODE, linked, normalACA, (int) allocationLength);
 
       if (allocationLength > 65536)
       {
          throw new IllegalArgumentException("Allocation length out of bounds for command type");
       }
 
-      this.dbd = dbd;
-      this.pageControl = pageControl;
+      this.DBD = dbd;
+      this.PC = pageControl;
       this.pageCode = pageCode;
       this.subPageCode = subPageCode;
-      this.allocationLength = (int) allocationLength;
    }
 
    public ModeSense10(
@@ -58,40 +55,36 @@ public class ModeSense10 extends AbstractCommandDescriptorBlock
          int subPageCode,
          long allocationLength)
    {
-      this(dbd, llbaa, pageControl, pageCode, subPageCode, allocationLength, false, false);
+      this(dbd, llbaa, pageControl, pageCode, subPageCode, false, false, allocationLength);
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
       int tmp;
 
-
       int operationCode = in.readUnsignedByte();
       tmp = in.readUnsignedByte();
-      this.dbd = (tmp & 0x08) != 0;
+      this.DBD = (tmp & 0x08) != 0;
       tmp >>>= 4;
-      this.llbaa = (tmp & 0x01) != 0;
+      this.LLBAA = (tmp & 0x01) != 0;
       tmp = in.readUnsignedByte();
       this.pageCode = tmp & 0x3F;
-      this.pageControl = tmp >>> 6;
+      this.PC = tmp >>> 6;
       this.subPageCode = in.readUnsignedByte();
       in.readShort(); // first part of RESERVED block
       in.readByte(); // remaining RESERVED block
-      this.allocationLength = in.readUnsignedShort();
+      setAllocationLength(in.readUnsignedShort());
 
       super.setControl(in.readUnsignedByte());
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IOException("Invalid operation code: "
-               + Integer.toHexString(operationCode));
+         throw new IOException("Invalid operation code: " + Integer.toHexString(operationCode));
       }
 
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -100,12 +93,12 @@ public class ModeSense10 extends AbstractCommandDescriptorBlock
       try
       {
          out.writeByte(OPERATION_CODE);
-         out.writeByte(((this.llbaa ? 0x10 : 0x00) | (this.dbd ? 0x08 : 0x00)));
-         out.writeByte((this.pageControl << 6) | this.pageCode);
+         out.writeByte(((this.LLBAA ? 0x10 : 0x00) | (this.DBD ? 0x08 : 0x00)));
+         out.writeByte((this.PC << 6) | this.pageCode);
          out.writeByte(this.subPageCode);
          out.writeShort(0);
          out.writeByte(0);
-         out.writeShort((int) this.allocationLength);
+         out.writeShort((int) getAllocationLength());
          out.writeByte(super.getControl());
 
          return cdb.toByteArray();
@@ -116,69 +109,44 @@ public class ModeSense10 extends AbstractCommandDescriptorBlock
       }
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return this.allocationLength;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return 0;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return 0;
-   }
-
-   @Override
    public int size()
    {
       return 10;
    }
 
-   public boolean isDbd()
+   public boolean isDBD()
    {
-      return dbd;
+      return this.DBD;
    }
 
-   public void setDbd(boolean dbd)
+   public void setDBD(boolean dbd)
    {
-      this.dbd = dbd;
+      this.DBD = dbd;
    }
 
    public boolean isLLBAA()
    {
-      return llbaa;
+      return this.LLBAA;
    }
 
-   public void setLlbaa(boolean llbaa)
+   public void setLLBAA(boolean llbaa)
    {
-      this.llbaa = llbaa;
+      this.LLBAA = llbaa;
    }
 
-   public int getPageControl()
+   public int getPC()
    {
-      return pageControl;
+      return this.PC;
    }
 
-   public void setPageControl(int pageControl)
+   public void setPC(int pc)
    {
-      this.pageControl = pageControl;
+      this.PC = pc;
    }
 
    public int getPageCode()
    {
-      return pageCode;
+      return this.pageCode;
    }
 
    public void setPageCode(int pageCode)
@@ -188,16 +156,11 @@ public class ModeSense10 extends AbstractCommandDescriptorBlock
 
    public int getSubPageCode()
    {
-      return subPageCode;
+      return this.subPageCode;
    }
 
    public void setSubPageCode(int subPageCode)
    {
       this.subPageCode = subPageCode;
-   }
-
-   public void setAllocationLength(long allocationLength)
-   {
-      this.allocationLength = allocationLength;
    }
 }

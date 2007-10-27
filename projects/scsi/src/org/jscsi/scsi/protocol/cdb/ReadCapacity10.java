@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -10,53 +9,48 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ReadCapacity10 extends AbstractCommandDescriptorBlock
+public class ReadCapacity10 extends AbstractTransferCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x25;
 
-   private int lba;
-   private boolean pmi;
+   private boolean PMI;
 
    public ReadCapacity10()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
-   public ReadCapacity10(int lba, boolean pmi, boolean linked, boolean normalACA)
+   public ReadCapacity10(boolean pmi, boolean linked, boolean normalACA, int logicalBlockAddress)
    {
-      super(linked, normalACA);
+      super(OPERATION_CODE, linked, normalACA, logicalBlockAddress, 0);
 
-      this.lba = lba;
-      this.pmi = pmi;
+      this.PMI = pmi;
    }
 
-   public ReadCapacity10(int lba, boolean pmi)
+   public ReadCapacity10(boolean pmi, int logicalBlockAddress)
    {
-      this(lba, pmi, false, false);
+      this(pmi, false, false, logicalBlockAddress);
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
       int operationCode = in.readUnsignedByte();
       in.readByte();
-      this.lba = in.readInt();
+      setLogicalBlockAddress(in.readInt());
       in.readByte();
       in.readByte();
       in.readByte();
-      this.pmi = (in.readUnsignedByte() & 1) != 0;
+      this.PMI = (in.readUnsignedByte() & 1) != 0;
       super.setControl(in.readUnsignedByte());
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IOException("Invalid operation code: "
-               + Integer.toHexString(operationCode));
+         throw new IOException("Invalid operation code: " + Integer.toHexString(operationCode));
       }
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -66,11 +60,11 @@ public class ReadCapacity10 extends AbstractCommandDescriptorBlock
       {
          out.writeByte(OPERATION_CODE);
          out.writeByte(0);
-         out.writeInt(this.lba);
+         out.writeInt((int) getLogicalBlockAddress());
          out.writeByte(0);
          out.writeByte(0);
          out.writeByte(0);
-         out.writeByte(this.pmi ? 1 : 0);
+         out.writeByte(this.PMI ? 1 : 0);
          out.writeByte(super.getControl());
 
          return cdb.toByteArray();
@@ -81,53 +75,18 @@ public class ReadCapacity10 extends AbstractCommandDescriptorBlock
       }
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return 0;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return this.lba;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return 0;
-   }
-
-   @Override
    public int size()
    {
       return 10;
    }
 
-   public int getLba()
+   public boolean isPMI()
    {
-      return lba;
+      return this.PMI;
    }
 
-   public void setLba(int lba)
+   public void setPMI(boolean pmi)
    {
-      this.lba = lba;
-   }
-
-   public boolean isPmi()
-   {
-      return pmi;
-   }
-
-   public void setPmi(boolean pmi)
-   {
-      this.pmi = pmi;
+      this.PMI = pmi;
    }
 }

@@ -27,33 +27,40 @@
 //
 // END-OF-HEADER
 //-----------------------
-// Author: wleggette
+// @author: mmotwani
 //
-// Date: Oct 25, 2007
+// Date: Oct 26, 2007
 //---------------------
 
-package org.jscsi.scsi.protocol;
-import java.io.IOException;
-import java.nio.ByteBuffer;
+package org.jscsi.scsi.protocol.cdb;
 
-/**
- * An object capable of encoding itself to a byte array and decoding itself from a byte buffer.
- */
-public interface Encodable
+// TODO: Describe class or interface
+public abstract class AbstractParameterCommandDescriptorBlock extends AbstractCommandDescriptorBlock
 {
-   byte[] encode() throws IOException;
-   
-   /**
-    * Causes the encodable object to decode itself from the given byte buffer. If the associated
-    * serializer has decoding any header, that header will be provided to the encodable object
-    * for any additional processing.
-    * 
-    * @param header Any header bytes needed for additional processing.
-    * @param buffer A byte buffer whose current position is at the beginning of the serialized
-    *    encodable object or at the beginning plus the header length (for pre-parsed headers).
-    * @throws IOException If the object could not be decoded from the input data.
-    */
-   void decode( byte[] header, ByteBuffer buffer ) throws IOException;
+   private long allocationLength;
+
+   public AbstractParameterCommandDescriptorBlock(int operationCode)
+   {
+      super(operationCode);
+   }
+
+   public AbstractParameterCommandDescriptorBlock(
+         int operationCode,
+         boolean linked,
+         boolean normalACA,
+         long allocationLength)
+   {
+      super(operationCode, linked, normalACA);
+      this.allocationLength = allocationLength;
+   }
+
+   public long getAllocationLength()
+   {
+      return this.allocationLength;
+   }
+
+   public void setAllocationLength(long allocationLength)
+   {
+      this.allocationLength = allocationLength;
+   }
 }
-
-

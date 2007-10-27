@@ -1,47 +1,41 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ReportSupportedTaskManagementFunctions extends AbstractCommandDescriptorBlock
+public class ReportSupportedTaskManagementFunctions extends AbstractParameterCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0xA3;
    public static final int SERVICE_ACTION = 0x0D;
 
-   private long allocationLength;
-
    public ReportSupportedTaskManagementFunctions()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
    public ReportSupportedTaskManagementFunctions(
-         long allocationLength,
          boolean linked,
-         boolean normalACA)
+         boolean normalACA,
+         long allocationLength)
    {
-      super(linked, normalACA);
+      super(OPERATION_CODE, linked, normalACA, allocationLength);
       if (allocationLength > 65536)
       {
          throw new IllegalArgumentException("Allocation length out of bounds for command type");
       }
-      this.allocationLength = (int) allocationLength;
    }
 
    public ReportSupportedTaskManagementFunctions(long allocationLength)
    {
-      this(allocationLength, false, false);
+      this(false, false, allocationLength);
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
@@ -49,7 +43,7 @@ public class ReportSupportedTaskManagementFunctions extends AbstractCommandDescr
       int operationCode = in.readUnsignedByte();
       int serviceAction = in.readUnsignedByte() & 0x1F;
       in.readShort();
-      this.allocationLength = in.readUnsignedShort();
+      setAllocationLength(in.readUnsignedShort());
       in.readByte();
       super.setControl(in.readUnsignedByte());
 
@@ -60,12 +54,10 @@ public class ReportSupportedTaskManagementFunctions extends AbstractCommandDescr
       }
       if (serviceAction != SERVICE_ACTION)
       {
-         throw new IOException("Invalid service action: "
-               + Integer.toHexString(serviceAction));
+         throw new IOException("Invalid service action: " + Integer.toHexString(serviceAction));
       }
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -76,7 +68,7 @@ public class ReportSupportedTaskManagementFunctions extends AbstractCommandDescr
          out.writeByte(OPERATION_CODE);
          out.writeByte(SERVICE_ACTION);
          out.writeShort(0);
-         out.writeShort((int) this.allocationLength);
+         out.writeShort((int) getAllocationLength());
          out.writeByte(0);
          out.writeByte(super.getControl());
 
@@ -88,38 +80,8 @@ public class ReportSupportedTaskManagementFunctions extends AbstractCommandDescr
       }
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return this.allocationLength;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return 0;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return 0;
-   }
-
-   @Override
    public int size()
    {
       return 12;
-   }
-
-   public void setAllocationLength(long allocationLength)
-   {
-      this.allocationLength = allocationLength;
    }
 }

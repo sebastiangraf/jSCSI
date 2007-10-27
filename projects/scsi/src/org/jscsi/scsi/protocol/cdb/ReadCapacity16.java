@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -10,61 +9,60 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ReadCapacity16 extends AbstractCommandDescriptorBlock
+public class ReadCapacity16 extends AbstractTransferCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x9E;
 
-   private long lba;
    private int serviceAction;
    private int allocationLength;
-   private boolean pmi;
+   private boolean PMI;
 
    public ReadCapacity16()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
    public ReadCapacity16(
-         long lba,
          int serviceAction,
          int allocationLength,
          boolean pmi,
          boolean linked,
-         boolean normalACA)
+         boolean normalACA,
+         long logicalBlockAddress)
    {
-      super(linked, normalACA);
+      super(OPERATION_CODE, linked, normalACA, logicalBlockAddress, 0);
 
-      this.lba = lba;
       this.serviceAction = serviceAction;
       this.allocationLength = allocationLength;
-      this.pmi = pmi;
+      this.PMI = pmi;
    }
 
-   public ReadCapacity16(long lba, int serviceAction, int allocationLength, boolean pmi)
+   public ReadCapacity16(
+         int serviceAction,
+         int allocationLength,
+         boolean pmi,
+         long logicalBlockAddress)
    {
-      this(lba, serviceAction, allocationLength, pmi, false, false);
+      this(serviceAction, allocationLength, pmi, false, false, logicalBlockAddress);
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
       int operationCode = in.readUnsignedByte();
       this.serviceAction = in.readUnsignedByte() & 0x1F;
-      this.lba = in.readLong();
+      setLogicalBlockAddress(in.readLong());
       this.allocationLength = in.readInt();
-      this.pmi = (in.readByte() & 0x01) != 0;
+      this.PMI = (in.readByte() & 0x01) != 0;
       super.setControl(in.readUnsignedByte());
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IOException("Invalid operation code: "
-               + Integer.toHexString(operationCode));
+         throw new IOException("Invalid operation code: " + Integer.toHexString(operationCode));
       }
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -74,9 +72,9 @@ public class ReadCapacity16 extends AbstractCommandDescriptorBlock
       {
          out.writeByte(OPERATION_CODE);
          out.writeByte(this.serviceAction);
-         out.writeLong(this.lba);
+         out.writeLong(getLogicalBlockAddress());
          out.writeInt(this.allocationLength);
-         out.writeByte(this.pmi ? 1 : 0);
+         out.writeByte(this.PMI ? 1 : 0);
          out.writeByte(super.getControl());
 
          return cdb.toByteArray();
@@ -87,49 +85,14 @@ public class ReadCapacity16 extends AbstractCommandDescriptorBlock
       }
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return this.allocationLength;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return this.lba;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return 0;
-   }
-
-   @Override
    public int size()
    {
       return 16;
    }
 
-   public long getLba()
-   {
-      return lba;
-   }
-
-   public void setLba(long lba)
-   {
-      this.lba = lba;
-   }
-
    public int getServiceAction()
    {
-      return serviceAction;
+      return this.serviceAction;
    }
 
    public void setServiceAction(int serviceAction)
@@ -137,18 +100,23 @@ public class ReadCapacity16 extends AbstractCommandDescriptorBlock
       this.serviceAction = serviceAction;
    }
 
-   public boolean isPmi()
+   public int getAllocationLength()
    {
-      return pmi;
-   }
-
-   public void setPmi(boolean pmi)
-   {
-      this.pmi = pmi;
+      return this.allocationLength;
    }
 
    public void setAllocationLength(int allocationLength)
    {
       this.allocationLength = allocationLength;
+   }
+
+   public boolean isPMI()
+   {
+      return this.PMI;
+   }
+
+   public void setPMI(boolean pmi)
+   {
+      this.PMI = pmi;
    }
 }

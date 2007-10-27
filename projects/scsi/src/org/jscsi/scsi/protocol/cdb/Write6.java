@@ -1,32 +1,26 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.BufferOverflowException;
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class Write6 extends AbstractCommandDescriptorBlock
+public class Write6 extends AbstractTransferCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x0A;
 
-   private long logicalBlockAddress;
-   private int transferLength;
-
    protected Write6()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
-   public Write6(long logicalBlockAddress, long transferLength, boolean linked, boolean normalACA)
+   public Write6(boolean linked, boolean normalACA, long logicalBlockAddress, long transferLength)
    {
-      super(linked, normalACA);
+      super(OPERATION_CODE, linked, normalACA, logicalBlockAddress, transferLength);
       if (transferLength > 256)
       {
          throw new IllegalArgumentException("Transfer length out of bounds for command type");
@@ -35,41 +29,36 @@ public class Write6 extends AbstractCommandDescriptorBlock
       {
          throw new IllegalArgumentException("Logical Block Address out of bounds for command type");
       }
-      this.logicalBlockAddress = logicalBlockAddress;
-      this.transferLength = (int) transferLength;
    }
 
    public Write6(long logicalBlockAddress, long transferLength)
    {
-      this(logicalBlockAddress, transferLength, false, false);
+      this(false, false, logicalBlockAddress, transferLength);
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
       int operationCode = in.readUnsignedByte();
-      
+
       long msb = in.readUnsignedByte() & 0x1F;
       long lss = in.readUnsignedShort();
-      this.logicalBlockAddress = (msb >>> 32) | lss;
+      setLogicalBlockAddress((msb >>> 32) | lss);
 
-      this.transferLength = in.readUnsignedByte();
-      if (this.transferLength == 0)
+      setTransferLength(in.readUnsignedByte());
+      if (getTransferLength() == 0)
       {
-         this.transferLength = 256;
+         setTransferLength(256);
       }
       super.setControl(in.readUnsignedByte());
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IOException("Invalid operation code: "
-               + Integer.toHexString(operationCode));
+         throw new IOException("Invalid operation code: " + Integer.toHexString(operationCode));
       }
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -79,17 +68,17 @@ public class Write6 extends AbstractCommandDescriptorBlock
       {
          out.writeByte(OPERATION_CODE);
 
-         int msb = (int) (this.logicalBlockAddress << 32) & 0x1F;
-         int lss = (int) this.logicalBlockAddress & 0xFFFF;
+         int msb = (int) (getLogicalBlockAddress() << 32) & 0x1F;
+         int lss = (int) getLogicalBlockAddress() & 0xFFFF;
          out.writeByte(msb);
          out.writeShort(lss);
-         if (this.transferLength == 256)
+         if (getTransferLength() == 256)
          {
             out.writeByte(0);
          }
          else
          {
-            out.writeByte(this.transferLength);
+            out.writeByte((int) getTransferLength());
          }
          out.writeByte(super.getControl());
 
@@ -101,43 +90,8 @@ public class Write6 extends AbstractCommandDescriptorBlock
       }
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return 0;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return this.logicalBlockAddress;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return this.transferLength;
-   }
-
-   @Override
    public int size()
    {
       return 6;
-   }
-
-   public void setLogicalBlockAddress(long logicalBlockAddress)
-   {
-      this.logicalBlockAddress = logicalBlockAddress;
-   }
-
-   public void setTransferLength(int transferLength)
-   {
-      this.transferLength = transferLength;
    }
 }

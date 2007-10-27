@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -14,13 +13,13 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x55;
 
-   private boolean pageFormat;
-   private boolean savePages;
+   private boolean PF;
+   private boolean SP;
    private int parameterListLength;
 
    protected ModeSelect10()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
    public ModeSelect10(
@@ -30,9 +29,9 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
          boolean linked,
          boolean normalACA)
    {
-      super(linked, normalACA);
-      this.pageFormat = pageFormat;
-      this.savePages = savePages;
+      super(OPERATION_CODE, linked, normalACA);
+      this.PF = pageFormat;
+      this.SP = savePages;
       this.parameterListLength = parameterListLength;
    }
 
@@ -41,17 +40,15 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
       this(pageFormat, savePages, parameterListLength, false, false);
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
       int tmp;
 
-
       int operationCode = in.readUnsignedByte();
       tmp = in.readUnsignedByte();
-      this.savePages = (tmp & 0x01) != 0;
-      this.pageFormat = (tmp >>> 4) != 0;
+      this.SP = (tmp & 0x01) != 0;
+      this.PF = (tmp >>> 4) != 0;
       tmp = in.readInt();
       tmp = in.readByte();
       this.parameterListLength = in.readUnsignedShort();
@@ -59,13 +56,11 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IOException("Invalid operation code: "
-               + Integer.toHexString(operationCode));
+         throw new IOException("Invalid operation code: " + Integer.toHexString(operationCode));
       }
 
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -74,7 +69,7 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
       try
       {
          out.writeByte(OPERATION_CODE);
-         out.writeByte(((this.savePages ? 0x01 : 0x00) | (this.pageFormat ? 0x10 : 0x00)));
+         out.writeByte(((this.SP ? 0x01 : 0x00) | (this.PF ? 0x10 : 0x00)));
          out.writeInt(0);
          out.writeByte(0);
          out.writeShort(this.parameterListLength);
@@ -88,59 +83,34 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
       }
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return 0;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return 0;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return 0;
-   }
-
-   @Override
    public int size()
    {
       return 10;
    }
 
-   public boolean isPageFormat()
+   public boolean isPF()
    {
-      return pageFormat;
+      return this.PF;
    }
 
-   public void setPageFormat(boolean pageFormat)
+   public void setPF(boolean pf)
    {
-      this.pageFormat = pageFormat;
+      this.PF = pf;
    }
 
-   public boolean isSavePages()
+   public boolean isSP()
    {
-      return savePages;
+      return this.SP;
    }
 
-   public void setSavePages(boolean savePages)
+   public void setSP(boolean sp)
    {
-      this.savePages = savePages;
+      this.SP = sp;
    }
 
    public int getParameterListLength()
    {
-      return parameterListLength;
+      return this.parameterListLength;
    }
 
    public void setParameterListLength(int parameterListLength)

@@ -1,13 +1,10 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.BufferOverflowException;
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
@@ -23,7 +20,7 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
    public static final int FOREGROUND_EXTENDED_SELF_TEST = 0x06;
 
    private int selfTestCode;
-   private boolean pf;
+   private boolean PF;
    private boolean selfTest;
    private boolean devOffL;
    private boolean unitOffL;
@@ -31,7 +28,7 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
 
    protected SendDiagnostic()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
    public SendDiagnostic(
@@ -44,10 +41,10 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
          boolean linked,
          boolean normalACA)
    {
-      super(linked, normalACA);
+      super(OPERATION_CODE, linked, normalACA);
 
       this.selfTestCode = selfTestCode;
-      this.pf = pf;
+      this.PF = pf;
       this.selfTest = selfTest;
       this.devOffL = devOffL;
       this.unitOffL = unitOffL;
@@ -65,7 +62,6 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
       this(selfTestCode, pf, selfTest, devOffL, unitOffL, parameterListLength, false, false);
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
@@ -76,7 +72,7 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
       this.unitOffL = (tmp & 0x01) == 1;
       this.devOffL = ((tmp >>> 1) & 1) == 1;
       this.selfTest = ((tmp >>> 2) & 1) == 1;
-      this.pf = ((tmp >>> 4) & 1) == 1;
+      this.PF = ((tmp >>> 4) & 1) == 1;
       this.selfTestCode = (tmp >>> 5) & 7;
       in.readByte();
       this.parameterListLength = in.readUnsignedShort();
@@ -89,7 +85,6 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
       }
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -114,7 +109,7 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
    {
       int b = this.selfTestCode;
       b = b << 5;
-      if (this.pf)
+      if (this.PF)
       {
          b |= 0x10;
       }
@@ -133,31 +128,6 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
       return b;
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return 0;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return 0;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return 0;
-   }
-
-   @Override
    public int size()
    {
       return 6;
@@ -165,7 +135,7 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
 
    public int getSelfTestCode()
    {
-      return selfTestCode;
+      return this.selfTestCode;
    }
 
    public void setSelfTestCode(int selfTestCode)
@@ -173,19 +143,19 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
       this.selfTestCode = selfTestCode;
    }
 
-   public boolean isPf()
+   public boolean isPF()
    {
-      return pf;
+      return this.PF;
    }
 
-   public void setPf(boolean pf)
+   public void setPF(boolean pf)
    {
-      this.pf = pf;
+      this.PF = pf;
    }
 
    public boolean isSelfTest()
    {
-      return selfTest;
+      return this.selfTest;
    }
 
    public void setSelfTest(boolean selfTest)
@@ -195,7 +165,7 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
 
    public boolean isDevOffL()
    {
-      return devOffL;
+      return this.devOffL;
    }
 
    public void setDevOffL(boolean devOffL)
@@ -205,7 +175,7 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
 
    public boolean isUnitOffL()
    {
-      return unitOffL;
+      return this.unitOffL;
    }
 
    public void setUnitOffL(boolean unitOffL)
@@ -215,7 +185,7 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
 
    public int getParameterListLength()
    {
-      return parameterListLength;
+      return this.parameterListLength;
    }
 
    public void setParameterListLength(int parameterListLength)

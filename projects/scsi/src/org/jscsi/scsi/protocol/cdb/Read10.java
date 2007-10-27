@@ -1,7 +1,6 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -10,42 +9,56 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class Read10 extends AbstractCommandDescriptorBlock
+public class Read10 extends AbstractTransferCommandDescriptorBlock
 {
    public static final int OPERATION_CODE = 0x28;
 
-   private boolean dpo;
-   private boolean fua;
-   private boolean fua_nv;
+   private boolean DPO;
+   private boolean FUA;
+   private boolean FUA_NV;
 
    private int groupNumber;
-   private long lba;
-   private long transferLength;
 
    public Read10()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
-   protected Read10(boolean dpo, boolean fua, boolean fua_nv, boolean linked, boolean normalACA)
+   protected Read10(int operationCode)
    {
-      super(linked, normalACA);
-      this.dpo = dpo;
-      this.fua = fua;
-      this.fua_nv = fua_nv;
+      super(operationCode);
    }
 
    public Read10(
-         long logicalBlockAddress,
-         long transferLength,
          int groupNumber,
          boolean dpo,
          boolean fua,
          boolean fua_nv,
          boolean linked,
-         boolean normalACA)
+         boolean normalACA,
+         long logicalBlockAddress,
+         long transferLength)
    {
-      this(dpo, fua, fua_nv, linked, normalACA);
+      this(OPERATION_CODE, groupNumber, dpo, fua, fua_nv, linked, normalACA, logicalBlockAddress,
+            transferLength);
+   }
+
+   protected Read10(
+         int operationCode,
+         int groupNumber,
+         boolean dpo,
+         boolean fua,
+         boolean fua_nv,
+         boolean linked,
+         boolean normalACA,
+         long logicalBlockAddress,
+         long transferLength)
+   {
+      super(operationCode, linked, normalACA, logicalBlockAddress, transferLength);
+      this.DPO = dpo;
+      this.FUA = fua;
+      this.FUA_NV = fua_nv;
+
       if (transferLength > 65536)
       {
          throw new IllegalArgumentException("Transfer length out of bounds for command type");
@@ -54,12 +67,10 @@ public class Read10 extends AbstractCommandDescriptorBlock
       {
          throw new IllegalArgumentException("Logical Block Address out of bounds for command type");
       }
-      this.transferLength = transferLength;
-      this.lba = logicalBlockAddress;
+
       this.groupNumber = groupNumber;
    }
 
-   @Override
    public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
@@ -69,20 +80,18 @@ public class Read10 extends AbstractCommandDescriptorBlock
 
       long mss = in.readUnsignedShort();
       long lss = in.readUnsignedShort();
-      this.lba = (mss >> 32) | lss;
+      setLogicalBlockAddress((mss >> 32) | lss);
 
       this.groupNumber = in.readUnsignedByte() & 0x1F;
-      this.transferLength = in.readUnsignedShort();
+      setTransferLength(in.readUnsignedShort());
       super.setControl(in.readUnsignedByte());
 
       if (operationCode != OPERATION_CODE)
       {
-         throw new IOException("Invalid operation code: "
-               + Integer.toHexString(operationCode));
+         throw new IOException("Invalid operation code: " + Integer.toHexString(operationCode));
       }
    }
 
-   @Override
    public byte[] encode()
    {
       ByteArrayOutputStream cdb = new ByteArrayOutputStream(this.size());
@@ -94,12 +103,12 @@ public class Read10 extends AbstractCommandDescriptorBlock
 
          out.writeByte(this.encodeByte1());
 
-         int mss = (int) (this.lba << 32);
-         int lss = (int) (this.lba & 0xFFFF);
+         int mss = (int) (getLogicalBlockAddress() << 32);
+         int lss = (int) (getLogicalBlockAddress() & 0xFFFF);
          out.writeShort(mss);
          out.writeShort(lss);
          out.writeByte(this.groupNumber & 0x1F);
-         out.writeShort((int) this.transferLength);
+         out.writeShort((int) getTransferLength());
          out.writeByte(super.getControl());
 
          return cdb.toByteArray();
@@ -117,57 +126,62 @@ public class Read10 extends AbstractCommandDescriptorBlock
          throw new IllegalArgumentException("Read protection information is not supported");
       }
 
-      this.dpo = ((unsignedByte >>> 4) & 0x01) == 1;
-      this.fua = ((unsignedByte >>> 3) & 0x01) == 1;
-      this.fua_nv = ((unsignedByte >>> 1) & 0x01) == 1;
+      this.DPO = ((unsignedByte >>> 4) & 0x01) == 1;
+      this.FUA = ((unsignedByte >>> 3) & 0x01) == 1;
+      this.FUA_NV = ((unsignedByte >>> 1) & 0x01) == 1;
    }
 
    protected int encodeByte1()
    {
       int b = 0;
-      if (dpo)
+      if (DPO)
       {
          b |= 0x02;
       }
-      if (fua)
+      if (FUA)
       {
          b |= 0x08;
       }
-      if (fua_nv)
+      if (FUA_NV)
       {
          b |= 0x10;
       }
       return b;
    }
 
-   @Override
-   public long getAllocationLength()
-   {
-      return 0;
-   }
-
-   @Override
-   public long getLogicalBlockAddress()
-   {
-      return this.lba;
-   }
-
-   @Override
-   public int getOperationCode()
-   {
-      return OPERATION_CODE;
-   }
-
-   @Override
-   public long getTransferLength()
-   {
-      return this.transferLength;
-   }
-
-   @Override
    public int size()
    {
       return 10;
+   }
+
+   public boolean isDPO()
+   {
+      return this.DPO;
+   }
+
+   public void setDPO(boolean dpo)
+   {
+      this.DPO = dpo;
+   }
+
+   public boolean isFUA()
+   {
+      return this.FUA;
+   }
+
+   public void setFUA(boolean fua)
+   {
+      this.FUA = fua;
+   }
+
+   public boolean isFUA_NV()
+   {
+      return this.FUA_NV;
+   }
+
+   public void setFUA_NV(boolean fua_nv)
+   {
+      this.FUA_NV = fua_nv;
    }
 
    public int getGroupNumber()
@@ -175,68 +189,8 @@ public class Read10 extends AbstractCommandDescriptorBlock
       return this.groupNumber;
    }
 
-   public boolean isDPO()
-   {
-      return this.dpo;
-   }
-
-   public boolean isFUA()
-   {
-      return this.fua;
-   }
-
-   public boolean isFUA_NV()
-   {
-      return this.fua_nv;
-   }
-
-   public boolean isDpo()
-   {
-      return dpo;
-   }
-
-   public void setDpo(boolean dpo)
-   {
-      this.dpo = dpo;
-   }
-
-   public boolean isFua()
-   {
-      return fua;
-   }
-
-   public void setFua(boolean fua)
-   {
-      this.fua = fua;
-   }
-
-   public boolean isFua_nv()
-   {
-      return fua_nv;
-   }
-
-   public void setFua_nv(boolean fua_nv)
-   {
-      this.fua_nv = fua_nv;
-   }
-
-   public long getLba()
-   {
-      return lba;
-   }
-
-   public void setLba(long lba)
-   {
-      this.lba = lba;
-   }
-
    public void setGroupNumber(int groupNumber)
    {
       this.groupNumber = groupNumber;
-   }
-
-   public void setTransferLength(long transferLength)
-   {
-      this.transferLength = transferLength;
    }
 }
