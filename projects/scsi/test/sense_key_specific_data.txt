@@ -1,0 +1,7 @@
+ActualRetryCount,reserved=1:0b1,reserved=7:0x00,ActualRetryCount=16:std
+
+ProgressIndication,reserved=1:0b1,reserved=7:0x00,ProgressIndication=16:std
+
+FieldPointer,Valid=1:0b1,reserved=1:0b1,reserved=1:0b0,reserved=1:0b1,BitPointer=3:std,FieldPointer=16:std
+
+NoSenseKeySpecific,reserved=1:0b0,reserved=7:0x00,reserved=16:0x00
