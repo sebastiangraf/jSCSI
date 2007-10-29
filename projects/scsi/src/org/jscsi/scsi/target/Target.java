@@ -1,11 +1,9 @@
 package org.jscsi.scsi.target;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jscsi.scsi.authentication.AuthenticationHandler;
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.tasks.TaskRouter;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
@@ -28,63 +26,30 @@ import org.jscsi.scsi.transport.TargetTransportPort;
  * authentication. Authentication handlers are ignored for SCSI transport other than iSCSI. 
  * 
  */
-public abstract class Target
+public interface Target
 {
    
-   private String targetName;
-   private TaskRouter taskRouter;
-   private ModePageRegistry modePageRegistry;
-   
-   private List<AuthenticationHandler> authHandlers;
 
-   abstract void enqueue( TargetTransportPort port, Command command );
+   void enqueue( TargetTransportPort port, Command command );
    
-   /**
-    * Constructs a new target with a given name, task router, and set of authentication handlers.
-    * 
-    * @param targetName A target name compatible with the underlying transport layer. For iSCSI
-    *    this must be an IQN or EUI.
-    * @param router The task router. All logical units are registered with the task router.
-    * @param handlers A set of zero or more authentication handlers. At the start of the iSCSI
-    *    login phase the target-available authentication methods are sent to the initiator in
-    *    the order returned by this handler list. Callers must ensure list uniqueness.
-    */
-   public Target(String targetName, TaskRouter router, ModePageRegistry modePageRegistry, List<AuthenticationHandler> handlers)
-   {
-      this.targetName = targetName;
-      this.taskRouter = router;
-      this.modePageRegistry = modePageRegistry;
-      this.authHandlers = new ArrayList<AuthenticationHandler>();
-      this.authHandlers.addAll(handlers);
-   }
-
+   
+   ////////////////////////////////////////////////////////////////////////////////////////////////
+   // getters/setters
+   
    /**
     * The Target Device Name of this target.
     */
-   public String getTargetName()
-   {
-      return targetName;
-   }
-
-   /**
-    * The Task Router of this target.
-    */
-   public TaskRouter getTaskRouter()
-   {
-      return taskRouter;
-   }
+   public String getTargetName();
 
    /**
     * A list of authentication handlers for this target. The authentication methods must be
     * presented to the initiator in the order returned by this list.
     */
-   public List<AuthenticationHandler> getAuthenticationHandlers()
-   {
-      return authHandlers;
-   }
-   
-   public ModePageRegistry getModeRegistry()
-   {
-      return this.modePageRegistry;
-   }
+   public List<AuthenticationHandler> getAuthHandlers();
+
+   /**
+    * A list of authentication handlers for this target. The authentication methods must be
+    * presented to the initiator in the order returned by this list.
+    */
+   public void setAuthHandlers(List<AuthenticationHandler> handlers);
 }
