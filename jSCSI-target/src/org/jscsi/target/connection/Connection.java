@@ -166,41 +166,39 @@ public class Connection {
 			return false;
 	}
 	
-	final void receivePDU(ProtocolDataUnit pdu){
-		getReferencedSession().receivePDU(this, pdu);
-	}
-	
 	final void sendPDU(Object caller, ProtocolDataUnit pdu){
 		if(caller instanceof Session){
-			netWorker.send(pdu);
+			netWorker.sendPDU();
 		}else{
 			getReferencedSession().sendPDU(this, pdu);
 		}
 	}
 
 	
+	
+//	/**
+//	 * Sends the Protocol Data Unit.
+//	 * 
+//	 * @param pdu
+//	 */
+//	final void enqueueSendingQueue(ProtocolDataUnit pdu) {
+//		sendingQueue.add(pdu);
+//		// inform the NetWorker he has work to do
+//		netWorker.somethingToSend();
+//	}
+//
+//	/**
+//	 * Sends all ProtocolDataUnits.
+//	 * 
+//	 * @param pdus
+//	 */
+//	final void enqueueSendingQueue(Collection<? extends ProtocolDataUnit> pdus) {
+//		sendingQueue.addAll(pdus);
+//		// inform the NetWorker he has work to do
+//		netWorker.somethingToSend();
+//	}
+	
 
-	/**
-	 * Sends the Protocol Data Unit.
-	 * 
-	 * @param pdu
-	 */
-	final void enqueueSendingQueue(ProtocolDataUnit pdu) {
-		sendingQueue.add(pdu);
-		// inform the NetWorker he has work to do
-		netWorker.somethingToSend();
-	}
-
-	/**
-	 * Sends all ProtocolDataUnits.
-	 * 
-	 * @param pdus
-	 */
-	final void enqueueSendingQueue(Collection<? extends ProtocolDataUnit> pdus) {
-		sendingQueue.addAll(pdus);
-		// inform the NetWorker he has work to do
-		netWorker.somethingToSend();
-	}
 
 	/**
 	 * Returns the number of received queued PDUs
@@ -318,7 +316,7 @@ public class Connection {
 	 * If Threads are waiting to get a received ProtocolDataUnit, this method is
 	 * called to signal any received PDU.
 	 */
-	final void somethingReceived() {
+	final void signalReceivedPDU() {
 		somethingReceived.signalAll();
 	}
 	
@@ -327,7 +325,7 @@ public class Connection {
 	 * 
 	 * @return
 	 */
-	private final Queue<ProtocolDataUnit> getSendingQueue() {
+	final Queue<ProtocolDataUnit> getSendingQueue() {
 		return sendingQueue;
 	}
 

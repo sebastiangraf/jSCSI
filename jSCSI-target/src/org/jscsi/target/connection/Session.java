@@ -13,7 +13,9 @@ import org.jscsi.target.connection.Connection;
 import org.jscsi.target.parameter.connection.Phase;
 import org.jscsi.target.parameter.connection.SessionType;
 import org.jscsi.connection.SerialArithmeticNumber;
+import org.jscsi.parser.InitiatorMessageParser;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.login.ISID;
 
 /**
@@ -73,14 +75,17 @@ public class Session {
 	/** connections are mapped to their receiving Queues */
 	private final Map<Connection, Queue<ProtocolDataUnit>> connections;
 
+	private final Queue<ProtocolDataUnit> receivedPDUs;
+
 	public Session(Connection connection, short tsih) {
 		configuration = OperationalTextConfiguration.create(this);
 		targetSessionIdentifyingHandle = tsih;
 		connections = new ConcurrentHashMap<Connection, Queue<ProtocolDataUnit>>();
+		receivedPDUs = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		addConnection(connection);
 		// start TaskManger
 	}
-	
+
 	/**
 	 * Adds a Connection to this Session.
 	 * 
@@ -97,7 +102,7 @@ public class Session {
 		}
 
 	}
-	
+
 	/**
 	 * Checks based on a Session's ISID and TSIH if those parameters are equals
 	 * this session's ones. If so, the source <code>Connection</code> should
@@ -117,11 +122,11 @@ public class Session {
 			return false;
 		}
 	}
-	
-	public boolean containsConnection(Connection connection){
+
+	public boolean containsConnection(Connection connection) {
 		return connections.keySet().contains(connection);
 	}
-	
+
 	/**
 	 * An iterator over all existing <code>Connection</code>s within this
 	 * Session
@@ -177,7 +182,7 @@ public class Session {
 	final String getInitiatorName() {
 		return initiatorName;
 	}
-	
+
 	/**
 	 * Returns the Session's actual expected command sequence number.
 	 * 
@@ -186,7 +191,7 @@ public class Session {
 	final SerialArithmeticNumber getExpectedCommandSequence() {
 		return incrExpectedCommandSequence(false);
 	}
-	
+
 	/**
 	 * Returns the Session's actual Maximum Command Sequence Number.
 	 * 
@@ -195,7 +200,7 @@ public class Session {
 	final SerialArithmeticNumber getMaximumCommandSequence() {
 		return incrMaximumCommandSequence(0);
 	}
-	
+
 	public final Phase getSessionPhase() {
 		return phase;
 	}
@@ -203,7 +208,7 @@ public class Session {
 	public final SessionType getSessionType() {
 		return sessionType;
 	}
-	
+
 	/**
 	 * Returns the Session's Target Identifying Handle.
 	 * 
@@ -212,8 +217,7 @@ public class Session {
 	final short getTargetSessionIdentifyingHandleD() {
 		return targetSessionIdentifyingHandle;
 	}
-	
-	
+
 	/**
 	 * Returns the Session's actual Expected Command Sequence Number and if
 	 * true, increments the expCmdSeqNum before returning.
@@ -231,8 +235,6 @@ public class Session {
 			return expectedCommandSequenceNumber;
 		}
 	}
-
-	
 
 	/**
 	 * Returns the Session's actual Maximum Command Sequence Number and if sumX
@@ -255,7 +257,9 @@ public class Session {
 
 	}
 
-	
+	final ProtocolDataUnit receivePDU(Connection connection) {
+		return connections.get(connection).poll();
+	}
 
 	/**
 	 * Set this Session's Initiator Session ID, if not already set.
@@ -275,8 +279,6 @@ public class Session {
 		}
 		return false;
 	}
-
-	
 
 	final boolean setInitiatorName(String name) {
 		if (initiatorName != null) {
@@ -301,18 +303,46 @@ public class Session {
 		sessionType = type;
 	}
 
-	
-
-	
-
-	
-
-	
-
-	
-	
-	final void signalReceivedPDU(){
-		
+	final void signalReceivedPDU(Connection connection) {
+		synchronized (connections) {
+			// if the received PDU's CmdSN is equal ExpCmdSN, add to received
+			// PDUs
+			InitiatorMessageParser parser = (InitiatorMessageParser) connections
+					.get(connection).peek().getBasicHeaderSegment().getParser();
+			SerialArithmeticNumber receivedCommandSequenceNumber = new SerialArithmeticNumber(
+					parser.getCommandSequenceNumber());
+			if (receivedCommandSequenceNumber
+					.equals(expectedCommandSequenceNumber)) {
+				receivedPDUs.add(connections.get(connection).poll());
+				expectedCommandSequenceNumber.increment();
+				// signal TaskRouter
+			} else {
+			}
+			// search for the next buffered PDU in every connection
+			for (Queue<ProtocolDataUnit> pdus : connections.values()) {
+				if (pdus.size() <= 0) {
+					continue;
+				}
+				// could be more than one following PDU per connection
+				boolean testing = true;
+				while (testing) {
+					parser = (InitiatorMessageParser) pdus.peek()
+							.getBasicHeaderSegment().getParser();
+					receivedCommandSequenceNumber = new SerialArithmeticNumber(
+							parser.getCommandSequenceNumber());
+					if (receivedCommandSequenceNumber
+							.equals(expectedCommandSequenceNumber)) {
+						receivedPDUs.add(connections.get(connection).poll());
+						expectedCommandSequenceNumber.increment();
+						// signal TaskRouter
+					} else {
+						// head of connection's queue isn't the next received
+						// PDU
+						testing = false;
+					}
+				}
+			}
+		}
 	}
 
 	final void sendPDU(Connection connection, ProtocolDataUnit pdu) {

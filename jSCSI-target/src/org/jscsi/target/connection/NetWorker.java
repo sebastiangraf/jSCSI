@@ -103,14 +103,7 @@ public class NetWorker {
 		sender.interrupt();
 	}
 
-	final void sendPDU(ProtocolDataUnit pdu){
-		
-	}
-	
-	/**
-	 * Signals the SenderWorker that there is a PDU he can send.
-	 */
-	public void somethingToSend() {
+	final void sendPDU(){
 		somethingToSend.signalAll();
 	}
 
@@ -171,7 +164,7 @@ public class NetWorker {
 	private void addReceivedPDU(ProtocolDataUnit pdu) {
 		receivingQueue.add(pdu);
 		// check valid PDU, e.g. CmdSeqNum. SNACK PDU?
-		refConnection.somethingReceived();
+		refConnection.signalReceivedPDU();
 	}
 
 	private class SenderWorker extends Thread {
@@ -200,9 +193,10 @@ public class NetWorker {
 		@Override
 		public void run() {
 			while (!interrupted()) {
+				//should read the cnofiguration's digest settings
 				ProtocolDataUnit pdu = protocolDataUnitFactory.create("None",
 						"None");
-
+				
 				try {
 
 					pdu.read(getSocketChannel());
