@@ -15,7 +15,7 @@ public class Write12 extends Write10
 
    protected Write12()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
    public Write12(
@@ -53,13 +53,8 @@ public class Write12 extends Write10
       int operationCode = in.readUnsignedByte();
       super.decodeByte1(in.readUnsignedByte());
 
-      long mss = in.readUnsignedShort();
-      long lss = in.readUnsignedShort();
-      setLogicalBlockAddress((mss >>> 32) | lss);
-
-      mss = in.readUnsignedShort();
-      lss = in.readUnsignedShort();
-      setTransferLength((mss >>> 32) | lss);
+      setLogicalBlockAddress(in.readInt());
+      setTransferLength(in.readInt());
 
       setGroupNumber(in.readUnsignedByte() & 0x1F);
       super.setControl(in.readUnsignedByte());
@@ -82,15 +77,8 @@ public class Write12 extends Write10
 
          out.writeByte(super.encodeByte1());
 
-         int mss = (int) (getLogicalBlockAddress() << 32);
-         int lss = (int) getLogicalBlockAddress() & 0xFFFF;
-         out.writeShort(mss);
-         out.writeShort(lss);
-
-         mss = (int) (getTransferLength() << 32);
-         lss = (int) getTransferLength() & 0xFFFF;
-         out.writeShort(mss);
-         out.writeShort(lss);
+         out.writeInt((int) getLogicalBlockAddress());
+         out.writeInt((int) getTransferLength());
 
          out.writeByte(getGroupNumber() & 0x1F);
          out.writeByte(super.getControl());

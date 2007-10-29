@@ -66,9 +66,8 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
 
-      int tmp = 0;
       int operationCode = in.readUnsignedByte();
-      tmp = in.readUnsignedByte();
+      int tmp = in.readUnsignedByte();
       this.unitOffL = (tmp & 0x01) == 1;
       this.devOffL = ((tmp >>> 1) & 1) == 1;
       this.selfTest = ((tmp >>> 2) & 1) == 1;
@@ -94,6 +93,7 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
       {
          out.writeByte(OPERATION_CODE);
          out.writeByte(this.encodeByte1());
+         out.writeByte(0);
          out.writeShort(this.parameterListLength);
          out.writeByte(super.getControl());
 
@@ -115,7 +115,7 @@ public class SendDiagnostic extends AbstractCommandDescriptorBlock
       }
       if (this.selfTest)
       {
-         b |= 0x08;
+         b |= 0x04;
       }
       if (this.devOffL)
       {
