@@ -23,9 +23,6 @@ public class GeneralTarget implements Target
    
    private String _targetName;
    private TaskRouter _taskRouter;
-   private ModePageRegistry _modePageRegistry;   
-   private TaskFactory _targetTaskFactory;
-   private InquiryDataRegistry _inquiryDataRegistry;
    private List<AuthenticationHandler> _authHandlers;
 
    
@@ -43,11 +40,10 @@ public class GeneralTarget implements Target
     *    login phase the target-available authentication methods are sent to the initiator in
     *    the order returned by this handler list. Callers must ensure list uniqueness.
     */
-   public GeneralTarget(String targetName, TaskRouter router, ModePageRegistry modePageRegistry, List<AuthenticationHandler> handlers)
+   public GeneralTarget(String targetName, TaskRouter router, List<AuthenticationHandler> handlers)
    {
       this._targetName = targetName;
       this._taskRouter = router;
-      this._modePageRegistry = modePageRegistry;
       this._authHandlers = new ArrayList<AuthenticationHandler>();
       this._authHandlers.addAll(handlers);
    }
@@ -59,7 +55,7 @@ public class GeneralTarget implements Target
    
    public void enqueue( TargetTransportPort port, Command command )
    {
-      
+      this._taskRouter.enqueue(port, command);
    }
 
 
