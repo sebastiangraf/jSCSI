@@ -16,7 +16,7 @@ public class Read16 extends Read10
 
    protected Read16()
    {
-      super();
+      super(OPERATION_CODE);
    }
 
    public Read16(
@@ -50,7 +50,7 @@ public class Read16 extends Read10
 
       // CAUTION: Signed longs represent unsigned longs
       setLogicalBlockAddress(in.readLong());
-      setTransferLength(in.readLong());
+      setTransferLength(in.readInt());
       setGroupNumber(in.readUnsignedByte() & 0x1F);
       super.setControl(in.readUnsignedByte());
 
@@ -74,7 +74,7 @@ public class Read16 extends Read10
 
          // CAUTION: Signed longs represent unsigned longs
          out.writeLong(getLogicalBlockAddress());
-         out.writeLong(getTransferLength());
+         out.writeInt((int)getTransferLength());
 
          out.writeByte(getGroupNumber() & 0x1F);
          out.writeByte(super.getControl());

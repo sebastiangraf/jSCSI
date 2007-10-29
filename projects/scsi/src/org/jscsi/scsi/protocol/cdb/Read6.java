@@ -44,7 +44,7 @@ public class Read6 extends AbstractTransferCommandDescriptorBlock
 
       long msb = in.readUnsignedByte() & 0x1F;
       long lss = in.readUnsignedShort();
-      setLogicalBlockAddress((msb << 32) | lss);
+      setLogicalBlockAddress((msb << 16) | lss);
 
       setTransferLength(in.readUnsignedByte());
       super.setControl(in.readUnsignedByte());
@@ -69,7 +69,7 @@ public class Read6 extends AbstractTransferCommandDescriptorBlock
       {
          out.writeByte(OPERATION_CODE);
 
-         int msb = (int) (getLogicalBlockAddress() >>> 32) & 0x1F;
+         int msb = (int) (getLogicalBlockAddress() >>> 16) & 0x1F;
          int lss = (int) getLogicalBlockAddress() & 0xFFFF;
          out.writeByte(msb);
          out.writeShort(lss);

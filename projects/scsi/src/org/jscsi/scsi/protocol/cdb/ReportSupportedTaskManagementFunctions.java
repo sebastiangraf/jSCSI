@@ -42,8 +42,8 @@ public class ReportSupportedTaskManagementFunctions extends AbstractParameterCom
 
       int operationCode = in.readUnsignedByte();
       int serviceAction = in.readUnsignedByte() & 0x1F;
-      in.readShort();
-      setAllocationLength(in.readUnsignedShort());
+      in.readInt();
+      setAllocationLength(in.readInt());
       in.readByte();
       super.setControl(in.readUnsignedByte());
 
@@ -67,8 +67,8 @@ public class ReportSupportedTaskManagementFunctions extends AbstractParameterCom
       {
          out.writeByte(OPERATION_CODE);
          out.writeByte(SERVICE_ACTION);
-         out.writeShort(0);
-         out.writeShort((int) getAllocationLength());
+         out.writeInt(0);
+         out.writeInt((int)getAllocationLength());
          out.writeByte(0);
          out.writeByte(super.getControl());
 
@@ -83,5 +83,10 @@ public class ReportSupportedTaskManagementFunctions extends AbstractParameterCom
    public int size()
    {
       return 12;
+   }
+   
+   public int getServiceAction()
+   {
+      return SERVICE_ACTION;
    }
 }

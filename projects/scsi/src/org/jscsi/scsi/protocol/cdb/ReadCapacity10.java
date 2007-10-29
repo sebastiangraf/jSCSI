@@ -39,9 +39,7 @@ public class ReadCapacity10 extends AbstractTransferCommandDescriptorBlock
       int operationCode = in.readUnsignedByte();
       in.readByte();
       setLogicalBlockAddress(in.readInt());
-      in.readByte();
-      in.readByte();
-      in.readByte();
+      in.readShort();
       this.PMI = (in.readUnsignedByte() & 1) != 0;
       super.setControl(in.readUnsignedByte());
 
@@ -61,9 +59,7 @@ public class ReadCapacity10 extends AbstractTransferCommandDescriptorBlock
          out.writeByte(OPERATION_CODE);
          out.writeByte(0);
          out.writeInt((int) getLogicalBlockAddress());
-         out.writeByte(0);
-         out.writeByte(0);
-         out.writeByte(0);
+         out.writeShort(0);
          out.writeByte(this.PMI ? 1 : 0);
          out.writeByte(super.getControl());
 

@@ -22,49 +22,49 @@ public class CommandDescriptorBlockFactoryTest
          "Inquiry,OperationCode=8:0x12,reserved=7:0x0,EVPD=1:std,PageCode=8:std,AllocationLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String MODE_SELECT_6 =
-         "ModeSelect6,OperationCode=8:0x15,reserved=3:0x0,PageFormat=1:std,reserved=3:0x0,SavePages=1:std,reserved=16:0x0,ParameterListLength=8:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "ModeSelect6,OperationCode=8:0x15,reserved=3:0x0,PF=1:std,reserved=3:0x0,SP=1:std,reserved=16:0x0,ParameterListLength=8:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String MODE_SELECT_10 =
-         "ModeSelect10,OperationCode=8:0x55,reserved=3:0x0,PageFormat=1:std,reserved=3:0x0,SavePages=1:std,reserved=40:0x0,ParameterListLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "ModeSelect10,OperationCode=8:0x55,reserved=3:0x0,PF=1:std,reserved=3:0x0,SP=1:std,reserved=40:0x0,ParameterListLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String MODE_SENSE_6 =
-         "ModeSense6,OperationCode=8:0x1A,reserved=4:0x0,Dbd=1:std,reserved=3:0x0,PageControl=2:std,PageCode=6:std,SubPageCode=8:std,AllocationLength=8:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "ModeSense6,OperationCode=8:0x1A,reserved=4:0x0,DBD=1:std,reserved=3:0x0,PC=2:std,PageCode=6:std,SubPageCode=8:std,AllocationLength=8:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String MODE_SENSE_10 =
-         "ModeSense10,OperationCode=8:0x5A,reserved=3:0x0,LLBAA=1:std,Dbd=1:std,reserved=3:0x0,PageControl=2:std,PageCode=6:std,SubPageCode=8:std,reserved=24:0x0,AllocationLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "ModeSense10,OperationCode=8:0x5A,reserved=3:0x0,LLBAA=1:std,DBD=1:std,reserved=3:0x0,PC=2:std,PageCode=6:std,SubPageCode=8:std,reserved=24:0x0,AllocationLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String READ_6 =
          "Read6,OperationCode=8:0x08,reserved=3:0x0,LogicalBlockAddress=21:std,TransferLength=8:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String READ_10 =
-         "Read10,OperationCode=8:0x28,reserved=3:0x0,Dpo=1:std,Fua=1:std,reserved=1:0x0,Fua_nv=1:std,reserved=1:0x0,LogicalBlockAddress=32:std,reserved=3:0x0,GroupNumber=5:std,TransferLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "Read10,OperationCode=8:0x28,reserved=3:0x0,DPO=1:std,FUA=1:std,reserved=1:0x0,FUA_NV=1:std,reserved=1:0x0,LogicalBlockAddress=32:std,reserved=3:0x0,GroupNumber=5:std,TransferLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String READ_12 =
-         "Read12,OperationCode=8:0xA8,reserved=3:0x0,Dpo=1:std,Fua=1:std,reserved=1:0x0,Fua_nv=1:std,reserved=1:0x0,LogicalBlockAddress=32:std,TransferLength=32:std,reserved=3:0x0,GroupNumber=5:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "Read12,OperationCode=8:0xA8,reserved=3:0x0,DPO=1:std,FUA=1:std,reserved=1:0x0,FUA_NV=1:std,reserved=1:0x0,LogicalBlockAddress=32:std,TransferLength=32:std,reserved=3:0x0,GroupNumber=5:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String READ_16 =
-         "Read16,OperationCode=8:0x88,reserved=3:0x0,Dpo=1:std,Fua=1:std,reserved=1:0x0,Fua_nv=1:std,reserved=1:0x0,LogicalBlockAddress=64:std,TransferLength=32:std,reserved=3:0x0,GroupNumber=5:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "Read16,OperationCode=8:0x88,reserved=3:0x0,DPO=1:std,FUA=1:std,reserved=1:0x0,FUA_NV=1:std,reserved=1:0x0,LogicalBlockAddress=64:std,TransferLength=32:std,reserved=3:0x0,GroupNumber=5:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String READ_CAPACITY_10 =
-         "ReadCapacity10,OperationCode=8:0x25,reserved=8:0x0,LogicalBlockAddress=32:std,reserved=23:0x0,Pmi=1:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "ReadCapacity10,OperationCode=8:0x25,reserved=8:0x0,LogicalBlockAddress=32:std,reserved=23:0x0,PMI=1:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String READ_CAPACITY_16 =
-         "ReadCapacity16,OperationCode=8:0x9E,reserved=3:0x0,ServiceAction=5:std,LogicalBlockAddress=64:std,AllocationLength=32:std,reserved=7:0x0,Pmi=1:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "ReadCapacity16,OperationCode=8:0x9E,reserved=3:0x0,ServiceAction=5:0x10,LogicalBlockAddress=64:std,AllocationLength=32:std,reserved=7:0x0,PMI=1:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String REMOVE_DIAGNOSTIC_RESULTS =
-         "ReceiveDiagnosticResults,OperationCode=8:0x1C,reserved=7:0x0,Pcv=1:std,PageCode=8:std,AllocationLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "ReceiveDiagnosticResults,OperationCode=8:0x1C,reserved=7:0x0,PCV=1:std,PageCode=8:std,AllocationLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String REPORT_LUNS =
          "ReportLuns,OperationCode=8:0xA0,reserved=8:0x0,SelectReport=8:std,reserved=24:0x0,AllocationLength=32:std,reserved=8:0x0,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String REPORT_SUPPORTED_TASK_MANAGEMENT_FUNCTIONS =
-         "ReportSupportedTaskManagementFunctions,OperationCode=8:0xA3,reserved=3:0x0,ServiceAction=5:std,reserved=32:0x0,AllocationLength=32:std,reserved=8:0x0,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "ReportSupportedTaskManagementFunctions,OperationCode=8:0xA3,reserved=3:0x0,ServiceAction=5:0x0D,reserved=32:0x0,AllocationLength=32:std,reserved=8:0x0,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String REQUEST_SENSE =
-         "RequestSense,OperationCode=8:0x03,reserved=7:0x0,DescriptorFormat=1:std,reserved=16:0x0,AllocationLength=8:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "RequestSense,OperationCode=8:0x03,reserved=7:0x0,DESC=1:std,reserved=16:0x0,AllocationLength=8:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String SEND_DIAGNOSTIC =
-         "SendDiagnostic,OperationCode=8:0x1D,SelfTestCode=3:std,Pf=1:std,reserved=1:0x0,SelfTest=1:std,DevOffL=1:std,UnitOffL=1:std,reserved=8:0x0,ParameterListLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "SendDiagnostic,OperationCode=8:0x1D,SelfTestCode=3:std,PF=1:std,reserved=1:0x0,SelfTest=1:std,DevOffL=1:std,UnitOffL=1:std,reserved=8:0x0,ParameterListLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String TEST_UNIT_READY =
          "TestUnitReady,OperationCode=8:0x00,reserved=32:0x0,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
@@ -73,13 +73,13 @@ public class CommandDescriptorBlockFactoryTest
          "Write6,OperationCode=8:0x0A,reserved=3:0x0,LogicalBlockAddress=21:std,TransferLength=8:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String WRITE_10 =
-         "Write10,OperationCode=8:0x2A,reserved=3:0x0,Dpo=1:std,Fua=1:std,reserved=1:0x0,Fua_nv=1:std,reserved=1:0x0,LogicalBlockAddress=32:std,reserved=3:0x0,GroupNumber=5:std,TransferLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "Write10,OperationCode=8:0x2A,reserved=3:0x0,DPO=1:std,FUA=1:std,reserved=1:0x0,FUA_NV=1:std,reserved=1:0x0,LogicalBlockAddress=32:std,reserved=3:0x0,GroupNumber=5:std,TransferLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String WRITE_12 =
-         "Write12,OperationCode=8:0xAA,reserved=3:0x0,Dpo=1:std,Fua=1:std,reserved=1:0x0,Fua_nv=1:std,reserved=1:0x0,LogicalBlockAddress=32:std,TransferLength=32:std,reserved=3:0x0,GroupNumber=5:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "Write12,OperationCode=8:0xAA,reserved=3:0x0,DPO=1:std,FUA=1:std,reserved=1:0x0,FUA_NV=1:std,reserved=1:0x0,LogicalBlockAddress=32:std,TransferLength=32:std,reserved=3:0x0,GroupNumber=5:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String WRITE_16 =
-         "Write16,OperationCode=8:0x8A,reserved=3:0x0,Dpo=1:std,Fua=1:std,reserved=1:0x0,Fua_nv=1:std,reserved=1:0x0,LogicalBlockAddress=64:std,TransferLength=32:std,reserved=3:0x0,GroupNumber=5:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "Write16,OperationCode=8:0x8A,reserved=3:0x0,DPO=1:std,FUA=1:std,reserved=1:0x0,FUA_NV=1:std,reserved=1:0x0,LogicalBlockAddress=64:std,TransferLength=32:std,reserved=3:0x0,GroupNumber=5:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    @BeforeClass
    public static void setUpBeforeClass() throws Exception

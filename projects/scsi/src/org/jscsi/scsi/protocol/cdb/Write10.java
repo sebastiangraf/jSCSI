@@ -68,7 +68,7 @@ public class Write10 extends AbstractTransferCommandDescriptorBlock
 
    protected void decodeByte1(int unsignedByte) throws IllegalArgumentException
    {
-      if (((unsignedByte >>> 5) | 0x07) != 0)
+      if (((unsignedByte >>> 5) & 0x07) != 0)
       {
          throw new IllegalArgumentException("Write protection information is not supported");
       }
@@ -103,9 +103,7 @@ public class Write10 extends AbstractTransferCommandDescriptorBlock
       int operationCode = in.readUnsignedByte();
       this.decodeByte1(in.readUnsignedByte());
 
-      long mss = in.readUnsignedShort();
-      long lss = in.readUnsignedShort();
-      setLogicalBlockAddress((mss >> 32) | lss);
+      setLogicalBlockAddress(in.readInt());
 
       this.groupNumber = in.readUnsignedByte() & 0x1F;
       setTransferLength(in.readUnsignedShort());
@@ -128,10 +126,7 @@ public class Write10 extends AbstractTransferCommandDescriptorBlock
 
          out.writeByte(this.encodeByte1());
 
-         int mss = (int) (getLogicalBlockAddress() << 32);
-         int lss = (int) getLogicalBlockAddress() & 0xFFFF;
-         out.writeShort(mss);
-         out.writeShort(lss);
+         out.writeInt((int)getLogicalBlockAddress());
          out.writeByte(this.groupNumber & 0x1F);
          out.writeShort((int) getTransferLength());
          out.writeByte(super.getControl());
