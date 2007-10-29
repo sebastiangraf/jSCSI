@@ -1,4 +1,3 @@
-
 package org.jscsi.scsi.transport;
 
 import java.nio.ByteBuffer;
@@ -23,12 +22,5 @@ public interface ConfirmationHandler
     * @param status The returned command status.
     * @param senseData Any autosense data.
     */
-   void handle(
-         ServiceResponse response,
-         Nexus nexus,
-         ByteBuffer input,
-         Status status,
-         ByteBuffer senseData );
+   void handle(ServiceResponse response, Nexus nexus, ByteBuffer input, Status status, ByteBuffer senseData);
 }
-
-
