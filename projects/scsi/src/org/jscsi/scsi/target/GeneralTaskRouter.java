@@ -79,7 +79,7 @@ public class GeneralTaskRouter implements TaskRouter
 
    public void nexusLost()
    {
-      // TODO: what the hell are we doing here
+      // TODO: define behavior here
       throw new NotImplementedException("method must be implemented");
    }
 

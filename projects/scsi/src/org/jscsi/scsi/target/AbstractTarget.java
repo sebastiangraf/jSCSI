@@ -18,18 +18,14 @@ public abstract class AbstractTarget implements Target
    
    
    private String _targetName;
-   private TaskRouter _taskRouter;
    private List<AuthenticationHandler> _authHandlers;
 
    
    ////////////////////////////////////////////////////////////////////////////////////////////////
-   // primary methods
+   // abstract methods
    
    
-   public void enqueue( TargetTransportPort port, Command command )
-   {
-      this._taskRouter.enqueue(port, command);
-   }
+   public abstract void enqueue( TargetTransportPort port, Command command );
 
 
    ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +38,14 @@ public abstract class AbstractTarget implements Target
    {
       return _targetName;
    }
-
+   
+   /**
+    * The Target Device Name of this target.
+    */
+   public void setTargetName(String targetName)
+   {
+      this._targetName = targetName;
+   }
 
    /**
     * A list of authentication handlers for this target. The authentication methods must be
