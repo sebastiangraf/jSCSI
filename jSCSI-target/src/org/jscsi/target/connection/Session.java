@@ -60,8 +60,7 @@ public class Session {
 
 	private String initiatorName;
 
-	/** the session's phase */
-	private Phase phase;
+	
 
 	/** the session's type */
 	private SessionType sessionType;
@@ -92,7 +91,7 @@ public class Session {
 	 * @param connection
 	 */
 	public void addConnection(Connection connection) {
-		if (connection.setReferencedSession(this)) {
+		if ((!connections.containsKey(connection)) && (connection.setReferencedSession(this))){
 			connections.put(connection, connection.getReceivingQueue());
 		} else {
 			if (LOGGER.isDebugEnabled()) {
@@ -124,7 +123,7 @@ public class Session {
 	}
 
 	public boolean containsConnection(Connection connection) {
-		return connections.keySet().contains(connection);
+		return connections.containsKey(connection);
 	}
 
 	/**
@@ -201,9 +200,7 @@ public class Session {
 		return incrMaximumCommandSequence(0);
 	}
 
-	public final Phase getSessionPhase() {
-		return phase;
-	}
+
 
 	public final SessionType getSessionType() {
 		return sessionType;
@@ -257,10 +254,6 @@ public class Session {
 
 	}
 
-	final ProtocolDataUnit receivePDU(Connection connection) {
-		return connections.get(connection).poll();
-	}
-
 	/**
 	 * Set this Session's Initiator Session ID, if not already set.
 	 * 
@@ -295,26 +288,26 @@ public class Session {
 		return false;
 	}
 
-	public final void setSessionPhase(Phase phase) {
-		phase = phase;
-	}
+	
 
 	public final void setSessionType(SessionType type) {
 		sessionType = type;
 	}
 
 	final void signalReceivedPDU(Connection connection) {
+
+		// if the received PDU's CmdSN is equal ExpCmdSN, add to received
+		// PDUs
+		InitiatorMessageParser parser = (InitiatorMessageParser) connections
+				.get(connection).peek().getBasicHeaderSegment().getParser();
+		SerialArithmeticNumber receivedCommandSequenceNumber = new SerialArithmeticNumber(
+				parser.getCommandSequenceNumber());
 		synchronized (connections) {
-			// if the received PDU's CmdSN is equal ExpCmdSN, add to received
-			// PDUs
-			InitiatorMessageParser parser = (InitiatorMessageParser) connections
-					.get(connection).peek().getBasicHeaderSegment().getParser();
-			SerialArithmeticNumber receivedCommandSequenceNumber = new SerialArithmeticNumber(
-					parser.getCommandSequenceNumber());
 			if (receivedCommandSequenceNumber
 					.equals(expectedCommandSequenceNumber)) {
 				receivedPDUs.add(connections.get(connection).poll());
 				expectedCommandSequenceNumber.increment();
+				// new maximum command sequence number
 				// signal TaskRouter
 			} else {
 			}
@@ -334,6 +327,7 @@ public class Session {
 							.equals(expectedCommandSequenceNumber)) {
 						receivedPDUs.add(connections.get(connection).poll());
 						expectedCommandSequenceNumber.increment();
+						// new maximum command sequence number
 						// signal TaskRouter
 					} else {
 						// head of connection's queue isn't the next received
@@ -346,6 +340,18 @@ public class Session {
 	}
 
 	final void sendPDU(Connection connection, ProtocolDataUnit pdu) {
+		synchronized (connections) {
+			//update PDU parameter, ExpCmdSN + MaxCmdSN
+			TargetMessageParser parser = (TargetMessageParser) pdu
+					.getBasicHeaderSegment().getParser();
+			parser
+					.setExpectedCommandSequenceNumber(getExpectedCommandSequence()
+							.getValue());
+			parser.setMaximumCommandSequenceNumber(getMaximumCommandSequence()
+					.getValue());
+			//send PDU
+			connection.sendPDU(this, pdu);
+		}
 
 	}
 

@@ -14,7 +14,9 @@ import org.jscsi.target.conf.OperationalTextConfiguration;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.connection.SerialArithmeticNumber;
 import org.jscsi.target.connection.Session;
+import org.jscsi.target.parameter.connection.Phase;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.login.ISID;
 
 /**
@@ -46,6 +48,9 @@ public class Connection {
 
 	private final OperationalTextConfiguration configuration;
 
+	/** the connection's phase */
+	private Phase phase;
+	
 	/**
 	 * The ID of this connection. This must be unique within a
 	 * <code>Session</code>.
@@ -127,6 +132,28 @@ public class Connection {
 	public final Session getReferencedSession() {
 		return referenceSession;
 	}
+	
+	/**
+	 * Get the Connection's actual Status Sequence Number
+	 * 
+	 * @param inkr
+	 *            if true, increments StatusSequenceNumber before returning
+	 * @return
+	 */
+	private final SerialArithmeticNumber getStatusSequenceNumber(boolean inkr) {
+		synchronized (statusSequenceNumber) {
+			if (inkr) {
+				statusSequenceNumber.increment();
+				return statusSequenceNumber;
+			} else {
+				return statusSequenceNumber;
+			}
+		}
+	}
+	
+	public final Phase getPhase() {
+		return phase;
+	}
 
 	/**
 	 * Set the Connetion'S CID if not already set.
@@ -136,20 +163,17 @@ public class Connection {
 	 * @return false means CID already set, true else.
 	 */
 	final boolean setConnectionID(short cid) {
-		// NO_ID means that the Connection has not yet a ConnectionID
-
 		if (hasConnectionID == false) {
 			connectionID = cid;
 			hasConnectionID = true;
 			return true;
-
 		}
 		
 		return false;
 	}
-
-	final void inkrConnectionID() {
-		connectionID++;
+	
+	public final void setPhase(Phase phase) {
+		this.phase = phase;
 	}
 
 	/**
@@ -166,9 +190,19 @@ public class Connection {
 			return false;
 	}
 	
+	
+	final void signalReceivedPDU(){
+		//connection has nothing to do here
+		getReferencedSession().signalReceivedPDU(this);
+	}
+	
+
 	final void sendPDU(Object caller, ProtocolDataUnit pdu){
 		if(caller instanceof Session){
-			netWorker.sendPDU();
+			TargetMessageParser parser = (TargetMessageParser) pdu.getBasicHeaderSegment().getParser();
+			//if status sequence numbering isn't done for every T-to-I PDU, make exception here
+			parser.setStatusSequenceNumber(getStatusSequenceNumber(true).getValue());
+			netWorker.signalSendingPDU();
 		}else{
 			getReferencedSession().sendPDU(this, pdu);
 		}
@@ -294,31 +328,8 @@ public class Connection {
 		return result;
 	}
 
-	/**
-	 * Get the Connection's actual Status Sequence Number
-	 * 
-	 * @param inkr
-	 *            if true, increments StatusSequenceNumber before returning
-	 * @return
-	 */
-	private final SerialArithmeticNumber getStatusSequenceNumber(boolean inkr) {
-		synchronized (statusSequenceNumber) {
-			if (inkr) {
-				statusSequenceNumber.increment();
-				return statusSequenceNumber;
-			} else {
-				return statusSequenceNumber;
-			}
-		}
-	}
 	
-	/**
-	 * If Threads are waiting to get a received ProtocolDataUnit, this method is
-	 * called to signal any received PDU.
-	 */
-	final void signalReceivedPDU() {
-		somethingReceived.signalAll();
-	}
+	
 	
 	/**
 	 * Returns the Connection's sending queue.
