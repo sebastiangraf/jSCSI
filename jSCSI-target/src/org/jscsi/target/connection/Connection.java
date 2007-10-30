@@ -95,6 +95,7 @@ public class Connection {
 
 	public Connection(SocketChannel sChannel) {
 		configuration = OperationalTextConfiguration.create(this);
+		
 		sendingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		receivingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		connectionID = -1;

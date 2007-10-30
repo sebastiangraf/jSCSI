@@ -17,6 +17,7 @@ import org.jscsi.parser.InitiatorMessageParser;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.login.ISID;
+import org.jscsi.parser.snack.SNACKRequestParser;
 
 /**
  * <h1>Session</h1>
@@ -303,6 +304,30 @@ public class Session {
 		SerialArithmeticNumber receivedCommandSequenceNumber = new SerialArithmeticNumber(
 				parser.getCommandSequenceNumber());
 		synchronized (connections) {
+<<<<<<< .mine
+			ProtocolDataUnit pdu = null;
+			InitiatorMessageParser parser = null;
+			SerialArithmeticNumber receivedCommandSequenceNumber = null;
+			// if the received PDU's CmdSN is equal ExpCmdSN, add to received
+			// PDUs
+			if(connection.getReceivingQueue().size() > 0){
+				pdu = connections.get(connection).peek();
+				parser = (InitiatorMessageParser) pdu.getBasicHeaderSegment().getParser();
+				receivedCommandSequenceNumber = new SerialArithmeticNumber(
+						parser.getCommandSequenceNumber());
+				if (receivedCommandSequenceNumber
+						.equals(expectedCommandSequenceNumber)) {
+					receivedPDUs.add(connections.get(connection).poll());
+					//only increment ExpCmdSN if non-immediate and no SNACK Request
+					if(!pdu.getBasicHeaderSegment().isImmediateFlag() && !(parser instanceof SNACKRequestParser)){
+						expectedCommandSequenceNumber.increment();
+					}
+					
+					// signal TaskRouter
+				} else {
+					
+				}
+=======
 			if (receivedCommandSequenceNumber
 					.equals(expectedCommandSequenceNumber)) {
 				receivedPDUs.add(connections.get(connection).poll());
@@ -310,7 +335,10 @@ public class Session {
 				// new maximum command sequence number
 				// signal TaskRouter
 			} else {
+>>>>>>> .r273
 			}
+			
+			
 			// search for the next buffered PDU in every connection
 			for (Queue<ProtocolDataUnit> pdus : connections.values()) {
 				if (pdus.size() <= 0) {
@@ -319,7 +347,8 @@ public class Session {
 				// could be more than one following PDU per connection
 				boolean testing = true;
 				while (testing) {
-					parser = (InitiatorMessageParser) pdus.peek()
+					pdu = pdus.peek();
+					parser = (InitiatorMessageParser) pdu
 							.getBasicHeaderSegment().getParser();
 					receivedCommandSequenceNumber = new SerialArithmeticNumber(
 							parser.getCommandSequenceNumber());
