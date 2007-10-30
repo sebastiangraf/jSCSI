@@ -18,6 +18,7 @@ import org.jscsi.parser.exception.InternetSCSIException;
 /**
  * Every Connection has one NetWorker. The NetWorker represents the Connection's
  * TCP/IP layer, i.e. receive and send PDUs.
+ * 
  * @author Marcus Specht
  * 
  */
@@ -103,7 +104,7 @@ public class NetWorker {
 		sender.interrupt();
 	}
 
-	final void sendPDU(){
+	final void signalSendingPDU() {
 		somethingToSend.signalAll();
 	}
 
@@ -114,16 +115,6 @@ public class NetWorker {
 	 */
 	private ProtocolDataUnit getPDUforSending() {
 		return getPDUforSending(0);
-	}
-	
-	/**
-	 * Synchronized socketChannel
-	 * @return
-	 */
-	private SocketChannel getSocketChannel() {
-		synchronized (socketChannel) {
-			return socketChannel;
-		}
 	}
 
 	/**
@@ -156,6 +147,16 @@ public class NetWorker {
 	}
 
 	/**
+	 * Synchronized socketChannel
+	 * 
+	 * @return
+	 */
+	private SocketChannel getSocketChannel() {
+		return socketChannel;
+
+	}
+
+	/**
 	 * Adds a received PDU to the <code>Connection</code>'s received PDU
 	 * queue. All waiting Threads on the Connection are signaled.
 	 * 
@@ -163,7 +164,6 @@ public class NetWorker {
 	 */
 	private void addReceivedPDU(ProtocolDataUnit pdu) {
 		receivingQueue.add(pdu);
-		// check valid PDU, e.g. CmdSeqNum. SNACK PDU?
 		refConnection.signalReceivedPDU();
 	}
 
@@ -176,12 +176,13 @@ public class NetWorker {
 				// set necessary tags
 				try {
 					pdu.write(getSocketChannel());
-				} catch (InternetSCSIException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (Exception e) {
+					if (LOGGER.isDebugEnabled()) {
+						LOGGER.debug("Problem sending a PDU: HeaderSegment=\""
+								+ pdu.getBasicHeaderSegment().getParser()
+										.getShortInfo() + "\" DataSegment=\""
+								+ pdu.getDataSegment().toString() + "\"");
+					}
 				}
 			}
 		}
@@ -193,10 +194,10 @@ public class NetWorker {
 		@Override
 		public void run() {
 			while (!interrupted()) {
-				//should read the cnofiguration's digest settings
+				// should read the cnofiguration's digest settings
 				ProtocolDataUnit pdu = protocolDataUnitFactory.create("None",
 						"None");
-				
+
 				try {
 
 					pdu.read(getSocketChannel());

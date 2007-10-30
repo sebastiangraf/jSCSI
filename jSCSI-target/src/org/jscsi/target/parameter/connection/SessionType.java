@@ -11,7 +11,7 @@ public enum SessionType {
 	/**
 	 * Normal operational session - an unrestricted session.
 	 */
-	NormalOperationalSession("NormalOperationSession"),
+	NormalOperationalSession("normal"),
 	
 	/**
 	 * Discovery-session - a session only opened for target
@@ -19,7 +19,7 @@ public enum SessionType {
 	 * SendTargets key and a logout request with the reason "close
 	 * the session".  All other requests MUST be rejected.
 	 */
-	DiscoverySession("DiscoverySession");
+	DiscoverySession("discovery");
 	
 	private final String sessionType;
 	
