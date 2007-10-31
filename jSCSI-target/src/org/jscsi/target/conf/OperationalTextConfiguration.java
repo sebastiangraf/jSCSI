@@ -58,7 +58,9 @@ public class OperationalTextConfiguration {
 	private static GlobalConfigParser globalParser;
 
 	private static OperationalTextConfiguration globalConfig;
-
+	
+	private OperationalTextConfiguration parentConfiguration;
+	
 	private final Set<OperationalTextKey> localConfig;
 
 	private final String configType;
