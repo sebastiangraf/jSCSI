@@ -1,10 +1,11 @@
+
 package org.jscsi.scsi.target;
 
 import java.util.List;
 
 import org.jscsi.scsi.authentication.AuthenticationHandler;
+import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.tasks.TaskRouter;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 /**
@@ -23,19 +24,17 @@ import org.jscsi.scsi.transport.TargetTransportPort;
  * <p>
  * Authentication handlers are used during the login phase for iSCSI transport. This authentication
  * architecture is a proprietary extension designed to support Logical Units which require
- * authentication. Authentication handlers are ignored for SCSI transport other than iSCSI. 
+ * authentication. Authentication handlers are ignored for SCSI transport other than iSCSI.
  * 
  */
 public interface Target
 {
-   
 
-   void enqueue( TargetTransportPort port, Command command );
-   
-   
+   void enqueue(TargetTransportPort port, Command command);
+
    ////////////////////////////////////////////////////////////////////////////////////////////////
    // getters/setters
-   
+
    /**
     * The Target Device Name of this target.
     */
@@ -52,4 +51,28 @@ public interface Target
     * presented to the initiator in the order returned by this list.
     */
    public void setAuthHandlers(List<AuthenticationHandler> handlers);
+
+   /**
+    * Used by the TargetTransportPort to indicate an I_T Nexus loss event. Indicates to each Logical
+    * Unit that an I_T Nexus loss has occurred.
+    */
+   public void nexusLost();
+
+   /**
+    * Register a Logical Unit with the given LUN.
+    * 
+    * @param number The Logical Unit Number.
+    * @param lu The Logical Unit.
+    * @throws Exception If the LUN is already assigned.
+    */
+   void registerLogicalUnit( long id, LogicalUnit lu ) throws Exception;
+   
+   /**
+    * Remove a Logical Unit from the task router. After removal no further commands will be
+    * sent to the LU.
+    * 
+    * @param number The LUN.
+    * @throws Exception If the LUN is not valid.
+    */
+   void removeLogicalUnit( long id ) throws Exception;
 }

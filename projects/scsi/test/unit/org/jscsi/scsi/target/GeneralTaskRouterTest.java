@@ -148,14 +148,14 @@ public class GeneralTaskRouterTest
          this.callback = callback;
       }
 
-      public boolean readData(Nexus nexus, ByteBuffer output) { return false; }
+      public boolean readData(Nexus nexus, long commandReferenceNumber, ByteBuffer output) { return false; }
       public void registerTarget(Target target) {}
       public void removeTarget(String targetName) throws Exception {}
       public void terminateDataTransfer(Nexus nexus) {}
-      public boolean writeData(Nexus nexus, ByteBuffer input) { return false; }
+      public boolean writeData(Nexus nexus, long commandReferenceNumber, ByteBuffer input) { return false; }
       
 
-      public void writeResponse(Nexus nexus, Status status, ByteBuffer senseData)
+      public void writeResponse(Nexus nexus, long commandReferenceNumber, Status status, ByteBuffer senseData)
       {
          if ( ! nexus.equals(this.expectedNexus) )
          {
