@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://www.inf.uni-konstanz.de/disy/2006-09" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	elementFormDefault="qualified" targetNamespace="http://www.inf.uni-konstanz.de/disy/2006-09">
+<xs:schema xmlns="http://www.inf.uni-konstanz.de/disy/2007-10" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" targetNamespace="http://www.inf.uni-konstanz.de/disy/2007-10">
 
 <xs:simpleType name="SessionType">
 	<xs:restriction base="xs:string">
@@ -376,50 +376,6 @@
 						<xs:element name="OFMarkInt" type="OFMarkIntType" default="2048" minOccurs="0" />
 						<xs:element name="SessionType" type="SessionTypeType" default="Normal" minOccurs="0" />
 					</xs:all>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name="target" maxOccurs="unbounded">
-				<xs:complexType>
-					<xs:all>
-						<xs:element name="AuthMethod" type="AuthMethodType" default="None" minOccurs="0" />
-						<xs:element name="DataDigest" type="DataDigestType" default="None" minOccurs="0" />
-						<xs:element name="DataPDUInOrder" type="DataPDUInOrderType" default="Yes" minOccurs="0" />
-						<xs:element name="DataSequenceInOrder" type="DataSequenceInOrderType" default="Yes" minOccurs="0" />
-						<xs:element name="DefaultTime2Retain" type="DefaultTime2RetainType" default="20" minOccurs="0" />
-						<xs:element name="DefaultTime2Wait" type="DefaultTime2WaitType" default="2" minOccurs="0" />
-						<xs:element name="ErrorRecoveryLevel" type="ErrorRecoveryLevelType" default="0" minOccurs="0" />
-						<xs:element name="FirstBurstLength" type="FirstBurstLengthType" default="65536" minOccurs="0" />
-						<xs:element name="HeaderDigest" type="HeaderDigestType" default="None" minOccurs="0" />
-						<xs:element name="IFMarker" type="IFMarkerType" default="No" minOccurs="0" />
-						<xs:element name="IFMarkInt" type="IFMarkIntType" default="2048" minOccurs="0" />
-						<xs:element name="ImmediateData" type="ImmediateDataType" default="Yes" minOccurs="0" />
-						<xs:element name="InitialR2T" type="InitialR2TType" default="Yes" minOccurs="0" />
-						<xs:element name="InitiatorAlias" type="InitiatorAliasType" minOccurs="0" />
-						<xs:element name="InitiatorName" type="InitiatorNameType" minOccurs="0" />
-						<xs:element name="MaxBurstLength" type="MaxBurstLengthType" default="262144" minOccurs="0" />
-						<xs:element name="MaxConnections" type="MaxConnectionsType" default="1" minOccurs="0" />
-						<xs:element name="MaxOutstandingR2T" type="MaxOutstandingR2TType" default="1" minOccurs="0" />
-						<xs:element name="MaxRecvDataSegmentLength" type="MaxRecvDataSegmentLengthType" default="8192" minOccurs="0" />
-						<xs:element name="OFMarker" type="OFMarkerType" default="No" minOccurs="0" />
-						<xs:element name="OFMarkInt" type="OFMarkIntType" default="2048" minOccurs="0" />
-						<xs:element name="SendTargets" type="SendTargetsType" minOccurs="0" />
-						<xs:element name="SessionType" type="SessionTypeType" default="Normal" minOccurs="0" />
-						<xs:element name="TargetAddress" type="TargetAddressType" minOccurs="0" /> 
-						<xs:element name="TargetAlias" type="TargetAliasType" minOccurs="0" />
-						<xs:element name="TargetName" type="TargetNameType" />
-						<xs:element name="TargetPortalGroupTag" type="TargetPortalGroupTagType" minOccurs="0" />
-					</xs:all>
-				
-					<xs:attribute name="id" type="xs:ID" use="required" />
-					<xs:attribute name="address" type="xs:string" use="required" />
-					<xs:attribute name="port" default="3260">
-						<xs:simpleType>
-							<xs:restriction base="xs:unsignedShort">
-								<xs:minInclusive value="1" />
-							</xs:restriction>
-						</xs:simpleType>
-					</xs:attribute>
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
