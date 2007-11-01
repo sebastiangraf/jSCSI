@@ -3,8 +3,6 @@ package org.jscsi.target.conf;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * This class defines standard iSCSI operational text keys. Vendor specific keys
@@ -15,9 +13,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class OperationalTextKey {
 
-	/** The Log interface. */
-	private static final Log LOGGER = LogFactory
-			.getLog(OperationalTextKey.class);
+//	/** The Log interface. */
+//	private static final Log LOGGER = LogFactory
+//			.getLog(OperationalTextKey.class);
 
 	/**
 	 * Use: During Login - Security Negotiation Senders: Initiator and Target
@@ -659,10 +657,6 @@ public class OperationalTextKey {
 	public static final String SCOPE_CONNECTION_WIDE = "ConnectionWide";
 
 	private static final int MAX_KEY_LENGTH = 63;
-
-	private final OperationalTextConfiguration globalConfig = OperationalTextConfiguration
-			.getGlobalConfig();
-
 	/** the key's String representation */
 	private String key;
 
@@ -676,8 +670,10 @@ public class OperationalTextKey {
 	private OperationalTextValue value;
 
 	private OperationalTextKey(String key) throws OperationalTextException {
-		String scope = globalConfig.getKey(key).getScope();
-		String sender = globalConfig.getKey(key).getSender();
+		String scope = OperationalTextConfiguration.getGlobalConfig().getKey(
+				key).getScope();
+		String sender = OperationalTextConfiguration.getGlobalConfig().getKey(
+				key).getSender();
 		update(key, scope, sender);
 	}
 
@@ -734,14 +730,14 @@ public class OperationalTextKey {
 	public static Set<OperationalTextKey> fromString(String textParameters)
 			throws OperationalTextException {
 		Set<OperationalTextKey> result = new HashSet<OperationalTextKey>();
-		//split to all pairs
+		// split to all pairs
 		String[] buffer = textParameters
 				.split(OperationalTextConfiguration.PAIR_DELIMITER);
 		for (int i = 0; i < buffer.length; i++) {
-			//split to [key][value]
+			// split to [key][value]
 			String[] pair = buffer[i]
 					.split(OperationalTextConfiguration.KEY_VALUE_DELIMITER);
-			//create key and value, add to result Set
+			// create key and value, add to result Set
 			OperationalTextKey key = OperationalTextKey.create(pair[0]);
 			OperationalTextValue value = OperationalTextValue.create(key
 					.getKey());
@@ -839,7 +835,33 @@ public class OperationalTextKey {
 	private void throwNoValidKeyException(String invalidKey)
 			throws OperationalTextException {
 		throw new OperationalTextException(
-				"Not a valid iSCSI operational text key parameter: " + invalidKey);
+				"Not a valid iSCSI operational text key parameter: "
+						+ invalidKey);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((key == null) ? 0 : key.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final OperationalTextKey other = (OperationalTextKey) obj;
+		if (key == null) {
+			if (other.key != null)
+				return false;
+		} else if (!key.equals(other.key))
+			return false;
+		return true;
 	}
 
 }

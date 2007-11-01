@@ -1,10 +1,7 @@
 package org.jscsi.target.conf;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jscsi.parser.datasegment.IResultFunction;
 import org.jscsi.parser.datasegment.ResultFunctionFactory;
-
 
 /**
  * This class defines standard iSCSI operational text values.
@@ -14,11 +11,9 @@ import org.jscsi.parser.datasegment.ResultFunctionFactory;
  */
 public class OperationalTextValue {
 
-	/** The Log interface. */
-	private static final Log LOGGER = LogFactory
-			.getLog(OperationalTextValue.class);
-	
-	private static final OperationalTextConfiguration globalConfig = OperationalTextConfiguration.getGlobalConfig();
+//	/** The Log interface. */
+//	private static final Log LOGGER = LogFactory
+//			.getLog(OperationalTextValue.class);
 
 	/** The ResultFunctionFactory */
 	private static final ResultFunctionFactory rfFactory = new ResultFunctionFactory();
@@ -88,13 +83,15 @@ public class OperationalTextValue {
 			throws OperationalTextException {
 		update(value, resultType);
 	}
-	
-	private OperationalTextValue(String key) throws OperationalTextException{
-		String value = globalConfig.getKey(key).getValue().getString();
-		String resultType = globalConfig.getKey(key).getValue().getResultType();
+
+	private OperationalTextValue(String key) throws OperationalTextException {
+		String value = OperationalTextConfiguration.getGlobalConfig().getKey(
+				key).getValue().getString();
+		String resultType = OperationalTextConfiguration.getGlobalConfig()
+				.getKey(key).getValue().getResultType();
 		update(value, resultType);
 	}
-	
+
 	private void update(String value, String resultType)
 			throws OperationalTextException {
 		if (!checkValue(value)) {
@@ -109,8 +106,7 @@ public class OperationalTextValue {
 		this.resultFunction = rfFactory.create(resultType);
 	}
 
-	public void update(String value)
-			throws OperationalTextException {
+	public void update(String value) throws OperationalTextException {
 		update(value, resultType);
 	}
 
@@ -174,7 +170,7 @@ public class OperationalTextValue {
 	 * Returns the containing values.
 	 * 
 	 * @return ordered values
-	 * @throws OperationalTextException 
+	 * @throws OperationalTextException
 	 */
 	public String[] getList() throws OperationalTextException {
 		if (isList(this)) {
@@ -184,12 +180,13 @@ public class OperationalTextValue {
 
 	}
 
-	public static OperationalTextValue getResult(OperationalTextValue valueA, OperationalTextValue valueB)
-			throws OperationalTextException {
+	public static OperationalTextValue getResult(OperationalTextValue valueA,
+			OperationalTextValue valueB) throws OperationalTextException {
 		OperationalTextValue result = null;
 		if (valueA.getResultType().equals(valueB.getResultType())) {
-			result = new OperationalTextValue(valueA.resultFunction.result(valueA
-					.getString(), valueB.getString()), valueA.getResultType());
+			result = new OperationalTextValue(valueA.resultFunction.result(
+					valueA.getString(), valueB.getString()), valueA
+					.getResultType());
 		}
 		return result;
 	}
@@ -205,16 +202,16 @@ public class OperationalTextValue {
 		return result;
 	}
 
-	public static OperationalTextValue create(String key) throws OperationalTextException{
+	public static OperationalTextValue create(String key)
+			throws OperationalTextException {
 		return new OperationalTextValue(key);
 	}
-	
-	public static OperationalTextValue create(String value, String resultType) throws OperationalTextException{
+
+	public static OperationalTextValue create(String value, String resultType)
+			throws OperationalTextException {
 		return new OperationalTextValue(value, resultType);
 	}
-	
-	
-	
+
 	/**
 	 * Checks whether the value is a numerical range or not.
 	 * 
@@ -250,7 +247,7 @@ public class OperationalTextValue {
 	 * @return true if value is a list, false else.
 	 */
 	public static boolean isList(OperationalTextValue value) {
-		if (value.getString().split(",").length > 1){
+		if (value.getString().split(",").length > 1) {
 			return true;
 		}
 		return false;
@@ -298,20 +295,42 @@ public class OperationalTextValue {
 		}
 		return false;
 	}
-	
-	/*
-	private static void throwNotAValidValueException(String value)
-			throws OperationalTextException {
-		throw new OperationalTextException("Not a valid Value: " + value);
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
 	}
 
-	private static void throwNotAValidResultTypeException(String resultType)
-			throws OperationalTextException {
-		throw new OperationalTextException("Not a valid resultType: "
-				+ resultType);
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final OperationalTextValue other = (OperationalTextValue) obj;
+		if (value == null) {
+			if (other.value != null)
+				return false;
+		} else if (!value.equals(other.value))
+			return false;
+		return true;
 	}
-	*/
-	
+
+	/*
+	 * private static void throwNotAValidValueException(String value) throws
+	 * OperationalTextException { throw new OperationalTextException("Not a
+	 * valid Value: " + value); }
+	 * 
+	 * private static void throwNotAValidResultTypeException(String resultType)
+	 * throws OperationalTextException { throw new OperationalTextException("Not
+	 * a valid resultType: " + resultType); }
+	 */
+
 	/*
 	 * private static boolean isValidValue(OperationalTextValue value){ return
 	 * true; }
