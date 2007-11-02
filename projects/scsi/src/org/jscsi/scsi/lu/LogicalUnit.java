@@ -2,10 +2,7 @@
 package org.jscsi.scsi.lu;
 
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
-import org.jscsi.scsi.tasks.TaskFactory;
-import org.jscsi.scsi.tasks.management.TaskManager;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 /**
@@ -41,6 +38,8 @@ public interface LogicalUnit
    void start();
 
    void stop();
-   
+
    void nexusLost();
+
+   void setModePageRegistry(ModePageRegistry modePageRegistry);
 }
