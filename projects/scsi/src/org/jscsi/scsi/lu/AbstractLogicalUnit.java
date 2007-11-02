@@ -33,7 +33,9 @@
 //---------------------
 
 package org.jscsi.scsi.lu;
+
 import org.apache.log4j.Logger;
+import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.management.TaskManager;
@@ -45,33 +47,58 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
 
    private TaskFactory taskFactory;
    private TaskManager taskManager;
-   
+   private ModePageRegistry modePageRegistry;
+   private InquiryDataRegistry inquiryDataRegistry;
+
+   public AbstractLogicalUnit(
+         TaskFactory taskFactory,
+         TaskManager taskManager,
+         ModePageRegistry modePageRegistry,
+         InquiryDataRegistry inquiryDataRegistry)
+   {
+      this.taskFactory = taskFactory;
+      this.taskManager = taskManager;
+      this.modePageRegistry = modePageRegistry;
+      this.inquiryDataRegistry = inquiryDataRegistry;
+   }
+
    public TaskFactory getTaskFactory()
    {
       return this.taskFactory;
    }
-   
+
    public void setTaskFactory(TaskFactory taskFactory)
    {
       this.taskFactory = taskFactory;
    }
-   
+
    public TaskManager getTaskManager()
    {
       return this.taskManager;
    }
-   
+
    public void setTaskManager(TaskManager taskManager)
    {
       this.taskManager = taskManager;
    }
-   
+
+   public ModePageRegistry getModePageRegistry()
+   {
+      return this.modePageRegistry;
+   }
 
    public void setModePageRegistry(ModePageRegistry modePageRegistry)
    {
-      // TODO Auto-generated method stub
+      this.modePageRegistry = modePageRegistry;
+   }
 
+   public InquiryDataRegistry getInquiryDataRegistry()
+   {
+      return this.inquiryDataRegistry;
+   }
+
+   public void setInquiryDataRegistry(InquiryDataRegistry inquiryDataRegistry)
+   {
+      this.inquiryDataRegistry = inquiryDataRegistry;
    }
 }
-
-
