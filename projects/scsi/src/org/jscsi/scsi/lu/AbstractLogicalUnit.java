@@ -62,6 +62,17 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
       this.inquiryDataRegistry = inquiryDataRegistry;
    }
 
+   public void startTaskManagerThread()
+   {
+      Thread thread = new Thread(this.taskManager);
+      thread.start();
+   }
+
+   public void stopTaskManagerThread()
+   {
+      this.taskManager.shutdown();
+   }
+
    public TaskFactory getTaskFactory()
    {
       return this.taskFactory;

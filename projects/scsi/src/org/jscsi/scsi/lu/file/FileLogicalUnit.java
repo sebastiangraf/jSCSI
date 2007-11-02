@@ -60,14 +60,6 @@ public class FileLogicalUnit extends AbstractLogicalUnit
    {
       super(taskFactory, new GeneralTaskManager(NUM_TASK_THREADS), modePageRegistry,
             inquiryDataRegistry);
-
-      Thread thread = new Thread(getTaskManager());
-      thread.start();
-   }
-
-   public void stopTaskManagerThread()
-   {
-      getTaskManager().shutdown();
    }
 
    public void enqueue(TargetTransportPort port, Command command)
@@ -95,6 +87,5 @@ public class FileLogicalUnit extends AbstractLogicalUnit
       {
          // FIXME: handle/throw
       }
-
    }
 }
