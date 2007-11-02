@@ -1,13 +1,12 @@
 
 package org.jscsi.scsi.target;
 
-import org.jscsi.scsi.lu.GeneralLogicalUnit;
 import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.inquiry.StaticInquiryDataRegistry;
+import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.mode.StaticModePageRegistry;
+import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.TaskRouter;
-import org.jscsi.scsi.tasks.target.TargetTaskFactory;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class DefaultTarget extends AbstractTarget
@@ -19,9 +18,13 @@ public class DefaultTarget extends AbstractTarget
       this.setTargetName(targetName);
 
       this._taskRouter =
-            new GeneralTaskRouter(new TargetTaskFactory(), new StaticModePageRegistry(),
-                  new StaticInquiryDataRegistry());
-      this._taskRouter.registerLogicalUnit(0, new GeneralLogicalUnit());
+            new DefaultTaskRouter(new StaticModePageRegistry());
+   }
+   
+   public DefaultTarget(String targetName, ModePageRegistry registry)
+   {
+      this.setTargetName(targetName);
+      this._taskRouter = new DefaultTaskRouter(registry);
    }
 
    @Override
@@ -47,5 +50,6 @@ public class DefaultTarget extends AbstractTarget
    public void removeLogicalUnit(long id) throws Exception
    {
       this._taskRouter.removeLogicalUnit(id);
+      
    }
 }

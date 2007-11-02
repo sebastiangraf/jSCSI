@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.tasks.Task;
-import org.jscsi.scsi.tasks.management.GeneralTaskManager;
+import org.jscsi.scsi.tasks.management.DefaultTaskManager;
 import org.jscsi.scsi.tasks.management.GeneralTaskManagerTest;
 import org.junit.After;
 import org.junit.Before;
@@ -35,7 +35,7 @@ public class GenericTaskManagerTest extends GeneralTaskManagerTest
    
    private static void executeTaskSet( List<TestTask> taskSet ) throws InterruptedException
    {
-      GeneralTaskManager manager = new GeneralTaskManager(MANAGER_THREAD_COUNT);
+      DefaultTaskManager manager = new DefaultTaskManager(MANAGER_THREAD_COUNT);
       
       for ( Task t : taskSet )
       {

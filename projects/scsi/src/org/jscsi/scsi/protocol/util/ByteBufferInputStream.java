@@ -103,7 +103,9 @@ public class ByteBufferInputStream extends InputStream
    {
       try
       {
-         int t = (int) this.buffer.get() & 0xFF;
+         byte b = this.buffer.get();
+         int t = (int) b & 0xFF;
+         //int t = (int) this.buffer.get() & 0xFF;
          return t;
       }
       catch (BufferUnderflowException e)

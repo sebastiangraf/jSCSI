@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import org.jscsi.scsi.protocol.sense.additional.NoSenseKeySpecific;
 import org.jscsi.scsi.protocol.sense.additional.SenseKeySpecificField;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException.ResponseCode;
+import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
 
 // TODO: Describe class or interface
@@ -22,10 +23,7 @@ public class FixedSenseData extends SenseData
 
    private byte[] senseKeySpecificBuffer = null;
    
-   public FixedSenseData(ResponseCode code)
-   {
-      super(code);
-   }
+   public FixedSenseData() { super(); }
 
    
    public FixedSenseData(
@@ -51,35 +49,29 @@ public class FixedSenseData extends SenseData
    public void decodeSenseKeySpecific(SenseKeySpecificField field) 
          throws BufferUnderflowException, IOException
    {
-      DataInputStream in = new DataInputStream( 
-            new ByteArrayInputStream(this.senseKeySpecificBuffer) );
-      
-      field.decode(in);
+      field.decode(ByteBuffer.wrap(this.senseKeySpecificBuffer));
    }
 
 
 
    @Override
-   protected void decode(boolean valid, ByteBuffer input) throws BufferUnderflowException,
-         IOException
+   public void decode(byte[] header, ByteBuffer input) throws IOException
    {
-      byte[] bs = new byte[PRE_SIZE_LENGTH]; // response code byte pre-parsed
-      input.get(bs);
-      DataInputStream in = new DataInputStream(new ByteArrayInputStream(bs));
+      assert header != null && header.length == 1 : "input header is invalid";
+      boolean valid = (header[0] & 0x80) != 0;
+      this.setResponseCode(ResponseCode.valueOf((byte)(header[0] & 0x7F)));
+      
+      DataInputStream in = new DataInputStream(new ByteBufferInputStream(input));
       
       // read in first segment of fixed format sense data
-      
       in.readByte();
       int key = in.readUnsignedByte() & 0x0F; // TODO: FILEMARK, EOM, and ILI are unsupported
       byte[] info = new byte[4];
       in.read(info);
-      int length = in.readUnsignedByte(); // the length of the next segment
+      int length = in.readUnsignedByte() - 10; // length of next segment, minus required read-in
+      length = length < 0 ? 0 : length;
       
       // read in the next segment of the fixed format sense data
-      bs = new byte[length];
-      input.get(bs);
-      in = new DataInputStream(new ByteArrayInputStream(bs));
-      
       byte[] cmdi = new byte[4];
       in.read(cmdi);
       int code = in.readUnsignedByte();
@@ -89,7 +81,7 @@ public class FixedSenseData extends SenseData
       in.read(this.senseKeySpecificBuffer);
       // the rest of the additional sense bytes are ignored
       // (vendor specific bytes not supported)
-      
+      in.skip(length);
       
       KCQ kcq = KCQ.valueOf(key, code, qualifier); // throws IOException on invalid values
       
@@ -105,7 +97,7 @@ public class FixedSenseData extends SenseData
 
 
    @Override
-   public ByteBuffer encode()
+   public byte[] encode()
    {
       ByteArrayOutputStream bs = new ByteArrayOutputStream();
       DataOutputStream out = new DataOutputStream( bs );
@@ -153,7 +145,7 @@ public class FixedSenseData extends SenseData
          out.writeByte(kcq.code());
          out.writeByte(kcq.qualifier());
          out.writeByte(0);
-         field.encode(out);
+         out.write(field.encode());
          
          assert bs.toByteArray().length == FIXED_SENSE_DATA_LENGTH : "Invalid encoded sense data"; 
       }
@@ -162,7 +154,7 @@ public class FixedSenseData extends SenseData
          throw new RuntimeException("Unable to encode fixed format sense data.");
       }
       
-      return ByteBuffer.wrap(bs.toByteArray());
+      return bs.toByteArray();
    }
    
    

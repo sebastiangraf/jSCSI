@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
+import org.jscsi.scsi.protocol.Encodable;
+import org.jscsi.scsi.protocol.Serializer;
 import org.jscsi.scsi.protocol.sense.additional.ActualRetryCount;
 import org.jscsi.scsi.protocol.sense.additional.FieldPointer;
 import org.jscsi.scsi.protocol.sense.additional.NoSenseKeySpecific;
@@ -14,7 +16,7 @@ import org.jscsi.scsi.protocol.sense.additional.SenseKeySpecificField;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException.ResponseCode;
 
-public abstract class SenseData
+public abstract class SenseData implements Encodable
 {
    private SenseException.ResponseCode responseCode;
    
@@ -68,6 +70,11 @@ public abstract class SenseData
       return false;
    }
    
+   public boolean isValid()
+   {
+      return this.information != null;
+   }
+   
    public boolean isCurrent()
    {
       switch (this.responseCode)
@@ -100,9 +107,29 @@ public abstract class SenseData
       return this.kcq.key();
    }
    
+   /**
+    * Workaround used by testing framework. Should remove once framework can interpret SenseKey
+    * object.
+    * @deprecated
+    */
+   public int getSenseKeyValue()
+   {
+      return this.kcq.key().value();
+   }
+   
+   public int getSenseCode()
+   {
+      return this.kcq.code();
+   }
+   
+   public int getSenseCodeQualifier()
+   {
+      return this.kcq.qualifier();
+   }
+   
    public byte[] getInformation()
    {
-      return information;
+      return this.information == null ? new byte[] {0, 0, 0, 0} : this.information;
    }
 
    public byte[] getCommandSpecificInformation()
@@ -117,22 +144,18 @@ public abstract class SenseData
    
    public abstract void decodeSenseKeySpecific( SenseKeySpecificField field ) throws IOException;
 
-   public abstract ByteBuffer encode();
+   public abstract byte[] encode();
    
    
-   protected abstract void decode(boolean valid, ByteBuffer input) 
-         throws BufferUnderflowException, IOException;
+   public abstract void decode(byte[] header, ByteBuffer input) throws IOException;
    
    
-   protected SenseData(ResponseCode responseCode)
-   {
-      this.responseCode = responseCode;
-   }
+   protected SenseData() {}
    
    
    protected static SenseKeySpecificField decodeSenseKeySpecificField(
          SenseKey key,
-         DataInputStream input ) throws IOException
+         ByteBuffer input ) throws IOException
    {
       SenseKeySpecificField field;
       switch (key)
@@ -156,35 +179,6 @@ public abstract class SenseData
       }
       field.decode(input);
       return field;
-   }
-   
-   
-   public static SenseData decode(ByteBuffer input) throws BufferUnderflowException, IOException
-   {
-      byte[] header = new byte[1];
-      input.get(header);
-      DataInputStream in = new DataInputStream(new ByteArrayInputStream(header));
-      
-      int b1 = in.readUnsignedByte();
-      ResponseCode code = ResponseCode.valueOf( (byte)(b1 & 0x7F) ); // throws IOException
-      boolean valid = ((b1 >>> 7) & 0x01) == 1;
-      
-      SenseData sense = null;
-      
-      switch (code)
-      {
-         case CURRENT_FIXED:
-            sense = new FixedSenseData(ResponseCode.CURRENT_FIXED);
-         case CURRENT_DESCRIPTOR:
-            sense = new DescriptorSenseData(ResponseCode.CURRENT_DESCRIPTOR);
-         case DEFERRED_FIXED:
-            sense = new FixedSenseData(ResponseCode.DEFERRED_FIXED);
-         case DEFERRED_DESCRIPTOR:
-            sense = new DescriptorSenseData(ResponseCode.DEFERRED_DESCRIPTOR);
-      }
-      
-      sense.decode(valid, input);
-      return sense;
    }
 
    protected void setResponseCode(SenseException.ResponseCode responseCode)

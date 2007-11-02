@@ -13,13 +13,22 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 public class TargetTaskFactory implements TaskFactory
 {
    private static Logger _logger = Logger.getLogger(TargetTaskFactory.class);
-
-   public Task getInstance(TargetTransportPort port,
-                           Command command,
-                           ModePageRegistry modePageRegistry,
-                           InquiryDataRegistry inquiryDataRegistry)
-   throws IllegalRequestException
+   private ModePageRegistry modePageRegistry;
+   
+   
+   public TargetTaskFactory(ModePageRegistry modePageRegistry)
    {
+      this.modePageRegistry = modePageRegistry;
+   }
+
+
+
+   public Task getInstance( TargetTransportPort port, Command command) 
+         throws IllegalRequestException
+   {
+      // TODO Auto-generated method stub
       return null;
    }
+
+
 }

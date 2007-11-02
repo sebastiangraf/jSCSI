@@ -36,9 +36,9 @@ package org.jscsi.scsi.tasks.target;
 import org.apache.log4j.Logger;
 
 // TODO: Describe class or interface
-public class ModeSense extends TargetTask
+public class RequestSenseTask extends TargetTask
 {
-   private static Logger _logger = Logger.getLogger(ModeSense.class);
+   private static Logger _logger = Logger.getLogger(RequestSenseTask.class);
 
 }
 

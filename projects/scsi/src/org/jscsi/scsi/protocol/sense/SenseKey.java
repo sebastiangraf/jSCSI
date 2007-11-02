@@ -125,10 +125,17 @@ public enum SenseKey
    
    private final int value;
    
-   private static Map<Integer, SenseKey> mapping = new HashMap<Integer, SenseKey>();
+   private static Map<Integer, SenseKey> mapping;
    
    private SenseKey(final int value)
    {
+      if ( SenseKey.mapping == null )
+      {
+         SenseKey.mapping = new HashMap<Integer,SenseKey>();
+      }
+      Map<Integer,SenseKey> map = SenseKey.mapping;
+      System.out.println("");
+      System.out.println(map.toString());
       SenseKey.mapping.put(value, this);
       this.value = value;
    }
@@ -140,6 +147,8 @@ public enum SenseKey
    
    public static final SenseKey valueOf( int value ) throws IOException
    {
+      System.out.println("Querying for value: " + value);
+      System.out.println(SenseKey.mapping.toString());
       SenseKey v = SenseKey.mapping.get(value);
       if ( v == null )
       {
