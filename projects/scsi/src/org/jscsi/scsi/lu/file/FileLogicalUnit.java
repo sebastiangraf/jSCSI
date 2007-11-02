@@ -38,13 +38,11 @@ import org.apache.log4j.Logger;
 import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.lu.AbstractLogicalUnit;
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.inquiry.StaticInquiryDataRegistry;
+import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
-import org.jscsi.scsi.protocol.mode.StaticModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.tasks.Task;
-import org.jscsi.scsi.tasks.file.FileDevice;
-import org.jscsi.scsi.tasks.file.FileTaskFactory;
+import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.management.GeneralTaskManager;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
@@ -53,24 +51,34 @@ public class FileLogicalUnit extends AbstractLogicalUnit
 {
    private static Logger _logger = Logger.getLogger(FileLogicalUnit.class);
 
-   private static int NUM_TASK_THREADS = 10;
+   private static int NUM_TASK_THREADS = 1;
 
-   public FileLogicalUnit()
+   public FileLogicalUnit(
+         TaskFactory taskFactory,
+         ModePageRegistry modePageRegistry,
+         InquiryDataRegistry inquiryDataRegistry)
    {
-      setTaskFactory(new FileTaskFactory(new FileDevice()));
-      setTaskManager(new GeneralTaskManager(NUM_TASK_THREADS));
+      super(taskFactory, new GeneralTaskManager(NUM_TASK_THREADS), modePageRegistry,
+            inquiryDataRegistry);
+
+      Thread thread = new Thread(getTaskManager());
+      thread.start();
+   }
+
+   public void stopTaskManagerThread()
+   {
+      getTaskManager().shutdown();
    }
 
    public void enqueue(TargetTransportPort port, Command command)
    {
-
       Task task = null;
 
       try
       {
          task =
-               getTaskFactory().getInstance(port, command, new StaticModePageRegistry(),
-                     new StaticInquiryDataRegistry());
+               getTaskFactory().getInstance(port, command, getModePageRegistry(),
+                     getInquiryDataRegistry());
       }
       catch (IllegalRequestException e)
       {
