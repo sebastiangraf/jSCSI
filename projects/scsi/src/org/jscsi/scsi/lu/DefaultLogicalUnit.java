@@ -9,14 +9,14 @@ import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
-import org.jscsi.scsi.tasks.management.GeneralTaskManager;
+import org.jscsi.scsi.tasks.management.DefaultTaskManager;
 import org.jscsi.scsi.tasks.management.TaskManager;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 // TODO: Describe class or interface
-public class GeneralLogicalUnit implements LogicalUnit
+public abstract class DefaultLogicalUnit implements LogicalUnit
 {
-   private static Logger _logger = Logger.getLogger(GeneralLogicalUnit.class);
+   private static Logger _logger = Logger.getLogger(DefaultLogicalUnit.class);
 
    private static int NUM_TASK_THREADS = 1;
 
@@ -25,7 +25,7 @@ public class GeneralLogicalUnit implements LogicalUnit
    private InquiryDataRegistry inquiryDataRegistry;
    private TaskManager taskManager;
 
-   public GeneralLogicalUnit(
+   public DefaultLogicalUnit(
          TaskFactory taskFactory,
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
@@ -34,7 +34,7 @@ public class GeneralLogicalUnit implements LogicalUnit
       this.modePageRegistry = modePageRegistry;
       this.inquiryDataRegistry = inquiryDataRegistry;
 
-      this.taskManager = new GeneralTaskManager(NUM_TASK_THREADS);
+      this.taskManager = new DefaultTaskManager(NUM_TASK_THREADS);
    }
 
    public void enqueue(TargetTransportPort port, Command command)
@@ -44,8 +44,7 @@ public class GeneralLogicalUnit implements LogicalUnit
       try
       {
          task =
-               getTaskFactory().getInstance(port, command, getModePageRegistry(),
-                     getInquiryDataRegistry());
+               getTaskFactory().getInstance(port, command);
       }
       catch (IllegalRequestException e)
       {
@@ -63,13 +62,13 @@ public class GeneralLogicalUnit implements LogicalUnit
       }
    }
 
-   public void startTaskManagerThread()
+   public void start()
    {
       Thread thread = new Thread(this.taskManager);
       thread.start();
    }
 
-   public void stopTaskManagerThread()
+   public void stop()
    {
       this.taskManager.shutdown();
    }
@@ -113,4 +112,13 @@ public class GeneralLogicalUnit implements LogicalUnit
    {
       this.inquiryDataRegistry = inquiryDataRegistry;
    }
+
+   public void nexusLost()
+   {
+      // TODO Auto-generated method stub
+      
+   }
+   
+   
+   
 }

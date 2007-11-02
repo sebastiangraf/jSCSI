@@ -36,16 +36,9 @@ package org.jscsi.scsi.tasks.target;
 import org.apache.log4j.Logger;
 
 // TODO: Describe class or interface
-public class SendDiagnostic extends TargetTask
+public class ModeSelectTask extends TargetTask
 {
-   
-   
-   //
-   // TODO: is this required? how and by whom is this handled?
-   //         - John Quigley, Thu Oct 25 16:06:32 CDT 2007
-   
-   
-   private static Logger _logger = Logger.getLogger(SendDiagnostic.class);
+   private static Logger _logger = Logger.getLogger(ModeSelectTask.class);
 
 }
 

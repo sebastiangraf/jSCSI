@@ -11,14 +11,13 @@ import org.jscsi.scsi.protocol.sense.exceptions.SenseException.ResponseCode;
 // TODO: Describe class or interface
 public class DescriptorSenseData extends SenseData
 {
-   public DescriptorSenseData(ResponseCode code)
+   public DescriptorSenseData()
    {
-      super(code);
+      super();
    }
 
    @Override
-   protected void decode(boolean valid, ByteBuffer input) throws BufferUnderflowException,
-         IOException
+   public void decode(byte[] header, ByteBuffer input) throws IOException
    {
       // TODO Auto-generated method stub
       
@@ -32,11 +31,13 @@ public class DescriptorSenseData extends SenseData
    }
 
    @Override
-   public ByteBuffer encode()
+   public byte[] encode()
    {
       // TODO Auto-generated method stub
       return null;
    }
+
+
 
    
 }

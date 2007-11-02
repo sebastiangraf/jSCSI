@@ -32,11 +32,11 @@ public abstract class SenseException extends Exception
       
       private final byte code;
       
-      private static Map<Byte, ResponseCode> mapping = new HashMap<Byte, ResponseCode>();
+//      private static Map<Byte, ResponseCode> mapping = new HashMap<Byte, ResponseCode>();
       
       private ResponseCode(final byte code)
       {
-         ResponseCode.mapping.put(code, this);
+//         ResponseCode.mapping.put(code, this);
          this.code = code;
       }
       
@@ -47,8 +47,19 @@ public abstract class SenseException extends Exception
       
       public static final ResponseCode valueOf( byte code ) throws IOException
       {
-         // FIXME: Through an error if code not found in map
-         return ResponseCode.mapping.get(code);
+         switch ( code )
+         {
+            case 0x70:
+               return CURRENT_FIXED;
+            case 0x71:
+               return DEFERRED_FIXED;
+            case 0x72:
+               return CURRENT_DESCRIPTOR;
+            case 0x73:
+               return DEFERRED_DESCRIPTOR;
+            default:
+               throw new IOException("Invalid response code: " + code);
+         }
       }
       
       public static final ResponseCode valueOf( boolean current, boolean descriptor )
@@ -84,20 +95,20 @@ public abstract class SenseException extends Exception
    
    static
    {
-      _exceptions.put(KCQ.CAPACITY_DATA_HAS_CHANGED, CapacityDataHasChangedException.class);
-      _exceptions.put(KCQ.COMMAND_SEQUENCE_ERROR, CommandSequenceErrorException.class);
-      _exceptions.put(KCQ.INQUIRY_DATA_HAS_CHANGED, InquiryDataHasChangedException.class);
-      _exceptions.put(KCQ.INVALID_COMMAND_OPERATION_CODE, InvalidCommandOperationCodeException.class);
-      _exceptions.put(KCQ.INVALID_FIELD_IN_CDB, InvalidFieldInCDBException.class);
-      _exceptions.put(KCQ.INVALID_FIELD_IN_PARAMETER_LIST, InvalidFieldInParameterListException.class);
-      _exceptions.put(KCQ.LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE, LogicalBlockAddressOutOfRangeException.class);
-      _exceptions.put(KCQ.MODE_PARAMETERS_CHANGED, ModeParametersChangedException.class);
-      _exceptions.put(KCQ.PARAMETER_NOT_SUPPORTED, ParameterNotSupportedException.class);
-      _exceptions.put(KCQ.PARAMETERS_CHANGED, ParametersChangedException.class);
-      _exceptions.put(KCQ.PARAMETER_VALUE_INVALID, ParameterValueInvalidException.class);
-      _exceptions.put(KCQ.REPORTED_LUNS_DATA_HAS_CHANGED, ReportedLUNSDataHasChangedException.class);
-      _exceptions.put(KCQ.UNRECOVERED_READ_ERROR, UnrecoveredReadErrorException.class);
-      _exceptions.put(KCQ.WRITE_ERROR, WriteErrorException.class);
+//      _exceptions.put(KCQ.CAPACITY_DATA_HAS_CHANGED, CapacityDataHasChangedException.class);
+//      _exceptions.put(KCQ.COMMAND_SEQUENCE_ERROR, CommandSequenceErrorException.class);
+//      _exceptions.put(KCQ.INQUIRY_DATA_HAS_CHANGED, InquiryDataHasChangedException.class);
+//      _exceptions.put(KCQ.INVALID_COMMAND_OPERATION_CODE, InvalidCommandOperationCodeException.class);
+//      _exceptions.put(KCQ.INVALID_FIELD_IN_CDB, InvalidFieldInCDBException.class);
+//      _exceptions.put(KCQ.INVALID_FIELD_IN_PARAMETER_LIST, InvalidFieldInParameterListException.class);
+//      _exceptions.put(KCQ.LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE, LogicalBlockAddressOutOfRangeException.class);
+//      _exceptions.put(KCQ.MODE_PARAMETERS_CHANGED, ModeParametersChangedException.class);
+//      _exceptions.put(KCQ.PARAMETER_NOT_SUPPORTED, ParameterNotSupportedException.class);
+//      _exceptions.put(KCQ.PARAMETERS_CHANGED, ParametersChangedException.class);
+//      _exceptions.put(KCQ.PARAMETER_VALUE_INVALID, ParameterValueInvalidException.class);
+//      _exceptions.put(KCQ.REPORTED_LUNS_DATA_HAS_CHANGED, ReportedLUNSDataHasChangedException.class);
+//      _exceptions.put(KCQ.UNRECOVERED_READ_ERROR, UnrecoveredReadErrorException.class);
+//      _exceptions.put(KCQ.WRITE_ERROR, WriteErrorException.class);
    }
    
    
@@ -150,7 +161,7 @@ public abstract class SenseException extends Exception
     */
    protected abstract SenseKeySpecificField getSenseKeySpecific();
    
-   public ByteBuffer encode()
+   public byte[] encode()
    {
       // FIXME: Currently we hard code always returning fixed sense data
       SenseData data = new FixedSenseData(

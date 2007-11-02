@@ -16,6 +16,8 @@ import org.jscsi.scsi.protocol.cdb.Write16;
 import org.jscsi.scsi.protocol.cdb.Write6;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
+import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
+import org.jscsi.scsi.protocol.sense.exceptions.InvalidCommandOperationCodeException;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.transport.TargetTransportPort;
@@ -25,7 +27,9 @@ public class FileTaskFactory implements TaskFactory
    private static Map<Class<? extends CommandDescriptorBlock>, Class<? extends FileTask>> _tasks =
          new HashMap<Class<? extends CommandDescriptorBlock>, Class<? extends FileTask>>();
 
-   private FileDevice _device;
+   private FileDevice device;
+   private ModePageRegistry modePageRegistry;
+   private InquiryDataRegistry inquiryDataRegistry;
 
    static
    {
@@ -39,17 +43,21 @@ public class FileTaskFactory implements TaskFactory
       FileTaskFactory._tasks.put(Write16.class, WriteFileTask.class);
    }
 
-   public FileTaskFactory(FileDevice device)
-   {
-      this._device = device;
-   }
-
-   // throws IllegalRequestException
-   public Task getInstance(
-         TargetTransportPort port,
-         Command command,
+   public FileTaskFactory(
+         FileDevice device,
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
+   {
+      this.device = device;
+      this.modePageRegistry = modePageRegistry;
+      this.inquiryDataRegistry = inquiryDataRegistry;
+   }
+
+
+
+   public Task getInstance(
+         TargetTransportPort port,
+         Command command) throws IllegalRequestException
    {
       Class<? extends FileTask> taskClass =
             _tasks.get(command.getCommandDescriptorBlock().getClass());
@@ -72,21 +80,15 @@ public class FileTaskFactory implements TaskFactory
 
          fileTask.setCommand(command);
          fileTask.setTargetTransportPort(port);
-         fileTask.setModePageRegistry(modePageRegistry);
-         fileTask.setInquiryDataRegistry(inquiryDataRegistry);
-         fileTask.setFileDevice(_device);
+         fileTask.setModePageRegistry(this.modePageRegistry);
+         fileTask.setInquiryDataRegistry(this.inquiryDataRegistry);
+         fileTask.setFileDevice(this.device);
 
          return fileTask;
       }
       else
       {
-         /// if command is not found in the map, throw InvalidCommandOperationCodeException
-
-         //throw new InvalidCommandOperationCodeException(
-         //      command.getCommandDescriptorBlock().getOperationCode());
-
-         // TODO: replace null with exception above commented out above
-         return null;
+         throw new InvalidCommandOperationCodeException();
       }
    }
 }

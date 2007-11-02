@@ -13,7 +13,7 @@ import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskAttribute;
 
-public class GeneralTaskManager implements TaskManager, TaskSet
+public class DefaultTaskManager implements TaskManager, TaskSet
 {
    
    private static Logger _logger = Logger.getLogger(TaskSet.class);
@@ -36,7 +36,7 @@ public class GeneralTaskManager implements TaskManager, TaskSet
    /////////////////////////////////////////////////////////////////////////////
    // constructor(s)
    
-   public GeneralTaskManager(int numThreads)
+   public DefaultTaskManager(int numThreads)
    {
       _executor = Executors.newFixedThreadPool(numThreads);
       

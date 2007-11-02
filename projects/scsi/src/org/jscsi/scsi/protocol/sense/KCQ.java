@@ -57,10 +57,14 @@ public enum KCQ
    private final int qualifier; // UBYTE_MAX
    
    
-   private static Map<Long, KCQ> mapping = new HashMap<Long, KCQ>();
+   private static Map<Long, KCQ> mapping;
    
    private KCQ(int key, int code, int qualifier)
    {
+      if ( KCQ.mapping == null )
+      {
+         KCQ.mapping = new HashMap<Long,KCQ>();
+      }
       try
       {
          this.key = SenseKey.valueOf(key);

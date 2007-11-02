@@ -46,6 +46,9 @@ public abstract class TargetTask extends AbstractTask
       // TODO Auto-generated method stub
 
    }
+   
+   // TODO: Need to have setter methods for mode registry, nexus, crn, command, etc.
+   // DO NOT put setter for inquiry data, as this is not provided to target tasks!
 
 }
 

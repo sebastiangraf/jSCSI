@@ -36,7 +36,7 @@ package org.jscsi.scsi.tasks.target;
 import org.apache.log4j.Logger;
 
 // TODO: Describe class or interface
-public class ReportSupportedTaskManagementFunctions extends TargetTask
+public class ReportSupportedTaskManagementFunctionsTask extends TargetTask
 {
    
    //
@@ -45,7 +45,7 @@ public class ReportSupportedTaskManagementFunctions extends TargetTask
    
    
    
-   private static Logger _logger = Logger.getLogger(ReportSupportedTaskManagementFunctions.class);
+   private static Logger _logger = Logger.getLogger(ReportSupportedTaskManagementFunctionsTask.class);
 
 }
 

@@ -14,10 +14,9 @@ import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.ReportLuns;
 import org.jscsi.scsi.protocol.cdb.TestUnitReady;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
-import org.jscsi.scsi.protocol.inquiry.StaticInquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
-import org.jscsi.scsi.protocol.mode.StaticModePageRegistry;
 import org.jscsi.scsi.protocol.sense.SenseData;
+import org.jscsi.scsi.protocol.sense.SenseDataFactory;
 import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.protocol.sense.exceptions.LogicalUnitNotSupportedException;
 import org.jscsi.scsi.tasks.AbstractTask;
@@ -50,6 +49,9 @@ public class GeneralTaskRouterTest
    {
       private static Logger _logger = Logger.getLogger(DummyTask.class);
 
+      private ModePageRegistry modePageRegistry;
+      private InquiryDataRegistry inquiryDataRegistry;
+      
 
       ////////////////////////////////////////////////////////////////////////////
       // constructor(s)
@@ -104,9 +106,7 @@ public class GeneralTaskRouterTest
       // TaskFactory implementation
       
       public Task getInstance(TargetTransportPort port,
-                              Command command,
-                              ModePageRegistry modePageRegistry,
-                              InquiryDataRegistry inquiryDataRegistry)
+                              Command command)
       throws IllegalRequestException
       {
          return this;
@@ -119,7 +119,7 @@ public class GeneralTaskRouterTest
    
    public TaskRouter getTaskRouterInstance()
    {
-      return new GeneralTaskRouter(new DummyTask(), new StaticModePageRegistry(), new StaticInquiryDataRegistry());
+      return new DefaultTaskRouter(new DummyTask());
    }
   
    public interface SuccessCallback
@@ -134,6 +134,7 @@ public class GeneralTaskRouterTest
       private Status expectedStatus;
       private ByteBuffer expectedSenseData;
       private SuccessCallback callback;
+      private SenseDataFactory senseDataFactory;
       
       
       public TestTargetTransportPort(
@@ -146,6 +147,7 @@ public class GeneralTaskRouterTest
          this.expectedStatus = expectedStatus;
          this.expectedSenseData = expectedSenseData;
          this.callback = callback;
+         this.senseDataFactory = new SenseDataFactory();
       }
 
       public boolean readData(Nexus nexus, long commandReferenceNumber, ByteBuffer output) { return false; }
@@ -170,8 +172,8 @@ public class GeneralTaskRouterTest
          
          try
          {
-            SenseData expected = SenseData.decode(this.expectedSenseData);
-            SenseData actual = SenseData.decode(senseData);
+            SenseData expected = this.senseDataFactory.decode(this.expectedSenseData);
+            SenseData actual = this.senseDataFactory.decode(senseData);
             
             if ( expected.getKCQ() != actual.getKCQ() )
             {
@@ -212,6 +214,25 @@ public class GeneralTaskRouterTest
       private Nexus nexus;
       private SuccessCallback callback;
       
+      
+
+      public void nexusLost()
+      {
+         // TODO Auto-generated method stub
+         
+      }
+
+      public void start()
+      {
+         // TODO Auto-generated method stub
+         
+      }
+
+      public void stop()
+      {
+         // TODO Auto-generated method stub
+         
+      }
 
       public TestLogicalUnit(
             String target,
@@ -303,7 +324,7 @@ public class GeneralTaskRouterTest
          new TestTargetTransportPort( 
                nexus,
                Status.CHECK_CONDITION,
-               (new LogicalUnitNotSupportedException()).encode(),
+               ByteBuffer.wrap((new LogicalUnitNotSupportedException()).encode()),
                transportResults );
       
       LogicalUnit lu = new TestLogicalUnit( nexus, luResults );

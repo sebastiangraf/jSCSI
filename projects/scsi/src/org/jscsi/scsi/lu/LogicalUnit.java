@@ -38,15 +38,9 @@ public interface LogicalUnit
 
    void enqueue(TargetTransportPort port, Command command);
 
-   void startTaskManagerThread();
+   void start();
 
-   void stopTaskManagerThread();
-
-   void setTaskFactory(TaskFactory taskFactory);
-
-   void setTaskManager(TaskManager taskManager);
-
-   void setModePageRegistry(ModePageRegistry modePageRegistry);
-
-   void setInquiryDataRegistry(InquiryDataRegistry inquiryDataRegistry);
+   void stop();
+   
+   void nexusLost();
 }
