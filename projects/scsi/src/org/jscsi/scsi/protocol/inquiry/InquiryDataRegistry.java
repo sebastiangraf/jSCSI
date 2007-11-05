@@ -38,7 +38,7 @@ package org.jscsi.scsi.protocol.inquiry;
 // Contains instances of InquiryData objects
 public abstract class InquiryDataRegistry
 {
-   protected InquiryData inquiryData = null;
+   protected StandardInquiryData inquiryData = null;
    
 }
 
