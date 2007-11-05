@@ -42,7 +42,7 @@ import org.jscsi.scsi.protocol.Serializer;
 /**
  * Base class for Inquiry Data Parsers
  */
-public abstract class StandardInquiryData implements Encodable, Serializer
+public class StandardInquiryData implements Encodable, Serializer
 {
    // Inquiry Data Fields
    private byte peripheralQualifier; // 3 bits
