@@ -1,12 +1,10 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 
 public class Caching extends ModePage
 {
@@ -46,7 +44,7 @@ public class Caching extends ModePage
 
    public Caching()
    {
-      super(PAGE_CODE);
+      super(PAGE_CODE, PAGE_LENGTH);
    }
 
    @Override
@@ -112,11 +110,8 @@ public class Caching extends ModePage
    }
 
    @Override
-   protected void encodeModeParameters(ByteBuffer output)
+   protected void encodeModeParameters(DataOutputStream output)
    {
-      ByteArrayOutputStream page = new ByteArrayOutputStream(this.getPageLength());
-      DataOutputStream out = new DataOutputStream(page);
-
       try
       {
          // byte 2
@@ -153,24 +148,24 @@ public class Caching extends ModePage
          {
             b |= 0x01;
          }
-         out.writeByte(b);
+         output.writeByte(b);
 
          // byte 3
          b = (this.demandReadRetentionPriority << 4);
          b |= this.writeRetentionPriority;
-         out.writeByte(b);
+         output.writeByte(b);
 
          // bytes 4 - 5
-         out.writeShort(this.disablePrefetchTransferLength);
+         output.writeShort(this.disablePrefetchTransferLength);
 
          // bytes 6 - 7
-         out.writeShort(this.minimumPrefetch);
+         output.writeShort(this.minimumPrefetch);
 
          // bytes 8 - 9
-         out.writeShort(this.maximumPrefetch);
+         output.writeShort(this.maximumPrefetch);
 
          // bytes 10 - 11
-         out.writeShort(this.maximumPrefetchCeiling);
+         output.writeShort(this.maximumPrefetchCeiling);
 
          // byte 12
          b = 0;
@@ -191,34 +186,26 @@ public class Caching extends ModePage
          {
             b |= 0x01;
          }
-         out.writeByte(b);
+         output.writeByte(b);
 
          // byte 13
-         out.writeByte(this.numberOfCacheSegments);
+         output.writeByte(this.numberOfCacheSegments);
 
          // bytes 14 - 15
-         out.writeShort(this.cacheSegmentSize);
+         output.writeShort(this.cacheSegmentSize);
 
          // byte 16
-         out.writeByte(0);
+         output.writeByte(0);
 
          // bytes 17 - 19
-         out.writeByte(0);
-         out.writeByte(0);
-         out.writeByte(0);
-
-         output.put(page.toByteArray());
+         output.writeByte(0);
+         output.writeByte(0);
+         output.writeByte(0);
       }
       catch (IOException e)
       {
          throw new RuntimeException("Unable to encode CDB.");
       }
-   }
-
-   @Override
-   protected int getPageLength()
-   {
-      return PAGE_LENGTH;
    }
 
    public boolean isIC()

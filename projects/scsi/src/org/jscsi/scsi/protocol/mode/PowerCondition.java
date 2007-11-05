@@ -1,12 +1,10 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 
 public class PowerCondition extends ModePage
 {
@@ -20,7 +18,7 @@ public class PowerCondition extends ModePage
 
    public PowerCondition()
    {
-      super(PAGE_CODE);
+      super(PAGE_CODE, PAGE_LENGTH);
    }
 
    @Override
@@ -50,15 +48,12 @@ public class PowerCondition extends ModePage
    }
 
    @Override
-   protected void encodeModeParameters(ByteBuffer output)
+   protected void encodeModeParameters(DataOutputStream output)
    {
-      ByteArrayOutputStream page = new ByteArrayOutputStream(this.getPageLength());
-      DataOutputStream out = new DataOutputStream(page);
-
       try
       {
          // byte 2
-         out.writeByte(0);
+         output.writeByte(0);
 
          // byte 3
          int b = 0;
@@ -70,26 +65,18 @@ public class PowerCondition extends ModePage
          {
             b |= 1;
          }
-         out.writeByte(b);
+         output.writeByte(b);
 
          // bytes 4 - 7
-         out.writeInt(this.idleConditionTimer);
+         output.writeInt(this.idleConditionTimer);
 
          // bytes 8 - 11
-         out.writeInt(this.standbyConditionTimer);
-
-         output.put(page.toByteArray());
+         output.writeInt(this.standbyConditionTimer);
       }
       catch (IOException e)
       {
          throw new RuntimeException("Unable to encode CDB.");
       }
-   }
-
-   @Override
-   protected int getPageLength()
-   {
-      return PAGE_LENGTH;
    }
 
    public boolean isIdle()

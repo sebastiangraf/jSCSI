@@ -1,12 +1,10 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 
 public class InformationalExceptionsControl extends ModePage
 {
@@ -25,7 +23,7 @@ public class InformationalExceptionsControl extends ModePage
 
    public InformationalExceptionsControl()
    {
-      super(PAGE_CODE);
+      super(PAGE_CODE, PAGE_LENGTH);
    }
 
    @Override
@@ -59,11 +57,8 @@ public class InformationalExceptionsControl extends ModePage
    }
 
    @Override
-   protected void encodeModeParameters(ByteBuffer output)
+   protected void encodeModeParameters(DataOutputStream output)
    {
-      ByteArrayOutputStream page = new ByteArrayOutputStream(this.getPageLength());
-      DataOutputStream out = new DataOutputStream(page);
-
       try
       {
          // byte 2
@@ -92,29 +87,21 @@ public class InformationalExceptionsControl extends ModePage
          {
             b |= 0x01;
          }
-         out.writeByte(b);
+         output.writeByte(b);
 
          // byte 3
-         out.writeByte(this.MRIE);
+         output.writeByte(this.MRIE);
 
          // bytes 4 - 7
-         out.writeInt(this.intervalTimer);
+         output.writeInt(this.intervalTimer);
 
          // bytes 8 - 11
-         out.writeInt(this.reportCount);
-
-         output.put(page.toByteArray());
+         output.writeInt(this.reportCount);
       }
       catch (IOException e)
       {
          throw new RuntimeException("Unable to encode CDB.");
       }
-   }
-
-   @Override
-   protected int getPageLength()
-   {
-      return PAGE_LENGTH;
    }
 
    public boolean isPERF()

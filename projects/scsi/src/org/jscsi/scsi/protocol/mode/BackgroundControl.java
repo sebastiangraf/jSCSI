@@ -1,11 +1,9 @@
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 
 public class BackgroundControl extends ModePage
 {
@@ -24,7 +22,7 @@ public class BackgroundControl extends ModePage
 
    public BackgroundControl()
    {
-      super(PAGE_CODE, SUBPAGE_CODE);
+      super(PAGE_CODE, SUBPAGE_CODE, PAGE_LENGTH);
    }
 
    @Override
@@ -64,11 +62,8 @@ public class BackgroundControl extends ModePage
    }
 
    @Override
-   protected void encodeModeParameters(ByteBuffer output)
+   protected void encodeModeParameters(DataOutputStream output)
    {
-      ByteArrayOutputStream page = new ByteArrayOutputStream(this.getPageLength());
-      DataOutputStream out = new DataOutputStream(page);
-
       try
       {
          // byte 4
@@ -85,7 +80,7 @@ public class BackgroundControl extends ModePage
          {
             b |= 1;
          }
-         out.writeByte(b);
+         output.writeByte(b);
 
          // byte 5
          b = 0;
@@ -93,35 +88,27 @@ public class BackgroundControl extends ModePage
          {
             b = 1;
          }
-         out.writeByte(b);
+         output.writeByte(b);
 
          // bytes 6 - 7
-         out.writeShort(this.backgroundMediumScanIntervalTime);
+         output.writeShort(this.backgroundMediumScanIntervalTime);
 
          // bytes 8 - 9
-         out.writeShort(this.backgroundPrescanTimeLimit);
+         output.writeShort(this.backgroundPrescanTimeLimit);
 
          // bytes 10 - 11
-         out.writeShort(this.minimumIdleTimeBeforeBackgroundScan);
+         output.writeShort(this.minimumIdleTimeBeforeBackgroundScan);
 
          // bytes 12 - 13
-         out.writeShort(this.maximumTimeToSuspectBackgroundScan);
+         output.writeShort(this.maximumTimeToSuspectBackgroundScan);
 
          // bytes 14 - 15
-         out.writeShort(0);
-
-         output.put(page.toByteArray());
+         output.writeShort(0);
       }
       catch (IOException e)
       {
          throw new RuntimeException("Unable to encode CDB.");
       }
-   }
-
-   @Override
-   protected int getPageLength()
-   {
-      return PAGE_LENGTH;
    }
 
    public boolean isS_L_FULL()

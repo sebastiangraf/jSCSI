@@ -2,8 +2,8 @@
 package org.jscsi.scsi.protocol.mode.parameter;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.mode.ModePage;
 
@@ -11,7 +11,8 @@ public class LongLBA extends ModePage
 {
    protected LongLBA()
    {
-      super((byte) -1);
+      // FIXME: what's the page length? currently passing 0.
+      super((byte) -1, 0);
       // TODO Auto-generated constructor stub
    }
 
@@ -24,16 +25,9 @@ public class LongLBA extends ModePage
    }
 
    @Override
-   protected void encodeModeParameters(ByteBuffer output)
+   protected void encodeModeParameters(DataOutputStream output)
    {
       // TODO Auto-generated method stub
 
-   }
-
-   @Override
-   protected int getPageLength()
-   {
-      // TODO Auto-generated method stub
-      return 0;
    }
 }
