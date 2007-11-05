@@ -9,10 +9,13 @@ import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
+import org.jscsi.scsi.protocol.Encodable;
+import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
+
 /**
  * Base class for mode page parsers.
  */
-public abstract class ModePage
+public abstract class ModePage implements Encodable
 {
    // set by decode
    private boolean parametersSavable;
@@ -21,17 +24,19 @@ public abstract class ModePage
    private boolean subPageFormat;
    private byte pageCode; // MAX VALUE 0x3F (6-bit)
    private int subPageCode; // MAX VALUE UBYTE_MAX
+   private int pageLength;
 
    /**
     * Constructs a mode page.
     * 
     * @param pageCode
     */
-   protected ModePage(byte pageCode)
+   protected ModePage(byte pageCode, int pageLength)
    {
       this.pageCode = pageCode;
       this.subPageFormat = false;
       this.subPageCode = -1;
+      this.pageLength = pageLength;
    }
 
    /**
@@ -40,11 +45,12 @@ public abstract class ModePage
     * @param pageCode
     * @param subPageCode
     */
-   protected ModePage(byte pageCode, int subPageCode)
+   protected ModePage(byte pageCode, int subPageCode, int pageLength)
    {
       this.pageCode = pageCode;
       this.subPageFormat = true;
       this.subPageCode = subPageCode;
+      this.pageLength = pageLength;
    }
 
    void setParametersSavable(boolean parametersSavable)
@@ -75,12 +81,15 @@ public abstract class ModePage
    /**
     * Returns page length. Limited to UBYTE_MAX for pages and USHORT_MAX for subpages.
     */
-   protected abstract int getPageLength();
+   public final int getPageLength()
+   {
+      return this.pageLength;
+   }
 
    /**
     * Encodes mode parameters of length {@link #getPageLength()} to an output byte buffer.
     */
-   protected abstract void encodeModeParameters(ByteBuffer output);
+   protected abstract void encodeModeParameters(DataOutputStream output);
 
    /**
     * Decodes mode parameters from an input byte buffer. Input page length must be equal to
@@ -92,11 +101,10 @@ public abstract class ModePage
    protected abstract void decodeModeParameters(int dataLength, DataInputStream inputStream)
          throws BufferUnderflowException, IllegalArgumentException;
 
-   public byte[] getEncoded() throws BufferOverflowException
+   public byte[] encode() throws BufferOverflowException
    {
-      // Below, header is 2 bytes for page format, 4 bytes for subpage format.
-      ByteArrayOutputStream header = new ByteArrayOutputStream(getSubPageFormat() ? 4 : 2);
-      DataOutputStream out = new DataOutputStream(header);
+      ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+      DataOutputStream dataOut = new DataOutputStream(byteOut);
 
       try
       {
@@ -113,32 +121,52 @@ public abstract class ModePage
 
          b0 |= (getPageCode() & 0x3F);
 
-         out.writeByte(b0);
+         dataOut.writeByte(b0);
 
          if (getSubPageFormat())
          {
-            out.writeByte(getSubPageCode());
-            out.writeShort(getPageLength());
+            dataOut.writeByte(getSubPageCode());
+            dataOut.writeShort(getPageLength());
          }
          else
          {
-            out.writeByte(getPageLength());
+            dataOut.writeByte(getPageLength());
          }
 
-         // Allocate page length
-         ByteBuffer outputBuffer = ByteBuffer.allocate(getPageLength());
-
-         // Write header
-         outputBuffer.put(header.toByteArray());
-
          // Write mode parameters
-         encodeModeParameters(outputBuffer);
+         encodeModeParameters(dataOut);
 
-         return outputBuffer.array();
+         return byteOut.toByteArray();
       }
       catch (IOException e)
       {
          throw new RuntimeException("Unable to encode mode page.");
       }
+   }
+
+   public void decode(byte[] header, ByteBuffer buffer) throws IOException
+   {
+      int dataLength;
+      int pageLength;
+
+      this.parametersSavable = ((header[0] >>> 7) & 0x01) == 1;
+      this.subPageFormat = ((header[0] >>> 6) & 0x01) == 1;
+      this.pageCode = (byte) (header[0] & 0x3F);
+
+      if (this.subPageFormat)
+      {
+         this.subPageCode = header[1];
+         pageLength = ((int) header[2] << 8) | header[3];
+         dataLength = pageLength - 4;
+      }
+      else
+      {
+         this.subPageCode = -1;
+         pageLength = header[1];
+         dataLength = pageLength - 2;
+      }
+
+      DataInputStream dataIn = new DataInputStream(new ByteBufferInputStream(buffer));
+      decodeModeParameters(dataLength, dataIn);
    }
 }

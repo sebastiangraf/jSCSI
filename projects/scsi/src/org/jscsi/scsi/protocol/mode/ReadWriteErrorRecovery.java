@@ -1,12 +1,10 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 
 public class ReadWriteErrorRecovery extends ModePage
 {
@@ -27,7 +25,7 @@ public class ReadWriteErrorRecovery extends ModePage
 
    public ReadWriteErrorRecovery()
    {
-      super(PAGE_CODE);
+      super(PAGE_CODE, PAGE_LENGTH);
    }
 
    @Override
@@ -78,11 +76,8 @@ public class ReadWriteErrorRecovery extends ModePage
    }
 
    @Override
-   protected void encodeModeParameters(ByteBuffer output)
+   protected void encodeModeParameters(DataOutputStream output)
    {
-      ByteArrayOutputStream page = new ByteArrayOutputStream(this.getPageLength());
-      DataOutputStream out = new DataOutputStream(page);
-
       try
       {
 
@@ -120,44 +115,36 @@ public class ReadWriteErrorRecovery extends ModePage
          {
             b |= 0x01;
          }
-         out.writeByte(b);
+         output.writeByte(b);
 
          // byte 3
-         out.writeByte(this.readRetryCount);
+         output.writeByte(this.readRetryCount);
 
          // byte 4
-         out.writeByte(0);
+         output.writeByte(0);
 
          // byte 5
-         out.writeByte(0);
+         output.writeByte(0);
 
          // byte 6
-         out.writeByte(0);
+         output.writeByte(0);
 
          // byte 7
-         out.writeByte(0);
+         output.writeByte(0);
 
          // byte 8
-         out.write(this.writeRetryCount);
+         output.write(this.writeRetryCount);
 
          // byte 9
-         out.writeByte(0);
+         output.writeByte(0);
 
          // bytes 10 - 11
-         out.writeShort(this.recoveryTimeLimit);
-
-         output.put(page.toByteArray());
+         output.writeShort(this.recoveryTimeLimit);
       }
       catch (IOException e)
       {
          throw new RuntimeException("Unable to encode CDB.");
       }
-   }
-
-   @Override
-   protected int getPageLength()
-   {
-      return PAGE_LENGTH;
    }
 
    public boolean isAWRE()

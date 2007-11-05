@@ -1,12 +1,10 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 
 public class DisconnectReconnect extends ModePage
 {
@@ -27,7 +25,7 @@ public class DisconnectReconnect extends ModePage
 
    public DisconnectReconnect()
    {
-      super(PAGE_CODE);
+      super(PAGE_CODE, PAGE_LENGTH);
    }
 
    @Override
@@ -63,20 +61,17 @@ public class DisconnectReconnect extends ModePage
    }
 
    @Override
-   protected void encodeModeParameters(ByteBuffer output)
+   protected void encodeModeParameters(DataOutputStream output)
    {
-      ByteArrayOutputStream page = new ByteArrayOutputStream(this.getPageLength());
-      DataOutputStream out = new DataOutputStream(page);
-
       try
       {
 
-         out.writeByte(this.bufferFullRatio);
-         out.writeByte(this.bufferEmptyRatio);
-         out.writeByte(this.busInactivityLimit);
-         out.writeByte(this.disconnectTimeLimit);
-         out.writeByte(this.connectTimeLimit);
-         out.writeByte(this.maximumBurstSize);
+         output.writeByte(this.bufferFullRatio);
+         output.writeByte(this.bufferEmptyRatio);
+         output.writeByte(this.busInactivityLimit);
+         output.writeByte(this.disconnectTimeLimit);
+         output.writeByte(this.connectTimeLimit);
+         output.writeByte(this.maximumBurstSize);
 
          // byte 12
          int b = 0;
@@ -90,26 +85,18 @@ public class DisconnectReconnect extends ModePage
             b |= 8;
          }
          b |= (this.DTDC);
-         out.writeByte(b);
+         output.writeByte(b);
 
          //byte 13
-         out.writeByte(0);
+         output.writeByte(0);
 
          // bytes 14 - 15
-         out.writeShort(this.firstBurstSize);
-
-         output.put(page.toByteArray());
+         output.writeShort(this.firstBurstSize);
       }
       catch (IOException e)
       {
          throw new RuntimeException("Unable to encode CDB.");
       }
-   }
-
-   @Override
-   protected int getPageLength()
-   {
-      return PAGE_LENGTH;
    }
 
    public int getBufferFullRatio()

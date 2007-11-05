@@ -34,17 +34,20 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ModePageRegistry
+import org.jscsi.scsi.protocol.Serializer;
+import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
+
+public abstract class ModePageRegistry implements Serializer
 {
    // Long to ModePage map
-   private Map<Long, ModePage> _pages = new HashMap<Long, ModePage>();
+   private Map<Long, ModePage> pages = new HashMap<Long, ModePage>();
 
    private long getParserID(byte pageCode, int subPageCode)
    {
@@ -59,12 +62,12 @@ public abstract class ModePageRegistry
 
    private void register(byte pageCode, int subPageCode, ModePage page)
    {
-      _pages.put(getParserID(pageCode, subPageCode), page);
+      pages.put(getParserID(pageCode, subPageCode), page);
    }
 
    public ModePage getModePage(byte pageCode, int subPageCode)
    {
-      return _pages.get(getParserID(pageCode, subPageCode));
+      return pages.get(getParserID(pageCode, subPageCode));
    }
 
    // Mode pages
@@ -106,50 +109,57 @@ public abstract class ModePageRegistry
       register(ReadWriteErrorRecovery.PAGE_CODE, readWriteErrorRecovery);
    }
 
-   public void saveModePages(byte[] input) throws BufferUnderflowException, IOException
+   public ModePage decode(ByteBuffer buffer) throws IOException
    {
-      DataInputStream dataIn = new DataInputStream(new ByteArrayInputStream(input));
+      DataInputStream dataIn = new DataInputStream(new ByteBufferInputStream(buffer.duplicate()));
 
-      // While all pages are not saved
-      while (dataIn.available() > 0)
+      boolean subPageFormat;
+      byte[] header;
+
+      dataIn.mark(0);
+      int b0 = dataIn.readUnsignedByte();
+      dataIn.reset();
+
+      subPageFormat = ((b0 >>> 6) & 0x01) == 1;
+
+      byte pageCode = (byte) (b0 & 0x3F);
+      int subPageCode;
+
+      if (subPageFormat)
       {
-         boolean parametersSavable;
-         int dataLength;
-         boolean subPageFormat;
-         byte pageCode;
-         int subPageCode;
+         header = new byte[4];
+         dataIn.read(header);
 
-         int b0 = dataIn.readUnsignedByte();
-         parametersSavable = ((b0 >>> 7) & 0x01) == 1;
-         subPageFormat = ((b0 >>> 6) & 0x01) == 1;
-         pageCode = (byte) (b0 & 0x3F);
+         subPageCode = header[1];
+      }
+      else
+      {
+         header = new byte[2];
+         dataIn.read(header);
 
-         short pageLength;
-         if (subPageFormat)
-         {
-            subPageCode = dataIn.readByte();
-            pageLength = dataIn.readShort();
-            dataLength = pageLength - 4;
-         }
-         else
-         {
-            subPageCode = -1;
-            pageLength = dataIn.readByte();
-            dataLength = pageLength - 2;
-         }
+         subPageCode = -1;
+      }
 
-         ModePage page = getModePage(pageCode, subPageCode);
+      ModePage page = getModePage(pageCode, subPageCode);
+      
+      if(page != null)
+      {
+         page.decode(header, buffer);
+         return page;
+      }
+      else
+      {
+         throw new RuntimeException("Invalid pageCode/subPageCode - (" + pageCode + "/"
+               + subPageCode + ") no corresponding ModePage found");
 
-         if (page != null)
-         {
-            page.setParametersSavable(parametersSavable);
-            page.decodeModeParameters(dataLength, dataIn);
-         }
-         else
-         {
-            throw new RuntimeException("Invalid pageCode/subPageCode - (" + pageCode + "/"
-                  + subPageCode + ") no corresponding ModePage found");
-         }
+      }
+   }
+
+   public void saveModePages(ByteBuffer pages) throws BufferUnderflowException, IOException
+   {
+      while (pages.position() < pages.limit())
+      {
+         decode(pages);
       }
    }
 
@@ -192,5 +202,4 @@ public abstract class ModePageRegistry
    {
       return readWriteErrorRecovery;
    }
-
 }

@@ -1,12 +1,10 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 
 public class Control extends ModePage
 {
@@ -32,7 +30,7 @@ public class Control extends ModePage
 
    public Control()
    {
-      super(PAGE_CODE);
+      super(PAGE_CODE, PAGE_LENGTH);
    }
 
    @Override
@@ -80,11 +78,8 @@ public class Control extends ModePage
    }
 
    @Override
-   protected void encodeModeParameters(ByteBuffer output)
+   protected void encodeModeParameters(DataOutputStream output)
    {
-      ByteArrayOutputStream page = new ByteArrayOutputStream(this.getPageLength());
-      DataOutputStream out = new DataOutputStream(page);
-
       try
       {
          // byte #3
@@ -106,13 +101,13 @@ public class Control extends ModePage
          {
             b |= 1;
          }
-         out.writeByte(b);
+         output.writeByte(b);
 
          // byte #4
          b = 0;
          b = this.QUEUE_ALGORIHTM_MODIFIER << 4;
          b |= ((this.QERR << 1) & 0x06);
-         out.writeByte(b);
+         output.writeByte(b);
 
          // byte #5
          b = 0;
@@ -129,7 +124,7 @@ public class Control extends ModePage
          {
             b |= 0x08;
          }
-         out.writeByte(b);
+         output.writeByte(b);
 
          // byte #6
          b = 0;
@@ -142,32 +137,24 @@ public class Control extends ModePage
             b |= 0x40;
          }
          b |= this.AUTOLOAD_MODE & 0x07;
-         out.writeByte(b);
+         output.writeByte(b);
 
          // byte #7
-         out.writeByte(0);
+         output.writeByte(0);
 
          //byte #8
-         out.writeByte(0);
+         output.writeByte(0);
 
          // byte #9 - 10
-         out.writeShort(this.BUSY_TIMEOUT_PERIOD);
+         output.writeShort(this.BUSY_TIMEOUT_PERIOD);
 
          // byte #11 - 12
-         out.writeShort(this.EXTENDED_SELF_TEST_COMPLETION_TIME);
-
-         output.put(page.toByteArray());
+         output.writeShort(this.EXTENDED_SELF_TEST_COMPLETION_TIME);
       }
       catch (IOException e)
       {
          throw new RuntimeException("Unable to encode CDB.");
       }
-   }
-
-   @Override
-   protected int getPageLength()
-   {
-      return PAGE_LENGTH;
    }
 
    public int getTST()

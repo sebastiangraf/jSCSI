@@ -1,12 +1,10 @@
 
 package org.jscsi.scsi.protocol.mode;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 
 public class ControlExtension extends ModePage
 {
@@ -21,7 +19,7 @@ public class ControlExtension extends ModePage
 
    public ControlExtension()
    {
-      super(PAGE_CODE, SUBPAGE_CODE);
+      super(PAGE_CODE, SUBPAGE_CODE, PAGE_LENGTH);
    }
 
    @Override
@@ -48,11 +46,8 @@ public class ControlExtension extends ModePage
    }
 
    @Override
-   protected void encodeModeParameters(ByteBuffer output)
+   protected void encodeModeParameters(DataOutputStream output)
    {
-      ByteArrayOutputStream page = new ByteArrayOutputStream(this.getPageLength());
-      DataOutputStream out = new DataOutputStream(page);
-
       try
       {
          // byte #5
@@ -69,29 +64,21 @@ public class ControlExtension extends ModePage
          {
             b |= 1;
          }
-         out.writeByte(b);
+         output.writeByte(b);
 
          // byte #6
-         out.writeByte(this.initialPriority);
+         output.writeByte(this.initialPriority);
 
          // byte #7 - 32
          for (int i = 0; i < 26; i++)
          {
-            out.writeByte(0);
+            output.writeByte(0);
          }
-
-         output.put(page.toByteArray());
       }
       catch (IOException e)
       {
          throw new RuntimeException("Unable to encode CDB.");
       }
-   }
-
-   @Override
-   protected int getPageLength()
-   {
-      return PAGE_LENGTH;
    }
 
    public boolean isTCMOS()
