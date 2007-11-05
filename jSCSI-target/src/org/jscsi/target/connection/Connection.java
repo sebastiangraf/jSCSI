@@ -95,12 +95,11 @@ public class Connection {
 
 	public Connection(SocketChannel sChannel) {
 		configuration = OperationalTextConfiguration.create(this);
-		
 		sendingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		receivingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		connectionID = -1;
 		hasConnectionID = false;
-		statusSequenceNumber = new SerialArithmeticNumber(1);
+		statusSequenceNumber = new SerialArithmeticNumber(0);
 		netWorker = new NetWorker(sChannel, this);
 		netWorker.startListening();
 	}
