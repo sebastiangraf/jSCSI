@@ -11,10 +11,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.conf.OperationalTextConfiguration;
+import org.jscsi.target.conf.OperationalTextException;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.connection.SerialArithmeticNumber;
 import org.jscsi.target.connection.Session;
 import org.jscsi.target.parameter.connection.Phase;
+import org.jscsi.parser.InitiatorMessageParser;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.login.ISID;
@@ -36,7 +38,6 @@ public class Connection {
 
 	public static final String CONNECTION_ID = "ConnectionID";
 
-	
 	// --------------------------------------------------------------------------
 	// --------------------------------------------------------------------------
 
@@ -50,16 +51,16 @@ public class Connection {
 
 	/** the connection's phase */
 	private Phase phase;
-	
+
 	/**
 	 * The ID of this connection. This must be unique within a
 	 * <code>Session</code>.
 	 */
 	private short connectionID;
-	
+
 	/** if the Connection already got a connectionID */
 	private boolean hasConnectionID;
-	
+
 	/**
 	 * The Status Sequence Number, which is used from the initiator to control
 	 * status sequencing and other.
@@ -71,6 +72,8 @@ public class Connection {
 	 * have to be sent.
 	 */
 	private final Queue<ProtocolDataUnit> sendingQueue;
+
+	private final Queue<ProtocolDataUnit> sendedBufferedPDUs;
 
 	/**
 	 * The receiving queue filled with <code>ProtocolDataUnit</code>s, which
@@ -93,15 +96,16 @@ public class Connection {
 	 */
 	private final NetWorker netWorker;
 
-	public Connection(SocketChannel sChannel) {
+	public Connection(SocketChannel sChannel) throws OperationalTextException {
 		configuration = OperationalTextConfiguration.create(this);
 		sendingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
+		sendedBufferedPDUs = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		receivingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
-		connectionID = -1;
 		hasConnectionID = false;
 		statusSequenceNumber = new SerialArithmeticNumber(0);
 		netWorker = new NetWorker(sChannel, this);
 		netWorker.startListening();
+
 	}
 
 	/**
@@ -112,8 +116,6 @@ public class Connection {
 	final short getConnectionID() {
 		return connectionID;
 	}
-
-
 
 	/**
 	 * Returns the Connections Configuration
@@ -132,7 +134,16 @@ public class Connection {
 	public final Session getReferencedSession() {
 		return referenceSession;
 	}
-	
+
+	/**
+	 * Returns the Connection's StatusSequenceNumber.
+	 * 
+	 * @return StatSN
+	 */
+	final SerialArithmeticNumber getStatusSequenceNumber() {
+		return getStatusSequenceNumber(false);
+	}
+
 	/**
 	 * Get the Connection's actual Status Sequence Number
 	 * 
@@ -150,7 +161,12 @@ public class Connection {
 			}
 		}
 	}
-	
+
+	/**
+	 * Returns theConnection's current phase.
+	 * 
+	 * @return Connetion's phase
+	 */
 	public final Phase getPhase() {
 		return phase;
 	}
@@ -166,13 +182,18 @@ public class Connection {
 		if (hasConnectionID == false) {
 			connectionID = cid;
 			hasConnectionID = true;
+			logTrace("Started new Connection");
 			return true;
+		} else {
+			logDebug("Tried to reset Connection ID: old CID is "
+					+ this.connectionID + " new CID should be " + cid);
+			return false;
 		}
-		
-		return false;
 	}
-	
+
 	public final void setPhase(Phase phase) {
+		logTrace("Switched Phase from " + this.phase.stringValue() + "to "
+				+ phase.stringValue());
 		this.phase = phase;
 	}
 
@@ -185,54 +206,85 @@ public class Connection {
 	final boolean setReferencedSession(Session session) {
 		if (referenceSession == null) {
 			referenceSession = session;
+			logTrace("Refernced Session: TSIH="
+					+ referenceSession.getTargetSessionIdentifyingHandleD());
 			return true;
 		} else
-			return false;
+			logDebug("Tried to reset referenced Session.");
+		return false;
 	}
-	
-	
-	final void signalReceivedPDU(){
-		//connection has nothing to do here
-		getReferencedSession().signalReceivedPDU(this);
-	}
-	
 
-	final void sendPDU(Object caller, ProtocolDataUnit pdu){
-		if(caller instanceof Session){
-			TargetMessageParser parser = (TargetMessageParser) pdu.getBasicHeaderSegment().getParser();
-			//if status sequence numbering isn't done for every T-to-I PDU, make exception here
-			parser.setStatusSequenceNumber(getStatusSequenceNumber(true).getValue());
-			netWorker.signalSendingPDU();
-		}else{
+	final void signalReceivedPDU(ProtocolDataUnit receivedPDU) {
+		InitiatorMessageParser parser = (InitiatorMessageParser) receivedPDU
+				.getBasicHeaderSegment().getParser();
+		// connection has nothing to do here
+		getReferencedSession().signalReceivedPDU(
+				parser.getCommandSequenceNumber(), this);
+	}
+
+	final void sendPDU(Object caller, ProtocolDataUnit pdu) {
+		if (caller instanceof Session) {
+			TargetMessageParser parser = (TargetMessageParser) pdu
+					.getBasicHeaderSegment().getParser();
+			// if status sequence numbering isn't done for every T-to-I PDU,
+			// make exception here
+			synchronized (statusSequenceNumber) {
+				parser.setStatusSequenceNumber(getStatusSequenceNumber(true)
+						.getValue());
+				netWorker.signalSendingPDU();
+			}
+		} else {
 			getReferencedSession().sendPDU(this, pdu);
 		}
 	}
 
+	final void bufferSendedPDU(ProtocolDataUnit sendedPDU) {
+		sendedBufferedPDUs.add(sendedPDU);
+	}
 	
-	
-//	/**
-//	 * Sends the Protocol Data Unit.
-//	 * 
-//	 * @param pdu
-//	 */
-//	final void enqueueSendingQueue(ProtocolDataUnit pdu) {
-//		sendingQueue.add(pdu);
-//		// inform the NetWorker he has work to do
-//		netWorker.somethingToSend();
-//	}
-//
-//	/**
-//	 * Sends all ProtocolDataUnits.
-//	 * 
-//	 * @param pdus
-//	 */
-//	final void enqueueSendingQueue(Collection<? extends ProtocolDataUnit> pdus) {
-//		sendingQueue.addAll(pdus);
-//		// inform the NetWorker he has work to do
-//		netWorker.somethingToSend();
-//	}
-	
+	/**
+	 * Cleaning the Connection's sended PDU buffer.
+	 * A target buffers any sending PDU until a received ExpStatSN is signaling
+	 * the successful delivery.
+	 * @param expectedStatusSequenceNumber the initiator's ExpStatSN
+	 */
+	final void updateAndCleanSendedBuffer(int expectedStatusSequenceNumber){
+		ProtocolDataUnit bufferedPDU = null;
+		TargetMessageParser parser = null; 
+		while(true){
+			bufferedPDU = sendedBufferedPDUs.peek();
+			parser = (TargetMessageParser) bufferedPDU.getBasicHeaderSegment().getParser();
+			int StatSN = parser.getStatusSequenceNumber();
+			if(StatSN < expectedStatusSequenceNumber){
+				sendedBufferedPDUs.remove();
+			}else {
+				break;
+			}
+		}
+	}
 
+	// /**
+	// * Sends the Protocol Data Unit.
+	// *
+	// * @param pdu
+	// */
+	// final void enqueueSendingQueue(ProtocolDataUnit pdu) {
+	// sendingQueue.add(pdu);
+	// // inform the NetWorker he has work to do
+	// netWorker.somethingToSend();
+	// }
+
+	// /**
+	// * Sends all ProtocolDataUnits.
+	// *
+	// * @param pdus
+	// */
+	// final void enqueueSendingQueue(Collection<? extends ProtocolDataUnit>
+	// pdus) {
+	// sendingQueue.addAll(pdus);
+	// // inform the NetWorker he has work to do
+	// netWorker.somethingToSend();
+	// }
 
 	/**
 	 * Returns the number of received queued PDUs
@@ -328,9 +380,6 @@ public class Connection {
 		return result;
 	}
 
-	
-	
-	
 	/**
 	 * Returns the Connection's sending queue.
 	 * 
@@ -386,6 +435,22 @@ public class Connection {
 				.getReferencedSession().getTargetSessionIdentifyingHandleD())
 			return false;
 		return true;
+	}
+
+	private void logTrace(String logMessage) {
+		if (LOGGER.isTraceEnabled()) {
+			if (hasConnectionID) {
+				LOGGER.trace("CID=" + connectionID + " Message: " + logMessage);
+			}
+		}
+	}
+
+	private void logDebug(String logMessage) {
+		if (LOGGER.isDebugEnabled()) {
+			if (hasConnectionID) {
+				LOGGER.trace("CID=" + connectionID + " Message: " + logMessage);
+			}
+		}
 	}
 
 }
