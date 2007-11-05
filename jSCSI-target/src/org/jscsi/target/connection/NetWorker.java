@@ -10,6 +10,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.target.conf.OperationalTextException;
+import org.jscsi.target.conf.OperationalTextKey;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.ProtocolDataUnitFactory;
@@ -173,7 +175,6 @@ public class NetWorker {
 		public void run() {
 			while (!interrupted()) {
 				ProtocolDataUnit pdu = getPDUforSending();
-				// set necessary tags
 				try {
 					pdu.write(getSocketChannel());
 				} catch (Exception e) {
@@ -181,7 +182,8 @@ public class NetWorker {
 						LOGGER.debug("Problem sending a PDU: HeaderSegment=\""
 								+ pdu.getBasicHeaderSegment().getParser()
 										.getShortInfo() + "\" DataSegment=\""
-								+ pdu.getDataSegment().toString() + "\"");
+								+ pdu.getDataSegment().toString() + "\"  "
+								+ e.getMessage());
 					}
 				}
 			}
@@ -189,30 +191,59 @@ public class NetWorker {
 
 	}
 
+	/**
+	 * The ReceiverWorker Threads is waiting for incoming PDUs and adds them to
+	 * the Connection's receiving Queue
+	 * 
+	 * @author Marcus Specht
+	 */
 	private class ReceiverWorker extends Thread {
+
+		private boolean successfulRead = true;
+
+		private String headerDigest = null;
+		private String dataDigest = null;
 
 		@Override
 		public void run() {
 			while (!interrupted()) {
-				// should read the cnofiguration's digest settings
-				ProtocolDataUnit pdu = protocolDataUnitFactory.create("None",
-						"None");
-
+				// read digst configuration
 				try {
-
+					headerDigest = refConnection.getConfiguration().getKey(
+							OperationalTextKey.HEADER_DIGEST).getValue()
+							.getString();
+					dataDigest = refConnection.getConfiguration().getKey(
+							OperationalTextKey.DATA_DIGEST).getValue()
+							.getString();
+				} catch (OperationalTextException e1) {
+					if (LOGGER.isDebugEnabled()) {
+						LOGGER
+								.debug("Configuration has no valid Digest Keys: HeaderDigest="
+										+ headerDigest
+										+ " DataDigest="
+										+ dataDigest);
+					}
+					this.interrupt();
+				}
+				// create and read receiving PDU
+				successfulRead = true;
+				ProtocolDataUnit pdu = protocolDataUnitFactory.create(
+						headerDigest, dataDigest);
+				try {
 					pdu.read(getSocketChannel());
 
 				} catch (DigestException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					successfulRead = false;
 				} catch (InternetSCSIException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					successfulRead = false;
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					successfulRead = false;
 				}
-				addReceivedPDU(pdu);
+				// target can ignore error transmissions, because he's signaling
+				// these with responses containing ExpCmdSN
+				if (successfulRead) {
+					addReceivedPDU(pdu);
+				}
 			}
 		}
 	}
