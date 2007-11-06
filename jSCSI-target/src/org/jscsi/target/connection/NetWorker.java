@@ -5,6 +5,7 @@ import java.nio.channels.SocketChannel;
 import java.security.DigestException;
 import java.util.Map;
 import java.util.Queue;
+import java.util.SortedMap;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -40,7 +41,7 @@ public class NetWorker {
 	 * The receiving queue of the <code>ProtocolDataUnit</code>s, which are
 	 * received.
 	 */
-	private final Queue<ProtocolDataUnit> receivingQueue;
+	private final SortedMap<Integer, ProtocolDataUnit> receivingBuffer;
 
 	/** synchronizes sending Worker */
 	private final Lock LOCK = new ReentrantLock();
@@ -82,7 +83,7 @@ public class NetWorker {
 		refConnection = connection;
 		socketChannel = sChannel;
 		sendingBuffer = refConnection.getSendingBuffer();
-		receivingQueue = refConnection.getReceivingQueue();
+		receivingBuffer = refConnection.getReceivingBuffer();
 		protocolDataUnitFactory = new ProtocolDataUnitFactory();
 		sender = new SenderWorker();
 		receiver = new ReceiverWorker();
@@ -186,7 +187,6 @@ public class NetWorker {
 	 * @param pdu
 	 */
 	private void addReceivedPDU(ProtocolDataUnit pdu) {
-		receivingQueue.add(pdu);
 		refConnection.signalReceivedPDU(pdu);
 	}
 

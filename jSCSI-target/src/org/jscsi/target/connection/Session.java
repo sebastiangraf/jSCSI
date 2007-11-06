@@ -3,8 +3,13 @@ package org.jscsi.target.connection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Queue;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,18 +78,28 @@ public class Session {
 	private SerialArithmeticNumber maximumCommandSequenceNumber;
 
 	/** connections are mapped to their receiving Queues */
-	private final Map<Connection, Queue<ProtocolDataUnit>> connections;
+	private final Map<Connection, SortedMap<Integer, ProtocolDataUnit>> connections;
 
-	private final Map<Integer, Connection> signalledPDUs;
+	private final SortedMap<Integer, Connection> signalledPDUs;
 
 	private final Queue<ProtocolDataUnit> receivedPDUs;
+
+	/**
+	 * the LOCK is used to synchronize every request for receiving PDUs
+	 */
+	private final Lock LOCK = new ReentrantLock();
+
+	/**
+	 * the Condition is used to signal waiting Threads for received PDUs
+	 */
+	private final Condition somethingReceived = LOCK.newCondition();
 
 	public Session(Connection connection, short tsih)
 			throws OperationalTextException {
 		configuration = OperationalTextConfiguration.create(this);
 		targetSessionIdentifyingHandle = tsih;
-		connections = new ConcurrentHashMap<Connection, Queue<ProtocolDataUnit>>();
-		signalledPDUs = new ConcurrentHashMap<Integer, Connection>();
+		connections = new ConcurrentHashMap<Connection, SortedMap<Integer, ProtocolDataUnit>>();
+		signalledPDUs = new TreeMap<Integer, Connection>();
 		receivedPDUs = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		addConnection(connection);
 		// start TaskManger
@@ -98,7 +113,7 @@ public class Session {
 	public void addConnection(Connection connection) {
 		if ((!connections.containsKey(connection))
 				&& (connection.setReferencedSession(this))) {
-			connections.put(connection, connection.getReceivingQueue());
+			connections.put(connection, connection.getReceivingBuffer());
 		} else {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER
@@ -281,6 +296,100 @@ public class Session {
 	}
 
 	/**
+	 * Returns the number of received queued PDUs
+	 * 
+	 * @return
+	 */
+	final int getReceivingBufferSize() {
+		return receivedPDUs.size();
+	}
+
+	/**
+	 * Retrieve and removes the next Received Protocol Data Unit. Method waits
+	 * until a PDU was received.
+	 * 
+	 * @return the next received PDU
+	 */
+	final ProtocolDataUnit pollReceivedPDU() {
+		return peekOrPollReceivingBuffer("poll", 0);
+	}
+
+	/**
+	 * Retrieve and removes the next Received Protocol Data Unit. Method waits
+	 * <code>nanoSecs</code> for a received PDU.
+	 * 
+	 * @param nanoSecs
+	 * @return the next received PDU or null if waiting time exceeded
+	 */
+	final ProtocolDataUnit pollReceivedPDU(long nanoSecs) {
+		return peekOrPollReceivingBuffer("poll", nanoSecs);
+	}
+
+	/**
+	 * Retrieve but do not remove the next Received Protocol Data Unit. Method
+	 * waits until a PDU was received.
+	 * 
+	 * @return the next received PDU
+	 */
+	final ProtocolDataUnit peekReceivedPDU() {
+		return peekOrPollReceivingBuffer("peek", 0);
+	}
+
+	/**
+	 * Retrieve but do not remove the next received Protocol Data Unit. Method
+	 * waits <code>nanoSecs</code> for a received PDU.
+	 * 
+	 * @param nanoSecs
+	 * @return the next received PDU or null if waiting time exceeded
+	 */
+	final ProtocolDataUnit peekReceivedPDU(long nanoSecs) {
+		return peekOrPollReceivingBuffer("peek", nanoSecs);
+	}
+
+	/**
+	 * Peeks or polls the receiving PDU queue. In case nanoSecs > 0,
+	 * 
+	 * @param peekOrPoll
+	 *            "peek" or "poll"
+	 * @param nanoSecs
+	 *            the nanoseconds this method waits for an incoming PDU (0 =
+	 *            infinity)
+	 * @return the next received PDU or null if waiting time exceeded
+	 */
+	private final ProtocolDataUnit peekOrPollReceivingBuffer(String peekOrPoll,
+			long nanoSecs) {
+		ProtocolDataUnit result = null;
+		// lock this block for other threads
+		LOCK.lock();
+		try {
+			// wait for an incoming PDU
+			if (nanoSecs <= 0) {
+				while (receivedPDUs.size() == 0)
+					somethingReceived.await();
+			} else {
+				while (receivedPDUs.size() == 0)
+					somethingReceived.awaitNanos(nanoSecs);
+			}
+		} catch (InterruptedException e) {
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER
+						.debug("Synchronization error while awaiting an incoming PDU!");
+			}
+		}
+
+		// peek or poll and in case await exceeded time limit -> return null
+		if (peekOrPoll.equals("peek") && (getReceivingBufferSize() != 0)) {
+			result = receivedPDUs.peek();
+		}
+		if (peekOrPoll.equals("poll") && (getReceivingBufferSize() != 0)) {
+			result = receivedPDUs.poll();
+		}
+		// unlock this block
+		LOCK.unlock();
+		return result;
+	}
+
+	/**
 	 * Set this Session's Initiator Session ID, if not already set.
 	 * 
 	 * @param isid
@@ -306,7 +415,7 @@ public class Session {
 		}
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER
-					.debug("Tried to set a session's initiatorn name twice: old name is "
+					.debug("Tried to set a session's initiator name twice: old name is "
 							+ getInitiatorName()
 							+ ", new name would be "
 							+ name);
@@ -382,9 +491,8 @@ public class Session {
 	final void signalReceivedPDU(Integer CmdSN, Connection connection) {
 		signalledPDUs.put(CmdSN, connection);
 		ProtocolDataUnit receivedPDU = null;
-		// normal operation
-		while (signalledPDUs.containsKey(getExpectedCommandSequence()
-				.getValue())) {
+		// checks if Expected Command Sequence Number arrived
+		while (getExpectedCommandSequence().compareTo(signalledPDUs.firstKey()) == 0) {
 			synchronized (receivedPDUs) {
 				// load expected PDU from any connection into the session
 				receivedPDU = signalledPDUs.get(getExpectedCommandSequence())
@@ -395,6 +503,9 @@ public class Session {
 				// increment ExpCmdSN, if necessary
 				incrExpectedCommandSequenceNumber(receivedPDU);
 				// MaxCmdSN Window
+				/////////////////////////////////
+				//signal possible waiting Threads, e.g. TaskRouter
+				somethingReceived.signal();
 			}
 			// signal TaskRouter
 		}
