@@ -3,6 +3,7 @@ package org.jscsi.target.connection;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.security.DigestException;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -33,7 +34,7 @@ public class NetWorker {
 	 * The Connection's sending queue for the <code>ProtocolDataUnit</code>s,
 	 * which have to be sent.
 	 */
-	private final Queue<ProtocolDataUnit> sendingQueue;
+	private final Map<Integer, ProtocolDataUnit> sendingBuffer;
 
 	/**
 	 * The receiving queue of the <code>ProtocolDataUnit</code>s, which are
@@ -46,6 +47,10 @@ public class NetWorker {
 
 	private final Condition somethingToSend = LOCK.newCondition();
 
+	private int nextSendingStatSN = -1;
+	
+	private int lastSendingStatSN = -1;
+	
 	/** sends outgoing PDUs */
 	private final SenderWorker sender;
 
@@ -76,7 +81,7 @@ public class NetWorker {
 	public NetWorker(final SocketChannel sChannel, Connection connection) {
 		refConnection = connection;
 		socketChannel = sChannel;
-		sendingQueue = refConnection.getSendingQueue();
+		sendingBuffer = refConnection.getSendingBuffer();
 		receivingQueue = refConnection.getReceivingQueue();
 		protocolDataUnitFactory = new ProtocolDataUnitFactory();
 		sender = new SenderWorker();
@@ -99,14 +104,19 @@ public class NetWorker {
 		receiver.interrupt();
 		// interrupt send after every PDU was sent
 		if (wait) {
-			while (sendingQueue.size() != 0) {
+			while (sendingBuffer.size() != 0) {
 				Thread.yield();
 			}
 		}
 		sender.interrupt();
 	}
-
-	final void signalSendingPDU() {
+	
+	final void setNextStatusSequenceNumber(int statSN){
+		nextSendingStatSN = statSN;
+	}
+	
+	final void signalSendingPDU(int statusSequenceNumber) {
+		lastSendingStatSN = statusSequenceNumber;
 		somethingToSend.signalAll();
 	}
 
@@ -127,15 +137,16 @@ public class NetWorker {
 	 * @return Protocol Data Unit
 	 */
 	private ProtocolDataUnit getPDUforSending(long nanoSecs) {
+		ProtocolDataUnit result = null;
 		// wait until there is something to send
 		LOCK.lock();
 		try {
 			if (nanoSecs <= 0) {
-				while (sendingQueue.size() == 0)
+				while (hasPDUforSending())
 					somethingToSend.await();
 			} else {
-				while (sendingQueue.size() == 0)
-					somethingToSend.await();
+				while (hasPDUforSending())
+					somethingToSend.awaitNanos(nanoSecs);
 			}
 		} catch (InterruptedException e) {
 			if (LOGGER.isDebugEnabled()) {
@@ -143,11 +154,21 @@ public class NetWorker {
 						.debug("Synchronisation error while awaiting a PDU to send!");
 			}
 		}
+		result = sendingBuffer.get(nextSendingStatSN);
+		nextSendingStatSN++;
 		LOCK.unlock();
 		// finished waiting
-		return sendingQueue.poll();
+		return result;
 	}
-
+	
+	private boolean hasPDUforSending(){
+		if(nextSendingStatSN <= lastSendingStatSN){
+			return true;
+		} else{
+			return false;
+		}
+	}
+	
 	/**
 	 * Synchronized socketChannel
 	 * 
@@ -166,7 +187,7 @@ public class NetWorker {
 	 */
 	private void addReceivedPDU(ProtocolDataUnit pdu) {
 		receivingQueue.add(pdu);
-		refConnection.signalReceivedPDU();
+		refConnection.signalReceivedPDU(pdu);
 	}
 
 	private class SenderWorker extends Thread {
