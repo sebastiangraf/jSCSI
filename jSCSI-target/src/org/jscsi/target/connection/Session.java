@@ -79,13 +79,13 @@ public class Session {
 
 	private final Queue<ProtocolDataUnit> receivedPDUs;
 
-
-	public Session(Connection connection, short tsih) throws OperationalTextException {
+	public Session(Connection connection, short tsih)
+			throws OperationalTextException {
 		configuration = OperationalTextConfiguration.create(this);
 		targetSessionIdentifyingHandle = tsih;
 		connections = new ConcurrentHashMap<Connection, Queue<ProtocolDataUnit>>();
 		signalledPDUs = new ConcurrentHashMap<Integer, Connection>();
-		receivedPDUs = new ConcurrentLinkedQueue<ProtocolDataUnit>(); 
+		receivedPDUs = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		addConnection(connection);
 		// start TaskManger
 	}
@@ -102,7 +102,7 @@ public class Session {
 		} else {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER
-				.debug("Tried to add a Connection which has already a referenced Session!");
+						.debug("Tried to add a Connection which has already a referenced Session!");
 			}
 		}
 
@@ -196,7 +196,7 @@ public class Session {
 	final SerialArithmeticNumber getExpectedCommandSequence() {
 		return getExpectedCommandSequenceNumber(false);
 	}
-	
+
 	/**
 	 * Returns the Session's actual Expected Command Sequence Number and if
 	 * true, increments the expCmdSeqNum before returning.
@@ -205,7 +205,8 @@ public class Session {
 	 *            if true, increments before return, else only return
 	 * @return SerialArithmeticNumber the Session's expCmdSeqNum
 	 */
-	private final SerialArithmeticNumber getExpectedCommandSequenceNumber(boolean incr) {
+	private final SerialArithmeticNumber getExpectedCommandSequenceNumber(
+			boolean incr) {
 		synchronized (expectedCommandSequenceNumber) {
 			if (incr == true) {
 				expectedCommandSequenceNumber.increment();
@@ -236,26 +237,28 @@ public class Session {
 		return targetSessionIdentifyingHandle;
 	}
 
-	
-	
 	/**
-	 * Increments the Session's ExpCmdSN if necessary because of the callingPDU. 
-	 * @param callingPDU increment is based on type and state of the callingPDU 
+	 * Increments the Session's ExpCmdSN if necessary because of the callingPDU.
+	 * 
+	 * @param callingPDU
+	 *            increment is based on type and state of the callingPDU
 	 */
-	final void incrExpectedCommandSequenceNumber(ProtocolDataUnit callingPDU){
-		InitiatorMessageParser parser = (InitiatorMessageParser) callingPDU.getBasicHeaderSegment()
-		.getParser();
+	final void incrExpectedCommandSequenceNumber(ProtocolDataUnit callingPDU) {
+		InitiatorMessageParser parser = (InitiatorMessageParser) callingPDU
+				.getBasicHeaderSegment().getParser();
 		int receivedCommandSequenceNumber = parser.getCommandSequenceNumber();
-		if(getExpectedCommandSequence().compareTo(receivedCommandSequenceNumber) == 0){
-			//callingPDU is expected PDU
-			if(!(callingPDU.getBasicHeaderSegment().isImmediateFlag())
-					&& !(parser instanceof SNACKRequestParser) && !(parser instanceof LoginRequestParser)){
-				//ExpCmdSN increment is necessary for callingPDU
+		if (getExpectedCommandSequence().compareTo(
+				receivedCommandSequenceNumber) == 0) {
+			// callingPDU is expected PDU
+			if (!(callingPDU.getBasicHeaderSegment().isImmediateFlag())
+					&& !(parser instanceof SNACKRequestParser)
+					&& !(parser instanceof LoginRequestParser)) {
+				// ExpCmdSN increment is necessary for callingPDU
 				getExpectedCommandSequenceNumber(true);
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns the Session's actual Maximum Command Sequence Number and if sumX
 	 * greater 0, increments the maxCmdSeqNum x times before returning
@@ -303,10 +306,10 @@ public class Session {
 		}
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER
-			.debug("Tried to set a session's initiatorn name twice: old name is "
-					+ getInitiatorName()
-					+ ", new name would be "
-					+ name);
+					.debug("Tried to set a session's initiatorn name twice: old name is "
+							+ getInitiatorName()
+							+ ", new name would be "
+							+ name);
 		}
 		return false;
 	}
@@ -316,126 +319,105 @@ public class Session {
 	}
 
 	/*
-	final void signalReceivedPDU(Connection connection) {
-		// if the received PDU's CmdSN is equal ExpCmdSN, add to received
-		// PDUs
-		ProtocolDataUnit pdu = null;
-		InitiatorMessageParser parser = null;
-		SerialArithmeticNumber receivedCommandSequenceNumber = null;
-		synchronized (connections) {
-			// if the received PDU's CmdSN is equal ExpCmdSN, add to received
-			// PDUs
-			if (connection.getReceivingQueue().size() > 0) {
-				pdu = connections.get(connection).peek();
-
-				if (receivedCommandSequenceNumber
-						.equals(expectedCommandSequenceNumber)) {
-					receivedPDUs.add(connections.get(connection).poll());
-					// only increment ExpCmdSN if non-immediate and no SNACK
-					// Request
-					if (!pdu.getBasicHeaderSegment().isImmediateFlag()
-							&& !(parser instanceof SNACKRequestParser)) {
-						expectedCommandSequenceNumber.increment();
-					}
-
-					// signal TaskRouter
-				} else {
-
-				}
-
-				if (receivedCommandSequenceNumber
-						.equals(expectedCommandSequenceNumber)) {
-					receivedPDUs.add(connections.get(connection).poll());
-					expectedCommandSequenceNumber.increment();
-					// new maximum command sequence number
-					// signal TaskRouter
-				} else {
-
-				}
-
-				// search for the next buffered PDU in every connection
-				for (Queue<ProtocolDataUnit> pdus : connections.values()) {
-					if (pdus.size() <= 0) {
-						continue;
-					}
-					// could be more than one following PDU per connection
-					boolean testing = true;
-					while (testing) {
-						pdu = pdus.peek();
-						parser = (InitiatorMessageParser) pdu
-						.getBasicHeaderSegment().getParser();
-						receivedCommandSequenceNumber = new SerialArithmeticNumber(
-								parser.getCommandSequenceNumber());
-						if (receivedCommandSequenceNumber
-								.equals(expectedCommandSequenceNumber)) {
-							receivedPDUs
-							.add(connections.get(connection).poll());
-							expectedCommandSequenceNumber.increment();
-							// new maximum command sequence number
-							// signal TaskRouter
-						} else {
-							// head of connection's queue isn't the next
-							// received
-							// PDU
-							testing = false;
-						}
-					}
-				}
-			}
-		}
-	}
-	*/
+	 * final void signalReceivedPDU(Connection connection) { // if the received
+	 * PDU's CmdSN is equal ExpCmdSN, add to received // PDUs ProtocolDataUnit
+	 * pdu = null; InitiatorMessageParser parser = null; SerialArithmeticNumber
+	 * receivedCommandSequenceNumber = null; synchronized (connections) { // if
+	 * the received PDU's CmdSN is equal ExpCmdSN, add to received // PDUs if
+	 * (connection.getReceivingQueue().size() > 0) { pdu =
+	 * connections.get(connection).peek();
+	 * 
+	 * if (receivedCommandSequenceNumber .equals(expectedCommandSequenceNumber)) {
+	 * receivedPDUs.add(connections.get(connection).poll()); // only increment
+	 * ExpCmdSN if non-immediate and no SNACK // Request if
+	 * (!pdu.getBasicHeaderSegment().isImmediateFlag() && !(parser instanceof
+	 * SNACKRequestParser)) { expectedCommandSequenceNumber.increment(); }
+	 *  // signal TaskRouter } else {
+	 *  }
+	 * 
+	 * if (receivedCommandSequenceNumber .equals(expectedCommandSequenceNumber)) {
+	 * receivedPDUs.add(connections.get(connection).poll());
+	 * expectedCommandSequenceNumber.increment(); // new maximum command
+	 * sequence number // signal TaskRouter } else {
+	 *  }
+	 *  // search for the next buffered PDU in every connection for (Queue<ProtocolDataUnit>
+	 * pdus : connections.values()) { if (pdus.size() <= 0) { continue; } //
+	 * could be more than one following PDU per connection boolean testing =
+	 * true; while (testing) { pdu = pdus.peek(); parser =
+	 * (InitiatorMessageParser) pdu .getBasicHeaderSegment().getParser();
+	 * receivedCommandSequenceNumber = new SerialArithmeticNumber(
+	 * parser.getCommandSequenceNumber()); if (receivedCommandSequenceNumber
+	 * .equals(expectedCommandSequenceNumber)) { receivedPDUs
+	 * .add(connections.get(connection).poll());
+	 * expectedCommandSequenceNumber.increment(); // new maximum command
+	 * sequence number // signal TaskRouter } else { // head of connection's
+	 * queue isn't the next // received // PDU testing = false; } } } } } }
+	 */
 
 	/**
 	 * Signaling a sequencing Gap within a connection.
+	 * 
 	 * @param connection
 	 */
-	final void signalCommandSequenceGap(Connection connection){
-		//a Connection is signaling a command sequencing gap,
-		//which means the connection is receiving more and more PDUs,
-		//but the Session will not process them, because ExpCmdSN doesn't
-		//reaches the necessary value.
-		//The Session can decide whether to clear the connection's receiving PDU buffer
-		//(clearing the buffer will only force initiator to send PDUs again, no lost if initiator behaves correct),
-		//or to completely drop the connection.
+	final void signalCommandSequenceGap(Connection connection) {
+		// a Connection is signaling a command sequencing gap,
+		// which means the connection is receiving more and more PDUs,
+		// but the Session will not process them, because ExpCmdSN doesn't
+		// reaches the necessary value.
+		// The Session can decide whether to clear the connection's receiving
+		// PDU buffer
+		// (clearing the buffer will only force initiator to send PDUs again, no
+		// lost if initiator behaves correct),
+		// or to completely drop the connection.
 	}
 
 	/**
 	 * A connection is signaling a received PDU.
-	 * @param CmdSN the received PDU's CommandSequenceNumber
-	 * @param connection the connection the PDU was received
+	 * 
+	 * @param CmdSN
+	 *            the received PDU's CommandSequenceNumber
+	 * @param connection
+	 *            the connection the PDU was received
 	 */
-	final void signalReceivedPDU(Integer CmdSN, Connection connection){
+	final void signalReceivedPDU(Integer CmdSN, Connection connection) {
 		signalledPDUs.put(CmdSN, connection);
-		//normal operation
-		while(signalledPDUs.containsKey(getExpectedCommandSequence().getValue())){
-			synchronized(receivedPDUs){
-				//increment ExpCmdSN
-				incrExpectedCommandSequenceNumber(connections.get(getExpectedCommandSequence()).peek());
-				//MaxCmdSN Window
-				receivedPDUs.add(connections.get(getExpectedCommandSequence()).poll());
+		ProtocolDataUnit receivedPDU = null;
+		// normal operation
+		while (signalledPDUs.containsKey(getExpectedCommandSequence()
+				.getValue())) {
+			synchronized (receivedPDUs) {
+				// load expected PDU from any connection into the session
+				receivedPDU = signalledPDUs.get(getExpectedCommandSequence())
+						.pollReceivedPDU();
+				receivedPDUs.add(receivedPDU);
+				// remove from signalled PDUs
+				signalledPDUs.remove(getExpectedCommandSequence());
+				// increment ExpCmdSN, if necessary
+				incrExpectedCommandSequenceNumber(receivedPDU);
+				// MaxCmdSN Window
 			}
-			//signal TaskRouter
+			// signal TaskRouter
 		}
-		
 
 	}
-	
-	
+
 	/**
-	 * Updating Session wide, PDU relevant parameters before sending PDU
-	 * over specified Connection
-	 * @param connection the sending Connection
-	 * @param pdu the sending PDU
+	 * Updating Session wide, PDU relevant parameters before sending PDU over
+	 * specified Connection
+	 * 
+	 * @param connection
+	 *            the sending Connection
+	 * @param pdu
+	 *            the sending PDU
 	 */
 	final void sendPDU(Connection connection, ProtocolDataUnit pdu) {
 		synchronized (connections) {
 			// update PDU parameter, ExpCmdSN + MaxCmdSN
 			TargetMessageParser parser = (TargetMessageParser) pdu
-			.getBasicHeaderSegment().getParser();
+					.getBasicHeaderSegment().getParser();
 			parser
-			.setExpectedCommandSequenceNumber(getExpectedCommandSequence()
-					.getValue());
+					.setExpectedCommandSequenceNumber(getExpectedCommandSequence()
+							.getValue());
 			parser.setMaximumCommandSequenceNumber(getMaximumCommandSequence()
 					.getValue());
 			// send PDU
@@ -449,11 +431,11 @@ public class Session {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-		+ ((initiatorName == null) ? 0 : initiatorName.hashCode());
+				+ ((initiatorName == null) ? 0 : initiatorName.hashCode());
 		result = prime
-		* result
-		+ ((initiatorSessionID == null) ? 0 : initiatorSessionID
-				.hashCode());
+				* result
+				+ ((initiatorSessionID == null) ? 0 : initiatorSessionID
+						.hashCode());
 		result = prime * result + targetSessionIdentifyingHandle;
 		return result;
 	}

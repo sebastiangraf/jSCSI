@@ -2,7 +2,9 @@ package org.jscsi.target.connection;
 
 import java.nio.channels.SocketChannel;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -71,7 +73,7 @@ public class Connection {
 	 * The sending queue filled with <code>ProtocolDataUnit</code>s, which
 	 * have to be sent.
 	 */
-	private final Queue<ProtocolDataUnit> sendingQueue;
+	private final Map<Integer, ProtocolDataUnit> sendingBuffer;
 
 	private final Queue<ProtocolDataUnit> sendedBufferedPDUs;
 
@@ -79,7 +81,7 @@ public class Connection {
 	 * The receiving queue filled with <code>ProtocolDataUnit</code>s, which
 	 * are received.
 	 */
-	private final Queue<ProtocolDataUnit> receivingQueue;
+	private final Map<Integer, ProtocolDataUnit> receivingBuffer;
 
 	/**
 	 * the LOCK is used to synchronize every request for receiving PDUs
@@ -98,9 +100,9 @@ public class Connection {
 
 	public Connection(SocketChannel sChannel) throws OperationalTextException {
 		configuration = OperationalTextConfiguration.create(this);
-		sendingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
+		sendingBuffer = new ConcurrentHashMap<Integer, ProtocolDataUnit>();
 		sendedBufferedPDUs = new ConcurrentLinkedQueue<ProtocolDataUnit>();
-		receivingQueue = new ConcurrentLinkedQueue<ProtocolDataUnit>();
+		receivingBuffer = new ConcurrentHashMap<Integer, ProtocolDataUnit>();
 		hasConnectionID = false;
 		statusSequenceNumber = new SerialArithmeticNumber(0);
 		netWorker = new NetWorker(sChannel, this);
@@ -220,18 +222,21 @@ public class Connection {
 		// connection has nothing to do here
 		getReferencedSession().signalReceivedPDU(
 				parser.getCommandSequenceNumber(), this);
+		
 	}
 
 	final void sendPDU(Object caller, ProtocolDataUnit pdu) {
 		if (caller instanceof Session) {
 			TargetMessageParser parser = (TargetMessageParser) pdu
 					.getBasicHeaderSegment().getParser();
+			Integer newStatSN ;
 			// if status sequence numbering isn't done for every T-to-I PDU,
 			// make exception here
 			synchronized (statusSequenceNumber) {
-				parser.setStatusSequenceNumber(getStatusSequenceNumber(true)
-						.getValue());
-				netWorker.signalSendingPDU();
+				newStatSN = getStatusSequenceNumber(true).getValue();
+				parser.setStatusSequenceNumber(newStatSN);
+				sendingBuffer.put(newStatSN, pdu);
+				netWorker.signalSendingPDU(newStatSN);
 			}
 		} else {
 			getReferencedSession().sendPDU(this, pdu);
@@ -292,7 +297,7 @@ public class Connection {
 	 * @return
 	 */
 	final int getReceivingQueueSize() {
-		return receivingQueue.size();
+		return receivingBuffer.size();
 	}
 
 	/**
@@ -347,7 +352,7 @@ public class Connection {
 	 *            infinity)
 	 * @return the next received PDU or null if waiting time exceeded
 	 */
-	private final ProtocolDataUnit peekOrPollReceivingQueue(String peekOrPoll,
+	private final ProtocolDataUnit peekOrPollReceivingBuffer(Integer CmdSN, String peekOrPoll,
 			long nanoSecs) {
 		ProtocolDataUnit result = null;
 		// lock this block for other threads
@@ -355,10 +360,10 @@ public class Connection {
 		try {
 			// wait for an incoming PDU
 			if (nanoSecs <= 0) {
-				while (receivingQueue.size() == 0)
+				while (receivingBuffer.size() == 0)
 					somethingReceived.await();
 			} else {
-				while (receivingQueue.size() == 0)
+				while (receivingBuffer.size() == 0)
 					somethingReceived.awaitNanos(nanoSecs);
 			}
 		} catch (InterruptedException e) {
@@ -369,11 +374,11 @@ public class Connection {
 		}
 
 		// peek or poll and in case await exceeded time limit -> return null
-		if (peekOrPoll.equals("peek") && (receivingQueue.size() != 0)) {
-			result = receivingQueue.peek();
+		if (peekOrPoll.equals("peek") && (receivingBuffer.size() != 0)) {
+			result = receivingBuffer.peek();
 		}
-		if (peekOrPoll.equals("poll") && (receivingQueue.size() != 0)) {
-			result = receivingQueue.poll();
+		if (peekOrPoll.equals("poll") && (receivingBuffer.size() != 0)) {
+			result = receivingBuffer.poll();
 		}
 		// unlock this block
 		LOCK.unlock();
@@ -385,8 +390,8 @@ public class Connection {
 	 * 
 	 * @return
 	 */
-	final Queue<ProtocolDataUnit> getSendingQueue() {
-		return sendingQueue;
+	final Map<Integer, ProtocolDataUnit> getSendingBuffer() {
+		return sendingBuffer;
 	}
 
 	/**
@@ -395,7 +400,7 @@ public class Connection {
 	 * @return
 	 */
 	final Queue<ProtocolDataUnit> getReceivingQueue() {
-		return receivingQueue;
+		return receivingBuffer;
 	}
 
 	@Override
