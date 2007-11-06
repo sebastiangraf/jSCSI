@@ -40,39 +40,38 @@ import org.jscsi.scsi.protocol.Encodable;
 import org.jscsi.scsi.protocol.Serializer;
 
 /**
- * Base class for Inquiry Data Parsers
+ * Base class for Inquiry Data Parsers. See Specification SPC-3, pg. 144.
  */
 public class StandardInquiryData implements Encodable, Serializer
 {
    // Inquiry Data Fields
    private byte peripheralQualifier; // 3 bits
    private byte peripheralDeviceType; // 5 bits
-   private boolean rmb; // 1 bit
+   private boolean RMB; // 1 bit
    private int version; // 8 bits
    private boolean normACA; // 1 bit
    private boolean hiSup; // 1 bit
    private byte responseDataFormat; // 4 bits
    private int additionalLength = 36 - 4; // 8 bits
-   private boolean sccs; // 1 bit
-   private boolean acc; // 1 bit
-   private byte tpgs; // 2 bits
-   private boolean threepc; // 1 bit
+   private boolean SCCS; // 1 bit
+   private boolean ACC; // 1 bit
+   private byte TPGS; // 2 bits
+   private boolean threePC; // 1 bit
    private boolean protect; // 1 bit
-   private boolean bque; // 1 bit
+   private boolean BQue; // 1 bit
    private boolean encServ; // 1 bit
    private boolean multiP; // 1 bit
-   private boolean mChngr; // 1 bit
+   private boolean MChngr; // 1 bit
    private boolean addr16; // 1 bit
-   private boolean wbus16; // 1 bit
+   private boolean WBus16; // 1 bit
    private boolean sync; // 1 bit
    private boolean linked; // 1 bit
-   private boolean cmdQue; // 1 bit
-   private byte[] t10vendorId = new byte[8]; // 8 bytes
-   private byte[] productId = new byte[16]; // 16 bytes
+   private byte[] T10VendorIdentification = new byte[8]; // 8 bytes
+   private byte[] productIdentification = new byte[16]; // 16 bytes
    private byte[] productRevisionLevel = new byte[4]; // 4 bytes
    private byte clocking; // 2 bits
-   private boolean qas; // 1 bit
-   private boolean ius; // 1 bit
+   private boolean QAS; // 1 bit
+   private boolean UIS; // 1 bit
 
    public StandardInquiryData()
    {
@@ -91,7 +90,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
       /////////////////////////////////////////////////////////////////////////
       // Add RMB
-      encodedData[1] = (byte) (this.rmb ? 0x80 : 0x00);
+      encodedData[1] = (byte) (this.RMB ? 0x80 : 0x00);
 
       /////////////////////////////////////////////////////////////////////////
       // Add Version
@@ -111,57 +110,57 @@ public class StandardInquiryData implements Encodable, Serializer
 
       /////////////////////////////////////////////////////////////////////////
       // Add SCCS
-      encodedData[5] = (byte) (this.sccs ? (1 << 7) : 0x00);
+      encodedData[5] = (byte) (this.SCCS ? (1 << 7) : 0x00);
       // Add ACC
-      encodedData[5] |= (byte) (this.acc ? (1 << 6) : 0x00);
+      encodedData[5] |= (byte) (this.ACC ? (1 << 6) : 0x00);
       // Add TGPS
-      encodedData[5] |= (byte) ((this.tpgs & 0x03) << 4);
+      encodedData[5] |= (byte) ((this.TPGS & 0x03) << 4);
       // Add 3PC
-      encodedData[5] |= (byte) (this.threepc ? (1 << 3) : 0x00);
+      encodedData[5] |= (byte) (this.threePC ? (1 << 3) : 0x00);
       // Add Protect
       encodedData[5] |= (byte) (this.protect ? (0x01) : 0x00);
 
       /////////////////////////////////////////////////////////////////////////
       // Add BQue
-      encodedData[6] = (byte) (this.bque ? (1 << 7) : 0x00);
+      encodedData[6] = (byte) (this.BQue ? (1 << 7) : 0x00);
       // Add EncServ
       encodedData[6] |= (byte) (this.encServ ? (1 << 6) : 0x00);
       // Add MultiP
       encodedData[6] |= (byte) (this.multiP ? (1 << 4) : 0x00);
       // Add MChngr
-      encodedData[6] |= (byte) (this.mChngr ? (1 << 3) : 0x00);
+      encodedData[6] |= (byte) (this.MChngr ? (1 << 3) : 0x00);
       // Add addr16
       encodedData[6] |= (byte) (this.addr16 ? (0x01) : 0x00);
 
       /////////////////////////////////////////////////////////////////////////
       // Add wbus16
-      encodedData[7] = (byte) (this.wbus16 ? (1 << 5) : 0x00);
+      encodedData[7] = (byte) (this.WBus16 ? (1 << 5) : 0x00);
       // Add sync
       encodedData[7] |= (byte) (this.sync ? (1 << 4) : 0x00);
       // Add linked
       encodedData[7] |= (byte) (this.linked ? (1 << 3) : 0x00);
       // Add CmdQue
-      encodedData[7] |= (byte) (this.mChngr ? (1 << 1) : 0x00);
+      encodedData[7] |= (byte) (this.MChngr ? (1 << 1) : 0x00);
 
       /////////////////////////////////////////////////////////////////////////
       // Add T10 Vender ID
-      System.arraycopy(t10vendorId, 0, encodedData, 8, t10vendorId.length);
+      System.arraycopy(T10VendorIdentification, 0, encodedData, 8, T10VendorIdentification.length);
 
       /////////////////////////////////////////////////////////////////////////
       // Add Product ID
-      System.arraycopy(productId, 0, encodedData, 16, productId.length);
+      System.arraycopy(productIdentification, 0, encodedData, 16, productIdentification.length);
 
       /////////////////////////////////////////////////////////////////////////
       // Add Product Revision Level
-      System.arraycopy(productRevisionLevel, 0, encodedData, 32, productId.length);
+      System.arraycopy(productRevisionLevel, 0, encodedData, 32, productIdentification.length);
 
       /////////////////////////////////////////////////////////////////////////
       // Add clocking
       encodedData[56] = (byte) ((this.clocking & 0x03) << 2);
       // Add qas
-      encodedData[56] |= (byte) (this.qas ? (1 << 1) : 0x00);
+      encodedData[56] |= (byte) (this.QAS ? (1 << 1) : 0x00);
       // Add ius
-      encodedData[56] |= (byte) (this.ius ? 0x01 : 0x00);
+      encodedData[56] |= (byte) (this.UIS ? 0x01 : 0x00);
 
       return encodedData;
    }
@@ -179,7 +178,7 @@ public class StandardInquiryData implements Encodable, Serializer
       this.peripheralQualifier = (byte) ((header[0] >> 5) & 0x07);
       this.peripheralDeviceType = (byte) (header[0] & 0x1F);
 
-      this.rmb = ((header[1] >> 7) & 1) == 1;
+      this.RMB = ((header[1] >> 7) & 1) == 1;
 
       this.version = (header[2] & 0xFF);
 
@@ -193,39 +192,39 @@ public class StandardInquiryData implements Encodable, Serializer
 
       buffer.get(payload);
 
-      this.sccs = ((payload[5] >> 7) & 1) == 1;
-      this.acc = ((payload[5] >> 6) & 1) == 1;
-      this.tpgs = (byte) ((payload[5] >> 4) & 0x03);
-      this.threepc = ((payload[5] >> 3) & 1) == 1;
+      this.SCCS = ((payload[5] >> 7) & 1) == 1;
+      this.ACC = ((payload[5] >> 6) & 1) == 1;
+      this.TPGS = (byte) ((payload[5] >> 4) & 0x03);
+      this.threePC = ((payload[5] >> 3) & 1) == 1;
       this.protect = (payload[5] & 1) == 1;
 
-      this.bque = ((payload[6] >> 7) & 1) == 1;
+      this.BQue = ((payload[6] >> 7) & 1) == 1;
       this.encServ = ((payload[6] >> 6) & 1) == 1;
       this.multiP = ((payload[6] >> 4) & 1) == 1;
-      this.mChngr = ((payload[6] >> 3) & 1) == 1;
+      this.MChngr = ((payload[6] >> 3) & 1) == 1;
       this.addr16 = (payload[6] & 1) == 1;
 
-      this.wbus16 = ((payload[7] >> 5) & 1) == 1;
+      this.WBus16 = ((payload[7] >> 5) & 1) == 1;
       this.sync = ((payload[7] >> 4) & 1) == 1;
       this.linked = ((payload[7] >> 3) & 1) == 1;
-      this.mChngr = ((payload[7] >> 1) & 1) == 1;
+      this.MChngr = ((payload[7] >> 1) & 1) == 1;
 
-      System.arraycopy(payload, 8, t10vendorId, 0, t10vendorId.length);
+      System.arraycopy(payload, 8, T10VendorIdentification, 0, T10VendorIdentification.length);
 
-      System.arraycopy(payload, 16, productId, 0, productId.length);
+      System.arraycopy(payload, 16, productIdentification, 0, productIdentification.length);
 
-      System.arraycopy(payload, 32, productRevisionLevel, 0, productId.length);
+      System.arraycopy(payload, 32, productRevisionLevel, 0, productIdentification.length);
 
       this.clocking = (byte) ((payload[56] >> 2) & 0x03);
-      this.qas = ((payload[56] >> 1) & 1) == 1;
-      this.ius = (payload[56] & 1) == 1;
+      this.QAS = ((payload[56] >> 1) & 1) == 1;
+      this.UIS = (payload[56] & 1) == 1;
 
       return this;
    }
 
    public byte getPeripheralQualifier()
    {
-      return peripheralQualifier;
+      return this.peripheralQualifier;
    }
 
    public void setPeripheralQualifier(byte peripheralQualifier)
@@ -235,7 +234,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public byte getPeripheralDeviceType()
    {
-      return peripheralDeviceType;
+      return this.peripheralDeviceType;
    }
 
    public void setPeripheralDeviceType(byte peripheralDeviceType)
@@ -243,19 +242,19 @@ public class StandardInquiryData implements Encodable, Serializer
       this.peripheralDeviceType = peripheralDeviceType;
    }
 
-   public boolean isRmb()
+   public boolean isRMB()
    {
-      return rmb;
+      return this.RMB;
    }
 
-   public void setRmb(boolean rmb)
+   public void setRMB(boolean rmb)
    {
-      this.rmb = rmb;
+      this.RMB = rmb;
    }
 
    public int getVersion()
    {
-      return version;
+      return this.version;
    }
 
    public void setVersion(int version)
@@ -265,7 +264,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public boolean isNormACA()
    {
-      return normACA;
+      return this.normACA;
    }
 
    public void setNormACA(boolean normACA)
@@ -275,7 +274,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public boolean isHiSup()
    {
-      return hiSup;
+      return this.hiSup;
    }
 
    public void setHiSup(boolean hiSup)
@@ -285,7 +284,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public byte getResponseDataFormat()
    {
-      return responseDataFormat;
+      return this.responseDataFormat;
    }
 
    public void setResponseDataFormat(byte responseDataFormat)
@@ -295,7 +294,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public int getAdditionalLength()
    {
-      return additionalLength;
+      return this.additionalLength;
    }
 
    public void setAdditionalLength(int additionalLength)
@@ -303,49 +302,49 @@ public class StandardInquiryData implements Encodable, Serializer
       this.additionalLength = additionalLength;
    }
 
-   public boolean isSccs()
+   public boolean isSCCS()
    {
-      return sccs;
+      return this.SCCS;
    }
 
-   public void setSccs(boolean sccs)
+   public void setSCCS(boolean sccs)
    {
-      this.sccs = sccs;
+      this.SCCS = sccs;
    }
 
-   public boolean isAcc()
+   public boolean isACC()
    {
-      return acc;
+      return this.ACC;
    }
 
-   public void setAcc(boolean acc)
+   public void setACC(boolean acc)
    {
-      this.acc = acc;
+      this.ACC = acc;
    }
 
-   public byte getTpgs()
+   public byte getTPGS()
    {
-      return tpgs;
+      return this.TPGS;
    }
 
-   public void setTpgs(byte tpgs)
+   public void setTPGS(byte tpgs)
    {
-      this.tpgs = tpgs;
+      this.TPGS = tpgs;
    }
 
-   public boolean isThreepc()
+   public boolean isThreePC()
    {
-      return threepc;
+      return this.threePC;
    }
 
-   public void setThreepc(boolean threepc)
+   public void setThreePC(boolean threePC)
    {
-      this.threepc = threepc;
+      this.threePC = threePC;
    }
 
    public boolean isProtect()
    {
-      return protect;
+      return this.protect;
    }
 
    public void setProtect(boolean protect)
@@ -353,19 +352,19 @@ public class StandardInquiryData implements Encodable, Serializer
       this.protect = protect;
    }
 
-   public boolean isBque()
+   public boolean isBQue()
    {
-      return bque;
+      return this.BQue;
    }
 
-   public void setBque(boolean bque)
+   public void setBQue(boolean que)
    {
-      this.bque = bque;
+      this.BQue = que;
    }
 
    public boolean isEncServ()
    {
-      return encServ;
+      return this.encServ;
    }
 
    public void setEncServ(boolean encServ)
@@ -375,7 +374,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public boolean isMultiP()
    {
-      return multiP;
+      return this.multiP;
    }
 
    public void setMultiP(boolean multiP)
@@ -385,17 +384,17 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public boolean isMChngr()
    {
-      return mChngr;
+      return this.MChngr;
    }
 
    public void setMChngr(boolean chngr)
    {
-      mChngr = chngr;
+      this.MChngr = chngr;
    }
 
    public boolean isAddr16()
    {
-      return addr16;
+      return this.addr16;
    }
 
    public void setAddr16(boolean addr16)
@@ -403,19 +402,19 @@ public class StandardInquiryData implements Encodable, Serializer
       this.addr16 = addr16;
    }
 
-   public boolean isWbus16()
+   public boolean isWBus16()
    {
-      return wbus16;
+      return this.WBus16;
    }
 
-   public void setWbus16(boolean wbus16)
+   public void setWBus16(boolean bus16)
    {
-      this.wbus16 = wbus16;
+      this.WBus16 = bus16;
    }
 
    public boolean isSync()
    {
-      return sync;
+      return this.sync;
    }
 
    public void setSync(boolean sync)
@@ -425,7 +424,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public boolean isLinked()
    {
-      return linked;
+      return this.linked;
    }
 
    public void setLinked(boolean linked)
@@ -433,56 +432,39 @@ public class StandardInquiryData implements Encodable, Serializer
       this.linked = linked;
    }
 
-   public boolean isCmdQue()
+   public byte[] getT10VendorIdentification()
    {
-      return cmdQue;
+      return this.T10VendorIdentification;
    }
 
-   public void setCmdQue(boolean cmdQue)
+   public void setT10VendorIdentification(byte[] vendorIdentification)
    {
-      this.cmdQue = cmdQue;
+      this.T10VendorIdentification = vendorIdentification;
    }
 
-   public String getT10vendorId()
+   public byte[] getProductIdentification()
    {
-      return new String(t10vendorId);
+      return this.productIdentification;
    }
 
-   public void setT10vendorId(String id)
+   public void setProductIdentification(byte[] productIdentification)
    {
-      byte[] bytes = id.getBytes();
-      int copyLength = bytes.length > t10vendorId.length ? t10vendorId.length : bytes.length;
-      System.arraycopy(bytes, 0, t10vendorId, 0, copyLength);
+      this.productIdentification = productIdentification;
    }
 
-   public String getProductId()
+   public byte[] getProductRevisionLevel()
    {
-      return new String(productId);
+      return this.productRevisionLevel;
    }
 
-   public void setProductId(String id)
+   public void setProductRevisionLevel(byte[] productRevisionLevel)
    {
-      byte[] bytes = id.getBytes();
-      int copyLength = bytes.length > productId.length ? productId.length : bytes.length;
-      System.arraycopy(bytes, 0, productId, 0, copyLength);
-   }
-
-   public String getProductRevisionLevel()
-   {
-      return new String(productRevisionLevel);
-   }
-
-   public void setProductRevisionLevel(String id)
-   {
-      byte[] bytes = id.getBytes();
-      int copyLength =
-            bytes.length > productRevisionLevel.length ? productRevisionLevel.length : bytes.length;
-      System.arraycopy(bytes, 0, productRevisionLevel, 0, copyLength);
+      this.productRevisionLevel = productRevisionLevel;
    }
 
    public byte getClocking()
    {
-      return clocking;
+      return this.clocking;
    }
 
    public void setClocking(byte clocking)
@@ -490,24 +472,23 @@ public class StandardInquiryData implements Encodable, Serializer
       this.clocking = clocking;
    }
 
-   public boolean isQas()
+   public boolean isQAS()
    {
-      return qas;
+      return this.QAS;
    }
 
-   public void setQas(boolean qas)
+   public void setQAS(boolean qas)
    {
-      this.qas = qas;
+      this.QAS = qas;
    }
 
-   public boolean isIus()
+   public boolean isUIS()
    {
-      return ius;
+      return this.UIS;
    }
 
-   public void setIus(boolean ius)
+   public void setUIS(boolean uis)
    {
-      this.ius = ius;
+      this.UIS = uis;
    }
-
 }
