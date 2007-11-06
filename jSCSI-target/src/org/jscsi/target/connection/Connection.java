@@ -4,6 +4,10 @@ import java.nio.channels.SocketChannel;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Queue;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Condition;
@@ -70,18 +74,18 @@ public class Connection {
 	private SerialArithmeticNumber statusSequenceNumber;
 
 	/**
-	 * The sending queue filled with <code>ProtocolDataUnit</code>s, which
-	 * have to be sent.
+	 * The sending queue filled with <code>ProtocolDataUnit</code>s and their
+	 * coressponding StatusSeguenceNumbers.
 	 */
-	private final Map<Integer, ProtocolDataUnit> sendingBuffer;
+	private final SortedMap<Integer, ProtocolDataUnit> sendingBuffer;
 
 	private final Queue<ProtocolDataUnit> sendedBufferedPDUs;
 
 	/**
-	 * The receiving queue filled with <code>ProtocolDataUnit</code>s, which
-	 * are received.
+	 * The receiving Buffer filled with <code>ProtocolDataUnit</code>s and
+	 * their corresponding Command Sequence Numbers
 	 */
-	private final Map<Integer, ProtocolDataUnit> receivingBuffer;
+	private final SortedMap<Integer, ProtocolDataUnit> receivingBuffer;
 
 	/**
 	 * the LOCK is used to synchronize every request for receiving PDUs
@@ -100,9 +104,11 @@ public class Connection {
 
 	public Connection(SocketChannel sChannel) throws OperationalTextException {
 		configuration = OperationalTextConfiguration.create(this);
-		sendingBuffer = new ConcurrentHashMap<Integer, ProtocolDataUnit>();
+		// when java 1.6 available for mac, change TreeMap to
+		// ConcurrentSkipListMap
+		sendingBuffer = new TreeMap<Integer, ProtocolDataUnit>();
 		sendedBufferedPDUs = new ConcurrentLinkedQueue<ProtocolDataUnit>();
-		receivingBuffer = new ConcurrentHashMap<Integer, ProtocolDataUnit>();
+		receivingBuffer = new TreeMap<Integer, ProtocolDataUnit>();
 		hasConnectionID = false;
 		statusSequenceNumber = new SerialArithmeticNumber(0);
 		netWorker = new NetWorker(sChannel, this);
@@ -126,6 +132,15 @@ public class Connection {
 	 */
 	public final OperationalTextConfiguration getConfiguration() {
 		return configuration;
+	}
+
+	/**
+	 * Returns the lowest CmdSN the receiving Buffer contains
+	 * 
+	 * @return
+	 */
+	final Integer getNextReceivedCommandSequenceNumber() {
+		return receivingBuffer.firstKey();
 	}
 
 	/**
@@ -174,6 +189,24 @@ public class Connection {
 	}
 
 	/**
+	 * Returns the Connection's sending queue.
+	 * 
+	 * @return
+	 */
+	final Map<Integer, ProtocolDataUnit> getSendingBuffer() {
+		return sendingBuffer;
+	}
+
+	/**
+	 * Returns the Connections receiving Queue
+	 * 
+	 * @return
+	 */
+	final SortedMap<Integer, ProtocolDataUnit> getReceivingBuffer() {
+		return receivingBuffer;
+	}
+
+	/**
 	 * Set the Connetion'S CID if not already set.
 	 * 
 	 * @param cid
@@ -219,17 +252,22 @@ public class Connection {
 	final void signalReceivedPDU(ProtocolDataUnit receivedPDU) {
 		InitiatorMessageParser parser = (InitiatorMessageParser) receivedPDU
 				.getBasicHeaderSegment().getParser();
-		// connection has nothing to do here
+		int ExpStatSN = parser.getExpectedStatusSequenceNumber();
+		//add PDU to Buffer
+		receivingBuffer.put(ExpStatSN, receivedPDU);
+		// clean the sending buffer from successfully sended PDU signaled through
+		// the initiator's ExpStatSN
+		updateAndCleanSendedBuffer(ExpStatSN);
+		//signal Session
 		getReferencedSession().signalReceivedPDU(
 				parser.getCommandSequenceNumber(), this);
-		
 	}
 
 	final void sendPDU(Object caller, ProtocolDataUnit pdu) {
 		if (caller instanceof Session) {
 			TargetMessageParser parser = (TargetMessageParser) pdu
 					.getBasicHeaderSegment().getParser();
-			Integer newStatSN ;
+			Integer newStatSN;
 			// if status sequence numbering isn't done for every T-to-I PDU,
 			// make exception here
 			synchronized (statusSequenceNumber) {
@@ -245,27 +283,6 @@ public class Connection {
 
 	final void bufferSendedPDU(ProtocolDataUnit sendedPDU) {
 		sendedBufferedPDUs.add(sendedPDU);
-	}
-	
-	/**
-	 * Cleaning the Connection's sended PDU buffer.
-	 * A target buffers any sending PDU until a received ExpStatSN is signaling
-	 * the successful delivery.
-	 * @param expectedStatusSequenceNumber the initiator's ExpStatSN
-	 */
-	final void updateAndCleanSendedBuffer(int expectedStatusSequenceNumber){
-		ProtocolDataUnit bufferedPDU = null;
-		TargetMessageParser parser = null; 
-		while(true){
-			bufferedPDU = sendedBufferedPDUs.peek();
-			parser = (TargetMessageParser) bufferedPDU.getBasicHeaderSegment().getParser();
-			int StatSN = parser.getStatusSequenceNumber();
-			if(StatSN < expectedStatusSequenceNumber){
-				sendedBufferedPDUs.remove();
-			}else {
-				break;
-			}
-		}
 	}
 
 	// /**
@@ -296,7 +313,7 @@ public class Connection {
 	 * 
 	 * @return
 	 */
-	final int getReceivingQueueSize() {
+	final int getReceivingBufferSize() {
 		return receivingBuffer.size();
 	}
 
@@ -307,7 +324,7 @@ public class Connection {
 	 * @return the next received PDU
 	 */
 	final ProtocolDataUnit pollReceivedPDU() {
-		return peekOrPollReceivingQueue("poll", 0);
+		return peekOrPollReceivingBuffer("poll", 0);
 	}
 
 	/**
@@ -318,7 +335,7 @@ public class Connection {
 	 * @return the next received PDU or null if waiting time exceeded
 	 */
 	final ProtocolDataUnit pollReceivedPDU(long nanoSecs) {
-		return peekOrPollReceivingQueue("poll", nanoSecs);
+		return peekOrPollReceivingBuffer("poll", nanoSecs);
 	}
 
 	/**
@@ -328,7 +345,7 @@ public class Connection {
 	 * @return the next received PDU
 	 */
 	final ProtocolDataUnit peekReceivedPDU() {
-		return peekOrPollReceivingQueue("peek", 0);
+		return peekOrPollReceivingBuffer("peek", 0);
 	}
 
 	/**
@@ -339,7 +356,7 @@ public class Connection {
 	 * @return the next received PDU or null if waiting time exceeded
 	 */
 	final ProtocolDataUnit peekReceivedPDU(long nanoSecs) {
-		return peekOrPollReceivingQueue("peek", nanoSecs);
+		return peekOrPollReceivingBuffer("peek", nanoSecs);
 	}
 
 	/**
@@ -352,7 +369,7 @@ public class Connection {
 	 *            infinity)
 	 * @return the next received PDU or null if waiting time exceeded
 	 */
-	private final ProtocolDataUnit peekOrPollReceivingBuffer(Integer CmdSN, String peekOrPoll,
+	private final ProtocolDataUnit peekOrPollReceivingBuffer(String peekOrPoll,
 			long nanoSecs) {
 		ProtocolDataUnit result = null;
 		// lock this block for other threads
@@ -375,32 +392,23 @@ public class Connection {
 
 		// peek or poll and in case await exceeded time limit -> return null
 		if (peekOrPoll.equals("peek") && (receivingBuffer.size() != 0)) {
-			result = receivingBuffer.peek();
+			result = receivingBuffer.get(receivingBuffer.firstKey());
 		}
 		if (peekOrPoll.equals("poll") && (receivingBuffer.size() != 0)) {
-			result = receivingBuffer.poll();
+			result = receivingBuffer.get(receivingBuffer.firstKey());
+			removeFirstReceivedPDUfromBuffer();
 		}
 		// unlock this block
 		LOCK.unlock();
 		return result;
 	}
 
-	/**
-	 * Returns the Connection's sending queue.
-	 * 
-	 * @return
-	 */
-	final Map<Integer, ProtocolDataUnit> getSendingBuffer() {
-		return sendingBuffer;
+	final void removeFirstReceivedPDUfromBuffer() {
+		removeReceivedPDUfromBuffer(receivingBuffer.firstKey());
 	}
 
-	/**
-	 * Returns the Connections receiving Queue
-	 * 
-	 * @return
-	 */
-	final Queue<ProtocolDataUnit> getReceivingQueue() {
-		return receivingBuffer;
+	final void removeReceivedPDUfromBuffer(int cmdSN) {
+		receivingBuffer.remove(cmdSN);
 	}
 
 	@Override
@@ -417,6 +425,24 @@ public class Connection {
 		result = prime * result
 				+ getReferencedSession().getTargetSessionIdentifyingHandleD();
 		return result;
+	}
+
+	/**
+	 * Cleaning the Connection's sended PDU buffer. A target buffers any sending
+	 * PDU until a received ExpStatSN is signaling the successful delivery.
+	 * 
+	 * @param expectedStatusSequenceNumber
+	 *            the initiator's ExpStatSN
+	 */
+	final void updateAndCleanSendedBuffer(int expectedStatusSequenceNumber) {
+		ProtocolDataUnit bufferedPDU = null;
+		TargetMessageParser parser = null;
+		int firstStatSN = sendingBuffer.firstKey();
+		;
+		while (firstStatSN < expectedStatusSequenceNumber) {
+			sendingBuffer.remove(firstStatSN);
+			firstStatSN = sendingBuffer.firstKey();
+		}
 	}
 
 	@Override
