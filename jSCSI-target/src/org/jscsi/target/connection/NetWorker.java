@@ -6,6 +6,8 @@ import java.security.DigestException;
 import java.util.Map;
 import java.util.Queue;
 import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -18,6 +20,8 @@ import org.jscsi.target.connection.Connection;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.ProtocolDataUnitFactory;
 import org.jscsi.parser.exception.InternetSCSIException;
+
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 /**
  * Every Connection has one NetWorker. The NetWorker represents the Connection's
@@ -37,21 +41,13 @@ public class NetWorker {
 	 */
 	private final Map<Integer, ProtocolDataUnit> sendingBuffer;
 
-	/**
-	 * The receiving queue of the <code>ProtocolDataUnit</code>s, which are
-	 * received.
-	 */
-	private final SortedMap<Integer, ProtocolDataUnit> receivingBuffer;
-
 	/** synchronizes sending Worker */
 	private final Lock LOCK = new ReentrantLock();
 
 	private final Condition somethingToSend = LOCK.newCondition();
 
-	private int nextSendingStatSN = -1;
-	
-	private int lastSendingStatSN = -1;
-	
+	private final SortedSet<Integer> sendingPDUsStatSNs;
+
 	/** sends outgoing PDUs */
 	private final SenderWorker sender;
 
@@ -83,7 +79,7 @@ public class NetWorker {
 		refConnection = connection;
 		socketChannel = sChannel;
 		sendingBuffer = refConnection.getSendingBuffer();
-		receivingBuffer = refConnection.getReceivingBuffer();
+		sendingPDUsStatSNs = new TreeSet<Integer>();
 		protocolDataUnitFactory = new ProtocolDataUnitFactory();
 		sender = new SenderWorker();
 		receiver = new ReceiverWorker();
@@ -105,20 +101,31 @@ public class NetWorker {
 		receiver.interrupt();
 		// interrupt send after every PDU was sent
 		if (wait) {
-			while (sendingBuffer.size() != 0) {
+			while (hasPDUforSending()) {
 				Thread.yield();
 			}
 		}
 		sender.interrupt();
-	}
-	
-	final void setNextStatusSequenceNumber(int statSN){
-		nextSendingStatSN = statSN;
-	}
-	
-	final void signalSendingPDU(int statusSequenceNumber) {
-		lastSendingStatSN = statusSequenceNumber;
+		//to get the SenderWorker out of waiting
 		somethingToSend.signalAll();
+	}
+
+	/**
+	 * Signals the SenderWorker to send the PDU from the sending buffer with the
+	 * specified StatSN.
+	 * 
+	 * @param statusSequenceNumber
+	 *            the PDUs StatSN
+	 */
+	final void signalSendingPDU(int statusSequenceNumber) {
+		if (sendingBuffer.containsKey(statusSequenceNumber)) {
+			sendingPDUsStatSNs.add(statusSequenceNumber);
+			somethingToSend.signalAll();
+		} else {
+			logDebug("Signaled to send a PDU with it's StatSN, but sending Buffer doesn't contains the PDU: StatSN = "
+					+ statusSequenceNumber);
+		}
+
 	}
 
 	/**
@@ -131,7 +138,7 @@ public class NetWorker {
 	}
 
 	/**
-	 * Waits for a PDU in the sending Queue until waiting time exceeded.
+	 * Waits for a PDU in the sendingBuffer until waiting time exceeded.
 	 * 
 	 * @param nanoSecs
 	 *            wait <code>nanoSecs</code> before returning null
@@ -143,10 +150,10 @@ public class NetWorker {
 		LOCK.lock();
 		try {
 			if (nanoSecs <= 0) {
-				while (hasPDUforSending())
+				while (!hasPDUforSending())
 					somethingToSend.await();
 			} else {
-				while (hasPDUforSending())
+				while (!hasPDUforSending())
 					somethingToSend.awaitNanos(nanoSecs);
 			}
 		} catch (InterruptedException e) {
@@ -155,21 +162,27 @@ public class NetWorker {
 						.debug("Synchronisation error while awaiting a PDU to send!");
 			}
 		}
-		result = sendingBuffer.get(nextSendingStatSN);
-		nextSendingStatSN++;
+		result = sendingBuffer.get(sendingPDUsStatSNs.first());
+		sendingPDUsStatSNs.remove(sendingPDUsStatSNs.first());
 		LOCK.unlock();
 		// finished waiting
 		return result;
 	}
-	
-	private boolean hasPDUforSending(){
-		if(nextSendingStatSN <= lastSendingStatSN){
-			return true;
-		} else{
+
+	/**
+	 * Returns true if the sending Buffer contains PDUs the Connection wants to
+	 * send.
+	 * 
+	 * @return true if PDUs must be sent, false else
+	 */
+	private boolean hasPDUforSending() {
+		if (sendingPDUsStatSNs.isEmpty()) {
 			return false;
+		} else {
+			return true;
 		}
 	}
-	
+
 	/**
 	 * Synchronized socketChannel
 	 * 
@@ -181,15 +194,47 @@ public class NetWorker {
 	}
 
 	/**
-	 * Adds a received PDU to the <code>Connection</code>'s received PDU
-	 * queue. All waiting Threads on the Connection are signaled.
-	 * 
-	 * @param pdu
+	 * Signal the Connection a received PDU.
+	 * @param pdu the received PDU
 	 */
 	private void addReceivedPDU(ProtocolDataUnit pdu) {
 		refConnection.signalReceivedPDU(pdu);
 	}
-
+	
+	/**
+	 * Logs a trace Message specific to the referenced Connection, if
+	 * trace log is enabled within the logging environment.
+	 * @param logMessage 
+	 */
+	private void logTrace(String logMessage) {
+		if (LOGGER.isTraceEnabled()) {
+			if (refConnection.hasConnectionID) {
+				LOGGER.trace("CID=" + refConnection.getConnectionID()
+						+ " LogMessage: " + logMessage);
+			}
+		}
+	}
+	
+	/**
+	 * Logs a debug Message specific to the referenced Connection, if
+	 * debug log is enabled within the logging environment.
+	 * @param logMessage 
+	 */
+	private void logDebug(String logMessage) {
+		if (LOGGER.isDebugEnabled()) {
+			if (refConnection.hasConnectionID) {
+				LOGGER.trace("CID=" + refConnection.getConnectionID()
+						+ " LogMessage: " + logMessage);
+			}
+		}
+	}
+	
+	/**
+	 * The SenderWorker is sending every PDU the Connection is signaling,
+	 * as long as the Thread runs.
+	 * @author Marcus Specht
+	 *
+	 */
 	private class SenderWorker extends Thread {
 
 		@Override
@@ -197,15 +242,16 @@ public class NetWorker {
 			while (!interrupted()) {
 				ProtocolDataUnit pdu = getPDUforSending();
 				try {
+					if(pdu != null){
 					pdu.write(getSocketChannel());
-				} catch (Exception e) {
-					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug("Problem sending a PDU: HeaderSegment=\""
-								+ pdu.getBasicHeaderSegment().getParser()
-										.getShortInfo() + "\" DataSegment=\""
-								+ pdu.getDataSegment().toString() + "\"  "
-								+ e.getMessage());
 					}
+				} catch (Exception e) {
+					logDebug("Problem sending a PDU: HeaderSegment=\""
+							+ pdu.getBasicHeaderSegment().getParser()
+									.getShortInfo() + "\" DataSegment=\""
+							+ pdu.getDataSegment().toString() + "\"  "
+							+ e.getMessage());
+
 				}
 			}
 		}
@@ -214,7 +260,7 @@ public class NetWorker {
 
 	/**
 	 * The ReceiverWorker Threads is waiting for incoming PDUs and adds them to
-	 * the Connection's receiving Queue
+	 * the Connection's receiving Buffer
 	 * 
 	 * @author Marcus Specht
 	 */
@@ -228,7 +274,7 @@ public class NetWorker {
 		@Override
 		public void run() {
 			while (!interrupted()) {
-				// read digst configuration
+				// read digest configuration
 				try {
 					headerDigest = refConnection.getConfiguration().getKey(
 							OperationalTextKey.HEADER_DIGEST).getValue()
@@ -237,13 +283,10 @@ public class NetWorker {
 							OperationalTextKey.DATA_DIGEST).getValue()
 							.getString();
 				} catch (OperationalTextException e1) {
-					if (LOGGER.isDebugEnabled()) {
-						LOGGER
-								.debug("Configuration has no valid Digest Keys: HeaderDigest="
-										+ headerDigest
-										+ " DataDigest="
-										+ dataDigest);
-					}
+					logDebug("Configuration has no valid Digest Keys: HeaderDigest="
+							+ headerDigest + " DataDigest=" + dataDigest);
+					// only an interrupt will destroy at least the Connection,
+					// a clean shutdown should be done here
 					this.interrupt();
 				}
 				// create and read receiving PDU
