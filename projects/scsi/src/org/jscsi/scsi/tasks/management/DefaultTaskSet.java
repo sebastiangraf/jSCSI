@@ -165,6 +165,14 @@ public class DefaultTaskSet implements TaskSet
          long taskTag = this.task.getCommand().getNexus().getTaskTag();
          finished( taskTag > -1 ? taskTag : null ); // untagged tasks have a Q value of -1 (invalid)
       }
+      
+      
+
+      public boolean abort()
+      {
+         // FIXME: Implement this!
+         throw new RuntimeException();
+      }
 
       @Override
       public String toString()

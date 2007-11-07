@@ -14,7 +14,7 @@ import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskAttribute;
 
-public class DefaultTaskManager implements TaskManager, TaskSet
+public class DefaultTaskManager implements TaskManager
 {
    
    private static Logger _logger = Logger.getLogger(TaskSet.class);
