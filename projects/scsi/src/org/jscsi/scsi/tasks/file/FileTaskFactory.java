@@ -1,11 +1,12 @@
 
 package org.jscsi.scsi.tasks.file;
 
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.cdb.CommandDescriptorBlock;
+import org.jscsi.scsi.protocol.cdb.CDB;
 import org.jscsi.scsi.protocol.cdb.Read10;
 import org.jscsi.scsi.protocol.cdb.Read12;
 import org.jscsi.scsi.protocol.cdb.Read16;
@@ -24,10 +25,11 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class FileTaskFactory implements TaskFactory
 {
-   private static Map<Class<? extends CommandDescriptorBlock>, Class<? extends FileTask>> _tasks =
-         new HashMap<Class<? extends CommandDescriptorBlock>, Class<? extends FileTask>>();
+   private static Map<Class<? extends CDB>, Class<? extends FileTask>> _tasks =
+         new HashMap<Class<? extends CDB>, Class<? extends FileTask>>();
 
-   private FileDevice device;
+   private ByteBuffer file;
+   private int blockLength;
    private ModePageRegistry modePageRegistry;
    private InquiryDataRegistry inquiryDataRegistry;
 
@@ -44,16 +46,16 @@ public class FileTaskFactory implements TaskFactory
    }
 
    public FileTaskFactory(
-         FileDevice device,
+         ByteBuffer file,
+         int blockLength,
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
    {
-      this.device = device;
+      this.file = file;
+      this.blockLength = blockLength;
       this.modePageRegistry = modePageRegistry;
       this.inquiryDataRegistry = inquiryDataRegistry;
    }
-
-
 
    public Task getInstance(
          TargetTransportPort port,
@@ -64,27 +66,22 @@ public class FileTaskFactory implements TaskFactory
 
       if (taskClass != null)
       {
-         FileTask fileTask = null;
          try
          {
-            fileTask = taskClass.newInstance();
+            return taskClass
+               .newInstance()
+               .load(file, blockLength, port, command, modePageRegistry, inquiryDataRegistry);
          }
          catch (InstantiationException e)
          {
-            // TODO: handle
+            throw new RuntimeException("Unable to instantiate class with default constructor"
+                  + taskClass.getName(), e);
          }
          catch (IllegalAccessException e)
          {
-            // TODO: handle
+            throw new RuntimeException("Unable to instantiate class with default constructor"
+                  + taskClass.getName(), e);
          }
-
-         fileTask.setCommand(command);
-         fileTask.setTargetTransportPort(port);
-         fileTask.setModePageRegistry(this.modePageRegistry);
-         fileTask.setInquiryDataRegistry(this.inquiryDataRegistry);
-         fileTask.setFileDevice(this.device);
-
-         return fileTask;
       }
       else
       {

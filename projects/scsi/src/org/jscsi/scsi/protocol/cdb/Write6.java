@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class Write6 extends AbstractTransferCommandDescriptorBlock
+public class Write6 extends AbstractTransferCDB
 {
    public static final int OPERATION_CODE = 0x0A;
 

@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ReportSupportedTaskManagementFunctions extends AbstractParameterCommandDescriptorBlock
+public class ReportSupportedTaskManagementFunctions extends AbstractParameterCDB
 {
    public static final int OPERATION_CODE = 0xA3;
    public static final int SERVICE_ACTION = 0x0D;
@@ -24,7 +24,7 @@ public class ReportSupportedTaskManagementFunctions extends AbstractParameterCom
          boolean normalACA,
          long allocationLength)
    {
-      super(OPERATION_CODE, linked, normalACA, allocationLength);
+      super(OPERATION_CODE, linked, normalACA, allocationLength, 0);
       if (allocationLength > 65536)
       {
          throw new IllegalArgumentException("Allocation length out of bounds for command type");

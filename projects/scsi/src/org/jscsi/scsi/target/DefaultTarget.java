@@ -7,6 +7,8 @@ import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.mode.StaticModePageRegistry;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.TaskRouter;
+import org.jscsi.scsi.tasks.management.TaskManagementFunction;
+import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class DefaultTarget extends AbstractTarget
@@ -51,5 +53,17 @@ public class DefaultTarget extends AbstractTarget
    {
       this._taskRouter.removeLogicalUnit(id);
       
+   }
+
+   public void enqueue(TargetTransportPort port, Nexus nexus, TaskManagementFunction function)
+   {
+      switch(function)
+      {
+         
+      }
+      
+      
+      // TODO Auto-generated method stub
+      throw new RuntimeException("not implemented");
    }
 }

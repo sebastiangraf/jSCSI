@@ -3,6 +3,8 @@ package org.jscsi.scsi.lu;
 
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
+import org.jscsi.scsi.tasks.management.TaskServiceResponse;
+import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 /**
@@ -34,6 +36,41 @@ public interface LogicalUnit
     */
 
    void enqueue(TargetTransportPort port, Command command);
+   
+   /**
+    * Aborts the specified tagged task. The task tag is the <code>Q</code> in the I_T_L_Q nexus.
+    * The tagged task will be immediately aborted. Abortion of untagged tasks is not possible.
+    * 
+    * @param taskTag The tag of the task to be aborted.
+    * @returns {@value TaskServiceResponse#FUNCTION_COMPLETE} when aborted successfully or
+    *    {@value TaskServiceResponse#FUNCTION_REJECTED} when not aborted.
+    */
+   TaskServiceResponse abortTask(long taskTag);
+   
+   /**
+    * Aborts all outstanding tasks in this Logical Unit's task set that were requested by the
+    * indicated initiator. All tasks will return as
+    * aborted.
+    * @returns {@value TaskServiceResponse#FUNCTION_COMPLETE} when aborted successfully or
+    *    {@value TaskServiceResponse#FUNCTION_REJECTED} when not aborted.
+    */
+   TaskServiceResponse abortTaskSet(String initiator);
+   
+   /**
+    * Clears all outstanding tasks in this Logical Unit's task set. All tasks will be silently 
+    * dropped.
+    * @returns {@value TaskServiceResponse#FUNCTION_COMPLETE} when cleared successfully or
+    *    {@value TaskServiceResponse#FUNCTION_REJECTED} when not cleared.
+    */
+   TaskServiceResponse clearTaskSet();
+   
+   /**
+    * Resets this Logical Unit as required by the SAM-2 <code>LOGICAL UNIT RESET</code> function.
+    * @returns {@value TaskServiceResponse#FUNCTION_COMPLETE} when reset successfully or
+    *    {@value TaskServiceResponse#FUNCTION_REJECTED} when not reset.
+    */
+   TaskServiceResponse reset();
+   
 
    void start();
 

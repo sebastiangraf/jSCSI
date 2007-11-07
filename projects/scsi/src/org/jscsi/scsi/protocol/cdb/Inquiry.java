@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class Inquiry extends AbstractParameterCommandDescriptorBlock
+public class Inquiry extends AbstractParameterCDB
 {
    public static final int OPERATION_CODE = 0x12;
 
@@ -28,7 +28,7 @@ public class Inquiry extends AbstractParameterCommandDescriptorBlock
          boolean normalACA,
          short allocationLength)
    {
-      super(OPERATION_CODE, linked, normalACA, allocationLength);
+      super(OPERATION_CODE, linked, normalACA, allocationLength, 0);
 
       this.EVPD = evpd;
       this.pageCode = pageCode;

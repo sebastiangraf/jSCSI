@@ -1,75 +1,177 @@
 package org.jscsi.scsi.tasks;
 
+import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
+import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 // TODO: Describe class or interface
 public abstract class AbstractTask implements Task
 {
-   // Data   
-   private TargetTransportPort _targetPort;
-   private Command _command;
-   private ModePageRegistry _modePageRegistry;
-   private InquiryDataRegistry _inquiryDataRegistry;
+   
+   private TargetTransportPort targetPort;
+   private Command command;
+   private ModePageRegistry modePageRegistry;
+   private InquiryDataRegistry inquiryDataRegistry;
+   
+   private Thread thread = null;
+   
+   /**
+    * Abort variable specifies whether task can be aborted or is currently aborted.
+    * <p>
+    * <ul>
+    *    <li>If abort is true, task is already aborted or can no longer be aborted.</li>
+    *    <li>If abort is false, task is not aborted and can be aborted.</li>
+    * </ul>
+    * <p>
+    * The {@link #abort()} method will fail if the this is true. The {@link #run()} method will
+    * not enter the {@link #writeResponse(Status, ByteBuffer)} phase. However, abort is not polled.
+    * Instead, we check {@link Thread#isInterrupted()}.
+    */
+   private final AtomicBoolean abort = new AtomicBoolean(false);
+   
+   
+   protected abstract void execute(
+         TargetTransportPort targetPort,
+         Command command,
+         ModePageRegistry modePageRegistry,
+         InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException;
+         
 
    protected AbstractTask()
    {
    }
 
-   // Constructors
    protected AbstractTask(
          TargetTransportPort targetPort,
          Command command,
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
    {
-      this._targetPort = targetPort;
-      this._command = command;
-      this._modePageRegistry = modePageRegistry;
-      this._inquiryDataRegistry = inquiryDataRegistry;
+      this.targetPort = targetPort;
+      this.command = command;
+      this.modePageRegistry = modePageRegistry;
+      this.inquiryDataRegistry = inquiryDataRegistry;
    }
 
-   // Methods common to all GridTasks
-   public Command getCommand()
+   protected final Task load(
+         TargetTransportPort targetPort,
+         Command command,
+         ModePageRegistry modePageRegistry,
+         InquiryDataRegistry inquiryDataRegistry)
    {
-      return this._command;
-   }
-
-   public TargetTransportPort getTargetTransportPort()
-   {
-      return this._targetPort;
-   }
-
-   public ModePageRegistry getModePageRegistry()
-   {
-      return this._modePageRegistry;
-   }
-
-   public InquiryDataRegistry getInquiryDataRegistry()
-   {
-      return this._inquiryDataRegistry;
-   }
-
-   // protected setters
-   protected void setTargetTransportPort(TargetTransportPort targetPort)
-   {
-      this._targetPort = targetPort;
-   }
-
-   protected void setCommand(Command command)
-   {
-      this._command = command;
-   }
-
-   protected void setModePageRegistry(ModePageRegistry modePageRegistry)
-   {
-      this._modePageRegistry = modePageRegistry;
+      this.command = command;
+      this.targetPort = targetPort;
+      this.modePageRegistry = modePageRegistry;
+      this.inquiryDataRegistry = inquiryDataRegistry;
+      return this;
    }
    
-   protected void setInquiryDataRegistry(InquiryDataRegistry inquiryDataRegistry)
+   
+   public final boolean abort()
    {
-      this._inquiryDataRegistry = inquiryDataRegistry;
+      if ( abort.compareAndSet(false, true) )
+      {
+         // If abort is false the task can be aborted because it is neither
+         // already aborted nor in the writeResponse() phase. Abort is now set as true.
+         
+         // We interrupt the 
+         this.thread.interrupt();
+         this.targetPort.terminateDataTransfer(
+               this.command.getNexus(),
+               this.command.getCommandReferenceNumber());
+         
+         return true;
+      }
+      else
+      {
+         // If abort is true the task is already aborted or is in the writeResponse() phase. We
+         // can no longer abort and the abort value remains set as true.
+         return false;
+      }
    }
+   
+   public final void run()
+   {
+      this.thread = Thread.currentThread();
+      try
+      {
+         this.execute(this.targetPort, this.command, this.modePageRegistry, this.inquiryDataRegistry);
+      }
+      catch (SenseException e)
+      {
+         // Write response with a CHECK CONDITION status.
+         this.targetPort.writeResponse(
+               this.command.getNexus(),
+               this.command.getCommandReferenceNumber(),
+               Status.CHECK_CONDITION,
+               ByteBuffer.wrap(e.encode()));
+      }
+      catch (InterruptedException e)
+      {
+         // Task was aborted, don't do anything
+      }
+   }
+   
+   
+   protected final boolean readData(ByteBuffer output) throws InterruptedException
+   {
+      if (Thread.interrupted())
+         throw new InterruptedException();
+      
+      return this.targetPort.readData(
+            this.command.getNexus(),
+            this.command.getCommandReferenceNumber(),
+            output );
+   }
+   
+   protected final boolean writeData(ByteBuffer input) throws InterruptedException
+   {
+      if (Thread.interrupted())
+         throw new InterruptedException();
+      
+      return this.targetPort.writeData(
+            this.command.getNexus(),
+            this.command.getCommandReferenceNumber(),
+            input );
+   }
+   
+   protected final void writeResponse(Status status, ByteBuffer senseData)
+   {
+      if ( abort.compareAndSet(false, true) )
+      {
+         // If abort is false the task can enter the writeResponse() phase. Abort is now
+         // set as true to indicate that abort() can no longer succeed.
+         this.getTargetTransportPort().writeResponse(
+               command.getNexus(),
+               command.getCommandReferenceNumber(),
+               status,
+               senseData );
+      }
+      else
+      {
+         // If abort is true the task has been aborted and no data shall be written to
+         // the target transport port. Abort remains set as true.
+         return;
+      }
+   }
+
+
+   public final Command getCommand()
+   {
+      return this.command;
+   }
+
+
+   public final TargetTransportPort getTargetTransportPort()
+   {
+      return this.targetPort;
+   }
+   
+   
+   
 }

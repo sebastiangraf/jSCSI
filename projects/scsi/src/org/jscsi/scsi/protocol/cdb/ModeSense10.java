@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ModeSense10 extends AbstractParameterCommandDescriptorBlock
+public class ModeSense10 extends AbstractParameterCDB
 {
    public static final int OPERATION_CODE = 0x5A;
 
@@ -34,7 +34,7 @@ public class ModeSense10 extends AbstractParameterCommandDescriptorBlock
          boolean normalACA,
          long allocationLength)
    {
-      super(OPERATION_CODE, linked, normalACA, (int) allocationLength);
+      super(OPERATION_CODE, linked, normalACA, (int) allocationLength, 0);
 
       if (allocationLength > 65536)
       {

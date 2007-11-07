@@ -7,9 +7,8 @@ package org.jscsi.scsi.tasks.management;
  * 
  * @author Jason Resch
  */
-public enum TaskManagementFunctions
+public enum TaskManagementFunction
 {
-   
    ABORT_TASK,
    ABORT_TASK_SET,
    CLEAR_ACA,

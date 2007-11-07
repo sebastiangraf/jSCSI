@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
-import org.jscsi.scsi.protocol.cdb.CommandDescriptorBlock;
-import org.jscsi.scsi.protocol.cdb.CommandDescriptorBlockFactory;
+import org.jscsi.scsi.protocol.cdb.CDB;
+import org.jscsi.scsi.protocol.cdb.CDBFactory;
 import org.jscsi.scsi.tasks.TaskAttribute;
 import org.jscsi.scsi.transport.Nexus;
 
@@ -25,10 +25,10 @@ import org.jscsi.scsi.transport.Nexus;
 public class Command
 {
    
-   private static CommandDescriptorBlockFactory _factory = new CommandDescriptorBlockFactory();
+   private static CDBFactory _factory = new CDBFactory();
    
    private Nexus nexus;
-   private CommandDescriptorBlock commandDescriptorBlock;
+   private CDB commandDescriptorBlock;
    private TaskAttribute taskAttribute;
    private long commandReferenceNumber;
    private int taskPriority;
@@ -61,7 +61,7 @@ public class Command
    }
 
    public Command(Nexus nexus, 
-                  CommandDescriptorBlock commandDescriptorBlock,
+                  CDB commandDescriptorBlock,
                   TaskAttribute taskAttribute,
                   long commandReferenceNumber,
                   int taskPriority)
@@ -79,7 +79,7 @@ public class Command
       return nexus;
    }
 
-   public CommandDescriptorBlock getCommandDescriptorBlock()
+   public CDB getCommandDescriptorBlock()
    {
       return commandDescriptorBlock;
    }

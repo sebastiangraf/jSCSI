@@ -1,18 +1,19 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-public abstract class AbstractCommandDescriptorBlock implements CommandDescriptorBlock
+
+public abstract class AbstractCDB implements CDB
 {
    private int operationCode;
    private boolean linked;
    private boolean normalACA;
 
-   protected AbstractCommandDescriptorBlock(int operationCode)
+   protected AbstractCDB(int operationCode)
    {
       this.operationCode = operationCode;
    }
 
-   protected AbstractCommandDescriptorBlock(int operationCode, boolean linked, boolean normalACA)
+   protected AbstractCDB(int operationCode, boolean linked, boolean normalACA)
    {
       this.operationCode = operationCode;
       this.linked = linked;

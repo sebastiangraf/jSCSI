@@ -3,7 +3,7 @@ package org.jscsi.scsi.protocol;
 
 import static org.junit.Assert.fail;
 
-import org.jscsi.scsi.protocol.cdb.CommandDescriptorBlockFactory;
+import org.jscsi.scsi.protocol.cdb.CDBFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -84,7 +84,7 @@ public class CommandDescriptorBlockFactoryTest
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
    {
-      serializer = new CommandDescriptorBlockFactory();
+      serializer = new CDBFactory();
    }
 
    @AfterClass

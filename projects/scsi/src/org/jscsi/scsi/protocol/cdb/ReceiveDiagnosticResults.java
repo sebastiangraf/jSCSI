@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ReceiveDiagnosticResults extends AbstractParameterCommandDescriptorBlock
+public class ReceiveDiagnosticResults extends AbstractParameterCDB
 {
    public static final int OPERATION_CODE = 0x1C;
 
@@ -28,7 +28,7 @@ public class ReceiveDiagnosticResults extends AbstractParameterCommandDescriptor
          boolean normalACA,
          int allocationLength)
    {
-      super(OPERATION_CODE, linked, normalACA, allocationLength);
+      super(OPERATION_CODE, linked, normalACA, allocationLength, 0);
 
       this.PCV = pcv;
       this.pageCode = pageCode;

@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class TestUnitReady extends AbstractCommandDescriptorBlock
+public class TestUnitReady extends AbstractCDB
 {
    public static final int OPERATION_CODE = 0x00;
 

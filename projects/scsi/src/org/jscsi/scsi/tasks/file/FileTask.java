@@ -1,61 +1,82 @@
 
 package org.jscsi.scsi.tasks.file;
 
+import java.nio.ByteBuffer;
+
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
+import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.tasks.AbstractTask;
+import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 public abstract class FileTask extends AbstractTask
 {
-   protected FileDevice _device;
+   protected ByteBuffer file;
+   protected int blockLength;
+   
 
    public FileTask()
    {
       super();
    }
-
-   // Constructors
+   
    public FileTask(
+         ByteBuffer file,
+         int blockLength,
          TargetTransportPort targetPort,
          Command command,
          ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry,
-         FileDevice device)
+         InquiryDataRegistry inquiryDataRegistry)
    {
       super(targetPort, command, modePageRegistry, inquiryDataRegistry);
-      this._device = device;
+      this.file = file;
+      this.blockLength = blockLength;
+   }
+   
+   /**
+    * Executes the task operation.
+    */
+   protected abstract void execute(
+         ByteBuffer file, 
+         int blockLength,
+         TargetTransportPort targetPort,
+         Command command,
+         ModePageRegistry modePageRegistry,
+         InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException;
+
+   @Override
+   protected final void execute(
+         TargetTransportPort targetPort,
+         Command command,
+         ModePageRegistry modePageRegistry,
+         InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException
+   {
+      this.execute(file, blockLength, targetPort, command, modePageRegistry, inquiryDataRegistry);
+   }
+   
+   protected final Task load(
+         ByteBuffer file, 
+         int blockLength,
+         TargetTransportPort targetPort,
+         Command command,
+         ModePageRegistry modePageRegistry,
+         InquiryDataRegistry inquiryDataRegistry)
+   {
+      this.file = file;
+      this.blockLength = blockLength;
+      super.load(targetPort, command, modePageRegistry, inquiryDataRegistry);
+      return this;
+   }
+   
+   protected long getFileCapacity()
+   {
+      if ( file.limit() % blockLength != 0 )
+         throw new RuntimeException("invalid file length; not mulitple of block size");
+      return file.limit() / blockLength;
    }
 
-   public FileDevice getFileDevice()
-   {
-      return this._device;
-   }
-
-   void setFileDevice(FileDevice device)
-   {
-      this._device = device;
-   }
-
-   // protected setters to be used by FileTaskFactory
-   protected void setTargetTransportPort(TargetTransportPort targetPort)
-   {
-      super.setTargetTransportPort(targetPort);
-   }
-
-   protected void setCommand(Command command)
-   {
-      super.setCommand(command);
-   }
-
-   protected void setModePageRegistry(ModePageRegistry modePageRegistry)
-   {
-      super.setModePageRegistry(modePageRegistry);
-   }
-
-   protected void setInquiryDataRegistry(InquiryDataRegistry inquiryDataRegistry)
-   {
-      super.setInquiryDataRegistry(inquiryDataRegistry);
-   }
+   
+   
 }

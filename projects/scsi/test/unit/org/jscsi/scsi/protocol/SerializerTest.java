@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.jscsi.scsi.protocol.cdb.CommandDescriptorBlockFactory;
+import org.jscsi.scsi.protocol.cdb.CDBFactory;
 
 public class SerializerTest
 {
@@ -620,7 +620,7 @@ public class SerializerTest
    public static void main(String[] args)
    {
 
-      Serializer serializer = new CommandDescriptorBlockFactory();
+      Serializer serializer = new CDBFactory();
       String defaultPackage = "org.jscsi.scsi.protocol.cdb";
       String inputPath = System.getProperty("test.input", inputFile);
 
@@ -654,11 +654,31 @@ public class SerializerTest
                prefix = "get";
                Method accessMethod = encodable.getClass().getMethod(prefix + tv.getTag());
                Object valObj = accessMethod.invoke(encodable);
-               Number val = (Number) valObj;
-               Long valInput = (Long) tv.getIntValue();
-               if (accessMethod.getReturnType().equals("long"))
+               Number val = null;
+               try
                {
-                  // return value of the field is long
+                  val = (Number)valObj;
+               }
+               catch (ClassCastException e) {}
+               if (accessMethod.getReturnType().equals("boolean"))
+               {
+                  // return value of the field is int
+                  Long valInput = (Long) tv.getIntValue();
+                  if (val.intValue() == valInput.intValue())
+                  {
+                     System.out.format("Success: %s : %X == %X %n", tv.getTag(), val,
+                           tv.getIntValue());
+                  }
+                  else
+                  {
+                     System.out.format("Fail: %s : %X != %X %n", tv.getTag(), val, tv.getIntValue());
+                     checkResult = "Non-matching field detected";
+                  }
+               }
+               else if ( val != null )
+               {
+                  // return value of the field is some number (long, byte, int, etc)
+                  Long valInput = (Long) tv.getIntValue();
                   if (valInput.longValue() == val.longValue())
                   {
                      System.out.format("Success: %s : %X == %X %n", tv.getTag(), val,
@@ -670,19 +690,16 @@ public class SerializerTest
                      checkResult = "Non-matching field detected";
                   }
                }
+               else if (accessMethod.getReturnType().equals("byte[]"))
+               {
+                  
+               }
                else
                {
-                  // return value of the field is int
-                  if (val.intValue() == valInput.intValue())
-                  {
-                     System.out.format("Success: %s : %X == %X %n", tv.getTag(), val,
-                           tv.getIntValue());
-                  }
-                  else
-                  {
-                     System.out.format("Fail: %s : %X != %X %n", tv.getTag(), val, tv.getIntValue());
-                     checkResult = "Non-matching field detected";
-                  }
+                  System.out.println(
+                        "Fail: " + tv.getTag() + " : unsupported field return type: " + 
+                        accessMethod.getReturnType());
+                  checkResult = "Unsupported return type for field (" + tv.getTag() + ")";
                }
             }
             else
