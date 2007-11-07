@@ -57,9 +57,6 @@ public class Session {
 	/** The <code>Configuration</code> instance for this session. */
 	private final OperationalTextConfiguration configuration;
 
-	/** Session's Phase */
-	private short SessionPhase;
-
 	/** The Target Session Identifying Handle. */
 	private short targetSessionIdentifyingHandle;
 
@@ -101,6 +98,7 @@ public class Session {
 		connections = new ConcurrentHashMap<Connection, SortedMap<Integer, ProtocolDataUnit>>();
 		signalledPDUs = new TreeMap<Integer, Connection>();
 		receivedPDUs = new ConcurrentLinkedQueue<ProtocolDataUnit>();
+		sessionType = SessionType.Unknown;
 		addConnection(connection);
 		// start TaskManger
 	}
@@ -239,6 +237,15 @@ public class Session {
 		return incrMaximumCommandSequence(0);
 	}
 
+	/**
+	 * Returns the number of received queued PDUs
+	 * 
+	 * @return
+	 */
+	final int getReceivingBufferSize() {
+		return receivedPDUs.size();
+	}
+
 	public final SessionType getSessionType() {
 		return sessionType;
 	}
@@ -250,6 +257,19 @@ public class Session {
 	 */
 	final short getTargetSessionIdentifyingHandleD() {
 		return targetSessionIdentifyingHandle;
+	}
+
+	/**
+	 * Returns true if the Session already assigned an ExpectedCommandSequence
+	 * number at Startup.
+	 * 
+	 * @return true if ExpStatSN is set, false else
+	 */
+	final boolean hasExpCmdSN() {
+		if (expectedCommandSequenceNumber == null) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -293,15 +313,6 @@ public class Session {
 			return maximumCommandSequenceNumber;
 		}
 
-	}
-
-	/**
-	 * Returns the number of received queued PDUs
-	 * 
-	 * @return
-	 */
-	final int getReceivingBufferSize() {
-		return receivedPDUs.size();
 	}
 
 	/**
@@ -389,6 +400,18 @@ public class Session {
 		return result;
 	}
 
+	private final void setExpectedCommandSequenceNumber(
+			ProtocolDataUnit firstPDU) {
+		if (!hasExpCmdSN()) {
+			if (firstPDU.getBasicHeaderSegment().getParser() instanceof InitiatorMessageParser) {
+				InitiatorMessageParser parser = (InitiatorMessageParser) firstPDU
+						.getBasicHeaderSegment().getParser();
+				expectedCommandSequenceNumber = new SerialArithmeticNumber(
+						parser.getCommandSequenceNumber());
+			}
+		}
+	}
+
 	/**
 	 * Set this Session's Initiator Session ID, if not already set.
 	 * 
@@ -423,8 +446,15 @@ public class Session {
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param type
+	 */
 	public final void setSessionType(SessionType type) {
-		sessionType = type;
+		if (sessionType.equals(SessionType.Unknown)) {
+			sessionType = type;
+
+		}
 	}
 
 	/*
@@ -440,24 +470,21 @@ public class Session {
 	 * receivedPDUs.add(connections.get(connection).poll()); // only increment
 	 * ExpCmdSN if non-immediate and no SNACK // Request if
 	 * (!pdu.getBasicHeaderSegment().isImmediateFlag() && !(parser instanceof
-	 * SNACKRequestParser)) { expectedCommandSequenceNumber.increment(); }
-	 *  // signal TaskRouter } else {
-	 *  }
+	 * SNACKRequestParser)) { expectedCommandSequenceNumber.increment(); } //
+	 * signal TaskRouter } else { }
 	 * 
 	 * if (receivedCommandSequenceNumber .equals(expectedCommandSequenceNumber)) {
 	 * receivedPDUs.add(connections.get(connection).poll());
 	 * expectedCommandSequenceNumber.increment(); // new maximum command
-	 * sequence number // signal TaskRouter } else {
-	 *  }
-	 *  // search for the next buffered PDU in every connection for (Queue<ProtocolDataUnit>
-	 * pdus : connections.values()) { if (pdus.size() <= 0) { continue; } //
-	 * could be more than one following PDU per connection boolean testing =
-	 * true; while (testing) { pdu = pdus.peek(); parser =
-	 * (InitiatorMessageParser) pdu .getBasicHeaderSegment().getParser();
-	 * receivedCommandSequenceNumber = new SerialArithmeticNumber(
-	 * parser.getCommandSequenceNumber()); if (receivedCommandSequenceNumber
-	 * .equals(expectedCommandSequenceNumber)) { receivedPDUs
-	 * .add(connections.get(connection).poll());
+	 * sequence number // signal TaskRouter } else { } // search for the next
+	 * buffered PDU in every connection for (Queue<ProtocolDataUnit> pdus :
+	 * connections.values()) { if (pdus.size() <= 0) { continue; } // could be
+	 * more than one following PDU per connection boolean testing = true; while
+	 * (testing) { pdu = pdus.peek(); parser = (InitiatorMessageParser) pdu
+	 * .getBasicHeaderSegment().getParser(); receivedCommandSequenceNumber = new
+	 * SerialArithmeticNumber( parser.getCommandSequenceNumber()); if
+	 * (receivedCommandSequenceNumber .equals(expectedCommandSequenceNumber)) {
+	 * receivedPDUs .add(connections.get(connection).poll());
 	 * expectedCommandSequenceNumber.increment(); // new maximum command
 	 * sequence number // signal TaskRouter } else { // head of connection's
 	 * queue isn't the next // received // PDU testing = false; } } } } } }
@@ -491,6 +518,10 @@ public class Session {
 	final void signalReceivedPDU(Integer CmdSN, Connection connection) {
 		signalledPDUs.put(CmdSN, connection);
 		ProtocolDataUnit receivedPDU = null;
+		// the leading PDU will call on the Expected Command Sequence Number
+		if (!hasExpCmdSN()) {
+			setExpectedCommandSequenceNumber(connection.peekReceivedPDU());
+		}
 		// checks if Expected Command Sequence Number arrived
 		while (getExpectedCommandSequence().compareTo(signalledPDUs.firstKey()) == 0) {
 			synchronized (receivedPDUs) {
@@ -498,13 +529,13 @@ public class Session {
 				receivedPDU = signalledPDUs.get(getExpectedCommandSequence())
 						.pollReceivedPDU();
 				receivedPDUs.add(receivedPDU);
-				// remove from signalled PDUs
+				// remove from signaled PDUs
 				signalledPDUs.remove(getExpectedCommandSequence());
 				// increment ExpCmdSN, if necessary
 				incrExpectedCommandSequenceNumber(receivedPDU);
 				// MaxCmdSN Window
-				/////////////////////////////////
-				//signal possible waiting Threads, e.g. TaskRouter
+				// ///////////////////////////////
+				// signal possible waiting Threads, e.g. TaskRouter
 				somethingReceived.signal();
 			}
 			// signal TaskRouter
@@ -573,6 +604,39 @@ public class Session {
 		if (targetSessionIdentifyingHandle != other.targetSessionIdentifyingHandle)
 			return false;
 		return true;
+	}
+
+	/**
+	 * Logs a trace Message specific to this Session, if trace log is enabled
+	 * within the logging environment.
+	 * 
+	 * @param logMessage
+	 */
+	private void logTrace(String logMessage) {
+		if (LOGGER.isTraceEnabled()) {
+
+			LOGGER.trace("InitiatorName = " + getInitiatorName() + "ISID = "
+					+ getInitiatorName() + "TSIH ="
+					+ getTargetSessionIdentifyingHandleD() + " LogMessage: "
+					+ logMessage);
+
+		}
+	}
+
+	/**
+	 * Logs a debug Message specific to this Session, if debug log is enabled
+	 * within the logging environment.
+	 * 
+	 * @param logMessage
+	 */
+	private void logDebug(String logMessage) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("InitiatorName = " + getInitiatorName() + "ISID = "
+					+ getInitiatorName() + "TSIH ="
+					+ getTargetSessionIdentifyingHandleD() + " LogMessage: "
+					+ logMessage);
+
+		}
 	}
 
 }

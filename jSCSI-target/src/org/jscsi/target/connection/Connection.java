@@ -14,6 +14,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.sound.midi.Receiver;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.conf.OperationalTextConfiguration;
@@ -55,8 +57,8 @@ public class Connection {
 
 	private final OperationalTextConfiguration configuration;
 
-	/** the connection's phase */
-	private Phase phase;
+	/** the connection's ConnectionPhase */
+	private Phase ConnectionPhase;
 
 	/**
 	 * The ID of this connection. This must be unique within a
@@ -65,7 +67,7 @@ public class Connection {
 	private short connectionID;
 
 	/** if the Connection already got a connectionID */
-	private boolean hasConnectionID;
+	boolean hasConnectionID;
 
 	/**
 	 * The Status Sequence Number, which is used from the initiator to control
@@ -75,11 +77,9 @@ public class Connection {
 
 	/**
 	 * The sending queue filled with <code>ProtocolDataUnit</code>s and their
-	 * coressponding StatusSeguenceNumbers.
+	 * corresponding StatusSeguenceNumbers.
 	 */
 	private final SortedMap<Integer, ProtocolDataUnit> sendingBuffer;
-
-	private final Queue<ProtocolDataUnit> sendedBufferedPDUs;
 
 	/**
 	 * The receiving Buffer filled with <code>ProtocolDataUnit</code>s and
@@ -88,14 +88,19 @@ public class Connection {
 	private final SortedMap<Integer, ProtocolDataUnit> receivingBuffer;
 
 	/**
-	 * the LOCK is used to synchronize every request for receiving PDUs
+	 * the ReceivingLock is used to synchronize every request for receiving PDUs
 	 */
-	private final Lock LOCK = new ReentrantLock();
+	private final Lock ReceivingLock = new ReentrantLock();
+
+	/**
+	 * the SendingLock is used to synchronize every request for sending PDUs
+	 */
+	private final Lock SendingLock = new ReentrantLock();
 
 	/**
 	 * the Condition is used to signal waiting Threads for reveived PDUs
 	 */
-	private final Condition somethingReceived = LOCK.newCondition();
+	private final Condition somethingReceived = ReceivingLock.newCondition();
 
 	/**
 	 * this Connection's NetWorker
@@ -103,14 +108,19 @@ public class Connection {
 	private final NetWorker netWorker;
 
 	public Connection(SocketChannel sChannel) throws OperationalTextException {
+		//create a new Configuration for this Connection 
 		configuration = OperationalTextConfiguration.create(this);
 		// when java 1.6 available for mac, change TreeMap to
-		// ConcurrentSkipListMap
+		// ConcurrentSkipListMap, should be done in the Session and NetWorker too
 		sendingBuffer = new TreeMap<Integer, ProtocolDataUnit>();
-		sendedBufferedPDUs = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		receivingBuffer = new TreeMap<Integer, ProtocolDataUnit>();
+		//Let's say we start Status sequencing with 1
+		statusSequenceNumber = new SerialArithmeticNumber(1);
+		//following variables are not yet available, but must be set later
+		referenceSession = null;
+		ConnectionPhase = Phase.Unknown;
+		connectionID = -1;
 		hasConnectionID = false;
-		statusSequenceNumber = new SerialArithmeticNumber(0);
 		netWorker = new NetWorker(sChannel, this);
 		netWorker.startListening();
 
@@ -180,12 +190,12 @@ public class Connection {
 	}
 
 	/**
-	 * Returns theConnection's current phase.
+	 * Returns theConnection's current ConnectionPhase.
 	 * 
-	 * @return Connetion's phase
+	 * @return Connetion's ConnectionPhase
 	 */
 	public final Phase getPhase() {
-		return phase;
+		return ConnectionPhase;
 	}
 
 	/**
@@ -227,9 +237,9 @@ public class Connection {
 	}
 
 	public final void setPhase(Phase phase) {
-		logTrace("Switched Phase from " + this.phase.stringValue() + "to "
+		logTrace("Switched Phase from " + this.ConnectionPhase.stringValue() + "to "
 				+ phase.stringValue());
-		this.phase = phase;
+		this.ConnectionPhase = phase;
 	}
 
 	/**
@@ -245,44 +255,58 @@ public class Connection {
 					+ referenceSession.getTargetSessionIdentifyingHandleD());
 			return true;
 		} else
-			logDebug("Tried to reset referenced Session.");
+			logDebug("Tried to reset referenced Session");
 		return false;
 	}
-
+	
+	/**
+	 * Signals the Connection a received PDU. The Connection
+	 * is updating parameters because of the receivedPDU's parameter.
+	 * The Session will be signaled.  
+	 * @param receivedPDU
+	 */
 	final void signalReceivedPDU(ProtocolDataUnit receivedPDU) {
 		InitiatorMessageParser parser = (InitiatorMessageParser) receivedPDU
 				.getBasicHeaderSegment().getParser();
-		int ExpStatSN = parser.getExpectedStatusSequenceNumber();
-		//add PDU to Buffer
-		receivingBuffer.put(ExpStatSN, receivedPDU);
-		// clean the sending buffer from successfully sended PDU signaled through
+		// add received PDU and it's CmdSN to Buffer
+		receivingBuffer.put(parser.getCommandSequenceNumber(), receivedPDU);
+		// clean the sending buffer from successfully sended PDU signaled
+		// through
 		// the initiator's ExpStatSN
-		updateAndCleanSendedBuffer(ExpStatSN);
-		//signal Session
+		updateAndCleanSendedBuffer(parser.getExpectedStatusSequenceNumber());
+		// signal Session
 		getReferencedSession().signalReceivedPDU(
 				parser.getCommandSequenceNumber(), this);
 	}
 
+	/**
+	 * Sends the PDU, if the calling entity is the referencedSession. If not
+	 * the PDU will be forwarded to the Session, so the Session takes control.
+	 * 
+	 * @param caller
+	 *            if not referenced Session, will be forwarded to Session
+	 * @param pdu
+	 *            sending PDU
+	 */
 	final void sendPDU(Object caller, ProtocolDataUnit pdu) {
 		if (caller instanceof Session) {
-			TargetMessageParser parser = (TargetMessageParser) pdu
-					.getBasicHeaderSegment().getParser();
-			Integer newStatSN;
-			// if status sequence numbering isn't done for every T-to-I PDU,
-			// make exception here
-			synchronized (statusSequenceNumber) {
+			// is the Session the Connection's referenced Session
+			if (((Session) caller).equals(referenceSession)) {
+				TargetMessageParser parser = (TargetMessageParser) pdu
+						.getBasicHeaderSegment().getParser();
+				Integer newStatSN;
+				// if status sequence numbering isn't done for every T-to-I PDU,
+				// make exception here
+				SendingLock.lock();
 				newStatSN = getStatusSequenceNumber(true).getValue();
 				parser.setStatusSequenceNumber(newStatSN);
 				sendingBuffer.put(newStatSN, pdu);
 				netWorker.signalSendingPDU(newStatSN);
+				SendingLock.unlock();
+				return;
 			}
-		} else {
-			getReferencedSession().sendPDU(this, pdu);
 		}
-	}
-
-	final void bufferSendedPDU(ProtocolDataUnit sendedPDU) {
-		sendedBufferedPDUs.add(sendedPDU);
+		getReferencedSession().sendPDU(this, pdu);
 	}
 
 	// /**
@@ -373,14 +397,14 @@ public class Connection {
 			long nanoSecs) {
 		ProtocolDataUnit result = null;
 		// lock this block for other threads
-		LOCK.lock();
+		ReceivingLock.lock();
 		try {
 			// wait for an incoming PDU
 			if (nanoSecs <= 0) {
-				while (receivingBuffer.size() == 0)
+				while (getReceivingBufferSize() == 0)
 					somethingReceived.await();
 			} else {
-				while (receivingBuffer.size() == 0)
+				while (getReceivingBufferSize() == 0)
 					somethingReceived.awaitNanos(nanoSecs);
 			}
 		} catch (InterruptedException e) {
@@ -396,10 +420,10 @@ public class Connection {
 		}
 		if (peekOrPoll.equals("poll") && (receivingBuffer.size() != 0)) {
 			result = receivingBuffer.get(receivingBuffer.firstKey());
-			removeFirstReceivedPDUfromBuffer();
+			receivingBuffer.remove(receivingBuffer.firstKey());
 		}
 		// unlock this block
-		LOCK.unlock();
+		ReceivingLock.unlock();
 		return result;
 	}
 
@@ -408,7 +432,9 @@ public class Connection {
 	}
 
 	final void removeReceivedPDUfromBuffer(int cmdSN) {
+		ReceivingLock.lock();
 		receivingBuffer.remove(cmdSN);
+		ReceivingLock.unlock();
 	}
 
 	@Override
@@ -438,7 +464,6 @@ public class Connection {
 		ProtocolDataUnit bufferedPDU = null;
 		TargetMessageParser parser = null;
 		int firstStatSN = sendingBuffer.firstKey();
-		;
 		while (firstStatSN < expectedStatusSequenceNumber) {
 			sendingBuffer.remove(firstStatSN);
 			firstStatSN = sendingBuffer.firstKey();
@@ -468,18 +493,32 @@ public class Connection {
 		return true;
 	}
 
+	/**
+	 * Logs a trace Message specific to this Connection, if trace log is enabled
+	 * within the logging environment.
+	 * 
+	 * @param logMessage
+	 */
 	private void logTrace(String logMessage) {
 		if (LOGGER.isTraceEnabled()) {
 			if (hasConnectionID) {
-				LOGGER.trace("CID=" + connectionID + " Message: " + logMessage);
+				LOGGER.trace("CID=" + getConnectionID() + " Message: "
+						+ logMessage);
 			}
 		}
 	}
 
+	/**
+	 * Logs a debug Message specific to this Connection, if debug log is enabled
+	 * within the logging environment.
+	 * 
+	 * @param logMessage
+	 */
 	private void logDebug(String logMessage) {
 		if (LOGGER.isDebugEnabled()) {
 			if (hasConnectionID) {
-				LOGGER.trace("CID=" + connectionID + " Message: " + logMessage);
+				LOGGER.trace("CID=" + getConnectionID() + " Message: "
+						+ logMessage);
 			}
 		}
 	}

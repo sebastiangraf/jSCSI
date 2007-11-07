@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.target.conf.OperationalTextException;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.Session;
 import org.jscsi.target.util.Singleton;
@@ -137,7 +138,12 @@ public final class SessionManager implements ISocketHandler {
 		}
 
 		public void run() {
-			newConnection = new Connection(newSocket.getChannel());
+			try {
+				newConnection = new Connection(newSocket.getChannel());
+			} catch (OperationalTextException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			ProtocolDataUnit firstPDU = newConnection.peekReceivedPDU();
 			if (firstPDU.getBasicHeaderSegment().getParser() instanceof LoginRequestParser) {
 				processLoginRequest((LoginRequestParser) firstPDU
