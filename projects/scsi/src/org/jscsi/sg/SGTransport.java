@@ -18,15 +18,4 @@ public interface SGTransport
     */
 	void serviceIndication(String initiatorPort, String targetPort, long lun, byte[] cdb, long cmdRef);	
 
-	/**
-	 * service_response(Nexus, Sense Data, Status, Service Response)
-	 * 
-	 * @param initiatorPort
-	 * @param targetPort
-	 * @param lun
-	 * @param senseData
-	 * @param status
-	 * @return ServiceResponse
-	 */
-	int serviceResponse(String initiatorPort, String targetPort, long lun, byte[] senseData, int status);
 }
