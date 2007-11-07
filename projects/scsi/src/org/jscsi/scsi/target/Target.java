@@ -6,6 +6,9 @@ import java.util.List;
 import org.jscsi.scsi.authentication.AuthenticationHandler;
 import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
+import org.jscsi.scsi.tasks.management.TaskManagementFunction;
+import org.jscsi.scsi.tasks.management.TaskServiceResponse;
+import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 /**
@@ -31,6 +34,8 @@ public interface Target
 {
 
    void enqueue(TargetTransportPort port, Command command);
+   
+   TaskServiceResponse execute(Nexus nexus, TaskManagementFunction function);
 
    ////////////////////////////////////////////////////////////////////////////////////////////////
    // getters/setters

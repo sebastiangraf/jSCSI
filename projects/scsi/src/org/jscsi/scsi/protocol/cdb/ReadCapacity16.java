@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ReadCapacity16 extends AbstractTransferCommandDescriptorBlock
+public class ReadCapacity16 extends AbstractTransferCDB
 {
    public static final int OPERATION_CODE = 0x9E;
    public static final int SERVICE_ACTION = 0x10;

@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class SendDiagnostic extends AbstractCommandDescriptorBlock
+public class SendDiagnostic extends AbstractCDB
 {
    public static final int OPERATION_CODE = 0x1D;
 

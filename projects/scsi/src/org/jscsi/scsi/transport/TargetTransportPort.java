@@ -40,43 +40,59 @@ public interface TargetTransportPort
    void removeTarget(String targetName) throws Exception;
 
    /**
-    * Called from the Task implementation for Write commands among others. TODO Finish
-    * documentation.
+    * Performs Receive Data-Out operation. If successful all expected data will have been read to
+    * the output buffer. If failed a partial transfer may have occurred.
+    * <p>
+    * This method is called by task implementations for commands such as WRITE, MODE SENSE, and
+    * REPORT LUNS.
     * 
-    * @param nexus
-    * @param commandReferenceNumber
-    * @param output
-    * @return
+    * @param nexus Generally either an I_T_L nexus or an I_T_L_Q nexus
+    * @param commandReferenceNumber The command reference number associated with the nexus.
+    * @param output The data output buffer which data will be written to.
+    * @return True if all expected data has been written; False if no data or partial data
+    *    has been written.
     */
-   boolean readData(Nexus nexus, long commandReferenceNumber, ByteBuffer output);
+   boolean readData(Nexus nexus, long commandReferenceNumber, ByteBuffer output)
+         throws InterruptedException;
 
    /**
-    * Called from the Task implementation for Read commands among others. TODO Finish documentation.
+    * Performs a Send Data-In operation. If successful all expected data will have been written
+    * from the input buffer. If failed a partial transfer may have occurred.
+    * <p>
+    * This method is called by task implementations for commands such as READ and MODE SELECT.
     * 
-    * @param nexus
-    * @param commandReferenceNumber
-    * @param input
-    * @return
+    * @param nexus Generally either an I_T_L nexus or an I_T_L_Q nexus.
+    * @param commandReferenceNumber The command reference number associated with the nexus.
+    * @param input The data input buffer which data will be read from.
+    * @return True if all expected data has been written; False if no data or partial data has
+    *    been written.
     */
-   boolean writeData(Nexus nexus, long commandReferenceNumber, ByteBuffer input);
+   boolean writeData(Nexus nexus, long commandReferenceNumber, ByteBuffer input)
+         throws InterruptedException;
 
-   void terminateDataTransfer(Nexus nexus);
+   /**
+    * Instructs the transport layer to terminate data transfer for the indicated nexus. The
+    * transport layer shall throw an {@link InterruptedException} from any in-progress
+    * {@link #writeData(Nexus, long, ByteBuffer)} or {@link #readData(Nexus, long, ByteBuffer)}
+    * operation.
+    * <p>
+    * Interrupting a thread performing a read or write operation shall have the same effect.
+    * <p>
+    * This method does nothing if there are no in-progress data transfers for the indicated nexus.
+    * 
+    * @param nexus Generally either an I_T_L nexus or an I_T_L_Q nexus.
+    */
+   void terminateDataTransfer(Nexus nexus, long commandReferenceNumber);
 
    /**
     * Enqueues return data to send to the initiator indicated by the given Nexus. Used by both Task
     * Routers and Logical Units, depending on the original command.
     * 
-    * @param nexus
-    *           The Nexus of the original SCSI request.
-    * @param commandReferenceNumber
-    *           TODO
-    * @param status
-    *           The command status.
-    * @param senseData
-    *           Autosense data; <code>null</code> if a positive status was returned.
-    * @param input
-    *           The input buffer if return data is expected; <code>null</code> if no return data
-    *           expected or a negative condition precludes returning data.
+    * @param nexus The nexus of the original SCSI request.
+    * @param commandReferenceNumber The command reference number associated with the nexus.
+    * @param status The final status of the command.
+    * @param senseData Autosense data; <code>null</code> if the status is not 
+    *    {@link Status#CHECK_CONDITION}.
     */
    void writeResponse(Nexus nexus, long commandReferenceNumber, Status status, ByteBuffer senseData);
 }

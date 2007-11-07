@@ -27,59 +27,46 @@
 //
 // END-OF-HEADER
 //-----------------------
-// @author: mmotwani
+// Author: wleggette
 //
-// Date: Oct 26, 2007
+// Date: Nov 5, 2007
 //---------------------
 
-package org.jscsi.scsi.protocol.cdb;
+package org.jscsi.scsi.protocol.sense.exceptions;
+
+import org.jscsi.scsi.protocol.sense.KCQ;
+import org.jscsi.scsi.protocol.sense.additional.SenseKeySpecificField;
 
 // TODO: Describe class or interface
-public abstract class AbstractTransferCommandDescriptorBlock extends AbstractCommandDescriptorBlock
+public abstract class AbortedCommandException extends SenseException
 {
-   private long transferLength;
-   private long logicalBlockAddress;
 
-   public AbstractTransferCommandDescriptorBlock(int operationCode)
+   public AbortedCommandException(KCQ kcq, boolean current)
    {
-      super(operationCode);
+      super(kcq, current);
    }
 
-   public AbstractTransferCommandDescriptorBlock(
-         int operationCode,
-         boolean linked,
-         boolean normalACA,
-         long logicalBlockAddress,
-         long transferLength)
+   @Override
+   protected byte[] getCommandSpecificInformation()
    {
-      super(operationCode, linked, normalACA);
-      this.transferLength = transferLength;
-      this.logicalBlockAddress = logicalBlockAddress;
+      return null;
    }
 
-   public long getLogicalBlockAddress()
+   @Override
+   protected byte[] getInformation()
    {
-      return this.logicalBlockAddress;
+      return null;
    }
 
-   /**
-    * The transfer length, usually in blocks. Zero if the command does not require a transfer length
-    * or no data is to be transferred.
-    * 
-    * @return Transfer length in blocks.
-    */
-   public long getTransferLength()
+   @Override
+   protected SenseKeySpecificField getSenseKeySpecific()
    {
-      return this.transferLength;
+      return null;
    }
+   
+   
+   
 
-   public void setLogicalBlockAddress(long logicalBlockAddress)
-   {
-      this.logicalBlockAddress = logicalBlockAddress;
-   }
-
-   public void setTransferLength(long transferLength)
-   {
-      this.transferLength = transferLength;
-   }
 }
+
+

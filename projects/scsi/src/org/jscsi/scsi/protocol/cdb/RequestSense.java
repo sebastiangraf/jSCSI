@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class RequestSense extends AbstractParameterCommandDescriptorBlock
+public class RequestSense extends AbstractParameterCDB
 {
    public static final int OPERATION_CODE = 0x03;
 
@@ -26,7 +26,7 @@ public class RequestSense extends AbstractParameterCommandDescriptorBlock
          boolean normalACA,
          long allocationLength)
    {
-      super(OPERATION_CODE, linked, normalACA, allocationLength);
+      super(OPERATION_CODE, linked, normalACA, allocationLength, 0);
       if (allocationLength > 256)
       {
          throw new IllegalArgumentException("Allocation length out of bounds for command type");

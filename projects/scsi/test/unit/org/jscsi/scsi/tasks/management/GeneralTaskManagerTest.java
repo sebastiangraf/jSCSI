@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.cdb.CommandDescriptorBlock;
+import org.jscsi.scsi.protocol.cdb.CDB;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskAttribute;
 import org.jscsi.scsi.transport.Nexus;
@@ -41,7 +41,7 @@ public class GeneralTaskManagerTest
       public TestTask( TaskAttribute attribute, long delay )
       {
          this.delay = delay;
-         this.command = new Command( (Nexus)null, (CommandDescriptorBlock)null, attribute, 0, 0 );
+         this.command = new Command( (Nexus)null, (CDB)null, attribute, 0, 0 );
          _logger.debug("constructed TestTask: " + this);
       }
       

@@ -27,40 +27,25 @@
 //
 // END-OF-HEADER
 //-----------------------
-// @author: mmotwani
+// Author: wleggette
 //
-// Date: Oct 26, 2007
+// Date: Nov 5, 2007
 //---------------------
 
-package org.jscsi.scsi.protocol.cdb;
+package org.jscsi.scsi.protocol.sense.exceptions;
+
+import org.jscsi.scsi.protocol.sense.KCQ;
 
 // TODO: Describe class or interface
-public abstract class AbstractParameterCommandDescriptorBlock extends AbstractCommandDescriptorBlock
+public class OverlappedCommandsAttemptedException extends AbortedCommandException
 {
-   private long allocationLength;
 
-   public AbstractParameterCommandDescriptorBlock(int operationCode)
+   public OverlappedCommandsAttemptedException(boolean current)
    {
-      super(operationCode);
+      super(KCQ.OVERLAPPED_COMMANDS_ATTEMPTED, current);
    }
+   
 
-   public AbstractParameterCommandDescriptorBlock(
-         int operationCode,
-         boolean linked,
-         boolean normalACA,
-         long allocationLength)
-   {
-      super(operationCode, linked, normalACA);
-      this.allocationLength = allocationLength;
-   }
-
-   public long getAllocationLength()
-   {
-      return this.allocationLength;
-   }
-
-   public void setAllocationLength(long allocationLength)
-   {
-      this.allocationLength = allocationLength;
-   }
 }
+
+

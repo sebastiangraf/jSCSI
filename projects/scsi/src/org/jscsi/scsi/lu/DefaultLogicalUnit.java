@@ -1,6 +1,8 @@
 
 package org.jscsi.scsi.lu;
 
+import java.util.NoSuchElementException;
+
 import org.apache.log4j.Logger;
 import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.protocol.Command;
@@ -9,6 +11,8 @@ import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.management.TaskManager;
+import org.jscsi.scsi.tasks.management.TaskServiceResponse;
+import org.jscsi.scsi.tasks.management.TaskSet;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 // TODO: Describe class or interface
@@ -16,12 +20,19 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
 {
    private static Logger _logger = Logger.getLogger(DefaultLogicalUnit.class);
 
+   private TaskSet taskSet;
    private TaskManager taskManager;
    private InquiryDataRegistry inquiryDataRegistry;
    private TaskFactory taskFactory;
+   
+   private Thread manager;
 
-   protected DefaultLogicalUnit(TaskManager taskManager, InquiryDataRegistry inquiryDataRegistry)
+   protected DefaultLogicalUnit(
+         TaskSet taskSet, 
+         TaskManager taskManager, 
+         InquiryDataRegistry inquiryDataRegistry)
    {
+      this.taskSet = taskSet;
       this.taskManager = taskManager;
       this.inquiryDataRegistry = inquiryDataRegistry;
    }
@@ -52,13 +63,13 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
 
    public void start()
    {
-      Thread thread = new Thread(this.taskManager);
-      thread.start();
+      this.manager = new Thread(this.taskManager);
+      this.manager.start();
    }
 
    public void stop()
    {
-      this.taskManager.shutdown();
+      this.manager.interrupt();
    }
 
    protected TaskFactory getTaskFactory()
@@ -76,9 +87,36 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
       return this.inquiryDataRegistry;
    }
 
-   public void nexusLost()
+   public TaskServiceResponse abortTask(long taskTag)
+   {
+      try
+      {
+         if ( this.taskSet.remove(taskTag).abort() )
+         {
+            return TaskServiceResponse.FUNCTION_COMPLETE;
+         }
+         else
+         {
+            // probably failed abort() because the task was already done or is finishing
+            return TaskServiceResponse.FUNCTION_REJECTED;
+         }
+      }
+      catch (NoSuchElementException e)
+      {
+         return TaskServiceResponse.FUNCTION_REJECTED;
+      }
+      catch (InterruptedException e)
+      {
+         return TaskServiceResponse.SERVICE_DELIVERY_OR_TARGET_FAILURE;
+      }
+   }
+
+   public TaskServiceResponse abortTaskSet()
    {
       // TODO Auto-generated method stub
-
+      return null;
    }
+   
+   
+
 }

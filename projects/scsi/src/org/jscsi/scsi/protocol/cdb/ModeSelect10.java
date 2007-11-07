@@ -9,13 +9,12 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ModeSelect10 extends AbstractCommandDescriptorBlock
+public class ModeSelect10 extends AbstractParameterCDB
 {
    public static final int OPERATION_CODE = 0x55;
 
    private boolean PF;
    private boolean SP;
-   private int parameterListLength;
 
    protected ModeSelect10()
    {
@@ -29,10 +28,9 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
          boolean linked,
          boolean normalACA)
    {
-      super(OPERATION_CODE, linked, normalACA);
+      super(OPERATION_CODE, linked, normalACA, 0, parameterListLength);
       this.PF = pageFormat;
       this.SP = savePages;
-      this.parameterListLength = parameterListLength;
    }
 
    public ModeSelect10(boolean pageFormat, boolean savePages, int parameterListLength)
@@ -51,7 +49,7 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
       this.PF = (tmp >>> 4) != 0;
       tmp = in.readInt();
       tmp = in.readByte();
-      this.parameterListLength = in.readUnsignedShort();
+      this.setParameterLength(in.readUnsignedShort());
       super.setControl(in.readUnsignedByte());
 
       if (operationCode != OPERATION_CODE)
@@ -72,7 +70,7 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
          out.writeByte(((this.SP ? 0x01 : 0x00) | (this.PF ? 0x10 : 0x00)));
          out.writeInt(0);
          out.writeByte(0);
-         out.writeShort(this.parameterListLength);
+         out.writeShort((short)this.getParameterLength());
          out.writeByte(super.getControl());
 
          return cdb.toByteArray();
@@ -106,15 +104,5 @@ public class ModeSelect10 extends AbstractCommandDescriptorBlock
    public void setSP(boolean sp)
    {
       this.SP = sp;
-   }
-
-   public int getParameterListLength()
-   {
-      return this.parameterListLength;
-   }
-
-   public void setParameterListLength(int parameterListLength)
-   {
-      this.parameterListLength = parameterListLength;
    }
 }

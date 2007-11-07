@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ReportLuns extends AbstractParameterCommandDescriptorBlock
+public class ReportLuns extends AbstractParameterCDB
 {
    public static final int OPERATION_CODE = 0xA0;
 
@@ -22,7 +22,7 @@ public class ReportLuns extends AbstractParameterCommandDescriptorBlock
 
    public ReportLuns(int selectReport, boolean linked, boolean normalACA, int allocationLength)
    {
-      super(OPERATION_CODE, linked, normalACA, allocationLength);
+      super(OPERATION_CODE, linked, normalACA, allocationLength, 0);
 
       this.selectReport = selectReport;
    }

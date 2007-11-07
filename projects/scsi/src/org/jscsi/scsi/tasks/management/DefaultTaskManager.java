@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 import org.jscsi.scsi.exceptions.TaskSetException;
@@ -18,33 +19,26 @@ public class DefaultTaskManager implements TaskManager, TaskSet
    
    private static Logger _logger = Logger.getLogger(TaskSet.class);
    
-   ////////////////////////////////////////////////////////////////////////////
-   // TaskManager members
+   
    private ExecutorService _executor;
-   private boolean _running = false;
+   private final AtomicBoolean running = new AtomicBoolean(false);
+   
+   private TaskSet taskSet;
+   
+   private Thread currentThread = Thread.currentThread();
    
    
-   ////////////////////////////////////////////////////////////////////////////
-   // TaskSet members
-   private List<Task> _headOfQueue; // Queue of Head of Queue tasks
-   private List<Task> _soTaskQueue; // Simple/Ordered (SO) Task Queue
-   private TaskAttribute _soTaskState = null; // Simple/Ordered Task Queue state
-   private Map<Integer,Integer> _simplePriorityMap;
-   private Object _taskAdded;
    
    
    /////////////////////////////////////////////////////////////////////////////
    // constructor(s)
    
-   public DefaultTaskManager(int numThreads)
+   public DefaultTaskManager(int numThreads, TaskSet taskSet)
    {
       _executor = Executors.newFixedThreadPool(numThreads);
-      
-      _headOfQueue = Collections.synchronizedList(new LinkedList<Task>());
-      _soTaskQueue = Collections.synchronizedList(new LinkedList<Task>());
-      _simplePriorityMap = Collections.synchronizedMap(new HashMap<Integer, Integer>());
-      _taskAdded = new Object();
+      this.taskSet = taskSet;
    }
+   
    
    
    /////////////////////////////////////////////////////////////////////////////
@@ -52,139 +46,36 @@ public class DefaultTaskManager implements TaskManager, TaskSet
    
    public void run()
    {
-      _running = true;
-      Task nextTask;
+      this.running.set(true);
       
-      while (_running)
+      while (this.running.get())
       {
-         nextTask = null;
+         Task nextTask = null;
          try
          {
-            nextTask = _popTask(500);
-            _logger.debug("TaskManager discovered pending task: " + nextTask);
+            nextTask = this.taskSet.take();
+            this._executor.submit(nextTask);
+            _logger.debug("TaskManager executed task: " + nextTask);
          }
          catch (InterruptedException e)
          {
-            // TODO: wrap this exception and pass along to higher layer
-         }
-         if (nextTask != null)
-         {
-            _executor.submit(nextTask);
-            _logger.debug("TaskManager executed task: " + nextTask);
+            _logger.debug("Task manager thread interrupted.");
+            this.running.set(false);
          }
       }
+      _logger.info("Shutting down task manager.");
+      // stop processing tasks:
+      //  - clear task set
+      //  - wait for any outstanding tasks to finish executing
+      this.taskSet.clear();
       _executor.shutdown();
    }
    
    public void shutdown()
    {
-      _running = false;
-   }
-   
-
-   ////////////////////////////////////////////////////////////////////////////
-   // TaskSet implementation
-   
-   public void submitTask(Task task) throws TaskSetException
-   {
-      TaskAttribute attribute = task.getCommand().getTaskAttribute();
-      if (attribute == TaskAttribute.HEAD_OF_QUEUE)
-      {
-         this._addHeadOfQueue(task);
-      }
-      else
-      {
-         this._addSOTask(task, attribute);
-      }
-      _logger.debug("TaskSet queued new task <object: " + task + ", attribute: " + attribute + ">");
+      this.running.set(false);
+      this.currentThread.interrupt();
    }
    
    
-   ////////////////////////////////////////////////////////////////////////////
-   // private TaskSet queue accessors
-   
-   /**
-    * Non-blocking method for acquiring the next queued task.
-    * 
-    * 
-    * @return Task
-    */
-   
-   private Task _popTask(long timeout) throws InterruptedException
-   {
-      return _getNextQueuedTask(timeout);
-   }
-   
-   /**
-    * 
-    * @param timeout Time to wait 
-    * @return
-    */
-   private Task _getNextQueuedTask(long timeout) throws InterruptedException
-   {
-      Task retval = null;
-      
-      if (_headOfQueue.size() == 0 && _soTaskQueue.size() == 0)
-      {
-         synchronized (_taskAdded)
-         {
-            _taskAdded.wait(timeout);
-         }
-      }
-
-      if (_headOfQueue.size() > 0)
-      {
-         retval = _headOfQueue.remove(0);
-      }
-      else if (_soTaskQueue.size() > 0)
-      {
-         retval = _soTaskQueue.remove(0);
-      }
-      return retval;
-   }
-   
-   private void _addSOTask(Task task, TaskAttribute attribute) throws TaskSetException
-   {
-      if (attribute == TaskAttribute.SIMPLE && _soTaskState != TaskAttribute.SIMPLE)
-      {
-         _soTaskQueue.add(task);
-         _simplePriorityMap.clear();
-      }
-      else if (attribute == TaskAttribute.SIMPLE && _soTaskState == TaskAttribute.SIMPLE)
-      {
-         int priority = task.getCommand().getTaskPriority();
-         
-         if (priority == 0)
-         {
-            // TODO: see SAM:8.7
-            // Should inspect I_T_L nexus "SET PRIORITY", and define vendor-specific
-            // behavior should "SET PRIORITY" not be available or set.  For now, that
-            // vendor behavior is to simply enqueue the task at the tail.
-            _soTaskQueue.add(task);
-         }
-         else
-         {
-            // TODO: implement task prioritized queuing here
-            _soTaskQueue.add(task);
-         }
-      }
-      else
-      {
-         _soTaskQueue.add(task);
-      }
-      _soTaskState = attribute;
-      synchronized (_taskAdded)
-      {
-         _taskAdded.notify();
-      }
-   }
-   
-   private void _addHeadOfQueue(Task task)
-   {
-      _headOfQueue.add(0, task);
-      synchronized ( _taskAdded )
-      {
-         _taskAdded.notify();
-      }
-   }
 }
