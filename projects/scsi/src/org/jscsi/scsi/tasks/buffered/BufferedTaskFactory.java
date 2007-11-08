@@ -23,12 +23,12 @@ import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
-public class MemoryTaskFactory implements TaskFactory
+public class BufferedTaskFactory implements TaskFactory
 {
-   private static Logger _logger = Logger.getLogger(MemoryTaskFactory.class);
+   private static Logger _logger = Logger.getLogger(BufferedTaskFactory.class);
 
-   private static Map<Class<? extends CDB>, Class<? extends MemoryTask>> _tasks =
-      new HashMap<Class<? extends CDB>, Class<? extends MemoryTask>>();
+   private static Map<Class<? extends CDB>, Class<? extends BufferedTask>> _tasks =
+      new HashMap<Class<? extends CDB>, Class<? extends BufferedTask>>();
 
    private ByteBuffer store;
    private int blockLength;
@@ -37,17 +37,17 @@ public class MemoryTaskFactory implements TaskFactory
 
    static
    {
-      MemoryTaskFactory._tasks.put(Read6.class, MemoryReadTask.class);
-      MemoryTaskFactory._tasks.put(Read10.class, MemoryReadTask.class);
-      MemoryTaskFactory._tasks.put(Read12.class, MemoryReadTask.class);
-      MemoryTaskFactory._tasks.put(Read16.class, MemoryReadTask.class);
-      MemoryTaskFactory._tasks.put(Write6.class, MemoryWriteTask.class);
-      MemoryTaskFactory._tasks.put(Write10.class, MemoryWriteTask.class);
-      MemoryTaskFactory._tasks.put(Write12.class, MemoryWriteTask.class);
-      MemoryTaskFactory._tasks.put(Write16.class, MemoryWriteTask.class);
+      BufferedTaskFactory._tasks.put(Read6.class, BufferedReadTask.class);
+      BufferedTaskFactory._tasks.put(Read10.class, BufferedReadTask.class);
+      BufferedTaskFactory._tasks.put(Read12.class, BufferedReadTask.class);
+      BufferedTaskFactory._tasks.put(Read16.class, BufferedReadTask.class);
+      BufferedTaskFactory._tasks.put(Write6.class, BufferedWriteTask.class);
+      BufferedTaskFactory._tasks.put(Write10.class, BufferedWriteTask.class);
+      BufferedTaskFactory._tasks.put(Write12.class, BufferedWriteTask.class);
+      BufferedTaskFactory._tasks.put(Write16.class, BufferedWriteTask.class);
    }
 
-   public MemoryTaskFactory(ByteBuffer store,
+   public BufferedTaskFactory(ByteBuffer store,
                             int blockLength,
                             ModePageRegistry modePageRegistry,
                             InquiryDataRegistry inquiryDataRegistry)
@@ -62,7 +62,7 @@ public class MemoryTaskFactory implements TaskFactory
                            Command command)
    throws IllegalRequestException
    {
-      Class<? extends MemoryTask> taskClass =
+      Class<? extends BufferedTask> taskClass =
          _tasks.get(command.getCommandDescriptorBlock().getClass());
 
       if (taskClass != null)
