@@ -4,6 +4,9 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jscsi.scsi.protocol.Command;
+import org.jscsi.scsi.protocol.cdb.CDB;
+import org.jscsi.scsi.protocol.cdb.ParameterCDB;
+import org.jscsi.scsi.protocol.cdb.TransferCDB;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
@@ -139,6 +142,36 @@ public abstract class AbstractTask implements Task
             this.command.getCommandReferenceNumber(),
             input );
    }
+   
+   protected final boolean writeData(byte[] input) throws InterruptedException
+   {
+      if (Thread.interrupted())
+         throw new InterruptedException();
+      
+      // check how much data may be returned
+      CDB cdb = this.command.getCommandDescriptorBlock();
+      long transferLength = 0;
+      if ( cdb instanceof TransferCDB )
+      {
+         transferLength = ((TransferCDB)cdb).getTransferLength();
+      }
+      else if ( cdb instanceof ParameterCDB )
+      {
+         transferLength = ((ParameterCDB)cdb).getAllocationLength();
+      }
+      // If the CDB is not a transfer or parameter CDB no data should be transfered
+      
+      // We allocate a byte buffer of transfer length and write either all input data
+      // or up to the transfer length in input data.
+      ByteBuffer data = ByteBuffer.allocate((int)transferLength);
+      data.put(input, 0, (int)Math.max(transferLength, input.length));
+      
+      return this.targetPort.writeData(
+            this.command.getNexus(),
+            this.command.getCommandReferenceNumber(),
+            data );
+   }
+   
    
    protected final void writeResponse(Status status, ByteBuffer senseData)
    {
