@@ -11,9 +11,9 @@ import org.jscsi.scsi.tasks.AbstractTask;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
-public abstract class MemoryTask extends AbstractTask
+public abstract class BufferedTask extends AbstractTask
 {
-   private static Logger _logger = Logger.getLogger(MemoryTask.class);
+   private static Logger _logger = Logger.getLogger(BufferedTask.class);
 
    protected int blockSize;
    protected ByteBuffer store;
@@ -23,12 +23,12 @@ public abstract class MemoryTask extends AbstractTask
    // constructor(s)
    
    
-   public MemoryTask()
+   public BufferedTask()
    {
       super();
    }
 
-   public MemoryTask(ByteBuffer store,
+   public BufferedTask(ByteBuffer store,
                      int blockSize,
                      TargetTransportPort targetPort,
                      Command command,

@@ -14,11 +14,11 @@ import org.jscsi.scsi.protocol.sense.exceptions.SynchronousDataTransferErrorExce
 import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
-public class MemoryWriteTask extends MemoryTask
+public class BufferedWriteTask extends BufferedTask
 {
-   private static Logger _logger = Logger.getLogger(MemoryWriteTask.class);
+   private static Logger _logger = Logger.getLogger(BufferedWriteTask.class);
 
-   public MemoryWriteTask()
+   public BufferedWriteTask()
    {
       super();
    }
