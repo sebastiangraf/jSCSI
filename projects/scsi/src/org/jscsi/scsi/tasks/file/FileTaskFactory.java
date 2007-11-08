@@ -1,4 +1,3 @@
-
 package org.jscsi.scsi.tasks.file;
 
 import java.nio.ByteBuffer;
