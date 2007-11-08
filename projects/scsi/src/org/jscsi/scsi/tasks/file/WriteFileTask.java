@@ -65,6 +65,4 @@ public class WriteFileTask extends FileTask
       this.writeResponse(Status.GOOD, null);
       
    }
-
-
 }
