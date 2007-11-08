@@ -15,13 +15,12 @@ public abstract class FileTask extends AbstractTask
 {
    protected ByteBuffer file;
    protected int blockLength;
-   
 
    public FileTask()
    {
       super();
    }
-   
+
    public FileTask(
          ByteBuffer file,
          int blockLength,
@@ -34,12 +33,12 @@ public abstract class FileTask extends AbstractTask
       this.file = file;
       this.blockLength = blockLength;
    }
-   
+
    /**
     * Executes the task operation.
     */
    protected abstract void execute(
-         ByteBuffer file, 
+         ByteBuffer file,
          int blockLength,
          TargetTransportPort targetPort,
          Command command,
@@ -55,9 +54,9 @@ public abstract class FileTask extends AbstractTask
    {
       this.execute(file, blockLength, targetPort, command, modePageRegistry, inquiryDataRegistry);
    }
-   
+
    protected final Task load(
-         ByteBuffer file, 
+         ByteBuffer file,
          int blockLength,
          TargetTransportPort targetPort,
          Command command,
@@ -69,14 +68,11 @@ public abstract class FileTask extends AbstractTask
       super.load(targetPort, command, modePageRegistry, inquiryDataRegistry);
       return this;
    }
-   
+
    protected long getFileCapacity()
    {
-      if ( file.limit() % blockLength != 0 )
+      if (file.limit() % blockLength != 0)
          throw new RuntimeException("invalid file length; not mulitple of block size");
       return file.limit() / blockLength;
    }
-
-   
-   
 }
