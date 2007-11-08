@@ -29,9 +29,9 @@ public class DefaultTaskRouter implements TaskRouter
    ////////////////////////////////////////////////////////////////////////////
    // data members
 
-   private DefaultTaskManager _targetTaskManager;
-   private Map<Long, LogicalUnit> _logicalUnitMap;
-   private TaskFactory _taskFactory;
+   private DefaultTaskManager targetTaskManager;
+   private Map<Long, LogicalUnit> logicalUnitMap;
+   private TaskFactory taskFactory;
 
 
    ////////////////////////////////////////////////////////////////////////////
@@ -40,14 +40,15 @@ public class DefaultTaskRouter implements TaskRouter
    
    public DefaultTaskRouter(ModePageRegistry modePageRegistry)
    {
-      this(new TargetTaskFactory(modePageRegistry));
+      this.logicalUnitMap = new ConcurrentHashMap<Long, LogicalUnit>();
+      this.taskFactory = new TargetTaskFactory(this.logicalUnitMap.keySet(), modePageRegistry);
    }
    
    public DefaultTaskRouter(TaskFactory taskFactory)
    {
-      _logicalUnitMap = new ConcurrentHashMap<Long, LogicalUnit>();
-      _targetTaskManager = new DefaultTaskManager(DEFAULT_TARGET_TASK_MANAGER_THREAD_COUNT);
-      _taskFactory = taskFactory;
+      logicalUnitMap = new ConcurrentHashMap<Long, LogicalUnit>();
+      targetTaskManager = new DefaultTaskManager(DEFAULT_TARGET_TASK_MANAGER_THREAD_COUNT);
+      taskFactory = taskFactory;
    }
 
 
@@ -62,7 +63,7 @@ public class DefaultTaskRouter implements TaskRouter
       {
          try
          {
-            _targetTaskManager.submitTask(_taskFactory.getInstance(port, command));
+            targetTaskManager.submitTask(taskFactory.getInstance(port, command));
          }
          // thrown by the TaskManager
          catch (TaskSetException e)
@@ -83,9 +84,9 @@ public class DefaultTaskRouter implements TaskRouter
                   ByteBuffer.wrap(e.encode()));
          }
       }
-      else if ( _logicalUnitMap.containsKey(lun) )
+      else if ( logicalUnitMap.containsKey(lun) )
       {
-         _logicalUnitMap.get(lun).enqueue(port, command);
+         logicalUnitMap.get(lun).enqueue(port, command);
       }
       else
       {
@@ -107,13 +108,13 @@ public class DefaultTaskRouter implements TaskRouter
    public void registerLogicalUnit(long id, LogicalUnit lu) throws Exception
    {
       lu.start();
-      _logicalUnitMap.put(id, lu);
+      logicalUnitMap.put(id, lu);
       _logger.debug("registering logical unit: " + lu + " (id: " + id + ")");
    }
 
    public void removeLogicalUnit(long id) throws Exception
    {
-      LogicalUnit discardedLU = _logicalUnitMap.remove(id);
+      LogicalUnit discardedLU = logicalUnitMap.remove(id);
       discardedLU.stop();
       _logger.debug("removing logical unit: " + discardedLU);
    }

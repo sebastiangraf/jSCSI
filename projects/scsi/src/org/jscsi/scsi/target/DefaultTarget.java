@@ -13,6 +13,7 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class DefaultTarget extends AbstractTarget
 {
+   private List<>
    private TaskRouter _taskRouter;
 
    public DefaultTarget(String targetName) throws Exception

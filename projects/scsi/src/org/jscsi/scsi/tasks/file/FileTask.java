@@ -69,7 +69,7 @@ public abstract class FileTask extends AbstractTask
       return this;
    }
 
-   protected long getFileCapacity()
+   protected final long getFileCapacity()
    {
       if (file.limit() % blockLength != 0)
          throw new RuntimeException("invalid file length; not mulitple of block size");

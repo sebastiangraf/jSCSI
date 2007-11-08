@@ -9,12 +9,12 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ReadCapacity16 extends AbstractTransferCDB
+public class ReadCapacity16 extends AbstractParameterCDB
 {
    public static final int OPERATION_CODE = 0x9E;
    public static final int SERVICE_ACTION = 0x10;
 
-   private int allocationLength;
+   private long logicalBlockAddress;
    private boolean PMI;
 
    public ReadCapacity16()
@@ -29,9 +29,9 @@ public class ReadCapacity16 extends AbstractTransferCDB
          boolean normalACA,
          long logicalBlockAddress)
    {
-      super(OPERATION_CODE, linked, normalACA, logicalBlockAddress, 0);
+      super(OPERATION_CODE, linked, normalACA, allocationLength, 0);
 
-      this.allocationLength = allocationLength;
+      this.logicalBlockAddress = logicalBlockAddress;
       this.PMI = pmi;
    }
 
@@ -46,8 +46,8 @@ public class ReadCapacity16 extends AbstractTransferCDB
 
       int operationCode = in.readUnsignedByte();
       int serviceAction = in.readUnsignedByte() & 0x1F;
-      setLogicalBlockAddress(in.readLong());
-      this.allocationLength = in.readInt();
+      this.logicalBlockAddress = in.readLong();
+      this.setAllocationLength(in.readInt());
       this.PMI = (in.readByte() & 0x01) == 1;
       super.setControl(in.readUnsignedByte());
 
@@ -70,8 +70,8 @@ public class ReadCapacity16 extends AbstractTransferCDB
       {
          out.writeByte(OPERATION_CODE);
          out.writeByte(SERVICE_ACTION);
-         out.writeLong(getLogicalBlockAddress());
-         out.writeInt(this.allocationLength);
+         out.writeLong(this.logicalBlockAddress);
+         out.writeInt((int)this.getAllocationLength());
          out.writeByte(this.PMI ? 1 : 0);
          out.writeByte(super.getControl());
 
@@ -93,14 +93,14 @@ public class ReadCapacity16 extends AbstractTransferCDB
       return SERVICE_ACTION;
    }
 
-   public int getAllocationLength()
+   public long getLogicalBlockAddress()
    {
-      return this.allocationLength;
+      return logicalBlockAddress;
    }
 
-   public void setAllocationLength(int allocationLength)
+   public void setLogicalBlockAddress(long logicalBlockAddress)
    {
-      this.allocationLength = allocationLength;
+      this.logicalBlockAddress = logicalBlockAddress;
    }
 
    public boolean isPMI()

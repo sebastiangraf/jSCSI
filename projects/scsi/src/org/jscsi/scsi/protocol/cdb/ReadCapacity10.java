@@ -9,11 +9,12 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-public class ReadCapacity10 extends AbstractTransferCDB
+public class ReadCapacity10 extends AbstractParameterCDB
 {
    public static final int OPERATION_CODE = 0x25;
 
    private boolean PMI;
+   private long logicalBlockAddress;
 
    public ReadCapacity10()
    {
@@ -22,8 +23,9 @@ public class ReadCapacity10 extends AbstractTransferCDB
 
    public ReadCapacity10(boolean pmi, boolean linked, boolean normalACA, int logicalBlockAddress)
    {
-      super(OPERATION_CODE, linked, normalACA, logicalBlockAddress, 0);
+      super(OPERATION_CODE, linked, normalACA, 8, 0);
 
+      this.logicalBlockAddress = logicalBlockAddress;
       this.PMI = pmi;
    }
 
@@ -38,7 +40,7 @@ public class ReadCapacity10 extends AbstractTransferCDB
 
       int operationCode = in.readUnsignedByte();
       in.readByte();
-      setLogicalBlockAddress(in.readInt());
+      this.logicalBlockAddress = in.readInt();
       in.readShort();
       this.PMI = (in.readUnsignedByte() & 1) != 0;
       super.setControl(in.readUnsignedByte());
@@ -58,7 +60,7 @@ public class ReadCapacity10 extends AbstractTransferCDB
       {
          out.writeByte(OPERATION_CODE);
          out.writeByte(0);
-         out.writeInt((int) getLogicalBlockAddress());
+         out.writeInt((int)this.logicalBlockAddress);
          out.writeShort(0);
          out.writeByte(this.PMI ? 1 : 0);
          out.writeByte(super.getControl());
@@ -85,4 +87,16 @@ public class ReadCapacity10 extends AbstractTransferCDB
    {
       this.PMI = pmi;
    }
+
+   public long getLogicalBlockAddress()
+   {
+      return logicalBlockAddress;
+   }
+
+   public void setLogicalBlockAddress(long logicalBlockAddress)
+   {
+      this.logicalBlockAddress = logicalBlockAddress;
+   }
+   
+   
 }
