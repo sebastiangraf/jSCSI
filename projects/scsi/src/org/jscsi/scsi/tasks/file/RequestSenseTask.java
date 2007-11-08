@@ -1,6 +1,8 @@
 
 package org.jscsi.scsi.tasks.file;
-import java.nio.BufferOverflowException;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.Command;
@@ -11,7 +13,6 @@ import org.jscsi.scsi.protocol.sense.DescriptorSenseData;
 import org.jscsi.scsi.protocol.sense.FixedSenseData;
 import org.jscsi.scsi.protocol.sense.KCQ;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
-import org.jscsi.scsi.tasks.AbstractTask;
 import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
@@ -35,33 +36,31 @@ public class RequestSenseTask extends FileTask
    {
       RequestSense cdb = (RequestSense)command.getCommandDescriptorBlock();
       
-      ByteBuffer data = ByteBuffer.allocate((int)cdb.getAllocationLength());
+      ByteArrayOutputStream bs = new ByteArrayOutputStream();
+      DataOutputStream out = new DataOutputStream(bs);
       
       try
       {
          if ( cdb.isDESC() )
          {
-            data.put( (new DescriptorSenseData()).encode() );
+            this.writeData((new DescriptorSenseData()).encode());
          }
          else
          {
-            data.put((new FixedSenseData(true, KCQ.NO_ERROR, null, null, null)).encode());
+            this.writeData((new FixedSenseData(true, KCQ.NO_ERROR, null, null, null)).encode());
          }
+         
+         out.writeLong(this.getFileCapacity());
+         out.writeLong((long)blockLength);
+         out.writeByte(0);    // RTO_EN and PROT_EN set to false; do not support protection info
+         // the remaining bytes are reserved
       }
-      catch (BufferOverflowException e)
+      catch (IOException e1)
       {
-         /*
-          * The client's allocation length was not enough for return information. SBC-2 specifies
-          * that no indication of this event shall be returned to the client.
-          * 
-          * Note that because and exception is thrown the final write will not actually proceed.
-          * This slightly violates SBC-2. However, proper initiator behavior will yield and
-          * adequate allocation length and improper initiators will receive a capacity or block
-          * length of zero. This is actually probably the best approach.
-          */
-      }
+         throw new RuntimeException("unable to encode READ CAPACITY (10) parameter data");
+      } 
       
-      this.writeData(data);
+      this.writeData(bs.toByteArray());
       this.writeResponse(Status.GOOD, null);
    }
 }
