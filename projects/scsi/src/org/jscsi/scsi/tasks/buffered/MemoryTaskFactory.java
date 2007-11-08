@@ -1,4 +1,4 @@
-package org.jscsi.scsi.tasks.memory;
+package org.jscsi.scsi.tasks.buffered;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
