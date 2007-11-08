@@ -27,6 +27,10 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
    
    private Thread manager;
 
+   protected DefaultLogicalUnit()
+   {
+   }
+   
    protected DefaultLogicalUnit(
          TaskSet taskSet, 
          TaskManager taskManager, 
@@ -36,6 +40,7 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
       this.taskManager = taskManager;
       this.inquiryDataRegistry = inquiryDataRegistry;
    }
+   
 
    public void enqueue(TargetTransportPort port, Command command)
    {
@@ -72,21 +77,7 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
       this.manager.interrupt();
    }
 
-   protected TaskFactory getTaskFactory()
-   {
-      return this.taskFactory;
-   }
-
-   protected void setTaskFactory(TaskFactory taskFactory)
-   {
-      this.taskFactory = taskFactory;
-   }
-
-   protected InquiryDataRegistry getInquiryDataRegistry()
-   {
-      return this.inquiryDataRegistry;
-   }
-
+   @Override
    public TaskServiceResponse abortTask(long taskTag)
    {
       try
@@ -116,7 +107,49 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
       // TODO Auto-generated method stub
       return null;
    }
-   
-   
 
+   
+   /////////////////////////////////////////////////////////////////////////////
+   // getters/setters
+   
+   
+   public TaskSet getTaskSet()
+   {
+      return taskSet;
+   }
+
+   public void setTaskSet(TaskSet taskSet)
+   {
+      this.taskSet = taskSet;
+   }
+
+   public TaskManager getTaskManager()
+   {
+      return taskManager;
+   }
+
+   public void setTaskManager(TaskManager taskManager)
+   {
+      this.taskManager = taskManager;
+   }
+
+   public InquiryDataRegistry getInquiryDataRegistry()
+   {
+      return inquiryDataRegistry;
+   }
+
+   public void setInquiryDataRegistry(InquiryDataRegistry inquiryDataRegistry)
+   {
+      this.inquiryDataRegistry = inquiryDataRegistry;
+   }
+
+   public TaskFactory getTaskFactory()
+   {
+      return taskFactory;
+   }
+
+   public void setTaskFactory(TaskFactory taskFactory)
+   {
+      this.taskFactory = taskFactory;
+   }
 }
