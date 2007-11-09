@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.jscsi.core.exceptions.NotImplementedException;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.CDB;
 import org.jscsi.scsi.tasks.Task;
@@ -190,8 +191,12 @@ public class GeneralTaskManagerTest
          super.reset();
          this.properStart = false;
       }
-      
-      
+
+      @Override
+      public boolean abort()
+      {
+         throw new NotImplementedException("abort facility must be implemented");
+      }
    }
    
    
@@ -281,6 +286,12 @@ public class GeneralTaskManagerTest
          super.reset();
          this.properStart = false;
       }
+
+      @Override
+      public boolean abort()
+      {
+         throw new NotImplementedException("abort facility must be implemented");
+      }
       
    }
    
@@ -352,12 +363,14 @@ public class GeneralTaskManagerTest
          super.reset();
          this.properStart = false;
       }
-      
-      
+
+      @Override
+      public boolean abort()
+      {
+         throw new NotImplementedException("abort facility must be implemented");
+      }
    }
-   
-   
-   
+
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
    {
@@ -377,9 +390,7 @@ public class GeneralTaskManagerTest
    public void tearDown() throws Exception
    {
    }
-   
-   
-   
+      
    /*
     * Below we test the TestTask classes for detection capability. The following
     * table shows insertion orders and execution orders on those sets. Those execution
@@ -469,7 +480,6 @@ public class GeneralTaskManagerTest
       
       
    }
-   
    
    @Test
    public void internalTest_HO()
@@ -578,8 +588,4 @@ public class GeneralTaskManagerTest
             false,
             true );
    }
-   
-
 }
-
-
