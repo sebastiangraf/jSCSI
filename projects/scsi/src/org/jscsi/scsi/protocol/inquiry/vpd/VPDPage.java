@@ -56,12 +56,12 @@ public abstract class VPDPage implements Encodable
 
       try
       {
-         // byte 1
+         // byte 0
          int b0 = this.getPeripheralQualifier() << 5;
          b0 |= this.getPeripheralDeviceType();
          dataOut.writeByte(b0);
 
-         // byte 2
+         // byte 1
          dataOut.writeByte(this.getPageCode());
 
          // Write mode parameters
@@ -77,28 +77,22 @@ public abstract class VPDPage implements Encodable
 
    public void decode(byte[] header, ByteBuffer buffer) throws IOException
    {
-      int dataLength;
       int pageLength;
 
-      this.parametersSavable = ((header[0] >>> 7) & 0x01) == 1;
-      this.subPageFormat = ((header[0] >>> 6) & 0x01) == 1;
-      this.pageCode = (byte) (header[0] & 0x3F);
-
-      if (this.subPageFormat)
-      {
-         this.subPageCode = header[1];
-         pageLength = ((int) header[2] << 8) | header[3];
-         dataLength = pageLength - 4;
-      }
-      else
-      {
-         this.subPageCode = -1;
-         pageLength = header[1];
-         dataLength = pageLength - 2;
-      }
-
+      // byte 0
+      this.peripheralQualifier = header[0] >>> 5;
+      this.peripheralDeviceType = header[0] & 0x1F;
+      
+      // byte 1
+      this.pageCode = (byte)header[1];
+      
+      // byte 2 - 3
+      pageLength = header[2];
+      pageLength = pageLength << 8;
+      pageLength |= header[3];
+      
       DataInputStream dataIn = new DataInputStream(new ByteBufferInputStream(buffer));
-      decodeModeParameters(dataLength, dataIn);
+      decodeVPDParameters(pageLength, dataIn);
    }
 
    
@@ -131,7 +125,7 @@ public abstract class VPDPage implements Encodable
       return pageCode;
    }
 
-   public void setPageCode(int pageCode)
+   public void setPageCode(byte pageCode)
    {
       this.pageCode = pageCode;
    }
