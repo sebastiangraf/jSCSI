@@ -6,586 +6,399 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.jscsi.core.exceptions.NotImplementedException;
-import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.cdb.CDB;
+import org.apache.log4j.xml.DOMConfigurator;
+import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.tasks.Task;
-import org.jscsi.scsi.tasks.TaskAttribute;
-import org.jscsi.scsi.transport.Nexus;
-import org.jscsi.scsi.transport.TargetTransportPort;
+import org.jscsi.scsi.tasks.management.DefaultTaskManager;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * Tests task manager implementations for proper execution ordering.
- */
-public class DefaultTaskManagerTest
+public class DefaultTaskManagerTest extends GeneralTaskManagerTest
 {
-   static
-   {
-      BasicConfigurator.configure();
-   }
-
-   public static abstract class TestTask implements Task
-   {
-      private static Logger _logger = Logger.getLogger(TestTask.class);
-      
-      private Command command;
-      private long delay;
-      private Boolean done = false;
-      
-      public TestTask( TaskAttribute attribute, long delay )
-      {
-         this.delay = delay;
-         this.command = new Command( (Nexus)null, (CDB)null, attribute, 0, 0 );
-         _logger.debug("constructed TestTask: " + this);
-      }
-      
-      /**
-       * Returns <code>true</code> if the task has finished executing; <code>false</code>
-       * otherwise.
-       */
-      public boolean isDone()
-      {
-         synchronized ( this )
-         {
-            return this.done;
-         }
-      }
-      
-      /**
-       * Returns <code>true</code> if the task was executed in the proper order;
-       * <code>false</code> otherwise.
-       */
-      public abstract boolean isProper();
-      
-      /**
-       * Returns reason for improper execution.
-       */
-      public abstract String reason();
-      
-      /**
-       * Checks for proper execution in a static task set. If tasks are added to a Task Manager's
-       * queue set after execution has begun this method may cause improper results to be returned
-       * from {@link #isProper()}.
-       * 
-       */
-      protected abstract void checkProperExecution();
-      
-      /**
-       * Resets task completion state.
-       */
-      public void reset()
-      {
-         this.done = false;
-      }
-      
-      
-      public void run()
-      {
-         assert this.done == false: "This task has already been executed!";
-
-         _logger.debug("executing task: " + this);
-         this.checkProperExecution();
-         
-         try
-         {
-            Thread.sleep(this.delay);
-         }
-         catch (InterruptedException e)
-         {
-            e.printStackTrace();
-         }
-         synchronized ( this )
-         {
-            this.done = true;
-            this.notifyAll();
-         }
-      }
-      
-      public Command getCommand()
-      {
-         return this.command;
-      }
-
-      public TargetTransportPort getTargetTransportPort()
-      {
-         return null;
-      }
-   }
    
-   public static class SimpleTask extends TestTask
-   {
-      private List<TestTask> taskSet;
-      private int index;
-      private Boolean properStart = false;
-      private String reason;
-      
-      public SimpleTask( List<TestTask> taskSet, long delay )
-      {
-         super(TaskAttribute.SIMPLE, delay);
-         
-         synchronized ( taskSet )
-         {
-            this.index = taskSet.size();
-            taskSet.add(this);
-         }
-         this.taskSet = taskSet;
-      }
-      
-      @Override
-      protected void checkProperExecution()
-      {
-         synchronized ( this.taskSet )
-         {
-            this.properStart = true;
-            for ( int i = 0; i < this.index; i++ )
-            {
-               TestTask t = this.taskSet.get(i);
-               if ( (t instanceof HeadOfQueueTask) && (! t.isDone()) )
-               {
-                  this.properStart = false;
-                  this.reason = "Previously inserted Head Of Queue Task not finished";
-               }
-               else if ( (t instanceof OrderedTask) && (! t.isDone()) )
-               {
-                  this.properStart = false;
-                  this.reason = "Previously inserted Ordered Task not finished";
-               }
-            }
-            for ( int i = this.index + 1; i < this.taskSet.size(); i++ )
-            {
-               TestTask t = this.taskSet.get(i);
-               if ( (t instanceof HeadOfQueueTask) && (! t.isDone()) )
-               {
-                  this.properStart = false;
-                  this.reason = "Later inserted Head Of Queue Task not finished";
-               }
-               else if ( (t instanceof OrderedTask) && t.isDone() )
-               {
-                  this.properStart = false;
-                  this.reason = "Later inserted Ordered Task preemptively finished";
-               }
-            }
-         }  
-      }
-
-      public boolean isProper()
-      {
-         return this.properStart;
-      }
-      
-      public String reason()
-      {
-         return this.reason;
-      }
-
-      @Override
-      public void reset()
-      {
-         super.reset();
-         this.properStart = false;
-      }
-
-      @Override
-      public boolean abort()
-      {
-         throw new NotImplementedException("abort facility must be implemented");
-      }
-   }
+   public static final int MANAGER_THREAD_COUNT = 1; // 1 thread is an arbitrary value
    
    
-   public static class HeadOfQueueTask extends TestTask
-   {
-
-      private static Logger _logger = Logger.getLogger(HeadOfQueueTask.class);
-      
-      private List<TestTask> taskSet;
-      private int index;
-      private boolean properStart = true;
-      private String reason = "Unknown reason";
-      
-      
-      public HeadOfQueueTask( List<TestTask> taskSet, long delay )
-      {
-         super(TaskAttribute.HEAD_OF_QUEUE, delay);
-         
-         synchronized ( taskSet )
-         {
-            this.index = taskSet.size();
-            taskSet.add(this);
-         }
-         this.taskSet = taskSet;
-      }
-
-      public boolean isProper()
-      {
-         return this.properStart;
-      }
-      
-      @Override
-      protected void checkProperExecution()
-      {
-         synchronized ( this.taskSet )
-         {
-
-            this.properStart = true;
-
-            for ( int i = 0; i < this.index; i++ )
-            {
-               TestTask t = this.taskSet.get(i);
-               if ( (t instanceof HeadOfQueueTask) && t.isDone() )
-               {
-                  this.properStart = false;
-                  this.reason = "Previously inserted Head Of Queue Task finished preemptively";
-               }
-               else if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
-               {
-                  this.properStart = false;
-                  this.reason = "Previously inserted task preemptively finished";
-               }
-            }
-            for ( int i = this.index + 1; i < this.taskSet.size(); i++ )
-            {
-               TestTask t = this.taskSet.get(i);
-               if ( (t instanceof HeadOfQueueTask) && (!t.isDone()) )
-               {
-                  this.properStart = false;
-                  this.reason = "Later inserted Head Of Queue Task not finished";
-               }
-               else if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
-               {
-                  this.properStart = false;
-                  this.reason = "Later inserted task preemptively finished";
-                  
-               }
-            }
-         }
-         if (!this.properStart)
-         {
-            _logger.error("Task not started properly");
-         }
-      }
-      
-      public String reason()
-      {
-         synchronized (this.taskSet)
-         {
-            return this.reason;
-         }
-      }
-      
-      @Override
-      public void reset()
-      {
-         super.reset();
-         this.properStart = false;
-      }
-
-      @Override
-      public boolean abort()
-      {
-         throw new NotImplementedException("abort facility must be implemented");
-      }
-      
-   }
-   
-   public static class OrderedTask extends TestTask
-   {
-      private List<TestTask> taskSet;
-      private int index;
-      private Boolean properStart = false;
-      private String reason;
-      
-      public OrderedTask( List<TestTask> taskSet, long delay )
-      {
-         super(TaskAttribute.ORDERED, delay);
-         
-         synchronized ( taskSet )
-         {
-            this.index = taskSet.size();
-            taskSet.add(this);
-         }
-         this.taskSet = taskSet;
-      }
-
-      @Override
-      protected void checkProperExecution()
-      {
-         synchronized ( this.taskSet )
-         {
-            this.properStart = true;
-            for ( int i = 0; i < this.index; i++ )
-            {
-               TestTask t = this.taskSet.get(i);
-               if ( ! t.isDone() )
-               {
-                  this.properStart = false;
-                  this.reason = "Previously inserted Task not finished";
-               }
-            }
-            for ( int i = this.index + 1; i < this.taskSet.size(); i++ )
-            {
-               TestTask t = this.taskSet.get(i);
-               if ( (t instanceof HeadOfQueueTask) && (! t.isDone()) )
-               {
-                  this.properStart = false;
-                  this.reason = "Later inserted Head Of Queue Task not finished";
-               }
-               else if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
-               {
-                  this.properStart = false;
-                  this.reason = "Later inserted Task preemptively finished";
-               }
-            }
-         }
-      }
-
-      @Override
-      public boolean isProper()
-      {
-         return this.properStart;
-      }
-      
-      public String reason()
-      {
-         return this.reason;
-      }
-      
-      @Override
-      public void reset()
-      {
-         super.reset();
-         this.properStart = false;
-      }
-
-      @Override
-      public boolean abort()
-      {
-         throw new NotImplementedException("abort facility must be implemented");
-      }
-   }
-
-   @BeforeClass
-   public static void setUpBeforeClass() throws Exception
-   {
-   }
-
-   @AfterClass
-   public static void tearDownAfterClass() throws Exception
-   {
-   }
-
    @Before
    public void setUp() throws Exception
    {
+      DOMConfigurator.configure(System.getProperty("log4j.configuration"));
    }
 
    @After
    public void tearDown() throws Exception
    {
    }
-      
-   /*
-    * Below we test the TestTask classes for detection capability. The following
-    * table shows insertion orders and execution orders on those sets. Those execution
-    * orders which are incorrect are marked with 'Failure'.
-    * 
-    * H - Head of Queue Tasks
-    * O - Ordered Tasks
-    * S - Simple Tasks
-    * 
-    *    Insertion    Execution    Result
-    *    -----------  -----------  -----------
-    *     H, 0         H, O
-    *                  O, H         Failure
-    *    -----------  -----------  -----------
-    *     H, S         H, S
-    *                  S, H         Failure
-    *    -----------  -----------  -----------
-    *     O, H         O, H         Failure
-    *                  H, O
-    *    -----------  -----------  -----------
-    *     O, S         O, S
-    *                  S, O         Failure
-    *    -----------  -----------  -----------
-    *     S, H         S, H         Failure
-    *                  H, S 
-    *    -----------  -----------  -----------
-    *     S, O         S, O
-    *                  O, S         Failure
-    *    -----------  -----------  -----------
-    *     H[1], H[2]   [1], [2]     Failure
-    *                  [2], [1]     
-    *    -----------  -----------  -----------
-    *     S[1], S[2]   [1], [2]
-    *                  [2], [1]
-    *    -----------  -----------  -----------
-    *     O[1], O[2]   [1], [2]
-    *                  [2], [1]     Failure
-    *    -----------  -----------  -----------
-    */
+
    
-   /**
-    * @param first A first task.
-    * @param second A second task which is part of the same task set as the first task.
-    * @param failForward True if execution in order should fail.
-    * @param failReverse True if execution in reverse should fail.
-    */
-   private void internalBinaryTest(
-         TestTask first,
-         TestTask second,
-         boolean failForward,
-         boolean failReverse )
+   private static void executeTaskSet( List<TestTask> taskSet ) throws InterruptedException
    {
-      first.run();
-      second.run();
+      DefaultTaskManager manager = new DefaultTaskManager(MANAGER_THREAD_COUNT);
       
-      if ( failForward )
+      for ( Task t : taskSet )
       {
-         if ( first.isProper() && second.isProper() )
+         try
          {
-            fail("Both tasks executed properly; expected failure");
+            manager.submitTask(t);
+         }
+         catch (TaskSetException e)
+         {
+            e.printStackTrace();
+            fail("Task set exception thrown by task manager");
          }
       }
-      else
+      
+      Thread thread = new Thread(manager);
+      thread.start();
+      
+      Task last = taskSet.get(taskSet.size()-1);
+      
+      synchronized ( last )
       {
-         assertTrue( "First task executed improperly", first.isProper()  );
-         assertTrue( "Second task executed improperly", second.isProper() );
+         //last.wait(10000);
+         last.wait();
       }
       
-      first.reset();
-      second.reset();
+      manager.shutdown();
+      thread.join();
       
-      second.run();
-      first.run();
-      
-      if ( failReverse )
+   }
+   
+   private static void checkTaskSet( List<TestTask> taskSet )
+   {
+      for ( int i = 0; i < taskSet.size(); i++ )
       {
-         if ( first.isProper() && second.isProper() )
+         TestTask t = taskSet.get(i);
+
+         if ( !t.isDone() )
          {
-            fail("Both tasks executed properly; expected failure");
+            fail("Task " + i + " not executed: " + t.getClass().getName() );
+         }
+         else
+         {
+            assertTrue("Task " + i + " failed (" + t.isProper() + "): " + t.reason() + ": " + t.getClass().getName(), t.isProper() );
          }
       }
-      else
+   }
+   
+   
+   @Test
+   public void testStaticInsertion_HSO() throws InterruptedException
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      new HeadOfQueueTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 100);
+      
+      
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
+   }
+
+   @Test
+   public void testStaticInsertion_HSSO() throws InterruptedException
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      new HeadOfQueueTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 100);
+      
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
+   }
+   
+   @Test
+   public void testStaticInsertion_HOOS() throws InterruptedException
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      new HeadOfQueueTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new SimpleTask(taskSet, 100);
+      
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
+   }
+   
+   @Test
+   public void testStaticInsertion_HHSS() throws InterruptedException
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      new HeadOfQueueTask(taskSet, 0);
+      new HeadOfQueueTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new SimpleTask(taskSet, 100);
+      
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
+   }
+   
+   @Test
+   public void testStaticInsertion_SOSSOHH() throws InterruptedException
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new HeadOfQueueTask(taskSet, 0);
+      new HeadOfQueueTask(taskSet, 100);
+      
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
+   }
+   
+   @Test
+   public void testStaticInsertion_OSOOHH() throws InterruptedException
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      new OrderedTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new HeadOfQueueTask(taskSet, 0);
+      new HeadOfQueueTask(taskSet, 100);
+      
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
+   }
+   
+   @Test
+   public void testStaticInsertion_SOSSO() throws InterruptedException
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 100);
+      
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
+   }
+   
+   @Test
+   public void testStaticInsertion_OSSO() throws InterruptedException
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      new OrderedTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 100);
+      
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
+   }
+   
+   @Test
+   public void testStaticInsertion_SSO() throws InterruptedException
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      new SimpleTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 100);
+      
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
+   }
+   
+   
+   
+   
+
+
+}
+
+public class GenericTaskManagerTest extends GeneralTaskManagerTest
+{
+   
+   public static final int MANAGER_THREAD_COUNT = 1; // 1 thread is an arbitrary value
+   
+   
+   @Before
+   public void setUp() throws Exception
+   {
+      DOMConfigurator.configure(System.getProperty("log4j.configuration"));
+   }
+
+   @After
+   public void tearDown() throws Exception
+   {
+   }
+
+   
+   private static void executeTaskSet( List<TestTask> taskSet ) throws InterruptedException
+   {
+      DefaultTaskManager manager = new DefaultTaskManager(MANAGER_THREAD_COUNT);
+      
+      for ( Task t : taskSet )
       {
-         assertTrue( "First task executed improperly", first.isProper()  );
-         assertTrue( "Second task executed improperly", second.isProper() );
+         try
+         {
+            manager.submitTask(t);
+         }
+         catch (TaskSetException e)
+         {
+            e.printStackTrace();
+            fail("Task set exception thrown by task manager");
+         }
       }
       
+      Thread thread = new Thread(manager);
+      thread.start();
+      
+      Task last = taskSet.get(taskSet.size()-1);
+      
+      synchronized ( last )
+      {
+         //last.wait(10000);
+         last.wait();
+      }
+      
+      manager.shutdown();
+      thread.join();
       
    }
    
-   @Test
-   public void internalTest_HO()
+   private static void checkTaskSet( List<TestTask> taskSet )
    {
-      List<TestTask> taskSet = new ArrayList<TestTask>();
-      
-      internalBinaryTest(
-            new HeadOfQueueTask(taskSet, 0),
-            new OrderedTask(taskSet, 0),
-            false,
-            true );
+      for ( int i = 0; i < taskSet.size(); i++ )
+      {
+         TestTask t = taskSet.get(i);
+
+         if ( !t.isDone() )
+         {
+            fail("Task " + i + " not executed: " + t.getClass().getName() );
+         }
+         else
+         {
+            assertTrue("Task " + i + " failed (" + t.isProper() + "): " + t.reason() + ": " + t.getClass().getName(), t.isProper() );
+         }
+      }
    }
    
    @Test
-   public void internalTest_HS()
+   public void testStaticInsertion_HSO() throws InterruptedException
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      new HeadOfQueueTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 100);
       
-      internalBinaryTest(
-            new HeadOfQueueTask(taskSet, 0),
-            new SimpleTask(taskSet, 0),
-            false,
-            true );
+      
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
+   }
+
+   @Test
+   public void testStaticInsertion_HSSO() throws InterruptedException
+   {
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      new HeadOfQueueTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 100);
+      
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
    }
    
    @Test
-   public void internalTest_OH()
+   public void testStaticInsertion_HOOS() throws InterruptedException
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      new HeadOfQueueTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new SimpleTask(taskSet, 100);
       
-      internalBinaryTest(
-            new OrderedTask(taskSet, 0),
-            new HeadOfQueueTask(taskSet, 0),
-            true,
-            false );
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
    }
    
    @Test
-   public void internalTest_OS()
+   public void testStaticInsertion_HHSS() throws InterruptedException
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      new HeadOfQueueTask(taskSet, 0);
+      new HeadOfQueueTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new SimpleTask(taskSet, 100);
       
-      internalBinaryTest(
-            new OrderedTask(taskSet, 0),
-            new SimpleTask(taskSet, 0),
-            false,
-            true );
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
    }
    
    @Test
-   public void internalTest_SH()
+   public void testStaticInsertion_SOSSOHH() throws InterruptedException
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new HeadOfQueueTask(taskSet, 0);
+      new HeadOfQueueTask(taskSet, 100);
       
-      internalBinaryTest(
-            new SimpleTask(taskSet, 0),
-            new HeadOfQueueTask(taskSet, 0),
-            true,
-            false );
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
    }
    
    @Test
-   public void internalTest_SO()
+   public void testStaticInsertion_OSOOHH() throws InterruptedException
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      new OrderedTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new HeadOfQueueTask(taskSet, 0);
+      new HeadOfQueueTask(taskSet, 100);
       
-      internalBinaryTest(
-            new SimpleTask(taskSet, 0),
-            new OrderedTask(taskSet, 0),
-            false,
-            true );
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
    }
    
    @Test
-   public void internalTest_H1H2()
+   public void testStaticInsertion_SOSSO() throws InterruptedException
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 100);
       
-      internalBinaryTest(
-            new HeadOfQueueTask(taskSet, 0),
-            new HeadOfQueueTask(taskSet, 0),
-            true,
-            false );
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
    }
    
    @Test
-   public void internalTest_S1S2()
+   public void testStaticInsertion_OSSO() throws InterruptedException
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      new OrderedTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 100);
       
-      internalBinaryTest(
-            new SimpleTask(taskSet, 0),
-            new SimpleTask(taskSet, 0),
-            false,
-            false );
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
    }
    
    @Test
-   public void internalTest_O1O2()
+   public void testStaticInsertion_SSO() throws InterruptedException
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      new SimpleTask(taskSet, 0);
+      new SimpleTask(taskSet, 0);
+      new OrderedTask(taskSet, 100);
       
-      internalBinaryTest(
-            new OrderedTask(taskSet, 0),
-            new OrderedTask(taskSet, 0),
-            false,
-            true );
+      executeTaskSet( taskSet );
+      checkTaskSet( taskSet );
    }
 }
