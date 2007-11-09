@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <glib/gtypes.h>
 #include <glib/gerror.h>
 #include <dbus/dbus.h>

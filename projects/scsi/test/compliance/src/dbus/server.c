@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <glib.h>
 #include <dbus/dbus-glib-bindings.h>
 
