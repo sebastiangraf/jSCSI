@@ -48,9 +48,9 @@ public class BufferedTaskFactory implements TaskFactory
    }
 
    public BufferedTaskFactory(ByteBuffer store,
-                            int blockLength,
-                            ModePageRegistry modePageRegistry,
-                            InquiryDataRegistry inquiryDataRegistry)
+                              int blockLength,
+                              ModePageRegistry modePageRegistry,
+                              InquiryDataRegistry inquiryDataRegistry)
    {
       this.store = store;
       this.blockLength = blockLength;

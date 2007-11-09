@@ -41,7 +41,6 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public StandardInquiryData()
    {
-
    }
 
    public byte[] encode()
@@ -187,7 +186,12 @@ public class StandardInquiryData implements Encodable, Serializer
 
       return this;
    }
+   
+   
+   /////////////////////////////////////////////////////////////////////////////
+   // getters/setters
 
+   
    public byte getPeripheralQualifier()
    {
       return this.peripheralQualifier;

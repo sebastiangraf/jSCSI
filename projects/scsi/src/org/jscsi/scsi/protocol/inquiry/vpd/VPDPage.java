@@ -1,5 +1,4 @@
-
-package org.jscsi.scsi.protocol.mode;
+package org.jscsi.scsi.protocol.inquiry.vpd;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -9,87 +8,36 @@ import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
+import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Encodable;
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
-/**
- * Base class for mode page parsers.
- */
-public abstract class ModePage implements Encodable
+public abstract class VPDPage implements Encodable
 {
-   // set by decode
-   private boolean parametersSavable;
-
-   // set by constructor
-   private boolean subPageFormat;
-   private byte pageCode; // MAX VALUE 0x3F (6-bit)
-   private int subPageCode; // MAX VALUE UBYTE_MAX
+   private static Logger _logger = Logger.getLogger(VPDPage.class);
+   
+   private int peripheralQualifier;
+   private int peripheralDeviceType;
+   private byte pageCode;
    private int pageLength;
 
    /**
-    * Constructs a mode page.
     * 
     * @param pageCode
+    * @param pageLength
     */
-   protected ModePage(byte pageCode, int pageLength)
+   protected VPDPage(byte pageCode, int pageLength)
    {
       this.pageCode = pageCode;
-      this.subPageFormat = false;
-      this.subPageCode = -1;
       this.pageLength = pageLength;
-   }
-
-   /**
-    * Constructs a mode subpage.
-    * 
-    * @param pageCode
-    * @param subPageCode
-    */
-   protected ModePage(byte pageCode, int subPageCode, int pageLength)
-   {
-      this.pageCode = pageCode;
-      this.subPageFormat = true;
-      this.subPageCode = subPageCode;
-      this.pageLength = pageLength;
-   }
-
-   void setParametersSavable(boolean parametersSavable)
-   {
-      this.parametersSavable = parametersSavable;
-   }
-
-   public boolean getParametersSavable()
-   {
-      return this.parametersSavable;
-   }
-
-   public boolean getSubPageFormat()
-   {
-      return this.subPageFormat;
-   }
-
-   public byte getPageCode()
-   {
-      return this.pageCode;
-   }
-
-   public int getSubPageCode()
-   {
-      return this.subPageCode;
-   }
-
-   /**
-    * Returns page length. Limited to UBYTE_MAX for pages and USHORT_MAX for subpages.
-    */
-   public final int getPageLength()
-   {
-      return this.pageLength;
    }
 
    /**
     * Encodes mode parameters of length {@link #getPageLength()} to an output byte buffer.
+    * 
+    * @param output
     */
-   protected abstract void encodeModeParameters(DataOutputStream output);
+   protected abstract void encodeVPDParameters(DataOutputStream output);
 
    /**
     * Decodes mode parameters from an input byte buffer. Input page length must be equal to
@@ -98,7 +46,7 @@ public abstract class ModePage implements Encodable
     * @throws Exception
     *            If the input byte buffer was too short or contained invalid information.
     */
-   protected abstract void decodeModeParameters(int dataLength, DataInputStream inputStream)
+   protected abstract void decodeVPDParameters(int dataLength, DataInputStream inputStream)
    throws BufferUnderflowException, IllegalArgumentException;
 
    public byte[] encode() throws BufferOverflowException
@@ -108,33 +56,16 @@ public abstract class ModePage implements Encodable
 
       try
       {
-         int b0 = 0;
-
-         if (getParametersSavable())
-         {
-            b0 |= 0x80;
-         }
-         if (getSubPageFormat())
-         {
-            b0 |= 0x40;
-         }
-
-         b0 |= (getPageCode() & 0x3F);
-
+         // byte 1
+         int b0 = this.getPeripheralQualifier() << 5;
+         b0 |= this.getPeripheralDeviceType();
          dataOut.writeByte(b0);
 
-         if (getSubPageFormat())
-         {
-            dataOut.writeByte(getSubPageCode());
-            dataOut.writeShort(getPageLength());
-         }
-         else
-         {
-            dataOut.writeByte(getPageLength());
-         }
+         // byte 2
+         dataOut.writeByte(this.getPageCode());
 
          // Write mode parameters
-         encodeModeParameters(dataOut);
+         this.encodeVPDParameters(dataOut);
 
          return byteOut.toByteArray();
       }
@@ -168,5 +99,50 @@ public abstract class ModePage implements Encodable
 
       DataInputStream dataIn = new DataInputStream(new ByteBufferInputStream(buffer));
       decodeModeParameters(dataLength, dataIn);
+   }
+
+   
+   /////////////////////////////////////////////////////////////////////////////
+   // getters/setters
+   
+   
+   public int getPeripheralQualifier()
+   {
+      return peripheralQualifier;
+   }
+
+   public void setPeripheralQualifier(int peripheralQualifier)
+   {
+      this.peripheralQualifier = peripheralQualifier;
+   }
+
+   public int getPeripheralDeviceType()
+   {
+      return peripheralDeviceType;
+   }
+
+   public void setPeripheralDeviceType(int peripheralDeviceType)
+   {
+      this.peripheralDeviceType = peripheralDeviceType;
+   }
+
+   public int getPageCode()
+   {
+      return pageCode;
+   }
+
+   public void setPageCode(int pageCode)
+   {
+      this.pageCode = pageCode;
+   }
+
+   public int getPageLength()
+   {
+      return pageLength;
+   }
+
+   public void setPageLength(int pageLength)
+   {
+      this.pageLength = pageLength;
    }
 }
