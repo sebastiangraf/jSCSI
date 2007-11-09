@@ -1,9 +1,8 @@
 # -----------------------------------------------------------------------------
-# Date: Thu Nov  8 18:01:08 CST 2007
-# Author: John Quigley <jquigley@cleversafe.com>
+# Date:     Thu Nov  8 18:01:08 CST 2007
+# Author:   John Quigley <jquigley@cleversafe.com>
 # Revision: $Id$
 # -----------------------------------------------------------------------------
-
 
 SHELL = /bin/sh
 CC    = gcc
@@ -37,7 +36,10 @@ BINS = $(EXAMPLE_BINS)
 ##### Phony rules
 
 .PHONY:		all
-all:		dbus-glib-example
+all:		examples
+
+.PHONY:		all
+examples:	dbus-glib-example
 
 .PHONY:		tags
 tags:		$(SRCS)
@@ -51,8 +53,6 @@ clean:
 
 $(EXAMPLE_BINS):	$(EXAMPLE_OBJS)
 			$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
-
-
 
 # EOF
 
