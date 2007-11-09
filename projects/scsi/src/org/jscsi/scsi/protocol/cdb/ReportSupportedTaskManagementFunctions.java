@@ -43,7 +43,9 @@ public class ReportSupportedTaskManagementFunctions extends AbstractParameterCDB
       int operationCode = in.readUnsignedByte();
       int serviceAction = in.readUnsignedByte() & 0x1F;
       in.readInt();
-      setAllocationLength(in.readInt());
+      long mss = in.readUnsignedShort();
+      long lss = in.readUnsignedShort();
+      setAllocationLength( (mss << 16) | lss );
       in.readByte();
       super.setControl(in.readUnsignedByte());
 

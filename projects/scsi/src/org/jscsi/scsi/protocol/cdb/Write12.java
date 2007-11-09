@@ -53,8 +53,12 @@ public class Write12 extends Write10
       int operationCode = in.readUnsignedByte();
       super.decodeByte1(in.readUnsignedByte());
 
-      setLogicalBlockAddress(in.readInt());
-      setTransferLength(in.readInt());
+      long mss = in.readUnsignedShort();
+      long lss = in.readUnsignedShort();
+      setLogicalBlockAddress( (mss << 16) | lss );
+      mss = in.readUnsignedShort();
+      lss = in.readUnsignedShort();
+      setTransferLength( (mss << 16) | lss );
 
       setGroupNumber(in.readUnsignedByte() & 0x1F);
       super.setControl(in.readUnsignedByte());

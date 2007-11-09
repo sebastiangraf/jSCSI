@@ -42,7 +42,9 @@ public class ReportLuns extends AbstractParameterCDB
       in.readByte(); // RESERVED block
       in.readByte(); // RESERVED block
       in.readByte(); // RESERVED block
-      setAllocationLength(in.readInt());
+      long mss = in.readUnsignedShort();
+      long lss = in.readUnsignedShort();
+      setAllocationLength( (mss << 16) | lss );
       in.readByte(); // RESERVED block
       super.setControl(in.readUnsignedByte());
 

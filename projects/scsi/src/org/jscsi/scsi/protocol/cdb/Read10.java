@@ -78,7 +78,9 @@ public class Read10 extends AbstractTransferCDB
       int operationCode = in.readUnsignedByte();
       this.decodeByte1(in.readUnsignedByte());
 
-      setLogicalBlockAddress(in.readInt());
+      long mss = in.readUnsignedShort();
+      long lss = in.readUnsignedShort();
+      setLogicalBlockAddress( (mss << 16) | lss );
 
       this.groupNumber = in.readUnsignedByte() & 0x1F;
       setTransferLength(in.readUnsignedShort());

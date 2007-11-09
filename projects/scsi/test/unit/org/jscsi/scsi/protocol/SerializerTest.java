@@ -662,7 +662,7 @@ public class SerializerTest
                catch (ClassCastException e) {}
                if (accessMethod.getReturnType().equals("boolean"))
                {
-                  // return value of the field is int
+                  // return value of the field is boolean
                   Long valInput = (Long) tv.getIntValue();
                   if (val.intValue() == valInput.intValue())
                   {
@@ -679,7 +679,11 @@ public class SerializerTest
                {
                   // return value of the field is some number (long, byte, int, etc)
                   Long valInput = (Long) tv.getIntValue();
-                  if (valInput.longValue() == val.longValue())
+                  if ( tv.getBits() == 64 && val.longValue() < 0 )
+                  {
+                     System.out.format("Limit: %s : %X (cannot check value over LONG_MAX) %n", tv.getTag(), val);
+                  }
+                  else if (valInput.longValue() == val.longValue())
                   {
                      System.out.format("Success: %s : %X == %X %n", tv.getTag(), val,
                            tv.getIntValue());
@@ -692,7 +696,7 @@ public class SerializerTest
                }
                else if (accessMethod.getReturnType().equals("byte[]"))
                {
-                  
+                  throw new RuntimeException();
                }
                else
                {
