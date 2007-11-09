@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <node name="/org/jscsi/sg/SGDataTransfer">
   <interface name="org.jscsi.sg.SGDataTransfer">
+    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="s_g_data_transfer" />
     <method name="serviceResponse">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="service_response" />
       <annotation name="org.freedesktop.DBus.GLib.NoReply" value="true"/>
       <arg type="s" name="initiatorPort" direction="in" />
       <arg type="s" name="targetPort" direction="in" />
@@ -12,6 +14,7 @@
     </method>
 
     <method name="sendDataIn">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="send_data_in" />
       <annotation name="org.freedesktop.DBus.GLib.NoReply" value="true"/>
       <arg type="s" name="initiatorPort" direction="in" />
       <arg type="s" name="targetPort" direction="in" />
@@ -23,6 +26,7 @@
     </method>
 
     <method name="receiveDataOut">
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="receive_data_out" />
       <annotation name="org.freedesktop.DBus.GLib.NoReply" value="true"/>
       <arg type="s" name="initiatorPort" direction="in" />
       <arg type="s" name="targetPort" direction="in" />
