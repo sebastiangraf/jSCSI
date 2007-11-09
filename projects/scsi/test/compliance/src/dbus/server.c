@@ -102,7 +102,7 @@ main (int argc, char **argv)
 
    // Create a connection
    error = NULL;
-   connection = dbus_g_bus_get (DBUS_BUS_SESSION,
+   connection = dbus_g_bus_get (DBUS_BUS_SYSTEM,
                                 &error);
    if (connection == NULL)
    {
@@ -113,7 +113,7 @@ main (int argc, char **argv)
    }
 
    // Create the object
-   dataTransfer = g_object_new (S_G_DATA_TRANSFER_TYPE_OBJECT, "bus", connection, NULL); 
+   dataTransfer = g_object_new (S_G_DATA_TRANSFER_TYPE_OBJECT, NULL); 
 
    // Registering the object should export it to the BUS
    dbus_g_connection_register_g_object (connection,
