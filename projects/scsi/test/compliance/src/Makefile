@@ -26,6 +26,7 @@ bindir = $(prefix)/bin
 ##### Do not edit below this line, please. #####
 
 SERVER_SRCS = $(addprefix dbus/, server.c)
+SERVER_BIND = $(addprefix dbus/, s_g_data_transfer.h s_g_transport.h)
 SERVER_OBJS = $(addprefix dbus/, server.o)
 SERVER_BINS = server
 
@@ -43,15 +44,17 @@ BINS = $(EXAMPLE_BINS) $(SERVER_BINS)
 all:		examples server
 
 .PHONY:		all
-examples:	dbus-glib-example
+examples:	$(EXAMPLE_BINS)
 
 .PHONY:		tags
 tags:		$(SRCS)
 
 .PHONY:		clean
 clean:
-		rm -rf dbus-glib-example
-		rm -rf $(EXAMPLE_OBJS)
+		rm -rf $(OBJS)
+		rm -rf $(BINS)
+		rm -rf $(SERVER_BIND)
+		rm -rf s_g_data_transfer.h s_g_transport.h
 
 ##### Real rules
 
@@ -60,5 +63,15 @@ $(EXAMPLE_BINS):	$(EXAMPLE_OBJS)
 
 $(SERVER_BINS):		$(SERVER_OBJS)
 			$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+
+$(EXAMPLE_OBJS):	$(EXAMPLE_SRCS)
+$(SERVER_OBJS):		$(SERVER_SRCS) $(SERVER_BIND)
+
+dbus/s_g_data_transfer.h:
+	dbus-binding-tool --mode=glib-server --prefix=s_g_data_transfer  dbus/s_g_data_transfer.xml > dbus/s_g_data_transfer.h
+
+dbus/s_g_transport.h:
+	dbus-binding-tool --mode=glib-client dbus/s_g_transport.xml > dbus/s_g_transport.h
+
 # EOF
 
