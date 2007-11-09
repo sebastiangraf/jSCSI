@@ -686,7 +686,7 @@ public class SerializerTest
                   }
                   else
                   {
-                     System.out.format("Fail: %s : %X != %X %n", val, tv.getTag(), tv.getIntValue());
+                     System.out.format("Fail: %s : %X != %X %n", tv.getTag(), val, tv.getIntValue());
                      checkResult = "Non-matching field detected";
                   }
                }
