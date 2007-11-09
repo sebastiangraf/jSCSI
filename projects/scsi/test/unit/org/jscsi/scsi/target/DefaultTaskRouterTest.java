@@ -9,6 +9,7 @@ import java.util.Random;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.jscsi.core.exceptions.NotImplementedException;
 import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.ReportLuns;
@@ -25,6 +26,8 @@ import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskAttribute;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.TaskRouter;
+import org.jscsi.scsi.tasks.management.DefaultTaskRouter;
+import org.jscsi.scsi.tasks.management.TaskServiceResponse;
 import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
 import org.junit.After;
@@ -33,7 +36,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class GeneralTaskRouterTest
+public class DefaultTaskRouterTest
 {
    static
    {
@@ -195,6 +198,12 @@ public class GeneralTaskRouterTest
          
          this.callback.success();
       }
+
+      @Override
+      public void terminateDataTransfer(Nexus nexus, long commandReferenceNumber)
+      {
+         throw new NotImplementedException("transfer termination ability must be implemented");
+      }
       
    }
    
@@ -214,24 +223,16 @@ public class GeneralTaskRouterTest
       private Nexus nexus;
       private SuccessCallback callback;
       
-      
-
       public void nexusLost()
       {
-         // TODO Auto-generated method stub
-         
       }
 
       public void start()
       {
-         // TODO Auto-generated method stub
-         
       }
 
       public void stop()
       {
-         // TODO Auto-generated method stub
-         
       }
 
       public TestLogicalUnit(
@@ -265,9 +266,35 @@ public class GeneralTaskRouterTest
       }
 
       public void setModePageRegistry(ModePageRegistry modePageRegistry) {}
-      
+
+      @Override
+      public TaskServiceResponse abortTask(Nexus nexus)
+      {
+         // TODO Auto-generated method stub
+         return null;
+      }
+
+      @Override
+      public TaskServiceResponse abortTaskSet(Nexus nexus)
+      {
+         // TODO Auto-generated method stub
+         return null;
+      }
+
+      @Override
+      public TaskServiceResponse clearTaskSet(Nexus nexus)
+      {
+         // TODO Auto-generated method stub
+         return null;
+      }
+
+      @Override
+      public TaskServiceResponse reset()
+      {
+         // TODO Auto-generated method stub
+         return null;
+      }
    }
-   
 
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
@@ -341,7 +368,7 @@ public class GeneralTaskRouterTest
          fail("Exception occurred during Logical Unit registration: " + e.getMessage());
       }
       
-      router.enqueue(ttp, GeneralTaskRouterTest.getTestUnitReadyCommand(nexus));
+      router.enqueue(ttp, DefaultTaskRouterTest.getTestUnitReadyCommand(nexus));
    }
    
    @Test
@@ -395,7 +422,7 @@ public class GeneralTaskRouterTest
          fail("Exception occurred during Logical Unit registration: " + e.getMessage());
       }
       
-      router.enqueue(ttp, GeneralTaskRouterTest.getTestUnitReadyCommand(nexus));
+      router.enqueue(ttp, DefaultTaskRouterTest.getTestUnitReadyCommand(nexus));
    }
    
    @Test
@@ -448,7 +475,7 @@ public class GeneralTaskRouterTest
             fail("Exception occurred during Logical Unit registration: " + e.getMessage());
          }
          
-         router.enqueue(ttp, GeneralTaskRouterTest.getTestUnitReadyCommand(nexus));
+         router.enqueue(ttp, DefaultTaskRouterTest.getTestUnitReadyCommand(nexus));
    }
    
    // TODO: I_T nexus task test (need interface for target task executor first)

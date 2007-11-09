@@ -7,6 +7,7 @@ import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.mode.StaticModePageRegistry;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.TaskRouter;
+import org.jscsi.scsi.tasks.management.DefaultTaskRouter;
 import org.jscsi.scsi.tasks.management.TaskManagementFunction;
 import org.jscsi.scsi.tasks.management.TaskServiceResponse;
 import org.jscsi.scsi.transport.Nexus;
