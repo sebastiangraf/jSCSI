@@ -7,5 +7,14 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jscsi-common"/>
 	<classpathentry kind="lib" path="/jscsi-common/lib/junit-4.4.jar"/>
+	<classpathentry kind="lib" path="lib/dbus-java-bin-2.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/dbus-java-viewer-2.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/debug-disable-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/debug-enable-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/hexdump-0.1.jar"/>
+	<classpathentry kind="lib" path="lib/io-0.1.jar"/>
+	<classpathentry kind="lib" path="lib/libdbus-java-2.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/lpg2.jar"/>
+	<classpathentry kind="lib" path="lib/unix-0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
