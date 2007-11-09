@@ -25,18 +25,22 @@ bindir = $(prefix)/bin
 
 ##### Do not edit below this line, please. #####
 
+SERVER_SRCS = $(addprefix dbus/, server.c)
+SERVER_OBJS = $(addprefix dbus/, server.o)
+SERVER_BINS = server
+
 EXAMPLE_OBJS = $(addprefix dbus/, dbus-glib-example.o)
 EXAMPLE_SRCS = $(addprefix dbus/, dbus-glib-example.c)
 EXAMPLE_BINS = dbus-glib-example
 
-OBJS = $(EXAMPLE_OBJS)
-SRCS = $(EXAMPLE_SRCS)
-BINS = $(EXAMPLE_BINS)
+OBJS = $(EXAMPLE_OBJS) $(SERVER_OBJS)
+SRCS = $(EXAMPLE_SRCS) $(SERVER_SRCS)
+BINS = $(EXAMPLE_BINS) $(SERVER_BINS)
 
 ##### Phony rules
 
 .PHONY:		all
-all:		examples
+all:		examples server
 
 .PHONY:		all
 examples:	dbus-glib-example
@@ -54,5 +58,7 @@ clean:
 $(EXAMPLE_BINS):	$(EXAMPLE_OBJS)
 			$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
+$(SERVER_BINS):		$(SERVER_OBJS)
+			$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 # EOF
 
