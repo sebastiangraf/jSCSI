@@ -28,7 +28,7 @@ public class InformationalExceptionsControl extends ModePage
 
    @Override
    protected void decodeModeParameters(int dataLength, DataInputStream inputStream)
-         throws BufferUnderflowException, IllegalArgumentException
+   throws BufferUnderflowException, IllegalArgumentException
    {
       try
       {
