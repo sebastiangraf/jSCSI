@@ -24,7 +24,7 @@ public class DefaultTaskRouter implements TaskRouter
    private static Logger _logger = Logger.getLogger(DefaultTaskRouter.class);
    
    private static int DEFAULT_TARGET_THREAD_COUNT = 1;
-   private static int DEFAULT_TARGET_QUEUE_LENGTH = 25;
+   private static int DEFAULT_TARGET_QUEUE_LENGTH = 32;
    
 
    ////////////////////////////////////////////////////////////////////////////
