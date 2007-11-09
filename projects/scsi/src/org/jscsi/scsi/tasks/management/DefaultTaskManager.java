@@ -1,22 +1,14 @@
 package org.jscsi.scsi.tasks.management;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
-import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.tasks.Task;
-import org.jscsi.scsi.tasks.TaskAttribute;
 
 public class DefaultTaskManager implements TaskManager
-{
-   
+{   
    private static Logger _logger = Logger.getLogger(TaskSet.class);
    
    
@@ -27,9 +19,7 @@ public class DefaultTaskManager implements TaskManager
    
    private Thread currentThread = Thread.currentThread();
    
-   
-   
-   
+
    /////////////////////////////////////////////////////////////////////////////
    // constructor(s)
    
