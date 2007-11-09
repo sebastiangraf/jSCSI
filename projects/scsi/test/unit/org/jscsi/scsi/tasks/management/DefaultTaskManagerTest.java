@@ -24,7 +24,7 @@ import org.junit.Test;
 /**
  * Tests task manager implementations for proper execution ordering.
  */
-public class GeneralTaskManagerTest
+public class DefaultTaskManagerTest
 {
    static
    {

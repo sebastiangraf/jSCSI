@@ -1,4 +1,4 @@
-package org.jscsi.scsi.target;
+package org.jscsi.scsi.tasks.management;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -15,12 +15,6 @@ import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.TaskRouter;
-import org.jscsi.scsi.tasks.management.DefaultTaskManager;
-import org.jscsi.scsi.tasks.management.DefaultTaskSet;
-import org.jscsi.scsi.tasks.management.TaskManagementFunction;
-import org.jscsi.scsi.tasks.management.TaskManager;
-import org.jscsi.scsi.tasks.management.TaskServiceResponse;
-import org.jscsi.scsi.tasks.management.TaskSet;
 import org.jscsi.scsi.tasks.target.TargetTaskFactory;
 import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
