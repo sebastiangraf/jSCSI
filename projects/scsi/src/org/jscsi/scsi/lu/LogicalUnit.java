@@ -38,31 +38,34 @@ public interface LogicalUnit
    void enqueue(TargetTransportPort port, Command command);
    
    /**
-    * Aborts the specified tagged task. The task tag is the <code>Q</code> in the I_T_L_Q nexus.
+    * Aborts the tagged task specified by the given I_T_L_Q nexus.
     * The tagged task will be immediately aborted. Abortion of untagged tasks is not possible.
     * 
-    * @param taskTag The tag of the task to be aborted.
+    * @param nexus An I_T_L_Q nexus identifying a given task.
     * @returns {@value TaskServiceResponse#FUNCTION_COMPLETE} when aborted successfully or
     *    {@value TaskServiceResponse#FUNCTION_REJECTED} when not aborted.
     */
-   TaskServiceResponse abortTask(long taskTag);
+   TaskServiceResponse abortTask(Nexus nexus);
    
    /**
-    * Aborts all outstanding tasks in this Logical Unit's task set that were requested by the
-    * indicated initiator. All tasks will return as
-    * aborted.
+    * Aborts all tasks that were created by the SCSI initiator port and routed through the SCSI
+    * target port indicated by the given I_T_L nexus.
+    * 
+    * @param nexus An I_T_L nexus identifying a given initiator and target port.
     * @returns {@value TaskServiceResponse#FUNCTION_COMPLETE} when aborted successfully or
     *    {@value TaskServiceResponse#FUNCTION_REJECTED} when not aborted.
     */
-   TaskServiceResponse abortTaskSet(String initiator);
+   TaskServiceResponse abortTaskSet(Nexus nexus);
    
    /**
-    * Clears all outstanding tasks in this Logical Unit's task set. All tasks will be silently 
-    * dropped.
+    * Aborts all tasks in the appropriate task set as defined by the <code>TST</code> field
+    * in the Control mode page (see SPC-2).
+    * 
+    * @param nexus An I_T_L nexus identifying a given task set.
     * @returns {@value TaskServiceResponse#FUNCTION_COMPLETE} when cleared successfully or
     *    {@value TaskServiceResponse#FUNCTION_REJECTED} when not cleared.
     */
-   TaskServiceResponse clearTaskSet();
+   TaskServiceResponse clearTaskSet(Nexus nexus);
    
    /**
     * Resets this Logical Unit as required by the SAM-2 <code>LOGICAL UNIT RESET</code> function.
@@ -77,6 +80,4 @@ public interface LogicalUnit
    void stop();
 
    void nexusLost();
-
-   void setModePageRegistry(ModePageRegistry modePageRegistry);
 }

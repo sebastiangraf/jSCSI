@@ -2,6 +2,9 @@ package org.jscsi.scsi.tasks;
 
 import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
+import org.jscsi.scsi.tasks.management.TaskManagementFunction;
+import org.jscsi.scsi.tasks.management.TaskServiceResponse;
+import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 /**
@@ -34,16 +37,17 @@ public interface TaskRouter
     * @param lu The Logical Unit.
     * @throws Exception If the LUN is already assigned.
     */
-   void registerLogicalUnit( long id, LogicalUnit lu ) throws Exception;
+   void registerLogicalUnit( long lun, LogicalUnit lu ) throws Exception;
    
    /**
     * Remove a Logical Unit from the task router. After removal no further commands will be
     * sent to the LU.
     * 
     * @param number The LUN.
+    * @returns The Logical Unit.
     * @throws Exception If the LUN is not valid.
     */
-   void removeLogicalUnit( long id ) throws Exception;
+   LogicalUnit removeLogicalUnit( long lun ) throws Exception;
    
    
    /**
@@ -58,6 +62,15 @@ public interface TaskRouter
     *    data transfer.
     */
    void enqueue( TargetTransportPort port, Command command );
+   
+   /**
+    * Executes a task management function.
+    * 
+    * @param nexus Where the indicated function will be executed.
+    * @param function The task management function to execute.
+    * @return The result of the task management function.
+    */
+   TaskServiceResponse execute(Nexus nexus, TaskManagementFunction function);
    
    
    /**

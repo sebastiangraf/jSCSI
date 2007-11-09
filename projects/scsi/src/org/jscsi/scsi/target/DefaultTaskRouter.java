@@ -9,27 +9,35 @@ import org.jscsi.core.exceptions.NotImplementedException;
 import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.protocol.sense.exceptions.LogicalUnitNotSupportedException;
 import org.jscsi.scsi.tasks.Status;
+import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.TaskRouter;
 import org.jscsi.scsi.tasks.management.DefaultTaskManager;
+import org.jscsi.scsi.tasks.management.DefaultTaskSet;
+import org.jscsi.scsi.tasks.management.TaskManagementFunction;
+import org.jscsi.scsi.tasks.management.TaskManager;
+import org.jscsi.scsi.tasks.management.TaskServiceResponse;
+import org.jscsi.scsi.tasks.management.TaskSet;
 import org.jscsi.scsi.tasks.target.TargetTaskFactory;
+import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class DefaultTaskRouter implements TaskRouter
 {
    private static Logger _logger = Logger.getLogger(DefaultTaskRouter.class);
    
-   private static int DEFAULT_TARGET_TASK_MANAGER_THREAD_COUNT = 1;
+   private static int DEFAULT_TARGET_THREAD_COUNT = 1;
+   private static int DEFAULT_TARGET_QUEUE_LENGTH = 25;
    
 
    ////////////////////////////////////////////////////////////////////////////
    // data members
 
-   private DefaultTaskManager targetTaskManager;
+   private TaskSet targetTaskSet;
+   private TaskManager targetTaskManager;
    private Map<Long, LogicalUnit> logicalUnitMap;
    private TaskFactory taskFactory;
 
@@ -38,17 +46,31 @@ public class DefaultTaskRouter implements TaskRouter
    // constructor(s)
    
    
-   public DefaultTaskRouter(ModePageRegistry modePageRegistry)
+   public DefaultTaskRouter()
    {
       this.logicalUnitMap = new ConcurrentHashMap<Long, LogicalUnit>();
-      this.taskFactory = new TargetTaskFactory(this.logicalUnitMap.keySet(), modePageRegistry);
+      this.taskFactory = new TargetTaskFactory(this.logicalUnitMap.keySet());
+      this.targetTaskSet = new DefaultTaskSet(DEFAULT_TARGET_QUEUE_LENGTH);
+      this.targetTaskManager = new DefaultTaskManager(DEFAULT_TARGET_THREAD_COUNT, targetTaskSet);
    }
    
-   public DefaultTaskRouter(TaskFactory taskFactory)
+   public DefaultTaskRouter(int targetQueueLength, int targetThreadCount)
    {
-      logicalUnitMap = new ConcurrentHashMap<Long, LogicalUnit>();
-      targetTaskManager = new DefaultTaskManager(DEFAULT_TARGET_TASK_MANAGER_THREAD_COUNT);
-      taskFactory = taskFactory;
+      this.logicalUnitMap = new ConcurrentHashMap<Long, LogicalUnit>();
+      this.taskFactory = new TargetTaskFactory(this.logicalUnitMap.keySet());
+      this.targetTaskSet = new DefaultTaskSet(targetQueueLength);
+      this.targetTaskManager = new DefaultTaskManager(targetThreadCount, targetTaskSet);
+   }
+   
+   public DefaultTaskRouter(
+         TaskFactory targetTaskFactory,
+         TaskSet targetTaskSet,
+         TaskManager targetTaskManager)
+   {
+      this.logicalUnitMap = new ConcurrentHashMap<Long, LogicalUnit>();
+      this.taskFactory = targetTaskFactory;
+      this.targetTaskManager = targetTaskManager;
+      this.targetTaskSet = targetTaskSet;
    }
 
 
@@ -63,17 +85,11 @@ public class DefaultTaskRouter implements TaskRouter
       {
          try
          {
-            targetTaskManager.submitTask(taskFactory.getInstance(port, command));
+            Task task = this.taskFactory.getInstance(port, command);
+            assert task != null : "improper task factory implementation returned null task";
+            this.targetTaskSet.offer(task); // non-blocking, sends any errors to transport port
+            _logger.debug("successfully enqueued target command with TaskRouter: " + command);
          }
-         // thrown by the TaskManager
-         catch (TaskSetException e)
-         {
-            _logger.error("error when submitting task to TaskManager: " + e);
-            // TODO: wrap this exception and pass along as SenseData
-            // perhaps TaskManager itself should throw a SenseException
-            throw new RuntimeException("unhandled task set exception", e);
-         }
-         // thrown by the TaskFactory
          catch (IllegalRequestException e)
          {
             _logger.error("error when parsing command: " + e);
@@ -81,12 +97,13 @@ public class DefaultTaskRouter implements TaskRouter
                   command.getNexus(),
                   command.getCommandReferenceNumber(),
                   Status.CHECK_CONDITION,
-                  ByteBuffer.wrap(e.encode()));
+                  ByteBuffer.wrap(e.encode()) );
          }
       }
       else if ( logicalUnitMap.containsKey(lun) )
       {
          logicalUnitMap.get(lun).enqueue(port, command);
+         _logger.debug("successfully enqueued command to logical unit with TaskRouter: " + command);
       }
       else
       {
@@ -96,13 +113,71 @@ public class DefaultTaskRouter implements TaskRouter
                Status.CHECK_CONDITION,
                ByteBuffer.wrap((new LogicalUnitNotSupportedException()).encode()));
       }
-      _logger.debug("successfully enqueued command with TaskRouter: " + command);
+   }
+
+   
+   
+   public TaskServiceResponse execute(Nexus nexus, TaskManagementFunction function)
+   {
+      long lun = nexus.getLogicalUnitNumber();
+      switch (function)
+      {
+         case ABORT_TASK:
+            // Need an I_T_L_Q nexus with a valid LUN
+            if ( lun < 0 || nexus.getTaskTag() < 0 || ! this.logicalUnitMap.containsKey(lun) )
+               return TaskServiceResponse.FUNCTION_REJECTED;
+            else
+               return this.logicalUnitMap.get(lun).abortTask(nexus);
+            
+         case ABORT_TASK_SET:
+            // Need an I_T_L nexus with a valid LUN
+            if (lun < 0 || ! this.logicalUnitMap.containsKey(lun))
+               return TaskServiceResponse.FUNCTION_REJECTED;
+            else
+               return this.logicalUnitMap.get(lun).abortTaskSet(nexus);
+         
+         case CLEAR_TASK_SET:
+            // Need an I_T_L nexus with a valid LUN
+            if (lun < 0 || ! this.logicalUnitMap.containsKey(lun))
+               return TaskServiceResponse.FUNCTION_REJECTED;
+            else
+               return this.logicalUnitMap.get(lun).clearTaskSet(nexus);
+            
+         case LOGICAL_UNIT_RESET:
+            // Need an I_T_L nexus with a valid LUN
+            if (lun < 0 || ! this.logicalUnitMap.containsKey(lun))
+               return TaskServiceResponse.FUNCTION_REJECTED;
+            else
+               return this.logicalUnitMap.get(lun).reset();
+            
+         case TARGET_RESET:
+            // reset all logical units and abort target task set
+            for ( LogicalUnit lu : this.logicalUnitMap.values() )
+            {
+               lu.reset();
+            }
+            this.targetTaskSet.clear();
+            return TaskServiceResponse.FUNCTION_COMPLETE;
+            
+         case CLEAR_ACA:
+            return TaskServiceResponse.FUNCTION_REJECTED;
+            
+         case WAKEUP:
+            return TaskServiceResponse.FUNCTION_REJECTED;
+            
+         default:
+            return TaskServiceResponse.FUNCTION_REJECTED;
+      }
    }
 
    public void nexusLost()
    {
-      // TODO: define behavior here
-      throw new NotImplementedException("method must be implemented");
+      // reset all logical units and abort target task set
+      for ( LogicalUnit lu : this.logicalUnitMap.values() )
+      {
+         lu.reset();
+      }
+      this.targetTaskSet.clear();
    }
 
    public void registerLogicalUnit(long id, LogicalUnit lu) throws Exception
@@ -112,10 +187,11 @@ public class DefaultTaskRouter implements TaskRouter
       _logger.debug("registering logical unit: " + lu + " (id: " + id + ")");
    }
 
-   public void removeLogicalUnit(long id) throws Exception
+   public LogicalUnit removeLogicalUnit(long id) throws Exception
    {
       LogicalUnit discardedLU = logicalUnitMap.remove(id);
       discardedLU.stop();
       _logger.debug("removing logical unit: " + discardedLU);
+      return discardedLU;
    }
 }

@@ -58,7 +58,13 @@ import org.jscsi.scsi.tasks.TaskAttribute;
 import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
-// TODO: Describe class or interface
+/**
+ * A SAM-2 task set implementation providing a single task set for all I_T nexuses.
+ * <p>
+ * Because this implementation tracks outstanding tasks solely by task tag it will not
+ * provide reliable service for multiple initiator connections. Further, the ABORT TASK SET
+ * task management function has the same results as the CLEAR TASK SET function.
+ */
 public class DefaultTaskSet implements TaskSet
 {
    private static Logger _logger = Logger.getLogger(DefaultTaskSet.class);
@@ -166,12 +172,9 @@ public class DefaultTaskSet implements TaskSet
          finished( taskTag > -1 ? taskTag : null ); // untagged tasks have a Q value of -1 (invalid)
       }
       
-      
-
       public boolean abort()
       {
-         // FIXME: Implement this!
-         throw new RuntimeException();
+         return this.task.abort();
       }
 
       @Override
@@ -304,32 +307,101 @@ public class DefaultTaskSet implements TaskSet
    
    /////////////////////////////////////////////////////////////////////////////////////////////////
    
-   /**
-    * @see TaskSet#remove(long)
+   /*
+    * @see TaskSet#remove(Nexus)
     */
-   public Task remove(long taskTag) throws NoSuchElementException, InterruptedException
+   public boolean remove(Nexus nexus)
+         throws NoSuchElementException, InterruptedException, IllegalArgumentException
    {
+      if ( nexus.getTaskTag() == -1 ) // invalid Q
+         throw new IllegalArgumentException("must provide an I_T_L_Q nexus for abort");
+      
       lock.lockInterruptibly();
-      TaskContainer task = null;
       try
       {
-         task = this.tasks.remove(taskTag);
+         TaskContainer task = this.tasks.remove(nexus.getTaskTag());
          if ( task == null )
-            throw new NoSuchElementException("Task with tag " + taskTag + " not in task set");
+            throw new NoSuchElementException(
+                  "Task with tag " + nexus.getTaskTag() + " not in task set");
          
          this.queue.remove(task); // removes the task from the queue if present
          this.capacity++;
          this.notFull.signalAll();
+         
+         return task.abort();
       }
       finally
       {
          lock.unlock();
       }
-      return task;
+   }
+   
+   public void clear()
+   {
+      try
+      {
+         lock.lockInterruptibly();
+      }
+      catch (InterruptedException e)
+      {
+         // thread is shutting down, no reason to actually clear the task set.
+         // TODO: Is the above statement okay?
+         return;
+      }
+      
+      try
+      {
+         for ( TaskContainer task : this.tasks.values() )
+         {
+            task.abort();
+         }
+         this.tasks.clear();
+         this.queue.clear();
+         this.capacity = this.queue.size();
+         this.notFull.notifyAll();
+      }
+      finally
+      {
+         lock.unlock();
+      }
+   }
+   
+   /*
+    * @see org.jscsi.scsi.tasks.management.TaskSet#clear(org.jscsi.scsi.transport.Nexus)
+    */
+   public void clear(Nexus nexus) throws InterruptedException, IllegalArgumentException
+   {
+      // We don't check for I_T_L nexus because it makes no difference to this implementation
+      
+      lock.lockInterruptibly();
+      try
+      {
+         for ( TaskContainer task : this.tasks.values() )
+         {
+            task.abort();
+         }
+         this.tasks.clear();
+         this.queue.clear();
+         this.capacity = this.queue.size();
+         this.notFull.notifyAll();
+      }
+      finally
+      {
+         lock.unlock();
+      }
    }
 
+   public void abort(Nexus nexus) throws InterruptedException, IllegalArgumentException
+   {
+      // NOTE: This implementation does not properly implement the ABORT TASK SET function.
+      this.clear(nexus);
+   }
 
+   /////////////////////////////////////////////////////////////////////////////////////////////////
    
+
+
+
    /**
     * Attempts to insert the given task into the set. When an insertion failure is indicated
     * the caller must not attempt to take any additional action. I.e., the originating target
@@ -678,25 +750,6 @@ public class DefaultTaskSet implements TaskSet
       {
          lock.unlock();
       }
-   }
-
-
-   public void clear()
-   {
-      lock.lock();
-      
-      try
-      {
-         this.queue.clear();
-         this.tasks.clear();
-         this.capacity = this.queue.size();
-         this.notEmpty.notifyAll();
-      }
-      finally
-      {
-         lock.unlock();
-      }
-      
    }
 
 
