@@ -35,7 +35,7 @@ EXAMPLE_SRCS = $(addprefix dbus/, dbus-glib-example.c)
 EXAMPLE_BINS = dbus-glib-example
 
 OBJS = $(EXAMPLE_OBJS) $(SERVER_OBJS)
-SRCS = $(EXAMPLE_SRCS) $(SERVER_SRCS)
+SRCS = $(EXAMPLE_SRCS) $(SERVER_SRCS) $(SERVER_BIND)
 BINS = $(EXAMPLE_BINS) $(SERVER_BINS)
 
 ##### Phony rules
@@ -54,7 +54,6 @@ clean:
 		rm -rf $(OBJS)
 		rm -rf $(BINS)
 		rm -rf $(SERVER_BIND)
-		rm -rf s_g_data_transfer.h s_g_transport.h
 
 ##### Real rules
 
