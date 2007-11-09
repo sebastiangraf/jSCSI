@@ -25,23 +25,28 @@ bindir  = $(prefix)/bin
 
 ##### Do not edit below this line, please. #####
 
-SERVER_SRCS = $(addprefix dbus/, server.c)
-SERVER_BIND = $(addprefix dbus/, s_g_data_transfer.h s_g_transport.h)
-SERVER_OBJS = $(addprefix dbus/, server.o)
-SERVER_BINS = server
+SERVER_BIND  = $(addprefix dbus/, s_g_data_transfer.h)
+SERVER_SRCS  = $(addprefix dbus/, server.c)
+SERVER_OBJS  = $(addprefix dbus/, server.o)
+SERVER_BINS  = server
+
+CLIENT_BIND  = $(addprefix dbus/, s_g_transport.h)
+CLIENT_SRCS  = $(addprefix dbus/, client.c)
+CLIENT_OBJS  = $(addprefix dbus/, client.o)
+CLIENT_BINS  = client
 
 EXAMPLE_OBJS = $(addprefix dbus/, dbus-glib-example.o)
 EXAMPLE_SRCS = $(addprefix dbus/, dbus-glib-example.c)
 EXAMPLE_BINS = dbus-glib-example
 
-OBJS = $(EXAMPLE_OBJS) $(SERVER_OBJS)
-SRCS = $(EXAMPLE_SRCS) $(SERVER_SRCS) $(SERVER_BIND)
-BINS = $(EXAMPLE_BINS) $(SERVER_BINS)
+OBJS = $(EXAMPLE_OBJS) $(SERVER_OBJS) $(CLIENT_OBJS)
+SRCS = $(EXAMPLE_SRCS) $(SERVER_SRCS) $(CLIENT_SRCS) $(SERVER_BIND) $(CLIENT_BIND)
+BINS = $(EXAMPLE_BINS) $(SERVER_BINS) $(CLIENT_BINS)
 
 ##### Phony rules
 
 .PHONY:		all
-all:		examples server
+all:		examples server client
 
 .PHONY:		all
 examples:	$(EXAMPLE_BINS)
@@ -54,7 +59,7 @@ tags:		$(SRCS)
 clean:
 		rm -rf $(OBJS)
 		rm -rf $(BINS)
-		rm -rf $(SERVER_BIND)
+		rm -rf $(SERVER_BIND) $(CLIENT_BIND)
 		rm -rf cscope.out
 
 ##### Real rules
@@ -65,8 +70,12 @@ $(EXAMPLE_BINS):	$(EXAMPLE_OBJS)
 $(SERVER_BINS):		$(SERVER_OBJS)
 			$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
+$(CLIENT_BINS):		$(CLIENT_OBJS)
+			$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+
 $(EXAMPLE_OBJS):	$(EXAMPLE_SRCS)
 $(SERVER_OBJS):		$(SERVER_SRCS) $(SERVER_BIND)
+$(CLIENT_OBJS):		$(CLIENT_SRCS) $(CLIENT_BIND)
 
 dbus/s_g_data_transfer.h:	dbus/s_g_data_transfer.xml 
 	dbus-binding-tool --mode=glib-server --prefix=s_g_data_transfer dbus/s_g_data_transfer.xml > dbus/s_g_data_transfer.h
