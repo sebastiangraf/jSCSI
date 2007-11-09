@@ -4,9 +4,9 @@
 # Revision: $Id$
 # -----------------------------------------------------------------------------
 
-SHELL = /bin/sh
-CC    = gcc
-CTAGS = ctags -x > tags
+SHELL   = /bin/sh
+CC      = gcc
+CTAGS   = ctags -x > tags
 
 DEFS    = -DDEBUG
 FLAGS   = -O2 -Wall -std=c99 -g
@@ -17,8 +17,8 @@ CFLAGS  = $(FLAGS) $(DEFS) -I.	-I/usr/lib/dbus-1.0/include \
 LDLIBS  = -ldbus-1 -ldbus-glib-1
 LDFLAGS = $(FLAGS)
 
-prefix = /usr/local
-bindir = $(prefix)/bin
+prefix  = /usr/local
+bindir  = $(prefix)/bin
 
 .SUFFIXES:
 .SUFFIXES: .c .o
@@ -66,10 +66,10 @@ $(SERVER_BINS):		$(SERVER_OBJS)
 $(EXAMPLE_OBJS):	$(EXAMPLE_SRCS)
 $(SERVER_OBJS):		$(SERVER_SRCS) $(SERVER_BIND)
 
-dbus/s_g_data_transfer.h:
-	dbus-binding-tool --mode=glib-server --prefix=s_g_data_transfer  dbus/s_g_data_transfer.xml > dbus/s_g_data_transfer.h
+dbus/s_g_data_transfer.h:	dbus/s_g_data_transfer.xml 
+	dbus-binding-tool --mode=glib-server --prefix=s_g_data_transfer dbus/s_g_data_transfer.xml > dbus/s_g_data_transfer.h
 
-dbus/s_g_transport.h:
+dbus/s_g_transport.h:		dbus/s_g_transport.xml 
 	dbus-binding-tool --mode=glib-client dbus/s_g_transport.xml > dbus/s_g_transport.h
 
 # EOF
