@@ -10,6 +10,7 @@ import org.jscsi.scsi.protocol.cdb.TransferCDB;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
+import org.jscsi.scsi.protocol.sense.exceptions.SynchronousDataTransferErrorException;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 // TODO: Describe class or interface
@@ -82,7 +83,13 @@ public abstract class AbstractTask implements Task
          // If abort is false the task can be aborted because it is neither
          // already aborted nor in the writeResponse() phase. Abort is now set as true.
          
-         // We interrupt the 
+         // We interrupt the thread executing the task and terminate any outstanding
+         // data. With luck, writeData() and readData() methods will not begin if
+         // the thread is interrupted. If interrupt() and terminateDataTransfer()
+         // occur between the interrupt check and the transfer call to the transport layer
+         // the transport layer will receive a request for an already terminated nexus.
+         // The transport port interface guarantees that InterruptedException will always be
+         // thrown from the transfer methods in this case.
          this.thread.interrupt();
          this.targetPort.terminateDataTransfer(
                this.command.getNexus(),
@@ -121,7 +128,8 @@ public abstract class AbstractTask implements Task
    }
    
    
-   protected final boolean readData(ByteBuffer output) throws InterruptedException
+   protected final boolean readData(ByteBuffer output)
+         throws InterruptedException, SynchronousDataTransferErrorException
    {
       if (Thread.interrupted())
          throw new InterruptedException();
@@ -132,7 +140,8 @@ public abstract class AbstractTask implements Task
             output );
    }
    
-   protected final boolean writeData(ByteBuffer input) throws InterruptedException
+   protected final boolean writeData(ByteBuffer input)
+         throws InterruptedException, SynchronousDataTransferErrorException
    {
       if (Thread.interrupted())
          throw new InterruptedException();
@@ -143,7 +152,8 @@ public abstract class AbstractTask implements Task
             input );
    }
    
-   protected final boolean writeData(byte[] input) throws InterruptedException
+   protected final boolean writeData(byte[] input)
+         throws InterruptedException, SynchronousDataTransferErrorException
    {
       if (Thread.interrupted())
          throw new InterruptedException();
@@ -165,6 +175,9 @@ public abstract class AbstractTask implements Task
       // or up to the transfer length in input data.
       ByteBuffer data = ByteBuffer.allocate((int)transferLength);
       data.put(input, 0, (int)Math.max(transferLength, input.length));
+      
+      if (Thread.interrupted())
+         throw new InterruptedException();
       
       return this.targetPort.writeData(
             this.command.getNexus(),

@@ -41,10 +41,17 @@ public interface TargetTransportPort
 
    /**
     * Performs Receive Data-Out operation. If successful all expected data will have been read to
-    * the output buffer. If failed a partial transfer may have occurred.
+    * the output buffer. If it failed a partial transfer may have occurred.
     * <p>
     * This method is called by task implementations for commands such as WRITE, MODE SENSE, and
     * REPORT LUNS.
+    * <p>
+    * This method shall normally return false if the nexus or command reference number are
+    * invalid. However, if {@link #terminateDataTransfer(Nexus, long)} is called this method
+    * shall throw an InterruptedException for any nexus and command reference number which
+    * was terminated until those values are reused by a new incoming command.
+    * <p>
+    * This method shall write zero bytes and return true if the expected transfer length is zero.
     * 
     * @param nexus Generally either an I_T_L nexus or an I_T_L_Q nexus
     * @param commandReferenceNumber The command reference number associated with the nexus.
@@ -57,9 +64,16 @@ public interface TargetTransportPort
 
    /**
     * Performs a Send Data-In operation. If successful all expected data will have been written
-    * from the input buffer. If failed a partial transfer may have occurred.
+    * from the input buffer. If it failed a partial transfer may have occurred.
     * <p>
     * This method is called by task implementations for commands such as READ and MODE SELECT.
+    * <p>
+    * This method shall normally return false if the nexus or command reference number are
+    * invalid. However, if {@link #terminateDataTransfer(Nexus, long)} is called this method
+    * shall throw an InterruptedException for any nexus and command reference number which
+    * was terminated until those values are reused by a new incoming command.
+    * <p>
+    * This method shall write zero bytes and return true if the expected transfer length is zero.
     * 
     * @param nexus Generally either an I_T_L nexus or an I_T_L_Q nexus.
     * @param commandReferenceNumber The command reference number associated with the nexus.
@@ -79,8 +93,14 @@ public interface TargetTransportPort
     * Interrupting a thread performing a read or write operation shall have the same effect.
     * <p>
     * This method does nothing if there are no in-progress data transfers for the indicated nexus.
+    * <p>
+    * Future attempts to transfer data using this nexus and command reference number shall
+    * also throw an {@link InterruptedException} until a new incoming command reusing those
+    * values appears. At that point transfer attempts must return either <code>true</code> for
+    * success or <code>false</code> for failure.
     * 
     * @param nexus Generally either an I_T_L nexus or an I_T_L_Q nexus.
+    * @param commandReferenceNumber
     */
    void terminateDataTransfer(Nexus nexus, long commandReferenceNumber);
 

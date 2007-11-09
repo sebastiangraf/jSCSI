@@ -17,10 +17,9 @@ public class TargetTaskFactory implements TaskFactory
    private Set<Long> logicalUnits;
    
    
-   public TargetTaskFactory(Set<Long> logicalUnits, ModePageRegistry modePageRegistry)
+   public TargetTaskFactory(Set<Long> logicalUnits)
    {
       this.logicalUnits = logicalUnits;
-      this.modePageRegistry = modePageRegistry;
    }
 
    public Task getInstance( TargetTransportPort port, Command command) 
@@ -29,7 +28,7 @@ public class TargetTaskFactory implements TaskFactory
       switch (command.getCommandDescriptorBlock().getOperationCode())
       {
          case ReportLuns.OPERATION_CODE:
-            return new ReportLunsTask(logicalUnits, port, command, modePageRegistry, null);
+            return new ReportLunsTask(logicalUnits, port, command, null, null);
          default:
             throw new InvalidCommandOperationCodeException();
       }
