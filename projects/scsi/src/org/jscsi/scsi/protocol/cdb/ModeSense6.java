@@ -23,6 +23,11 @@ public class ModeSense6 extends AbstractParameterCDB
    private int pageCode;
    private int subPageCode;
 
+   protected ModeSense6(int operationCode)
+   {
+      super(operationCode);
+   }
+   
    public ModeSense6()
    {
       super(OPERATION_CODE);
