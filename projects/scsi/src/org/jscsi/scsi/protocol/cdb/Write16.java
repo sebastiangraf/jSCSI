@@ -50,7 +50,9 @@ public class Write16 extends Write10
 
       // CAUTION: Signed longs represent unsigned longs
       setLogicalBlockAddress(in.readLong());
-      setTransferLength(in.readInt());
+      long mss = in.readUnsignedShort();
+      long lss = in.readUnsignedShort();
+      setTransferLength( (mss << 16) | lss );
 
       setGroupNumber(in.readUnsignedByte() & 0x1F);
       super.setControl(in.readUnsignedByte());

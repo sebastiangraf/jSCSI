@@ -22,10 +22,10 @@ public class CommandDescriptorBlockFactoryTest
          "Inquiry,OperationCode=8:0x12,reserved=7:0x0,EVPD=1:std,PageCode=8:std,AllocationLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String MODE_SELECT_6 =
-         "ModeSelect6,OperationCode=8:0x15,reserved=3:0x0,PF=1:std,reserved=3:0x0,SP=1:std,reserved=16:0x0,ParameterListLength=8:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "ModeSelect6,OperationCode=8:0x15,reserved=3:0x0,PF=1:std,reserved=3:0x0,SP=1:std,reserved=16:0x0,ParameterLength=8:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String MODE_SELECT_10 =
-         "ModeSelect10,OperationCode=8:0x55,reserved=3:0x0,PF=1:std,reserved=3:0x0,SP=1:std,reserved=40:0x0,ParameterListLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
+         "ModeSelect10,OperationCode=8:0x55,reserved=3:0x0,PF=1:std,reserved=3:0x0,SP=1:std,reserved=40:0x0,ParameterLength=16:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";
 
    private static String MODE_SENSE_6 =
          "ModeSense6,OperationCode=8:0x1A,reserved=4:0x0,DBD=1:std,reserved=3:0x0,PC=2:std,PageCode=6:std,SubPageCode=8:std,AllocationLength=8:std,reserved=5:0x0,NormalACA=1:std,reserved=1:0x0,Linked=1:std";

@@ -47,7 +47,9 @@ public class ReadCapacity16 extends AbstractParameterCDB
       int operationCode = in.readUnsignedByte();
       int serviceAction = in.readUnsignedByte() & 0x1F;
       this.logicalBlockAddress = in.readLong();
-      this.setAllocationLength(in.readInt());
+      long mss = in.readUnsignedShort();
+      long lss = in.readUnsignedShort();
+      setAllocationLength( (mss << 16) | lss );
       this.PMI = (in.readByte() & 0x01) == 1;
       super.setControl(in.readUnsignedByte());
 

@@ -24,11 +24,11 @@ public class ModeSelect6 extends AbstractParameterCDB
    public ModeSelect6(
          boolean pageFormat,
          boolean savePages,
-         int parameterListLength,
+         int parameterLength,
          boolean linked,
          boolean normalACA)
    {
-      super(OPERATION_CODE, linked, normalACA, 0, parameterListLength);
+      super(OPERATION_CODE, linked, normalACA, 0, parameterLength);
       this.PF = pageFormat;
       this.SP = savePages;
    }
