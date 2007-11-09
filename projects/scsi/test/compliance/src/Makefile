@@ -6,7 +6,7 @@
 
 SHELL   = /bin/sh
 CC      = gcc
-CTAGS   = ctags -x > tags
+CTAGS   = cscope -Rb
 
 DEFS    = -DDEBUG
 FLAGS   = -O2 -Wall -std=c99 -g
@@ -48,12 +48,14 @@ examples:	$(EXAMPLE_BINS)
 
 .PHONY:		tags
 tags:		$(SRCS)
+		$(CTAGS) $(SRCS)
 
 .PHONY:		clean
 clean:
 		rm -rf $(OBJS)
 		rm -rf $(BINS)
 		rm -rf $(SERVER_BIND)
+		rm -rf cscope.out
 
 ##### Real rules
 
