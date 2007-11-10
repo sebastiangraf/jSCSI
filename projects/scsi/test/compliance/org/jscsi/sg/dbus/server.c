@@ -53,6 +53,8 @@ service_response(SGDataTransfer* dataTransfer, const char * IN_initiatorPort,
                  const char * IN_targetPort, const gint64 IN_lun, const GArray* IN_senseData,
                  const gint32 IN_status, const gint32 IN_serviceResponse, GError **error)
 {
+   g_printf("In method: service_response()" );
+
    // implement
    if(1)
    {
@@ -71,6 +73,8 @@ gboolean
 send_data_in(SGDataTransfer* dataTransfer, const char * IN_initiatorPort, 
                  const char * IN_targetPort, const gint64 IN_lun, const GArray* IN_input)
 {
+   g_printf("In method: send_data_in()" );
+
    // implement
    return TRUE;
 }
@@ -80,6 +84,8 @@ GArray*
 receive_data_out(SGDataTransfer* dataTransfer, const char * IN_initiatorPort, 
                  const char * IN_targetPort, const gint64 IN_lun)
 {
+   g_printf("In method: receive_data_out()" );
+
    // implement
    return 0;
 }
