@@ -32,14 +32,14 @@
 // Date: Nov 9, 2007
 //---------------------
 
-package src.dbus;
+package org.jscsi.sg.dbus;
 
 import org.freedesktop.dbus.DBusConnection;
 
 // TODO: Describe class or interface
 public class TargetDBUSGlue
 {
-   private static String S_G_DATA_TRANSFER_OBJECT_PATH = "/org/jscsi/sg/SGDataTransfer";
+   private static String S_G_DATA_TRANSFER_OBJECT_PATH = "/org/jscsi/sg/dbus/SGDataTransfer";
 
    /**
     * @param args
