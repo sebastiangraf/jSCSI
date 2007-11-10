@@ -117,7 +117,7 @@ main (int argc, char **argv)
 
    // Registering the object should export it to the BUS
    dbus_g_connection_register_g_object (connection,
-                                        "/org/jscsi/sg/SGDataTransfer",
+                                        "/org/jscsi/sg/dbus/SGDataTransfer",
                                         G_OBJECT(dataTransfer));
 
    g_main_loop_run (mainloop);

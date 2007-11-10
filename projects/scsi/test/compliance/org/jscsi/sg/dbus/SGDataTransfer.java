@@ -1,5 +1,5 @@
 
-package src.dbus;
+package org.jscsi.sg.dbus;
 
 import org.freedesktop.dbus.DBusInterface;
 
