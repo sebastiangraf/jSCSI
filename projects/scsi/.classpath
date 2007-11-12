@@ -13,8 +13,9 @@
 	<classpathentry kind="lib" path="lib/debug-enable-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/hexdump-0.1.jar"/>
 	<classpathentry kind="lib" path="lib/io-0.1.jar"/>
-	<classpathentry kind="lib" path="lib/libdbus-java-2.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/libdbus-java-2.3.1.jar" sourcepath="/home/mmotwani/dbus-java-2.3.1"/>
 	<classpathentry kind="lib" path="lib/lpg2.jar"/>
-	<classpathentry kind="lib" path="lib/unix-0.2.jar"/>
+	<classpathentry kind="lib" path="lib/unix-0.2.jar" sourcepath="/home/mmotwani/libmatthew-java-0.3"/>
+	<classpathentry kind="lib" path="lib/cgi-0.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
