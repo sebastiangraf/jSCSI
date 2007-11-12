@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.inquiry.StaticInquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
-import org.jscsi.scsi.tasks.file.FileTaskFactory;
+import org.jscsi.scsi.tasks.buffered.FileTaskFactory;
 import org.jscsi.scsi.tasks.management.DefaultTaskManager;
 import org.jscsi.scsi.tasks.management.DefaultTaskSet;
 import org.jscsi.scsi.tasks.management.TaskManager;

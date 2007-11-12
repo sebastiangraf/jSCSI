@@ -1,13 +1,8 @@
 
-package org.jscsi.scsi.tasks.file;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.nio.BufferOverflowException;
+package org.jscsi.scsi.tasks.buffered;
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.cdb.ReadCapacity16;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
@@ -15,10 +10,10 @@ import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 // TODO: Describe class or interface
-public class ReadCapacity16Task extends FileTask
+public class ReadCapacity10Task extends FileTask
 {
-   
-   public ReadCapacity16Task()
+
+   public ReadCapacity10Task()
    {
       super();
    }
@@ -34,22 +29,19 @@ public class ReadCapacity16Task extends FileTask
    {
       // NOTE: We ignore the PMI bit because file has no substantial transfer delay point
       
-      ByteArrayOutputStream bs = new ByteArrayOutputStream();
-      DataOutputStream out = new DataOutputStream(bs);
+      // Report capacity up to maximum READ CAPACITY (10) value.
+      byte[] capacity = ByteBuffer
+            .allocate(8)
+            .putLong(this.getFileCapacity() < 0xFFFFFFFFL ? this.getFileCapacity() : 0xFFFFFFFFL)
+            .array();
       
-      try
-      {
-         out.writeLong(this.getFileCapacity());
-         out.writeLong((long)blockLength);
-         out.writeByte(0);    // RTO_EN and PROT_EN set to false; do not support protection info
-         // the remaining bytes are reserved
-      }
-      catch (IOException e1)
-      {
-         throw new RuntimeException("unable to encode READ CAPACITY (10) parameter data");
-      } 
+      // Create parameter data
+      ByteBuffer data = ByteBuffer
+            .allocate(8)
+            .put(capacity, 4, 4)
+            .putInt(blockLength);
       
-      this.writeData(bs.toByteArray());
+      this.writeData(data);
       this.writeResponse(Status.GOOD, null);
    }
 

@@ -1,5 +1,5 @@
 
-package org.jscsi.scsi.tasks.file;
+package org.jscsi.scsi.tasks.buffered;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
