@@ -1,4 +1,4 @@
-package org.jscsi.target.task;
+package org.jscsi.target.task.TaskAbstracts;
 
 /**
  * An Operation builds the basis for all working task processors

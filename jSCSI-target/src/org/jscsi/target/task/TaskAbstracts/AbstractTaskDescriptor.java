@@ -1,4 +1,4 @@
-package org.jscsi.target.task;
+package org.jscsi.target.task.TaskAbstracts;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -95,11 +95,11 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 	 */
 	public boolean check(Connection con, ProtocolDataUnit initialPDU) {
 		
-		if(!allowedSessionTypes.contains(con.getReferencedSession().getSessionType())){
+		if(!allowedSessionTypes.contains(con.getPhase())){
 			return false;
 		}
 		
-		if(!allowedSessionPhases.contains(con.getReferencedSession().getSessionPhase())){
+		if(!allowedSessionPhases.contains(con.getPhase())){
 			return false;
 		}
 		
@@ -151,6 +151,11 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 			return false;
 		}
 		return true;
+	}
+
+	public OperationCode getSuppotedOpcode() {
+		// TODO Auto-generated method stub
+		return opcode;
 	}
 	
 	

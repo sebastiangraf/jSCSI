@@ -1,4 +1,4 @@
-package org.jscsi.target.task;
+package org.jscsi.target.task.TaskAbstracts;
 
 /**
  * A State represents one processing instruction set,

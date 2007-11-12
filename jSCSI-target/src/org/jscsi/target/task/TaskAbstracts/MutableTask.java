@@ -1,4 +1,4 @@
-package org.jscsi.target.task;
+package org.jscsi.target.task.TaskAbstracts;
 
 import org.jscsi.connection.SerialArithmeticNumber;
 import org.jscsi.parser.ProtocolDataUnit;

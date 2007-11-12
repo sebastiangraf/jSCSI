@@ -1,4 +1,4 @@
-package org.jscsi.target.task;
+package org.jscsi.target.task.TaskAbstracts;
 
 public abstract class AbstractTextOperatingState extends AbstractState {
 
