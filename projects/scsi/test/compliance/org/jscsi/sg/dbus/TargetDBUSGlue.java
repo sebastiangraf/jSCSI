@@ -35,28 +35,44 @@
 package org.jscsi.sg.dbus;
 
 import org.freedesktop.dbus.DBusConnection;
+import org.freedesktop.dbus.exceptions.DBusException;
 
 // TODO: Describe class or interface
-public class TargetDBUSGlue
-{
-   private static String S_G_DATA_TRANSFER_OBJECT_PATH = "/org/jscsi/sg/dbus/SGDataTransfer";
+public class TargetDBUSGlue {
+	private static String S_G_DATA_TRANSFER_OBJECT_PATH = "/org/jscsi/sg/dbus/SGDataTransfer";
 
-   /**
-    * @param args
-    */
-   public static void main(String[] args) throws Exception
-   {
-      DBusConnection client = DBusConnection.getConnection(DBusConnection.SYSTEM);
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
 
-      // Get the remote object
-      SGDataTransfer dataTransfer =
-            (SGDataTransfer) client.getRemoteObject(DBusConnection.DEFAULT_SYSTEM_BUS_ADDRESS,
-                  S_G_DATA_TRANSFER_OBJECT_PATH);
+		DBusConnection client = null;
 
-      // Call methods on it
-      dataTransfer.serviceResponse("", "", 0, null, 0, 0);
+		try {
+			client = DBusConnection.getConnection(DBusConnection.SYSTEM);
 
-      client.disconnect();
-   }
+			// Get the remote object
+			SGDataTransfer dataTransfer = (SGDataTransfer) client
+					.getRemoteObject("SYSTEM", S_G_DATA_TRANSFER_OBJECT_PATH,
+							SGDataTransfer.class);
+
+			if (dataTransfer == null) {
+				System.out.println("null object returned");
+				System.exit(0);
+			}
+
+			// Call methods on it
+			dataTransfer.serviceResponse("", "", 0, new byte[0], 0, 0);
+			//dataTransfer.sendDataIn("", "", 0, new byte[2]);
+		} catch (DBusException e) {
+			e.printStackTrace();
+		} finally {
+			if (client != null) {
+				System.out.println("disconnecting client");
+				client.disconnect();
+			}
+		}
+
+	}
 
 }
