@@ -22,10 +22,10 @@ import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
-public class FileTaskFactory implements TaskFactory
+public class BufferedTaskFactory implements TaskFactory
 {
-   private static Map<Class<? extends CDB>, Class<? extends FileTask>> _tasks =
-         new HashMap<Class<? extends CDB>, Class<? extends FileTask>>();
+   private static Map<Class<? extends CDB>, Class<? extends BufferedTask>> _tasks =
+         new HashMap<Class<? extends CDB>, Class<? extends BufferedTask>>();
 
    private ByteBuffer file;
    private int blockLength;
@@ -34,17 +34,17 @@ public class FileTaskFactory implements TaskFactory
 
    static
    {
-      FileTaskFactory._tasks.put(Read6.class, ReadFileTask.class);
-      FileTaskFactory._tasks.put(Read10.class, ReadFileTask.class);
-      FileTaskFactory._tasks.put(Read12.class, ReadFileTask.class);
-      FileTaskFactory._tasks.put(Read16.class, ReadFileTask.class);
-      FileTaskFactory._tasks.put(Write6.class, WriteFileTask.class);
-      FileTaskFactory._tasks.put(Write10.class, WriteFileTask.class);
-      FileTaskFactory._tasks.put(Write12.class, WriteFileTask.class);
-      FileTaskFactory._tasks.put(Write16.class, WriteFileTask.class);
+      BufferedTaskFactory._tasks.put(Read6.class, BufferedReadTask.class);
+      BufferedTaskFactory._tasks.put(Read10.class, BufferedReadTask.class);
+      BufferedTaskFactory._tasks.put(Read12.class, BufferedReadTask.class);
+      BufferedTaskFactory._tasks.put(Read16.class, BufferedReadTask.class);
+      BufferedTaskFactory._tasks.put(Write6.class, BufferedWriteTask.class);
+      BufferedTaskFactory._tasks.put(Write10.class, BufferedWriteTask.class);
+      BufferedTaskFactory._tasks.put(Write12.class, BufferedWriteTask.class);
+      BufferedTaskFactory._tasks.put(Write16.class, BufferedWriteTask.class);
    }
 
-   public FileTaskFactory(
+   public BufferedTaskFactory(
          ByteBuffer file,
          int blockLength,
          ModePageRegistry modePageRegistry,
@@ -60,7 +60,7 @@ public class FileTaskFactory implements TaskFactory
          TargetTransportPort port,
          Command command) throws IllegalRequestException
    {
-      Class<? extends FileTask> taskClass =
+      Class<? extends BufferedTask> taskClass =
             _tasks.get(command.getCommandDescriptorBlock().getClass());
 
       if (taskClass != null)

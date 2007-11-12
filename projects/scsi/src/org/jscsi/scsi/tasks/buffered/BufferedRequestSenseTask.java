@@ -17,10 +17,10 @@ import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 // TODO: Describe class or interface
-public class RequestSenseTask extends FileTask
+public class BufferedRequestSenseTask extends BufferedTask
 {
 
-   public RequestSenseTask()
+   public BufferedRequestSenseTask()
    {
       super();
    }

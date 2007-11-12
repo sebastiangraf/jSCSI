@@ -10,10 +10,10 @@ import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 // TODO: Describe class or interface
-public class ReadCapacity10Task extends FileTask
+public class BufferedReadCapacity10Task extends BufferedTask
 {
 
-   public ReadCapacity10Task()
+   public BufferedReadCapacity10Task()
    {
       super();
    }

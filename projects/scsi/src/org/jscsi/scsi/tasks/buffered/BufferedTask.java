@@ -11,17 +11,17 @@ import org.jscsi.scsi.tasks.AbstractTask;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
-public abstract class FileTask extends AbstractTask
+public abstract class BufferedTask extends AbstractTask
 {
    protected ByteBuffer file;
    protected int blockLength;
 
-   public FileTask()
+   public BufferedTask()
    {
       super();
    }
 
-   public FileTask(
+   public BufferedTask(
          ByteBuffer file,
          int blockLength,
          TargetTransportPort targetPort,
