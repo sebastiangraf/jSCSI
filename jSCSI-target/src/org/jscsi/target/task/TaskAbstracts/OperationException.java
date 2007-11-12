@@ -1,4 +1,4 @@
-package org.jscsi.target.task;
+package org.jscsi.target.task.TaskAbstracts;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

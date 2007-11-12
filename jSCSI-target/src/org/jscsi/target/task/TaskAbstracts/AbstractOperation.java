@@ -1,4 +1,4 @@
-package org.jscsi.target.task;
+package org.jscsi.target.task.TaskAbstracts;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
