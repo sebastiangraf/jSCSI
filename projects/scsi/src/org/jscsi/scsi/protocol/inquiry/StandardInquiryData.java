@@ -405,9 +405,6 @@ public class StandardInquiryData implements Encodable, Serializer
    {
       this.productRevisionLevel = productRevisionLevel;
    }
-   
-   
-   
 
    public int getVersionDescriptor1()
    {
