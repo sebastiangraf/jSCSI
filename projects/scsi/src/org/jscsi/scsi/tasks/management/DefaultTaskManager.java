@@ -17,7 +17,7 @@ public class DefaultTaskManager implements TaskManager
    
    private TaskSet taskSet;
    
-   private Thread currentThread = Thread.currentThread();
+   private Thread currentThread;
    
 
    /////////////////////////////////////////////////////////////////////////////
@@ -36,6 +36,7 @@ public class DefaultTaskManager implements TaskManager
    
    public void run()
    {
+      this.currentThread = Thread.currentThread();
       this.running.set(true);
       
       while (this.running.get())
@@ -61,10 +62,14 @@ public class DefaultTaskManager implements TaskManager
       _executor.shutdown();
    }
    
-   public void shutdown()
+   public void shutdown() throws InterruptedException
    {
       this.running.set(false);
-      this.currentThread.interrupt();
+      if ( this.currentThread != null )
+      {
+         this.currentThread.interrupt();
+         this.currentThread.join();
+      }
    }
    
    
