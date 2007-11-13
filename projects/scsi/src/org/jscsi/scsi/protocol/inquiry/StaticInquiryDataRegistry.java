@@ -40,6 +40,8 @@ public class StaticInquiryDataRegistry extends InquiryDataRegistry
       std.setVersionDescriptor2(0x033B);  // SBC-2 T10/1417-D revision 16
       std.setVersionDescriptor3(0x030F);  // SPC-3 T10/1416-D revision 22
       std.setVersionDescriptor4(0x0960);  // iSCSI (no version claimed)
+      
+      this.setStandardInquiryData(std);
    }
    
 }
