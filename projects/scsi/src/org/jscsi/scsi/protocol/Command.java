@@ -97,5 +97,14 @@ public class Command
    public int getTaskPriority()
    {
       return taskPriority;
-   }   
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "<Command [nexus: " + this.nexus + "] [CDB: "
+         + this.commandDescriptorBlock + "] [TaskAttribute: " + this.taskAttribute
+         + "] [cmdRef: " + this.commandReferenceNumber + "] [taskPriority: "
+         + this.taskPriority;
+   }
 }
