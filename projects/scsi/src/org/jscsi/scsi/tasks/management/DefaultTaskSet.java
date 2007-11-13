@@ -41,8 +41,9 @@ public class DefaultTaskSet implements TaskSet
    private final Condition notFull = lock.newCondition();
 
    // Task set members
-   private final List<TaskContainer> queue;  // Dormant task queue
    private final Map<Long,TaskContainer> tasks; // Tag-to-Task map with 'null' key as the untagged task
+   private final List<TaskContainer> enabled; // Enabled tasks
+   private final List<TaskContainer> dormant; // Dormant task queue
    
    /*
     * The "tasks" map contains a map of task tags to currently live tasks. The map contains all
@@ -69,8 +70,9 @@ public class DefaultTaskSet implements TaskSet
    public DefaultTaskSet(int capacity)
    {
       this.capacity = capacity;
-      this.queue = new ArrayList<TaskContainer>(capacity);
       this.tasks = new HashMap<Long, TaskContainer>(capacity);
+      this.enabled = new LinkedList<TaskContainer>();
+      this.dormant = new LinkedList<TaskContainer>();
    }
    
    
@@ -197,6 +199,7 @@ public class DefaultTaskSet implements TaskSet
       /**
        * @return True if this task is not ready to be executed. Results comply with SAM-2 task
        * management specifications.
+       * @deprecated
        */
       private synchronized boolean blocked() throws InterruptedException
       {
@@ -204,6 +207,7 @@ public class DefaultTaskSet implements TaskSet
          
          try
          {
+            
             for ( Task t : this.blockingTasks )
             {
                if ( tasks.containsValue(t) )
@@ -244,12 +248,12 @@ public class DefaultTaskSet implements TaskSet
                      }
                   }
                   break;
-               case HEAD_OF_QUEUE:
+               case ORDERED:
                   // A task having the ORDERED attribute shall not enter the enabled state until
                   // all older tasks in the task set have ended.
                   blockedTasks.addAll(tasks.values());
                   break;
-               case ORDERED:
+               case HEAD_OF_QUEUE:
                   // A task having the HEAD OF QUEUE attribute shall be accepted into the task
                   // set in the enabled state.
                   break;
@@ -288,7 +292,8 @@ public class DefaultTaskSet implements TaskSet
             throw new NoSuchElementException(
                   "Task with tag " + nexus.getTaskTag() + " not in task set");
          
-         this.queue.remove(task); // removes the task from the queue if present
+         this.enabled.remove(task); // removes the task from the enabled queue if present
+         this.dormant.remove(task); // removes the task from the dormant queue if present
          this.capacity++;
          this.notFull.signalAll();
          
@@ -319,9 +324,10 @@ public class DefaultTaskSet implements TaskSet
          {
             task.abort();
          }
+         this.capacity += this.tasks.size();
          this.tasks.clear();
-         this.queue.clear();
-         this.capacity = this.queue.size();
+         this.enabled.clear();
+         this.dormant.clear();
          this.notFull.notifyAll();
       }
       finally
@@ -344,9 +350,10 @@ public class DefaultTaskSet implements TaskSet
          {
             task.abort();
          }
+         this.capacity += this.tasks.size();
          this.tasks.clear();
-         this.queue.clear();
-         this.capacity = this.queue.size();
+         this.enabled.clear();
+         this.dormant.clear();
          this.notFull.notifyAll();
       }
       finally
@@ -450,11 +457,11 @@ public class DefaultTaskSet implements TaskSet
          
          if ( task.getCommand().getTaskAttribute() == TaskAttribute.HEAD_OF_QUEUE )
          {
-            this.queue.add(0, container);
+            this.dormant.add(0, container);
          }
          else
          {
-            this.queue.add(container);
+            this.dormant.add(container);
          }
          
          this.capacity--;
@@ -521,6 +528,47 @@ public class DefaultTaskSet implements TaskSet
       this.offer(task);
    }
 
+   
+   /*
+    * Checks if the given task is currently blocked.
+    */
+   private boolean blocked(Task task) throws InterruptedException
+   {
+      lock.lockInterruptibly();
+      
+      try
+      {
+         TaskAttribute executing = enabled.size() > 0 ? 
+               enabled.get(enabled.size()-1).getCommand().getTaskAttribute() : null;
+         {
+            switch (task.getCommand().getTaskAttribute())
+            {
+               case SIMPLE:
+                  if ( executing == null || executing == TaskAttribute.SIMPLE )
+                     return false;
+                  else
+                     return true;
+               case HEAD_OF_QUEUE:
+                  return false;
+               case ORDERED:
+                  if (executing == null)
+                     return false;
+                  else
+                     return true;
+               default:
+                  throw new RuntimeException("Unsupported task tag: " + 
+                        task.getCommand().getTaskAttribute().name());
+            }
+         }
+      }
+      finally
+      {
+         lock.unlock();
+      }
+      
+      
+
+   }
 
    /**
     * Retrieves and removes the task at the head of the queue. Blocks on both an empty set and
@@ -537,7 +585,7 @@ public class DefaultTaskSet implements TaskSet
       {
          // wait for the set to be not empty
          timeout = unit.toNanos(timeout);
-         while ( this.queue.size() == 0 )
+         while ( this.dormant.size() == 0 )
          {
             if (timeout > 0)
             {
@@ -550,17 +598,27 @@ public class DefaultTaskSet implements TaskSet
             }
          }
          
-         // get the first task and wait for it to be unblocked.
-         TaskContainer container = this.queue.get(0);
-         if ( container.poll(timeout, unit) != null )
+         TaskContainer container = this.dormant.get(0);
+         
+         // wait until the next task is not blocked
+         while ( this.blocked(container) )
          {
-            this.queue.remove(0);
-            return container;
+            if ( timeout > 0 )
+            {
+               // "notFull" is notified whenever a task is finished. We wait on that before
+               // checking if this task is still blocked.
+               timeout = notFull.awaitNanos(timeout);
+            }
+            else
+            {
+               return null; // a timeout occurred
+            }
          }
-         else
-         {
-            return null;
-         }
+         
+         this.enabled.add(container);
+         this.dormant.remove(0);
+         return container;
+         
       }
       finally
       {
@@ -666,7 +724,7 @@ public class DefaultTaskSet implements TaskSet
       lock.lock();
       try
       {
-         return this.queue.get(0);
+         return this.dormant.get(0);
       }
       finally
       {
@@ -722,7 +780,7 @@ public class DefaultTaskSet implements TaskSet
       lock.lock();
       try
       {
-         return this.queue.contains(o);
+         return this.dormant.contains(o);
       }
       finally
       {
@@ -739,7 +797,7 @@ public class DefaultTaskSet implements TaskSet
       {
          for ( Object o : c )
          {
-            if ( ! this.queue.contains(o) )
+            if ( ! this.dormant.contains(o) )
                return false;
          }
          return true;
@@ -757,7 +815,7 @@ public class DefaultTaskSet implements TaskSet
       lock.lock();
       try
       {
-         return this.queue.size() != 0;
+         return this.dormant.size() != 0;
       }
       finally
       {
@@ -770,7 +828,7 @@ public class DefaultTaskSet implements TaskSet
    {
       return new Iterator<Task>()
       {
-         private Iterator<TaskContainer> it = queue.iterator();
+         private Iterator<TaskContainer> it = dormant.iterator();
 
          public boolean hasNext()
          {
@@ -804,7 +862,7 @@ public class DefaultTaskSet implements TaskSet
 
    public int size()
    {
-      return this.queue.size();
+      return this.dormant.size();
    }
 
 
@@ -813,10 +871,10 @@ public class DefaultTaskSet implements TaskSet
       lock.lock();
       try
       {
-         Object[] objs = new Object[this.queue.size()];
+         Object[] objs = new Object[this.dormant.size()];
          for ( int i = 0; i < objs.length; i++ )
          {
-            objs[i] = this.queue.get(i);
+            objs[i] = this.dormant.get(i);
          }
          return objs;
       }
@@ -835,19 +893,19 @@ public class DefaultTaskSet implements TaskSet
       
       Task[] dst = null;
       
-      if ( a.length < this.queue.size() )
-         dst = new Task[this.queue.size()];
+      if ( a.length < this.dormant.size() )
+         dst = new Task[this.dormant.size()];
       else
          dst = (Task[])a;
       
-      for ( int i = 0; i < this.queue.size(); i++ )
+      for ( int i = 0; i < this.dormant.size(); i++ )
       {
-         dst[i] = this.queue.get(i);
+         dst[i] = this.dormant.get(i);
       }
       
-      if ( dst.length > this.queue.size() + 1 )
+      if ( dst.length > this.dormant.size() + 1 )
       {
-         dst[this.queue.size()] = null;
+         dst[this.dormant.size()] = null;
       }
       
       return (T[])dst;
