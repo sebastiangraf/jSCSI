@@ -5,7 +5,6 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 import org.apache.log4j.Logger;
-import org.jscsi.scsi.protocol.Encodable;
 
 public class DeviceIdentificationVPD extends VPDPage
 {
@@ -20,7 +19,7 @@ public class DeviceIdentificationVPD extends VPDPage
    @Override
    public void decode(byte[] header, ByteBuffer buffer) throws IOException
    {
-      this.decode(buffer);
+
    }
 
 
@@ -33,12 +32,6 @@ public class DeviceIdentificationVPD extends VPDPage
    }
 
 
-
-   public <T extends Encodable> T decode(ByteBuffer buffer) throws IOException
-   {
-
-      return null;
-   }
    
 
 }

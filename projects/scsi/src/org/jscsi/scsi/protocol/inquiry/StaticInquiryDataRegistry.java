@@ -1,6 +1,7 @@
 package org.jscsi.scsi.protocol.inquiry;
 
 import org.jscsi.core.exceptions.NotImplementedException;
+import org.jscsi.scsi.protocol.inquiry.vpd.SupportedVPDPages;
 
 // TODO: this class must be implemented
 public class StaticInquiryDataRegistry extends InquiryDataRegistry
@@ -15,7 +16,9 @@ public class StaticInquiryDataRegistry extends InquiryDataRegistry
    
    protected void populateSupportedVPDPages()
    {
-      throw new NotImplementedException("Supported VPD Pages must be populated");
+      SupportedVPDPages supportedPages = new SupportedVPDPages(0, 0);
+      supportedPages.addSupportedCode(0x00);
+      supportedPages.addSupportedCode(0x83);
    }
    
    protected void populateDeviceIdentificationVPD()

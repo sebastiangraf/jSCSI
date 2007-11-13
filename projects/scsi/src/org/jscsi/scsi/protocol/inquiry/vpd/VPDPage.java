@@ -1,23 +1,21 @@
 package org.jscsi.scsi.protocol.inquiry.vpd;
 
 import java.io.IOException;
-import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.Encodable;
-import org.jscsi.scsi.protocol.Serializer;
 
-public abstract class VPDPage implements Encodable, Serializer
+public abstract class VPDPage implements Encodable
 {  
    private int peripheralQualifier;
    private int peripheralDeviceType;
-   private byte pageCode;   
+   private int pageCode;   
    
    
    /////////////////////////////////////////////////////////////////////////////
    
    
-   public abstract byte[] encode() throws BufferOverflowException;
+   public abstract byte[] encode() throws IOException;
 
    public abstract void decode(byte[] header, ByteBuffer buffer) throws IOException;
 
@@ -51,7 +49,7 @@ public abstract class VPDPage implements Encodable, Serializer
       return pageCode;
    }
 
-   public void setPageCode(byte pageCode)
+   public void setPageCode(int pageCode)
    {
       this.pageCode = pageCode;
    }
