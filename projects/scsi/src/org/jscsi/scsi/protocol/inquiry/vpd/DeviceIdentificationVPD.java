@@ -54,10 +54,7 @@ public class DeviceIdentificationVPD extends VPDPage
       
       // byte 2 - 3
       this.pageLength = in.readUnsignedShort();
-      
-      // byte 3
-      int b3 = in.readUnsignedByte();
-      
+            
       // identification descriptor list
       descriptorList = this.parseDescriptorList(in);
    }
@@ -111,7 +108,7 @@ public class DeviceIdentificationVPD extends VPDPage
       while (readPageLength < this.pageLength)
       {
          IdentificationDescriptor desc = new IdentificationDescriptor();
-
+         
          // byte 0
          int b0 = in.readUnsignedByte();
          desc.setProtocolIdentifier(b0 >>> 4);
@@ -127,15 +124,15 @@ public class DeviceIdentificationVPD extends VPDPage
          in.readUnsignedByte();
          
          // byte 3
-         desc.setIdentifierLength(in.readUnsignedByte());
+         int idLength = in.readUnsignedByte();
          
          // identifier
-         byte[] ident = new byte[desc.getIdentifierLength()];
+         byte[] ident = new byte[idLength];
          in.read(ident);
          desc.setIdentifier(ident);
          
          descriptorList.add(desc);
-         readPageLength += desc.getIdentifierLength() + 4;
+         readPageLength += idLength + 4;
       }
       
       return descriptorList;

@@ -1,14 +1,13 @@
 
 package org.jscsi.scsi.protocol.inquiry.vpd;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import org.apache.log4j.Logger;
 
-import org.jscsi.scsi.protocol.Encodable;
-
-public class IdentificationDescriptor implements Encodable
+public class IdentificationDescriptor
 {
    private static Logger _logger = Logger.getLogger(IdentificationDescriptor.class);
 
@@ -18,7 +17,6 @@ public class IdentificationDescriptor implements Encodable
    private int codeSet;
    private boolean PIV;
    private int association;
-   private int identifierLength;
    private byte[] identifier;
 
    public IdentificationDescriptor()
@@ -41,16 +39,40 @@ public class IdentificationDescriptor implements Encodable
       this.identifier = identifier;
    }
 
-   public void decode(byte[] header, ByteBuffer buffer) throws IOException
-   {
-   }
-
    public byte[] encode() throws IOException
    {
-      // TODO Auto-generated method stub
-      return null;
+      ByteArrayOutputStream baos = new ByteArrayOutputStream(this.identifier.length + 4);
+      DataOutputStream out = new DataOutputStream(baos);
+
+      try
+      {
+         // byte 0
+         out.writeByte((this.getProtocolIdentifier() << 4)|this.getCodeSet());
+         
+         // byte 1
+         int b1 = (this.isPIV()? 1 : 0) << 7;
+         b1 |= this.getAssociation() << 4;
+         b1 |= this.getIdentifierType().value();
+         out.writeByte(b1);
+         
+         // byte 2
+         out.writeByte(0);
+         
+         // byte 3
+         out.writeByte(this.identifier.length);
+         
+         // identifier
+         out.write(this.identifier);
+
+         return baos.toByteArray();
+      }
+      catch (IOException e)
+      {
+         throw new RuntimeException("Unable to encode CDB.");
+      }
    }
 
+   
    /////////////////////////////////////////////////////////////////////////////
    // getters/setters
 
@@ -113,14 +135,9 @@ public class IdentificationDescriptor implements Encodable
    {
       this.identifier = identifier;
    }
-
+   
    public int getIdentifierLength()
    {
-      return identifierLength;
-   }
-
-   public void setIdentifierLength(int identifierLength)
-   {
-      this.identifierLength = identifierLength;
+      return this.identifier.length;
    }
 }
