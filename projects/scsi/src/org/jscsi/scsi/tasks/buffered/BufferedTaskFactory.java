@@ -15,6 +15,7 @@ import org.jscsi.scsi.protocol.cdb.Read6;
 import org.jscsi.scsi.protocol.cdb.ReadCapacity10;
 import org.jscsi.scsi.protocol.cdb.ReadCapacity16;
 import org.jscsi.scsi.protocol.cdb.RequestSense;
+import org.jscsi.scsi.protocol.cdb.TestUnitReady;
 import org.jscsi.scsi.protocol.cdb.Write10;
 import org.jscsi.scsi.protocol.cdb.Write12;
 import org.jscsi.scsi.protocol.cdb.Write16;
@@ -26,6 +27,7 @@ import org.jscsi.scsi.protocol.sense.exceptions.InvalidCommandOperationCodeExcep
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.generic.ModeSenseTask;
+import org.jscsi.scsi.tasks.generic.TestUnitReadyTask;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class BufferedTaskFactory implements TaskFactory
@@ -76,6 +78,8 @@ public class BufferedTaskFactory implements TaskFactory
          case ModeSense6.OPERATION_CODE:
          case ModeSense10.OPERATION_CODE:
             return new ModeSenseTask(port, command, modePageRegistry, inquiryDataRegistry);
+         case TestUnitReady.OPERATION_CODE:
+            return new TestUnitReadyTask(port, command, modePageRegistry, inquiryDataRegistry);
       }
       
       
