@@ -169,13 +169,11 @@ public class DefaultTaskRouterTest
          this.callback.success();
       }
 
-      @Override
       public void terminateDataTransfer(Nexus nexus, long commandReferenceNumber)
       {
          throw new NotImplementedException("transfer termination ability must be implemented");
       }
 
-      @Override
       public void registerTarget(Target target)
       {
          // TODO Auto-generated method stub
@@ -243,28 +241,24 @@ public class DefaultTaskRouterTest
 
       public void setModePageRegistry(ModePageRegistry modePageRegistry) {}
 
-      @Override
       public TaskServiceResponse abortTask(Nexus nexus)
       {
          // TODO Auto-generated method stub
          return null;
       }
 
-      @Override
       public TaskServiceResponse abortTaskSet(Nexus nexus)
       {
          // TODO Auto-generated method stub
          return null;
       }
 
-      @Override
       public TaskServiceResponse clearTaskSet(Nexus nexus)
       {
          // TODO Auto-generated method stub
          return null;
       }
 
-      @Override
       public TaskServiceResponse reset()
       {
          // TODO Auto-generated method stub
