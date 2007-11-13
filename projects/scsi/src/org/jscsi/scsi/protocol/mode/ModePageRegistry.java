@@ -128,13 +128,13 @@ public abstract class ModePageRegistry implements Serializer
    // Registration
    private void registerObjects()
    {
-      register(BackgroundControl.PAGE_CODE, BackgroundControl.SUBPAGE_CODE, backgroundControl);
+      //register(BackgroundControl.PAGE_CODE, BackgroundControl.SUBPAGE_CODE, backgroundControl);
       register(Caching.PAGE_CODE, caching);
       register(Control.PAGE_CODE, control);
-      register(ControlExtension.PAGE_CODE, ControlExtension.SUBPAGE_CODE, controlExtension);
-      register(DisconnectReconnect.PAGE_CODE, disconnectReconnect);
+      //register(ControlExtension.PAGE_CODE, ControlExtension.SUBPAGE_CODE, controlExtension);
+      //register(DisconnectReconnect.PAGE_CODE, disconnectReconnect);
       register(InformationalExceptionsControl.PAGE_CODE, informationalExceptionsControl);
-      register(PowerCondition.PAGE_CODE, powerCondition);
+      //register(PowerCondition.PAGE_CODE, powerCondition);
       register(ReadWriteErrorRecovery.PAGE_CODE, readWriteErrorRecovery);
    }
 
@@ -191,6 +191,50 @@ public abstract class ModePageRegistry implements Serializer
       {
          decode(pages);
       }
+   }
+   
+   
+   
+
+   public void setBackgroundControl(BackgroundControl backgroundControl)
+   {
+      this.backgroundControl = backgroundControl;
+   }
+
+   public void setCaching(Caching caching)
+   {
+      this.caching = caching;
+   }
+
+   public void setControl(Control control)
+   {
+      this.control = control;
+   }
+
+   public void setControlExtension(ControlExtension controlExtension)
+   {
+      this.controlExtension = controlExtension;
+   }
+
+   public void setDisconnectReconnect(DisconnectReconnect disconnectReconnect)
+   {
+      this.disconnectReconnect = disconnectReconnect;
+   }
+
+   public void setInformationalExceptionsControl(
+         InformationalExceptionsControl informationalExceptionsControl)
+   {
+      this.informationalExceptionsControl = informationalExceptionsControl;
+   }
+
+   public void setPowerCondition(PowerCondition powerCondition)
+   {
+      this.powerCondition = powerCondition;
+   }
+
+   public void setReadWriteErrorRecovery(ReadWriteErrorRecovery readWriteErrorRecovery)
+   {
+      this.readWriteErrorRecovery = readWriteErrorRecovery;
    }
 
    public BackgroundControl getBackgroundControl()

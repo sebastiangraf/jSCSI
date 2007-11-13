@@ -18,7 +18,6 @@ public class Control extends ModePage
    private boolean RLEC;
    private int QUEUE_ALGORIHTM_MODIFIER; // MAX VALUE 0x0F (4-bit)
    private int QERR;
-   private boolean VS;
    private boolean RAC;
    private int UA_INTLCK_CTRL;
    private boolean SWP;
@@ -56,7 +55,6 @@ public class Control extends ModePage
          this.QERR = (b2 >>> 1) & 0x3;
 
          // byte 3
-         this.VS = ((b3 >>> 7) & 0x01) == 1;
          this.RAC = ((b3 >>> 6) & 0x01) == 1;
          this.UA_INTLCK_CTRL = (b3 >>> 4) & 0x03;
          this.SWP = ((b3 >>> 3) & 0x01) == 1;
@@ -111,10 +109,6 @@ public class Control extends ModePage
 
          // byte #5
          b = 0;
-         if (this.VS)
-         {
-            b |= 0x80;
-         }
          if (this.RAC)
          {
             b |= 0x40;
@@ -225,16 +219,6 @@ public class Control extends ModePage
    public void setQERR(int qerr)
    {
       this.QERR = qerr;
-   }
-
-   public boolean isVS()
-   {
-      return this.VS;
-   }
-
-   public void setVS(boolean vs)
-   {
-      this.VS = vs;
    }
 
    public boolean isRAC()

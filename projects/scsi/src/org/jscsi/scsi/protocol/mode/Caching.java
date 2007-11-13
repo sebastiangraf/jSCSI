@@ -35,7 +35,6 @@ public class Caching extends ModePage
    private boolean FSW;
    private boolean LBCSS;
    private boolean DRA;
-   private int custom;
    private boolean NV_DIS;
    // byte 13
    private int numberOfCacheSegments;
@@ -86,7 +85,6 @@ public class Caching extends ModePage
          this.FSW = ((b >>> 7) & 1) == 1;
          this.LBCSS = ((b >>> 6) & 1) == 1;
          this.DRA = ((b >>> 5) & 1) == 1;
-         this.custom = ((b >>> 3) & 2);
          this.NV_DIS = (b & 1) == 1;
 
          // byte 13
@@ -181,7 +179,6 @@ public class Caching extends ModePage
          {
             b |= 0x20;
          }
-         b |= (this.custom << 3);
          if (this.NV_DIS)
          {
             b |= 0x01;
@@ -376,16 +373,6 @@ public class Caching extends ModePage
    public void setDRA(boolean dra)
    {
       this.DRA = dra;
-   }
-
-   public int getCustom()
-   {
-      return this.custom;
-   }
-
-   public void setCustom(int custom)
-   {
-      this.custom = custom;
    }
 
    public boolean isNV_DIS()
