@@ -135,6 +135,7 @@ public class StandardInquiryData implements Encodable, Serializer
       decode(buffer);
    }
 
+   @SuppressWarnings("unchecked")
    public StandardInquiryData decode(ByteBuffer buffer)
    {
       byte[] header = new byte[5];

@@ -23,7 +23,7 @@ public class BufferedReadTask extends BufferedTask
 
    @Override
    protected void execute(
-         ByteBuffer file,
+         ByteBuffer buffer,
          int blockLength,
          TargetTransportPort targetPort,
          Command command,
@@ -49,14 +49,14 @@ public class BufferedReadTask extends BufferedTask
       }
       
       // duplicate file byte buffer to avoid interference with other tasks
-      file = file.duplicate();
+      buffer = buffer.duplicate();
       
       // set file position
       // deviceSize will always be less than Integer.MAX_VALUE so truncating will be safe
-      file.position( (int)(lba * blockLength) );
+      buffer.position( (int)(lba * blockLength) );
       
       // attempt to write data to transport port
-      if ( ! this.writeData(file) )
+      if ( ! this.writeData(buffer) )
       {
          throw new SynchronousDataTransferErrorException();
       }
