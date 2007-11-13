@@ -93,7 +93,6 @@ public  class BufferTestTask implements TargetTransportPort
    /////////////////////////////////////////////////////////////////////////////
    // TargetTransportPort implementation
    
-   @Override
    public boolean readData(Nexus nexus, long commandReferenceNumber, ByteBuffer output)
          throws InterruptedException
    {
@@ -102,7 +101,6 @@ public  class BufferTestTask implements TargetTransportPort
       return true;
    }
 
-   @Override
    public boolean writeData(Nexus nexus, long commandReferenceNumber, ByteBuffer input)
          throws InterruptedException
    {
@@ -111,25 +109,21 @@ public  class BufferTestTask implements TargetTransportPort
       return true;
    }
    
-   @Override
    public void registerTarget(Target target)
    {
       _logger.debug("servicing registerTarget request");
    }
 
-   @Override
    public void removeTarget(String targetName) throws Exception
    {
       _logger.debug("servicing removeTarget request");
    }
 
-   @Override
    public void terminateDataTransfer(Nexus nexus, long commandReferenceNumber)
    {
       _logger.debug("servicing terminateDataTransfer request");
    }
 
-   @Override
    public void writeResponse(
          Nexus nexus,
          long commandReferenceNumber,

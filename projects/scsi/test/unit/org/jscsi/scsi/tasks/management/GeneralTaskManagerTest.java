@@ -192,7 +192,6 @@ public class GeneralTaskManagerTest
          this.properStart = false;
       }
 
-      @Override
       public boolean abort()
       {
          throw new NotImplementedException("abort facility must be implemented");
@@ -287,7 +286,6 @@ public class GeneralTaskManagerTest
          this.properStart = false;
       }
 
-      @Override
       public boolean abort()
       {
          throw new NotImplementedException("abort facility must be implemented");
@@ -364,7 +362,6 @@ public class GeneralTaskManagerTest
          this.properStart = false;
       }
 
-      @Override
       public boolean abort()
       {
          throw new NotImplementedException("abort facility must be implemented");
