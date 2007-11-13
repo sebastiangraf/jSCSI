@@ -9,6 +9,19 @@ public class InvalidFieldInCDBException extends IllegalRequestException
 
    FieldPointer fieldPointer;
 
+   protected InvalidFieldInCDBException(
+         KCQ kcq,
+         boolean current,
+         byte bitPointer,
+         int fieldPointer )
+   {
+      super(kcq, current);
+      assert bitPointer <= 0x07 : "bit pointer value out of range";
+      assert fieldPointer <= 65536 : "field pointer value out of range";
+      
+      this.fieldPointer = new FieldPointer(true, bitPointer, fieldPointer);
+   }
+   
    public InvalidFieldInCDBException(
          boolean current,
          byte bitPointer,
