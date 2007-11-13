@@ -1,5 +1,6 @@
 package org.jscsi.scsi.protocol.inquiry;
 
+import org.jscsi.core.exceptions.NotImplementedException;
 
 // TODO: this class must be implemented
 public class StaticInquiryDataRegistry extends InquiryDataRegistry
@@ -8,6 +9,19 @@ public class StaticInquiryDataRegistry extends InquiryDataRegistry
    {
       super();
       this.populateStandardInquiryData();
+      this.populateDeviceIdentificationVPD();
+      this.populateSupportedVPDPages();
+   }
+   
+   protected void populateSupportedVPDPages()
+   {
+      throw new NotImplementedException("Supported VPD Pages must be populated");
+   }
+   
+   protected void populateDeviceIdentificationVPD()
+   {
+      throw new NotImplementedException("Device Identification VPD must be populated");
+      // TODO: 
    }
    
    protected void populateStandardInquiryData()
