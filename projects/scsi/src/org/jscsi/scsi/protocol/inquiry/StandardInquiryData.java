@@ -18,7 +18,6 @@ public class StandardInquiryData implements Encodable, Serializer
    private boolean normACA; // 1 bit
    private boolean hiSup; // 1 bit
    private byte responseDataFormat; // 4 bits
-   private int additionalLength = 36 - 4; // 8 bits
    private boolean SCCS; // 1 bit
    private boolean ACC; // 1 bit
    private byte TPGS; // 2 bits
@@ -28,24 +27,28 @@ public class StandardInquiryData implements Encodable, Serializer
    private boolean encServ; // 1 bit
    private boolean multiP; // 1 bit
    private boolean MChngr; // 1 bit
-   private boolean addr16; // 1 bit
-   private boolean WBus16; // 1 bit
-   private boolean sync; // 1 bit
    private boolean linked; // 1 bit
    private byte[] T10VendorIdentification = new byte[8]; // 8 bytes
    private byte[] productIdentification = new byte[16]; // 16 bytes
    private byte[] productRevisionLevel = new byte[4]; // 4 bytes
-   private byte clocking; // 2 bits
-   private boolean QAS; // 1 bit
-   private boolean UIS; // 1 bit
+   private int versionDescriptor1;
+   private int versionDescriptor2;
+   private int versionDescriptor3;
+   private int versionDescriptor4;
+   private int versionDescriptor5;
+   private int versionDescriptor6;
+   private int versionDescriptor7;
+   private int versionDescriptor8;
 
+   private static int ENCODE_LENGTH = 74;
+   
    public StandardInquiryData()
    {
    }
 
    public byte[] encode()
    {
-      byte[] encodedData = new byte[57];
+      byte[] encodedData = new byte[ENCODE_LENGTH];
 
       /////////////////////////////////////////////////////////////////////////
       // Add Peripheral Qualifier
@@ -71,7 +74,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
       /////////////////////////////////////////////////////////////////////////
       // Add Additional Length
-      encodedData[4] = (byte) (this.additionalLength & 0xFF);
+      encodedData[4] = (byte) (ENCODE_LENGTH - 4 & 0xFF); // number of remaining bytes
 
       /////////////////////////////////////////////////////////////////////////
       // Add SCCS
@@ -94,14 +97,8 @@ public class StandardInquiryData implements Encodable, Serializer
       encodedData[6] |= (byte) (this.multiP ? (1 << 4) : 0x00);
       // Add MChngr
       encodedData[6] |= (byte) (this.MChngr ? (1 << 3) : 0x00);
-      // Add addr16
-      encodedData[6] |= (byte) (this.addr16 ? (0x01) : 0x00);
 
       /////////////////////////////////////////////////////////////////////////
-      // Add wbus16
-      encodedData[7] = (byte) (this.WBus16 ? (1 << 5) : 0x00);
-      // Add sync
-      encodedData[7] |= (byte) (this.sync ? (1 << 4) : 0x00);
       // Add linked
       encodedData[7] |= (byte) (this.linked ? (1 << 3) : 0x00);
       // Add CmdQue
@@ -120,12 +117,25 @@ public class StandardInquiryData implements Encodable, Serializer
       System.arraycopy(productRevisionLevel, 0, encodedData, 32, productIdentification.length);
 
       /////////////////////////////////////////////////////////////////////////
-      // Add clocking
-      encodedData[56] = (byte) ((this.clocking & 0x03) << 2);
-      // Add qas
-      encodedData[56] |= (byte) (this.QAS ? (1 << 1) : 0x00);
-      // Add ius
-      encodedData[56] |= (byte) (this.UIS ? 0x01 : 0x00);
+      
+      encodedData[58] = (byte)(this.versionDescriptor1 >>> 8 | 0xFF);
+      encodedData[59] = (byte)(this.versionDescriptor1 | 0xFF);
+      encodedData[60] = (byte)(this.versionDescriptor2 >>> 8 | 0xFF);
+      encodedData[61] = (byte)(this.versionDescriptor2 | 0xFF);
+      encodedData[62] = (byte)(this.versionDescriptor3 >>> 8 | 0xFF);
+      encodedData[63] = (byte)(this.versionDescriptor3 | 0xFF);
+      encodedData[64] = (byte)(this.versionDescriptor4 >>> 8 | 0xFF);
+      encodedData[65] = (byte)(this.versionDescriptor4 | 0xFF);
+      encodedData[66] = (byte)(this.versionDescriptor5 >>> 8 | 0xFF);
+      encodedData[67] = (byte)(this.versionDescriptor5 | 0xFF);
+      encodedData[68] = (byte)(this.versionDescriptor6 >>> 8 | 0xFF);
+      encodedData[69] = (byte)(this.versionDescriptor6 | 0xFF);
+      encodedData[70] = (byte)(this.versionDescriptor7 >>> 8 | 0xFF);
+      encodedData[71] = (byte)(this.versionDescriptor7 | 0xFF);
+      encodedData[72] = (byte)(this.versionDescriptor8 >>> 8 | 0xFF);
+      encodedData[73] = (byte)(this.versionDescriptor8 | 0xFF);
+      
+      /////////////////////////////////////////////////////////////////////////
 
       return encodedData;
    }
@@ -152,7 +162,7 @@ public class StandardInquiryData implements Encodable, Serializer
       this.hiSup = ((header[3] >> 4) & 1) == 1;
       this.responseDataFormat = (byte) (header[3] & 0x0F);
 
-      this.additionalLength = header[4];
+      int additionalLength = header[4];
 
       byte[] payload = new byte[additionalLength];
 
@@ -168,10 +178,7 @@ public class StandardInquiryData implements Encodable, Serializer
       this.encServ = ((payload[6] >> 6) & 1) == 1;
       this.multiP = ((payload[6] >> 4) & 1) == 1;
       this.MChngr = ((payload[6] >> 3) & 1) == 1;
-      this.addr16 = (payload[6] & 1) == 1;
 
-      this.WBus16 = ((payload[7] >> 5) & 1) == 1;
-      this.sync = ((payload[7] >> 4) & 1) == 1;
       this.linked = ((payload[7] >> 3) & 1) == 1;
       this.MChngr = ((payload[7] >> 1) & 1) == 1;
 
@@ -180,10 +187,15 @@ public class StandardInquiryData implements Encodable, Serializer
       System.arraycopy(payload, 16, productIdentification, 0, productIdentification.length);
 
       System.arraycopy(payload, 32, productRevisionLevel, 0, productIdentification.length);
-
-      this.clocking = (byte) ((payload[56] >> 2) & 0x03);
-      this.QAS = ((payload[56] >> 1) & 1) == 1;
-      this.UIS = (payload[56] & 1) == 1;
+      
+      this.versionDescriptor1 = payload[58] << 8 | (payload[59] & 0xFF);
+      this.versionDescriptor2 = payload[60] << 8 | (payload[61] & 0xFF);
+      this.versionDescriptor3 = payload[62] << 8 | (payload[63] & 0xFF);
+      this.versionDescriptor4 = payload[64] << 8 | (payload[65] & 0xFF);
+      this.versionDescriptor5 = payload[66] << 8 | (payload[67] & 0xFF);
+      this.versionDescriptor6 = payload[68] << 8 | (payload[69] & 0xFF);
+      this.versionDescriptor7 = payload[70] << 8 | (payload[71] & 0xFF);
+      this.versionDescriptor8 = payload[72] << 8 | (payload[73] & 0xFF);
 
       return this;
    }
@@ -261,16 +273,6 @@ public class StandardInquiryData implements Encodable, Serializer
    public void setResponseDataFormat(byte responseDataFormat)
    {
       this.responseDataFormat = responseDataFormat;
-   }
-
-   public int getAdditionalLength()
-   {
-      return this.additionalLength;
-   }
-
-   public void setAdditionalLength(int additionalLength)
-   {
-      this.additionalLength = additionalLength;
    }
 
    public boolean isSCCS()
@@ -363,35 +365,6 @@ public class StandardInquiryData implements Encodable, Serializer
       this.MChngr = chngr;
    }
 
-   public boolean isAddr16()
-   {
-      return this.addr16;
-   }
-
-   public void setAddr16(boolean addr16)
-   {
-      this.addr16 = addr16;
-   }
-
-   public boolean isWBus16()
-   {
-      return this.WBus16;
-   }
-
-   public void setWBus16(boolean bus16)
-   {
-      this.WBus16 = bus16;
-   }
-
-   public boolean isSync()
-   {
-      return this.sync;
-   }
-
-   public void setSync(boolean sync)
-   {
-      this.sync = sync;
-   }
 
    public boolean isLinked()
    {
@@ -432,34 +405,88 @@ public class StandardInquiryData implements Encodable, Serializer
    {
       this.productRevisionLevel = productRevisionLevel;
    }
+   
+   
+   
 
-   public byte getClocking()
+   public int getVersionDescriptor1()
    {
-      return this.clocking;
+      return versionDescriptor1;
    }
 
-   public void setClocking(byte clocking)
+   public void setVersionDescriptor1(int versionDescriptor1)
    {
-      this.clocking = clocking;
+      this.versionDescriptor1 = versionDescriptor1;
    }
 
-   public boolean isQAS()
+   public int getVersionDescriptor2()
    {
-      return this.QAS;
+      return versionDescriptor2;
    }
 
-   public void setQAS(boolean qas)
+   public void setVersionDescriptor2(int versionDescriptor2)
    {
-      this.QAS = qas;
+      this.versionDescriptor2 = versionDescriptor2;
    }
 
-   public boolean isUIS()
+   public int getVersionDescriptor3()
    {
-      return this.UIS;
+      return versionDescriptor3;
    }
 
-   public void setUIS(boolean uis)
+   public void setVersionDescriptor3(int versionDescriptor3)
    {
-      this.UIS = uis;
+      this.versionDescriptor3 = versionDescriptor3;
    }
+
+   public int getVersionDescriptor4()
+   {
+      return versionDescriptor4;
+   }
+
+   public void setVersionDescriptor4(int versionDescriptor4)
+   {
+      this.versionDescriptor4 = versionDescriptor4;
+   }
+
+   public int getVersionDescriptor5()
+   {
+      return versionDescriptor5;
+   }
+
+   public void setVersionDescriptor5(int versionDescriptor5)
+   {
+      this.versionDescriptor5 = versionDescriptor5;
+   }
+
+   public int getVersionDescriptor6()
+   {
+      return versionDescriptor6;
+   }
+
+   public void setVersionDescriptor6(int versionDescriptor6)
+   {
+      this.versionDescriptor6 = versionDescriptor6;
+   }
+
+   public int getVersionDescriptor7()
+   {
+      return versionDescriptor7;
+   }
+
+   public void setVersionDescriptor7(int versionDescriptor7)
+   {
+      this.versionDescriptor7 = versionDescriptor7;
+   }
+
+   public int getVersionDescriptor8()
+   {
+      return versionDescriptor8;
+   }
+
+   public void setVersionDescriptor8(int versionDescriptor8)
+   {
+      this.versionDescriptor8 = versionDescriptor8;
+   }
+
 }
