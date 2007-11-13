@@ -17,6 +17,7 @@ public class DeviceIdentificationVPD extends VPDPage
    
    public static final int PAGE_CODE = 0x83;
    
+   private int pageLength = 0;
    private List<IdentificationDescriptor> descriptorList = new LinkedList<IdentificationDescriptor>();
 
    public DeviceIdentificationVPD(int peripheralQualifier, int peripheralDeviceType, List<IdentificationDescriptor> descriptorList)
@@ -52,13 +53,13 @@ public class DeviceIdentificationVPD extends VPDPage
       this.setPageCode(b1);
       
       // byte 2 - 3
-      int pageLength = in.readUnsignedShort();
+      this.pageLength = in.readUnsignedShort();
       
       // byte 3
       int b3 = in.readUnsignedByte();
       
       // identification descriptor list
-      descriptorList = IdentificationDescriptor.parse(in);
+      descriptorList = this.parseDescriptorList(in);
    }
 
    @Override
@@ -98,8 +99,64 @@ public class DeviceIdentificationVPD extends VPDPage
       }
    }
 
+   /////////////////////////////////////////////////////////////////////////////
+   // utility
+   
+   
+   private List<IdentificationDescriptor> parseDescriptorList(DataInputStream in) throws IOException
+   {
+      List<IdentificationDescriptor> descriptorList = new LinkedList<IdentificationDescriptor>();
+      
+      int readPageLength = 0;
+      while (readPageLength < this.pageLength)
+      {
+         IdentificationDescriptor desc = new IdentificationDescriptor();
+
+         // byte 0
+         int b0 = in.readUnsignedByte();
+         desc.setProtocolIdentifier(b0 >>> 4);
+         desc.setCodeSet(b0 & 0x0F);
+         
+         // byte 1
+         int b1 = in.readUnsignedByte();
+         desc.setPIV((b1 >>> 7) == 1);
+         desc.setAssociation((b1 & 0x30) >>> 4);
+         desc.setIdentifierType(IdentifierType.valueOf(b1 & 0x15));
+         
+         // byte 2
+         in.readUnsignedByte();
+         
+         // byte 3
+         desc.setIdentifierLength(in.readUnsignedByte());
+         
+         // identifier
+         byte[] ident = new byte[desc.getIdentifierLength()];
+         in.read(ident);
+         desc.setIdentifier(ident);
+         
+         descriptorList.add(desc);
+         readPageLength += desc.getIdentifierLength() + 4;
+      }
+      
+      return descriptorList;
+   }
+   
+   /////////////////////////////////////////////////////////////////////////////
+   // getters/setters
+
+   
    public void addIdentificationDescriptor(IdentificationDescriptor identificationDescriptor)
    {
       this.descriptorList.add(identificationDescriptor);
+   }
+
+   public List<IdentificationDescriptor> getDescriptorList()
+   {
+      return descriptorList;
+   }
+
+   public void setDescriptorList(List<IdentificationDescriptor> descriptorList)
+   {
+      this.descriptorList = descriptorList;
    }
 }

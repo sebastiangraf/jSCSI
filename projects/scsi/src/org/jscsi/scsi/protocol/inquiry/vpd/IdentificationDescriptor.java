@@ -1,35 +1,48 @@
+
 package org.jscsi.scsi.protocol.inquiry.vpd;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.jscsi.scsi.protocol.Encodable;
-import org.jscsi.scsi.protocol.Serializer;
 
-public abstract class IdentificationDescriptor implements Encodable, Serializer
+import org.jscsi.scsi.protocol.Encodable;
+
+public class IdentificationDescriptor implements Encodable
 {
    private static Logger _logger = Logger.getLogger(IdentificationDescriptor.class);
 
    private IdentifierType identifierType;
-   
+
    private int protocolIdentifier;
    private int codeSet;
    private boolean PIV;
    private int association;
    private int identifierLength;
    private byte[] identifier;
-   
-   public static List<IdentificationDescriptor> parse(DataInputStream in)
+
+   public IdentificationDescriptor()
    {
-      return null;
    }
-   
+
+   public IdentificationDescriptor(
+         IdentifierType identifierType,
+         int protocolIdentifier,
+         int codeSet,
+         boolean PIV,
+         int association,
+         byte[] identifier)
+   {
+      this.identifierType = identifierType;
+      this.protocolIdentifier = protocolIdentifier;
+      this.codeSet = codeSet;
+      this.PIV = PIV;
+      this.association = association;
+      this.identifier = identifier;
+   }
+
    public void decode(byte[] header, ByteBuffer buffer) throws IOException
    {
-      this.decode(buffer);
    }
 
    public byte[] encode() throws IOException
@@ -38,17 +51,9 @@ public abstract class IdentificationDescriptor implements Encodable, Serializer
       return null;
    }
 
-   public <T extends Encodable> T decode(ByteBuffer buffer) throws IOException
-   {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
-
    /////////////////////////////////////////////////////////////////////////////
    // getters/setters
-   
-   
+
    public int getProtocolIdentifier()
    {
       return protocolIdentifier;
