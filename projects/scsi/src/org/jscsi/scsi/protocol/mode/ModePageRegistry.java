@@ -4,7 +4,10 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.jscsi.scsi.protocol.Serializer;
@@ -13,27 +16,82 @@ import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 public abstract class ModePageRegistry implements Serializer
 {
    // Long to ModePage map
-   private Map<Long, ModePage> pages = new HashMap<Long, ModePage>();
+   private Map<Byte, Map<Integer,ModePage>> pages = null;
 
-   private long getParserID(byte pageCode, int subPageCode)
-   {
-      return (pageCode << 32) | subPageCode;
-   }
 
    // Factory registration methods
    private void register(byte pageCode, ModePage page)
    {
-      register(pageCode, -1, page);
+      register(pageCode, 0, page);
    }
 
    private void register(byte pageCode, int subPageCode, ModePage page)
    {
-      pages.put(getParserID(pageCode, subPageCode), page);
+      if ( this.pages == null )
+         this.pages = new HashMap<Byte, Map<Integer,ModePage>>();
+      if ( ! this.pages.containsKey(pageCode) )
+         this.pages.put(pageCode, new HashMap<Integer,ModePage>());
+      this.pages.get(pageCode).put(subPageCode, page);
    }
-
-   public ModePage getModePage(byte pageCode, int subPageCode)
+   
+   public boolean contains(byte pageCode)
    {
-      return pages.get(getParserID(pageCode, subPageCode));
+      return this.pages.containsKey(pageCode);
+   }
+   
+   public boolean contains(byte pageCode, int subPageCode)
+   {
+      if ( ! this.pages.containsKey(pageCode) )
+         return false;
+      else
+         return this.pages.get(pageCode).containsKey(subPageCode);
+   }
+   
+   
+   /**
+    * Returns all mode pages.
+    * 
+    * @param subPages Returns all pages, including subpages, if <code>true</code>; returns only
+    *    page_0 pages if <code>false</code>.
+    */
+   public Collection<ModePage> get(boolean subPages)
+   {
+      List<ModePage> value = new LinkedList<ModePage>();
+      for ( Map<Integer,ModePage> pagelist : pages.values() )
+      {
+         for ( ModePage page : pagelist.values() )
+         {
+            if ( page.getSubPageCode() == 0x00 )
+            {
+               value.add(page);
+            }
+            else if ( subPages )
+            {
+               value.add(page);
+            }
+         }
+      }
+      return value;
+   }
+   
+   
+   /**
+    * Returns all mode pages with the given page code.
+    */
+   public Collection<ModePage> get(byte pageCode)
+   {
+      if ( this.contains(pageCode) )
+         return this.pages.get(pageCode).values();
+      else
+         return null;
+   }
+   
+   public ModePage get(byte pageCode, int subPageCode)
+   {
+      if (this.contains(pageCode, subPageCode))
+         return this.pages.get(pageCode).get(subPageCode);
+      else
+         return null;
    }
 
    // Mode pages
@@ -45,9 +103,14 @@ public abstract class ModePageRegistry implements Serializer
    protected InformationalExceptionsControl informationalExceptionsControl = null;
    protected PowerCondition powerCondition = null;
    protected ReadWriteErrorRecovery readWriteErrorRecovery = null;
+   
+   protected boolean WP = false; // WP field for DEVICE-SPECIFIC PARAMETER field in mode page header
+   protected boolean DPOFUA = false; // DPOFUA field for DEVICE-SPECIFIC PARAMETER field
+   
+   
 
    public ModePageRegistry()
-   {
+   {  
       backgroundControl = new BackgroundControl();
       caching = new Caching();
       control = new Control();
@@ -104,10 +167,10 @@ public abstract class ModePageRegistry implements Serializer
          header = new byte[2];
          dataIn.read(header);
 
-         subPageCode = -1;
+         subPageCode = 0;
       }
 
-      ModePage page = getModePage(pageCode, subPageCode);
+      ModePage page = get(pageCode, subPageCode);
       
       if(page != null)
       {
@@ -169,4 +232,28 @@ public abstract class ModePageRegistry implements Serializer
    {
       return readWriteErrorRecovery;
    }
+   
+
+   public boolean isWP()
+   {
+      return WP;
+   }
+
+   public void setWP(boolean wp)
+   {
+      WP = wp;
+   }
+
+   public boolean isDPOFUA()
+   {
+      return DPOFUA;
+   }
+
+   public void setDPOFUA(boolean dpofua)
+   {
+      DPOFUA = dpofua;
+   }
+
+
+
 }
