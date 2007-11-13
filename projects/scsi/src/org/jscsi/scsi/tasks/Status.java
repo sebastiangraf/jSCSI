@@ -245,18 +245,18 @@ public enum Status {
   {
      String output = "<status:";
      
-     switch(value)
+     switch(Status.valueOf(value))
      {
-        case 0x00: output += " good"; break;
-        case 0x02: output += " check condition"; break;
-        case 0x04: output += " condition met"; break;
-        case 0x08: output += " busy"; break;
-        case 0x10: output += " intermediate"; break;
-        case 0x14: output += " intermediate condition met"; break;
-        case 0x18: output += " reservation conflict"; break;
-        case 0x28: output += " task set full"; break;
-        case 0x30: output += " aca active"; break;
-        case 0x40: output += " task aborted"; break;
+        case GOOD:                       output += " good"; break;
+        case CHECK_CONDITION:            output += " check condition"; break;
+        case CONDITION_MET:              output += " condition met"; break;
+        case BUSY:                       output += " busy"; break;
+        case INTERMEDIATE:               output += " intermediate"; break;
+        case INTERMEDIATE_CONDITION_MET: output += " intermediate condition met"; break;
+        case RESERVATION_CONFLICT:       output += " reservation conflict"; break;
+        case TASK_SET_FULL:              output += " task set full"; break;
+        case ACA_ACTIVE:                 output += " aca active"; break;
+        case TASK_ABORTED:               output += " task aborted"; break;
      }
      return output + ">";
   }

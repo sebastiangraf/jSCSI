@@ -10,6 +10,7 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Command;
+import org.jscsi.scsi.protocol.cdb.CDB;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.inquiry.StaticInquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
@@ -18,11 +19,13 @@ import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.target.Target;
 import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.Task;
+import org.jscsi.scsi.tasks.TaskAttribute;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -42,8 +45,10 @@ public  class BufferTestTask implements TargetTransportPort
    private static TaskFactory fileFactory;
    private static RandomAccessFile file;
    
+
    private Random rnd = new Random();
    private HashMap<Long,byte[]> readDataMap = new HashMap<Long,byte[]>();
+   private HashMap<Long,byte[]> writeDataMap = new HashMap<Long,byte[]>();
    
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
@@ -102,6 +107,7 @@ public  class BufferTestTask implements TargetTransportPort
          throws InterruptedException
    {
       _logger.debug("servicing writeData request");
+      this.writeDataMap.put(commandReferenceNumber, input.array().clone());
       return true;
    }
    
@@ -147,6 +153,29 @@ public  class BufferTestTask implements TargetTransportPort
    public void purgeReadData(long cmdRef)
    {
       this.readDataMap.remove(cmdRef);
+   }
+   
+   public byte[] getWriteData(long cmdRef)
+   {
+      return this.writeDataMap.remove(cmdRef);
+   }
+   
+   public void submitWrite(CDB cdb, int cmdRef)
+   {
+      Command cmd = new Command(new Nexus("initiator", "target", 0, 0), cdb, TaskAttribute.ORDERED, cmdRef, 0);
+
+      try
+      {
+         Task task = this.getMemoryTask(this, cmd);
+         task.run();
+         
+         task = this.getFileTask(this, cmd);
+         task.run();
+      }
+      catch (IllegalRequestException e)
+      {
+         Assert.fail("illegal request");
+      }
    }
    
    /////////////////////////////////////////////////////////////////////////////
