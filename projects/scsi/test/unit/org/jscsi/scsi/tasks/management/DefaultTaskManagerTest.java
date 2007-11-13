@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.tasks.Task;
@@ -22,7 +23,7 @@ public class DefaultTaskManagerTest extends GeneralTaskManagerTest
    @Before
    public void setUp() throws Exception
    {
-      DOMConfigurator.configure(System.getProperty("log4j.configuration"));
+      BasicConfigurator.configure();
    }
 
    @After
@@ -30,7 +31,6 @@ public class DefaultTaskManagerTest extends GeneralTaskManagerTest
    {
    }
 
-   
    private static void executeTaskSet( List<TestTask> taskSetList ) throws InterruptedException
    {
       TaskSet taskSet = new DefaultTaskSet(16);

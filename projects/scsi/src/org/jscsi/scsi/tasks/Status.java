@@ -239,4 +239,25 @@ public enum Status {
 
     return Status.mapping.get(value);
   }
+  
+  @Override
+  public String toString()
+  {
+     String output = "<status:";
+     
+     switch(value)
+     {
+        case 0x00: output += " good"; break;
+        case 0x02: output += " check condition"; break;
+        case 0x04: output += " condition met"; break;
+        case 0x08: output += " busy"; break;
+        case 0x10: output += " intermediate"; break;
+        case 0x14: output += " intermediate condition met"; break;
+        case 0x18: output += " reservation conflict"; break;
+        case 0x28: output += " task set full"; break;
+        case 0x30: output += " aca active"; break;
+        case 0x40: output += " task aborted"; break;
+     }
+     return output + ">";
+  }
 }

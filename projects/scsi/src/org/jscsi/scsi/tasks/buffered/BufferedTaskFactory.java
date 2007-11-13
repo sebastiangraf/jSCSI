@@ -35,7 +35,7 @@ public class BufferedTaskFactory implements TaskFactory
    private static Map<Class<? extends CDB>, Class<? extends BufferedTask>> _tasks =
          new HashMap<Class<? extends CDB>, Class<? extends BufferedTask>>();
 
-   private ByteBuffer file;
+   private ByteBuffer buffer;
    private int blockLength;
    private ModePageRegistry modePageRegistry;
    private InquiryDataRegistry inquiryDataRegistry;
@@ -55,21 +55,19 @@ public class BufferedTaskFactory implements TaskFactory
       BufferedTaskFactory._tasks.put(RequestSense.class, BufferedRequestSenseTask.class);
    }
 
-   public BufferedTaskFactory(
-         ByteBuffer file,
-         int blockLength,
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry)
+   public BufferedTaskFactory(ByteBuffer buffer,
+                              int blockLength,
+                              ModePageRegistry modePageRegistry,
+                              InquiryDataRegistry inquiryDataRegistry)
    {
-      this.file = file;
+      this.buffer = buffer;
       this.blockLength = blockLength;
       this.modePageRegistry = modePageRegistry;
       this.inquiryDataRegistry = inquiryDataRegistry;
    }
 
-   public Task getInstance(
-         TargetTransportPort port,
-         Command command) throws IllegalRequestException
+   public Task getInstance(TargetTransportPort port, Command command)
+   throws IllegalRequestException
    {
       
       // check for basic commands
@@ -90,9 +88,8 @@ public class BufferedTaskFactory implements TaskFactory
       {
          try
          {
-            return taskClass
-               .newInstance()
-               .load(file, blockLength, port, command, modePageRegistry, inquiryDataRegistry);
+            return taskClass.newInstance().load(buffer, blockLength, port, command,
+                  modePageRegistry, inquiryDataRegistry);
          }
          catch (InstantiationException e)
          {

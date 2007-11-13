@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.tasks.buffered;
 
 import java.nio.ByteBuffer;
@@ -20,49 +21,48 @@ public class BufferedWriteTask extends BufferedTask
    {
       super();
    }
-   
+
    @Override
-   protected void execute(
-         ByteBuffer file,
-         int blockLength,
-         TargetTransportPort targetPort,
-         Command command,
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException
+   protected void execute(ByteBuffer buffer,
+                          int blockLength,
+                          TargetTransportPort targetPort,
+                          Command command,
+                          ModePageRegistry modePageRegistry,
+                          InquiryDataRegistry inquiryDataRegistry)
+   throws InterruptedException, SenseException
    {
       long capacity = this.getFileCapacity();
-      
-      TransferCDB cdb = (TransferCDB)command.getCommandDescriptorBlock();
+
+      TransferCDB cdb = (TransferCDB) command.getCommandDescriptorBlock();
       long lba = cdb.getLogicalBlockAddress();
       long transferLength = cdb.getTransferLength();
-      
+
       // check if transfer would exceed the device size
-      if ( lba < 0 || transferLength < 0 || lba > capacity || (lba + transferLength) > capacity)
+      if (lba < 0 || transferLength < 0 || lba > capacity || (lba + transferLength) > capacity)
       {
          switch (cdb.getOperationCode())
          {
-            case Write6.OPERATION_CODE:
-               throw new LogicalBlockAddressOutOfRangeException(true, true, (byte)4, 1);
-            default:
+            case Write6.OPERATION_CODE :
+               throw new LogicalBlockAddressOutOfRangeException(true, true, (byte) 4, 1);
+            default :
                throw new LogicalBlockAddressOutOfRangeException(true, true, 2);
          }
       }
-      
+
       // duplicate file byte buffer to avoid interference with other tasks
-      file = file.duplicate();
-      
+      buffer = buffer.duplicate();
+
       // set file position
       // deviceSize will always be less than Integer.MAX_VALUE so truncating will be safe
-      file.position( (int)(lba * blockLength) );
-      
+      buffer.position((int) (lba * blockLength));
+
       // attempt to read data from transport port
-      if ( ! this.readData(file) )
+      if (!this.readData(buffer))
       {
          throw new SynchronousDataTransferErrorException();
       }
-      
+
       // write operation complete
       this.writeResponse(Status.GOOD, null);
-      
    }
 }

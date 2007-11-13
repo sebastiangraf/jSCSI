@@ -1,6 +1,5 @@
 
 package org.jscsi.scsi.protocol.sense;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -40,10 +39,6 @@ public class FixedSenseData extends SenseData
             commandSpecificInformation, 
             senseKeySpecific );
    }
-
-
-
-
 
    @Override
    public void decodeSenseKeySpecific(SenseKeySpecificField field) 
