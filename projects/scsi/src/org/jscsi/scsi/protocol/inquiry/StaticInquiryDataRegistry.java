@@ -10,7 +10,7 @@ public class StaticInquiryDataRegistry extends InquiryDataRegistry
    {
       super();
       this.populateStandardInquiryData();
-      this.populateDeviceIdentificationVPD();
+      //this.populateDeviceIdentificationVPD();
       this.populateSupportedVPDPages();
    }
    
