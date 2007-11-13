@@ -1,7 +1,9 @@
 package org.jscsi.scsi.protocol.inquiry.vpd;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Encodable;
@@ -17,7 +19,13 @@ public abstract class IdentificationDescriptor implements Encodable, Serializer
    private int codeSet;
    private boolean PIV;
    private int association;
+   private int identifierLength;
    private byte[] identifier;
+   
+   public static List<IdentificationDescriptor> parse(DataInputStream in)
+   {
+      return null;
+   }
    
    public void decode(byte[] header, ByteBuffer buffer) throws IOException
    {
@@ -36,7 +44,7 @@ public abstract class IdentificationDescriptor implements Encodable, Serializer
       return null;
    }
 
-   
+
    /////////////////////////////////////////////////////////////////////////////
    // getters/setters
    
@@ -99,5 +107,15 @@ public abstract class IdentificationDescriptor implements Encodable, Serializer
    public void setIdentifier(byte[] identifier)
    {
       this.identifier = identifier;
+   }
+
+   public int getIdentifierLength()
+   {
+      return identifierLength;
+   }
+
+   public void setIdentifierLength(int identifierLength)
+   {
+      this.identifierLength = identifierLength;
    }
 }

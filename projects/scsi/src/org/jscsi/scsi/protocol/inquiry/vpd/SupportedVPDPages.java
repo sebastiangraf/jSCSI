@@ -60,6 +60,7 @@ public class SupportedVPDPages extends VPDPage
       // byte 3
       int b3 = in.readUnsignedByte();
       
+      // supported codes list
       for (int i = b3; i > 0; i--)
       {
          this.supportedCodes.add(in.readUnsignedByte());
@@ -86,6 +87,7 @@ public class SupportedVPDPages extends VPDPage
          // byte 3
          out.writeByte(this.supportedCodes.size());
 
+         // supported codes list
          for (int code : this.supportedCodes)
          {
             out.writeByte(code);
