@@ -56,7 +56,7 @@ public class SenseKeySpecificFieldTest
          "ProgressIndication,reserved=1:0b1,reserved=7:0x00,ProgressIndication=16:std";
 
    private static String FIELD_POINTER =
-         "FieldPointer,Valid=1:0b1,reserved=1:0b1,reserved=1:0b0,reserved=1:0b1,BitPointer=3:std,FieldPointer=16:std";
+         "FieldPointer,reserved=1:0b1,CD=1:0b1,reserved=2:0b0,BPV=1:0b1,BitPointer=3:std,FieldPointer=16:std";
 
    private static String NO_SENSE_KEY_SPECIFIC =
          "NoSenseKeySpecific,reserved=1:0b0,reserved=7:0x00,reserved=16:0x00";
