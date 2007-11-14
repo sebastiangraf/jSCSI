@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.protocol.inquiry;
 
 import java.nio.ByteBuffer;
@@ -14,10 +15,11 @@ public class StandardInquiryData implements Encodable, Serializer
    private byte peripheralQualifier; // 3 bits
    private byte peripheralDeviceType; // 5 bits
    private boolean RMB; // 1 bit
-   private int version; // 8 bits
+   private short version; // 8 bits
    private boolean normACA; // 1 bit
    private boolean hiSup; // 1 bit
    private byte responseDataFormat; // 4 bits
+   private short additionalLength = 0;
    private boolean SCCS; // 1 bit
    private boolean ACC; // 1 bit
    private byte TPGS; // 2 bits
@@ -25,12 +27,22 @@ public class StandardInquiryData implements Encodable, Serializer
    private boolean protect; // 1 bit
    private boolean BQue; // 1 bit
    private boolean encServ; // 1 bit
+   private boolean VS1;
    private boolean multiP; // 1 bit
    private boolean MChngr; // 1 bit
+   private boolean addr16;
+   private boolean wbus16;
+   private boolean sync;
    private boolean linked; // 1 bit
+   private boolean cmdQue;
+   private boolean VS2;
    private byte[] T10VendorIdentification = new byte[8]; // 8 bytes
    private byte[] productIdentification = new byte[16]; // 16 bytes
    private byte[] productRevisionLevel = new byte[4]; // 4 bytes
+   private byte[] vendorSpecific1 = new byte[20]; // 20 bytes
+   private byte clocking;
+   private boolean QAS;
+   private boolean IUS;
    private int versionDescriptor1;
    private int versionDescriptor2;
    private int versionDescriptor3;
@@ -39,16 +51,17 @@ public class StandardInquiryData implements Encodable, Serializer
    private int versionDescriptor6;
    private int versionDescriptor7;
    private int versionDescriptor8;
+   private byte[] vendorSpecific2 = null;
 
-   private static int ENCODE_LENGTH = 74;
-   
+   private static final int STD_LENGTH = 96;
+
    public StandardInquiryData()
    {
    }
 
    public byte[] encode()
    {
-      byte[] encodedData = new byte[ENCODE_LENGTH];
+      byte[] encodedData = new byte[STD_LENGTH + additionalLength];
 
       /////////////////////////////////////////////////////////////////////////
       // Add Peripheral Qualifier
@@ -74,7 +87,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
       /////////////////////////////////////////////////////////////////////////
       // Add Additional Length
-      encodedData[4] = (byte) (ENCODE_LENGTH - 4 & 0xFF); // number of remaining bytes
+      encodedData[4] = (byte) (this.additionalLength & 0xFF); // number of remaining bytes
 
       /////////////////////////////////////////////////////////////////////////
       // Add SCCS
@@ -93,16 +106,26 @@ public class StandardInquiryData implements Encodable, Serializer
       encodedData[6] = (byte) (this.BQue ? (1 << 7) : 0x00);
       // Add EncServ
       encodedData[6] |= (byte) (this.encServ ? (1 << 6) : 0x00);
+      // Add VS1
+      encodedData[6] |= (byte) (this.VS1 ? (1 << 5) : 0x00);
       // Add MultiP
       encodedData[6] |= (byte) (this.multiP ? (1 << 4) : 0x00);
       // Add MChngr
       encodedData[6] |= (byte) (this.MChngr ? (1 << 3) : 0x00);
+      // Add addr16
+      encodedData[6] |= (byte) (this.addr16 ? (0x01) : 0x00);
 
       /////////////////////////////////////////////////////////////////////////
+      // Add WBus16
+      encodedData[7] = (byte) (this.wbus16 ? (1 << 5) : 0x00);
+      // Add sync
+      encodedData[7] |= (byte) (this.sync ? (1 << 4) : 0x00);
       // Add linked
       encodedData[7] |= (byte) (this.linked ? (1 << 3) : 0x00);
       // Add CmdQue
-      encodedData[7] |= (byte) (this.MChngr ? (1 << 1) : 0x00);
+      encodedData[7] |= (byte) (this.cmdQue ? (1 << 1) : 0x00);
+      // Add VS2
+      encodedData[7] |= (byte) (this.VS2 ? (0x01) : 0x00);
 
       /////////////////////////////////////////////////////////////////////////
       // Add T10 Vender ID
@@ -114,27 +137,57 @@ public class StandardInquiryData implements Encodable, Serializer
 
       /////////////////////////////////////////////////////////////////////////
       // Add Product Revision Level
-      System.arraycopy(productRevisionLevel, 0, encodedData, 32, productIdentification.length);
+      System.arraycopy(productRevisionLevel, 0, encodedData, 32, productRevisionLevel.length);
 
       /////////////////////////////////////////////////////////////////////////
-      
-      encodedData[58] = (byte)(this.versionDescriptor1 >>> 8 | 0xFF);
-      encodedData[59] = (byte)(this.versionDescriptor1 | 0xFF);
-      encodedData[60] = (byte)(this.versionDescriptor2 >>> 8 | 0xFF);
-      encodedData[61] = (byte)(this.versionDescriptor2 | 0xFF);
-      encodedData[62] = (byte)(this.versionDescriptor3 >>> 8 | 0xFF);
-      encodedData[63] = (byte)(this.versionDescriptor3 | 0xFF);
-      encodedData[64] = (byte)(this.versionDescriptor4 >>> 8 | 0xFF);
-      encodedData[65] = (byte)(this.versionDescriptor4 | 0xFF);
-      encodedData[66] = (byte)(this.versionDescriptor5 >>> 8 | 0xFF);
-      encodedData[67] = (byte)(this.versionDescriptor5 | 0xFF);
-      encodedData[68] = (byte)(this.versionDescriptor6 >>> 8 | 0xFF);
-      encodedData[69] = (byte)(this.versionDescriptor6 | 0xFF);
-      encodedData[70] = (byte)(this.versionDescriptor7 >>> 8 | 0xFF);
-      encodedData[71] = (byte)(this.versionDescriptor7 | 0xFF);
-      encodedData[72] = (byte)(this.versionDescriptor8 >>> 8 | 0xFF);
-      encodedData[73] = (byte)(this.versionDescriptor8 | 0xFF);
-      
+      // Add Vendor Specific (1)
+      if (this.VS1)
+      {
+         System.arraycopy(vendorSpecific1, 0, encodedData, 36, vendorSpecific1.length);
+      }
+
+      /////////////////////////////////////////////////////////////////////////
+      // Add Clocking
+      encodedData[56] = (byte) ((this.clocking & 0x03) << 2);
+      // Add QAS
+      encodedData[56] |= (byte) (this.QAS ? (0x02) : 0x00);
+      // Add IUS
+      encodedData[56] |= (byte) (this.IUS ? (0x01) : 0x00);
+
+      /////////////////////////////////////////////////////////////////////////
+      // Add Version Descriptors
+      encodedData[58] = (byte) (this.versionDescriptor1 >>> 8 & 0xFF);
+      encodedData[59] = (byte) (this.versionDescriptor1 & 0xFF);
+      encodedData[60] = (byte) (this.versionDescriptor2 >>> 8 & 0xFF);
+      encodedData[61] = (byte) (this.versionDescriptor2 & 0xFF);
+      encodedData[62] = (byte) (this.versionDescriptor3 >>> 8 & 0xFF);
+      encodedData[63] = (byte) (this.versionDescriptor3 & 0xFF);
+      encodedData[64] = (byte) (this.versionDescriptor4 >>> 8 & 0xFF);
+      encodedData[65] = (byte) (this.versionDescriptor4 & 0xFF);
+      encodedData[66] = (byte) (this.versionDescriptor5 >>> 8 & 0xFF);
+      encodedData[67] = (byte) (this.versionDescriptor5 & 0xFF);
+      encodedData[68] = (byte) (this.versionDescriptor6 >>> 8 & 0xFF);
+      encodedData[69] = (byte) (this.versionDescriptor6 & 0xFF);
+      encodedData[70] = (byte) (this.versionDescriptor7 >>> 8 & 0xFF);
+      encodedData[71] = (byte) (this.versionDescriptor7 & 0xFF);
+      encodedData[72] = (byte) (this.versionDescriptor8 >>> 8 & 0xFF);
+      encodedData[73] = (byte) (this.versionDescriptor8 & 0xFF);
+
+      /////////////////////////////////////////////////////////////////////////
+      // Add Vendor Specific (2)
+      if (this.VS2 && this.vendorSpecific2 != null)
+      {
+         // total length = n + 1
+         // additionalLength = n - 4
+         //                  = (total length - 1) - 4
+         //                  = total length - 5
+         // vendorSpecific2 length = total length - 96
+         //                        = (additional length + 5) - 96
+         //                        = additional length - 91
+         int vendorSpecific2Length = additionalLength - STD_LENGTH + 5;
+         System.arraycopy(vendorSpecific2, 0, encodedData, STD_LENGTH, vendorSpecific2Length);
+      }
+
       /////////////////////////////////////////////////////////////////////////
 
       return encodedData;
@@ -148,63 +201,78 @@ public class StandardInquiryData implements Encodable, Serializer
    @SuppressWarnings("unchecked")
    public StandardInquiryData decode(ByteBuffer buffer)
    {
-      byte[] header = new byte[5];
-      buffer.get(header);
+      byte[] data = new byte[STD_LENGTH];
+      buffer.get(data);
 
-      this.peripheralQualifier = (byte) ((header[0] >> 5) & 0x07);
-      this.peripheralDeviceType = (byte) (header[0] & 0x1F);
+      this.peripheralQualifier = (byte) ((data[0] >>> 5) & 0x07);
+      this.peripheralDeviceType = (byte) (data[0] & 0x1F);
 
-      this.RMB = ((header[1] >> 7) & 1) == 1;
+      this.RMB = ((data[1] >>> 7) & 0x01) == 1;
 
-      this.version = (header[2] & 0xFF);
+      this.version = (short) (data[2] & 0xFF);
 
-      this.normACA = ((header[3] >> 5) & 1) == 1;
-      this.hiSup = ((header[3] >> 4) & 1) == 1;
-      this.responseDataFormat = (byte) (header[3] & 0x0F);
+      this.normACA = ((data[3] >>> 5) & 1) == 1;
+      this.hiSup = ((data[3] >>> 4) & 1) == 1;
+      this.responseDataFormat = (byte) (data[3] & 0x0F);
 
-      int additionalLength = header[4];
+      this.additionalLength = (short) (data[4] & 0xFF);
 
-      byte[] payload = new byte[additionalLength];
+      this.SCCS = ((data[5] >>> 7) & 1) == 1;
+      this.ACC = ((data[5] >>> 6) & 1) == 1;
+      this.TPGS = (byte) ((data[5] >>> 4) & 0x03);
+      this.threePC = ((data[5] >>> 3) & 1) == 1;
+      this.protect = (data[5] & 1) == 1;
 
-      buffer.get(payload);
+      this.BQue = ((data[6] >>> 7) & 1) == 1;
+      this.encServ = ((data[6] >>> 6) & 1) == 1;
+      this.VS1 = ((data[6] >>> 5) & 1) == 1;
+      this.multiP = ((data[6] >>> 4) & 1) == 1;
+      this.MChngr = ((data[6] >>> 3) & 1) == 1;
+      this.addr16 = (data[6] & 1) == 1;
 
-      this.SCCS = ((payload[5] >> 7) & 1) == 1;
-      this.ACC = ((payload[5] >> 6) & 1) == 1;
-      this.TPGS = (byte) ((payload[5] >> 4) & 0x03);
-      this.threePC = ((payload[5] >> 3) & 1) == 1;
-      this.protect = (payload[5] & 1) == 1;
+      this.wbus16 = ((data[7] >>> 5) & 1) == 1;
+      this.sync = ((data[7] >>> 4) & 1) == 1;
+      this.linked = ((data[7] >>> 3) & 1) == 1;
+      this.cmdQue = ((data[7] >>> 1) & 1) == 1;
+      this.VS2 = (data[7] & 1) == 1;
 
-      this.BQue = ((payload[6] >> 7) & 1) == 1;
-      this.encServ = ((payload[6] >> 6) & 1) == 1;
-      this.multiP = ((payload[6] >> 4) & 1) == 1;
-      this.MChngr = ((payload[6] >> 3) & 1) == 1;
+      System.arraycopy(data, 8, T10VendorIdentification, 0, T10VendorIdentification.length);
 
-      this.linked = ((payload[7] >> 3) & 1) == 1;
-      this.MChngr = ((payload[7] >> 1) & 1) == 1;
+      System.arraycopy(data, 16, productIdentification, 0, productIdentification.length);
 
-      System.arraycopy(payload, 8, T10VendorIdentification, 0, T10VendorIdentification.length);
+      System.arraycopy(data, 32, productRevisionLevel, 0, productRevisionLevel.length);
 
-      System.arraycopy(payload, 16, productIdentification, 0, productIdentification.length);
+      if (this.VS1)
+      {
+         System.arraycopy(data, 36, vendorSpecific1, 0, vendorSpecific1.length);
+      }
 
-      System.arraycopy(payload, 32, productRevisionLevel, 0, productIdentification.length);
-      
-      this.versionDescriptor1 = payload[58] << 8 | (payload[59] & 0xFF);
-      this.versionDescriptor2 = payload[60] << 8 | (payload[61] & 0xFF);
-      this.versionDescriptor3 = payload[62] << 8 | (payload[63] & 0xFF);
-      this.versionDescriptor4 = payload[64] << 8 | (payload[65] & 0xFF);
-      this.versionDescriptor5 = payload[66] << 8 | (payload[67] & 0xFF);
-      this.versionDescriptor6 = payload[68] << 8 | (payload[69] & 0xFF);
-      this.versionDescriptor7 = payload[70] << 8 | (payload[71] & 0xFF);
-      this.versionDescriptor8 = payload[72] << 8 | (payload[73] & 0xFF);
+      this.clocking = (byte) ((data[56] >>> 2) & 0x02);
+      this.QAS = ((data[56] >>> 1) & 1) == 1;
+      this.IUS = (data[56] & 1) == 1;
+
+      this.versionDescriptor1 = data[58] << 8 | (data[59] & 0xFF);
+      this.versionDescriptor2 = data[60] << 8 | (data[61] & 0xFF);
+      this.versionDescriptor3 = data[62] << 8 | (data[63] & 0xFF);
+      this.versionDescriptor4 = data[64] << 8 | (data[65] & 0xFF);
+      this.versionDescriptor5 = data[66] << 8 | (data[67] & 0xFF);
+      this.versionDescriptor6 = data[68] << 8 | (data[69] & 0xFF);
+      this.versionDescriptor7 = data[70] << 8 | (data[71] & 0xFF);
+      this.versionDescriptor8 = data[72] << 8 | (data[73] & 0xFF);
+
+      int vendorSpecific2Length = additionalLength - STD_LENGTH + 5;
+      if (this.VS2 && vendorSpecific2Length > 0)
+      {
+         this.vendorSpecific2 = new byte[vendorSpecific2Length];
+         System.arraycopy(data, STD_LENGTH, vendorSpecific2, 0, vendorSpecific2Length);
+      }
 
       return this;
    }
-   
-   
+
    /////////////////////////////////////////////////////////////////////////////
    // getters/setters
 
-   
    public byte getPeripheralQualifier()
    {
       return this.peripheralQualifier;
@@ -235,12 +303,12 @@ public class StandardInquiryData implements Encodable, Serializer
       this.RMB = rmb;
    }
 
-   public int getVersion()
+   public short getVersion()
    {
       return this.version;
    }
 
-   public void setVersion(int version)
+   public void setVersion(short version)
    {
       this.version = version;
    }
@@ -273,6 +341,16 @@ public class StandardInquiryData implements Encodable, Serializer
    public void setResponseDataFormat(byte responseDataFormat)
    {
       this.responseDataFormat = responseDataFormat;
+   }
+
+   public short getAdditionalLength()
+   {
+      return this.additionalLength;
+   }
+
+   public void setAdditionalLength(short additionalLength)
+   {
+      this.additionalLength = additionalLength;
    }
 
    public boolean isSCCS()
@@ -345,6 +423,16 @@ public class StandardInquiryData implements Encodable, Serializer
       this.encServ = encServ;
    }
 
+   public boolean isVS1()
+   {
+      return this.VS1;
+   }
+
+   public void setVS1(boolean vs1)
+   {
+      this.VS1 = vs1;
+   }
+
    public boolean isMultiP()
    {
       return this.multiP;
@@ -365,6 +453,35 @@ public class StandardInquiryData implements Encodable, Serializer
       this.MChngr = chngr;
    }
 
+   public boolean isAddr16()
+   {
+      return this.addr16;
+   }
+
+   public void setAddr16(boolean addr16)
+   {
+      this.addr16 = addr16;
+   }
+
+   public boolean isWbus16()
+   {
+      return this.wbus16;
+   }
+
+   public void setWbus16(boolean wbus16)
+   {
+      this.wbus16 = wbus16;
+   }
+
+   public boolean isSync()
+   {
+      return this.sync;
+   }
+
+   public void setSync(boolean sync)
+   {
+      this.sync = sync;
+   }
 
    public boolean isLinked()
    {
@@ -374,6 +491,26 @@ public class StandardInquiryData implements Encodable, Serializer
    public void setLinked(boolean linked)
    {
       this.linked = linked;
+   }
+
+   public boolean isCmdQue()
+   {
+      return this.cmdQue;
+   }
+
+   public void setCmdQue(boolean cmdQue)
+   {
+      this.cmdQue = cmdQue;
+   }
+
+   public boolean isVS2()
+   {
+      return this.VS2;
+   }
+
+   public void setVS2(boolean vs2)
+   {
+      this.VS2 = vs2;
    }
 
    public byte[] getT10VendorIdentification()
@@ -406,9 +543,49 @@ public class StandardInquiryData implements Encodable, Serializer
       this.productRevisionLevel = productRevisionLevel;
    }
 
+   public byte[] getVendorSpecific1()
+   {
+      return this.vendorSpecific1;
+   }
+
+   public void setVendorSpecific1(byte[] vendorSpecific1)
+   {
+      this.vendorSpecific1 = vendorSpecific1;
+   }
+
+   public byte getClocking()
+   {
+      return this.clocking;
+   }
+
+   public void setClocking(byte clocking)
+   {
+      this.clocking = clocking;
+   }
+
+   public boolean isQAS()
+   {
+      return this.QAS;
+   }
+
+   public void setQAS(boolean qas)
+   {
+      this.QAS = qas;
+   }
+
+   public boolean isIUS()
+   {
+      return this.IUS;
+   }
+
+   public void setIUS(boolean ius)
+   {
+      this.IUS = ius;
+   }
+
    public int getVersionDescriptor1()
    {
-      return versionDescriptor1;
+      return this.versionDescriptor1;
    }
 
    public void setVersionDescriptor1(int versionDescriptor1)
@@ -418,7 +595,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public int getVersionDescriptor2()
    {
-      return versionDescriptor2;
+      return this.versionDescriptor2;
    }
 
    public void setVersionDescriptor2(int versionDescriptor2)
@@ -428,7 +605,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public int getVersionDescriptor3()
    {
-      return versionDescriptor3;
+      return this.versionDescriptor3;
    }
 
    public void setVersionDescriptor3(int versionDescriptor3)
@@ -438,7 +615,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public int getVersionDescriptor4()
    {
-      return versionDescriptor4;
+      return this.versionDescriptor4;
    }
 
    public void setVersionDescriptor4(int versionDescriptor4)
@@ -448,7 +625,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public int getVersionDescriptor5()
    {
-      return versionDescriptor5;
+      return this.versionDescriptor5;
    }
 
    public void setVersionDescriptor5(int versionDescriptor5)
@@ -458,7 +635,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public int getVersionDescriptor6()
    {
-      return versionDescriptor6;
+      return this.versionDescriptor6;
    }
 
    public void setVersionDescriptor6(int versionDescriptor6)
@@ -468,7 +645,7 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public int getVersionDescriptor7()
    {
-      return versionDescriptor7;
+      return this.versionDescriptor7;
    }
 
    public void setVersionDescriptor7(int versionDescriptor7)
@@ -478,12 +655,22 @@ public class StandardInquiryData implements Encodable, Serializer
 
    public int getVersionDescriptor8()
    {
-      return versionDescriptor8;
+      return this.versionDescriptor8;
    }
 
    public void setVersionDescriptor8(int versionDescriptor8)
    {
       this.versionDescriptor8 = versionDescriptor8;
+   }
+
+   public byte[] getVendorSpecific2()
+   {
+      return this.vendorSpecific2;
+   }
+
+   public void setVendorSpecific2(byte[] vendorSpecific2)
+   {
+      this.vendorSpecific2 = vendorSpecific2;
    }
 
 }
