@@ -106,10 +106,13 @@ public class BufferTestTask implements TargetTransportPort
    {
       _logger.debug("servicing writeData request");
       
-      ByteBuffer copy = ByteBuffer.allocate(input.limit());
-      copy.put(input);
+      //ByteBuffer copy = ByteBuffer.allocate(input.limit());
+      //copy.put(input);
       
-      this.writeDataMap.put(commandReferenceNumber, copy);
+      //this.writeDataMap.put(commandReferenceNumber, copy);
+      
+      this.writeDataMap.put(commandReferenceNumber, input);
+      
       return true;
    }
    

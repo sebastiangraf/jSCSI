@@ -46,6 +46,8 @@ public class BufferedReadCapacityTaskTest extends BufferTestTask
       
       assertNotNull(inputBuffer);
       
+      inputBuffer.rewind();
+      
       final int returnedNumberOfBlocks = inputBuffer.getInt();
       
       final int returnedBlockLength = inputBuffer.getInt();
@@ -62,6 +64,8 @@ public class BufferedReadCapacityTaskTest extends BufferTestTask
       ByteBuffer inputBuffer = this.getWriteData(cmdRef);
       
       assertNotNull(inputBuffer);
+      
+      inputBuffer.rewind();
       
       final long returnedNumberOfBlocks = inputBuffer.getLong();
       
