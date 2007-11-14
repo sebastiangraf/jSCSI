@@ -233,7 +233,7 @@ public class StandardInquiryDataTest
       // product identification (16)
       dataOut.write(productIdentification);
       
-      // 10 longs = 80 bytes
+      // 8 longs = 64 bytes
       dataOut.writeLong(0);
       dataOut.writeLong(0);
       dataOut.writeLong(0);
@@ -277,7 +277,7 @@ public class StandardInquiryDataTest
       // product revision level (4)
       dataOut.write(productRevisionLevel);
       
-      // 10 longs = 80 bytes
+      // 7 longs and 1 int = 60 bytes
       dataOut.writeInt(0);
       dataOut.writeLong(0);
       dataOut.writeLong(0);
