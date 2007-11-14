@@ -9,9 +9,10 @@ import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.jscsi.core.exceptions.NotImplementedException;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.CDB;
+import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
+import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.target.Target;
 import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.Task;
@@ -153,6 +154,18 @@ public class AbstractTaskSetTest
       public TargetTransportPort getTargetTransportPort()
       {
          return this.port;
+      }      
+
+      public InquiryDataRegistry getInquiryDataRegistry()
+      {
+         // TODO Auto-generated method stub
+         return null;
+      }
+
+      public ModePageRegistry getModePageRegistry()
+      {
+         // TODO Auto-generated method stub
+         return null;
       }
    }
    
@@ -243,6 +256,7 @@ public class AbstractTaskSetTest
          long tag = this.getCommand().getNexus().getTaskTag();
          return "SimpleTask(tag=" + tag + ")";
       }
+
    }
    
    

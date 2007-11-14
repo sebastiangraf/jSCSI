@@ -30,7 +30,6 @@ public class BufferedLogicalUnit extends DefaultLogicalUnit
       super();
       this.setTaskSet(taskSet);
       this.setTaskManager(taskManager);
-      this.setInquiryDataRegistry(inquiryRegistry);
       
       this.setTaskFactory(new BufferedTaskFactory(
             ByteBuffer.allocate(DEVICE_STORAGE_CAPACITY),

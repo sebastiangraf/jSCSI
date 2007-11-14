@@ -17,7 +17,7 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 // TODO: Describe class or interface
 public abstract class AbstractTask implements Task
 {
-   private TargetTransportPort targetPort;
+   private TargetTransportPort targetTransportPort;
    private Command command;
    private ModePageRegistry modePageRegistry;
    private InquiryDataRegistry inquiryDataRegistry;
@@ -65,7 +65,7 @@ public abstract class AbstractTask implements Task
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
    {
-      this.targetPort = targetPort;
+      this.targetTransportPort = targetPort;
       this.command = command;
       this.modePageRegistry = modePageRegistry;
       this.inquiryDataRegistry = inquiryDataRegistry;
@@ -79,7 +79,7 @@ public abstract class AbstractTask implements Task
          InquiryDataRegistry inquiryDataRegistry)
    {
       this.name = name;
-      this.targetPort = targetPort;
+      this.targetTransportPort = targetPort;
       this.command = command;
       this.modePageRegistry = modePageRegistry;
       this.inquiryDataRegistry = inquiryDataRegistry;
@@ -97,7 +97,7 @@ public abstract class AbstractTask implements Task
          InquiryDataRegistry inquiryDataRegistry)
    {
       this.command = command;
-      this.targetPort = targetPort;
+      this.targetTransportPort = targetPort;
       this.modePageRegistry = modePageRegistry;
       this.inquiryDataRegistry = inquiryDataRegistry;
       return this;
@@ -118,7 +118,7 @@ public abstract class AbstractTask implements Task
          // The transport port interface guarantees that InterruptedException will always be
          // thrown from the transfer methods in this case.
          this.thread.interrupt();
-         this.targetPort.terminateDataTransfer(this.command.getNexus(),
+         this.targetTransportPort.terminateDataTransfer(this.command.getNexus(),
                this.command.getCommandReferenceNumber());
 
          return true;
@@ -136,13 +136,13 @@ public abstract class AbstractTask implements Task
       this.thread = Thread.currentThread();
       try
       {
-         this.execute(this.targetPort, this.command, this.modePageRegistry,
+         this.execute(this.targetTransportPort, this.command, this.modePageRegistry,
                this.inquiryDataRegistry);
       }
       catch (SenseException e)
       {
          // Write response with a CHECK CONDITION status.
-         this.targetPort.writeResponse(this.command.getNexus(),
+         this.targetTransportPort.writeResponse(this.command.getNexus(),
                this.command.getCommandReferenceNumber(), Status.CHECK_CONDITION,
                ByteBuffer.wrap(e.encode()));
       }
@@ -158,7 +158,7 @@ public abstract class AbstractTask implements Task
       if (Thread.interrupted())
          throw new InterruptedException();
 
-      return this.targetPort.readData(this.command.getNexus(),
+      return this.targetTransportPort.readData(this.command.getNexus(),
             this.command.getCommandReferenceNumber(), output);
    }
 
@@ -168,7 +168,7 @@ public abstract class AbstractTask implements Task
       if (Thread.interrupted())
          throw new InterruptedException();
 
-      return this.targetPort.writeData(this.command.getNexus(),
+      return this.targetTransportPort.writeData(this.command.getNexus(),
             this.command.getCommandReferenceNumber(), input);
    }
 
@@ -199,7 +199,7 @@ public abstract class AbstractTask implements Task
       if (Thread.interrupted())
          throw new InterruptedException();
 
-      return this.targetPort.writeData(this.command.getNexus(),
+      return this.targetTransportPort.writeData(this.command.getNexus(),
             this.command.getCommandReferenceNumber(), data);
    }
 
@@ -227,7 +227,7 @@ public abstract class AbstractTask implements Task
 
    public final TargetTransportPort getTargetTransportPort()
    {
-      return this.targetPort;
+      return this.targetTransportPort;
    }
 
    public final String getName()
@@ -244,6 +244,42 @@ public abstract class AbstractTask implements Task
    public String toString()
    {
       return "<BufferedTask name: " + this.getName() + ", command: " + this.command
-      + ", target-port: " + this.targetPort;
+      + ", target-port: " + this.targetTransportPort;
+   }
+
+
+   public ModePageRegistry getModePageRegistry()
+   {
+      return this.modePageRegistry;
+   }
+
+
+   public void setModePageRegistry(ModePageRegistry modePageRegistry)
+   {
+      this.modePageRegistry = modePageRegistry;
+   }
+
+
+   public InquiryDataRegistry getInquiryDataRegistry()
+   {
+      return this.inquiryDataRegistry;
+   }
+
+
+   public void setInquiryDataRegistry(InquiryDataRegistry inquiryDataRegistry)
+   {
+      this.inquiryDataRegistry = inquiryDataRegistry;
+   }
+
+
+   public void setTargetTransportPort(TargetTransportPort targetTransportPort)
+   {
+      this.targetTransportPort = targetTransportPort;
+   }
+
+
+   public void setCommand(Command command)
+   {
+      this.command = command;
    }
 }
