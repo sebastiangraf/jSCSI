@@ -1,19 +1,20 @@
 package org.jscsi.scsi.tasks.management;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.jscsi.scsi.protocol.sense.KCQ;
+import org.jscsi.scsi.protocol.sense.SenseData;
+import org.jscsi.scsi.protocol.sense.SenseDataFactory;
+import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.Task;
-import org.jscsi.scsi.tasks.management.DefaultTaskManager;
-import org.jscsi.scsi.tasks.management.DefaultTaskSet;
-import org.jscsi.scsi.tasks.management.AbstractTaskManagerTest;
-import org.jscsi.scsi.tasks.management.TaskSet;
-import org.jscsi.scsi.tasks.management.AbstractTaskManagerTest.TestTask;
 import org.jscsi.scsi.transport.Nexus;
 import org.junit.After;
 import org.junit.Before;
@@ -548,8 +549,108 @@ public class DefaultTaskManagerTest extends AbstractTaskManagerTest
       thread.interrupt();
       thread.join();
       
+   }
+   
+   @Test
+   public void testQueueOverflow() throws InterruptedException
+   {
+      TestTargetTransportPort port = new TestTargetTransportPort(null, true);
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      Nexus nexus = new Nexus("initiator", "target", 0);
+      
+      TaskSet set = new DefaultTaskSet(LIMITING_SET_QUEUE_DEPTH);
+      
+      for ( int i = 0; i < LIMITING_SET_QUEUE_DEPTH; i++ )
+      {
+         set.offer( new SimpleTask(port, new Nexus(nexus, i), taskSet, 0) );
+      }
+      
+      // Offer one too many tasks to task queue
+      
+      boolean result = set.offer(
+            new SimpleTask(port, new Nexus(nexus, LIMITING_SET_QUEUE_DEPTH + 1), taskSet, 0) );
+      
+      assertTrue( "Task set accepted too many tasks", ! result );
+      
+      assertEquals( "Task set did not report TASK SET FULL condition to transport",
+            Status.TASK_SET_FULL,
+            port.getLastStatus() );
+      
+      assertEquals( "Task set sent invalid sense data to transport", null, port.getSenseData() );
       
    }
    
+   private void testDuplicateTasks(long tag1, long tag2, boolean expectFailure)
+   {
+      TestTargetTransportPort port = new TestTargetTransportPort(null, true);
+      TaskSet set = new DefaultTaskSet(LIMITING_SET_QUEUE_DEPTH);
+      List<TestTask> taskSet = new ArrayList<TestTask>();
+      Nexus nexus = new Nexus("initiator", "target", 0);
+      Task one = new SimpleTask(port, new Nexus(nexus, tag1), taskSet, 0);
+      Task two = new SimpleTask(port, new Nexus(nexus, tag2), taskSet, 0);
+      
+      
+      boolean result = set.offer(one);
+      
+      assertTrue("Added first task failed", result);
+      
+      result = set.offer(two);
+      
+      if ( result )
+      {
+         if (expectFailure)
+            fail("Adding second task suceeded unexpectedly");
+      }
+      else
+      {
+         if ( ! expectFailure )
+            fail("Adding second task failed unexpectedly");
+         
+         assertEquals("Task set did not report CHECK CONDITION to transport",
+               Status.CHECK_CONDITION, port.getLastStatus() );
+         
+         try
+         {
+            SenseData sense = (new SenseDataFactory()).decode(port.getSenseData());
+            
+            assertEquals("Task set did not return correct KCQ",
+                  KCQ.OVERLAPPED_COMMANDS_ATTEMPTED, sense.getKCQ() );
+            
+         }
+         catch (IOException e)
+         {
+            e.printStackTrace();
+            fail("Could not decode sense data returned from task set");
+         }
+      }
+      
+            
+   }
+   
+   
+   @Test
+   public void testDuplicateTaggedTasks()
+   {
+      Random rand = new Random();
+      long tag = Math.abs(rand.nextLong());
+      
+      testDuplicateTasks(tag, tag, true);
+   }
+   
+   @Test
+   public void testNonDuplicateTaggedTasks()
+   {
+      Random rand = new Random();
+      long tag1 = Math.abs(rand.nextLong());
+      long tag2 = Math.abs(rand.nextLong());
+      
+      testDuplicateTasks(tag1, tag2, false);
+   }
+   
+   @Test
+   public void testDuplicateUntaggedTasks()
+   {
+      testDuplicateTasks(-1, -1, true);
+   }
    
 }

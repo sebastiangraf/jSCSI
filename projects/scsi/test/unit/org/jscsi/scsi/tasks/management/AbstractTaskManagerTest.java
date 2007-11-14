@@ -3,6 +3,7 @@ package org.jscsi.scsi.tasks.management;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import org.apache.log4j.Logger;
 import org.jscsi.core.exceptions.NotImplementedException;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.CDB;
+import org.jscsi.scsi.target.Target;
+import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskAttribute;
 import org.jscsi.scsi.transport.Nexus;
@@ -36,11 +39,22 @@ public class AbstractTaskManagerTest
       private static Logger _logger = Logger.getLogger(TestTask.class);
       
       private Command command;
+      private TargetTransportPort port;
       private long delay;
       private Boolean done = false;
+      private Thread thread;
       
       public TestTask( Nexus nexus, TaskAttribute attribute, long delay )
       {
+         this.port = null;
+         this.delay = delay;
+         this.command = new Command( nexus, (CDB)null, attribute, 0, 0 );
+         _logger.debug("constructed TestTask: " + this);
+      }
+      
+      public TestTask( TargetTransportPort port, Nexus nexus, TaskAttribute attribute, long delay )
+      {
+         this.port = port;
          this.delay = delay;
          this.command = new Command( nexus, (CDB)null, attribute, 0, 0 );
          _logger.debug("constructed TestTask: " + this);
@@ -62,7 +76,15 @@ public class AbstractTaskManagerTest
       
       public boolean abort()
       {
-         return false;
+         if ( this.thread == null )
+         {
+            return false;
+         }
+         else
+         {
+            thread.interrupt();
+            return true;
+         } 
       }
 
       /**
@@ -96,6 +118,8 @@ public class AbstractTaskManagerTest
       public void run()
       {
          assert this.done == false: "This task has already been executed!";
+         
+         this.thread = Thread.currentThread();
 
          _logger.debug("executing task: " + this);
          this.checkProperExecution();
@@ -128,7 +152,7 @@ public class AbstractTaskManagerTest
 
       public TargetTransportPort getTargetTransportPort()
       {
-         return null;
+         return this.port;
       }
    }
    
@@ -143,7 +167,12 @@ public class AbstractTaskManagerTest
       
       public SimpleTask( Nexus nexus, List<TestTask> taskSet, long delay )
       {
-         super(nexus, TaskAttribute.SIMPLE, delay);
+         this(null, nexus, taskSet, delay);
+      }
+      
+      public SimpleTask( TargetTransportPort port, Nexus nexus, List<TestTask> taskSet, long delay )
+      {
+         super(port, nexus, TaskAttribute.SIMPLE, delay);
          
          synchronized ( taskSet )
          {
@@ -386,6 +415,66 @@ public class AbstractTaskManagerTest
       }
    }
 
+   
+   public static class TestTargetTransportPort implements TargetTransportPort
+   {
+      private boolean fail;
+      private ByteBuffer data;
+      private ByteBuffer sense;
+      private Status status;
+      
+      public TestTargetTransportPort(ByteBuffer data, boolean failTransfer)
+      {
+         this.data = data;
+      }
+      
+      public ByteBuffer getTransferData() { return data; }
+      public ByteBuffer getSenseData() { return sense; }
+      public Status getLastStatus() { return status; }
+
+      
+      public void registerTarget(Target target) {}
+      public void removeTarget(String targetName) throws Exception {}
+      public void terminateDataTransfer(Nexus nexus, long commandReferenceNumber) {}
+
+      public boolean readData(Nexus nexus, long commandReferenceNumber, ByteBuffer output)
+            throws InterruptedException
+      {
+         if (fail)
+            return false;
+         
+         output.put(data);
+         return true;
+      }
+      
+      public boolean writeData(Nexus nexus, long commandReferenceNumber, ByteBuffer input)
+            throws InterruptedException
+      {
+         this.data = ByteBuffer.allocate(input.limit());
+         this.data.put(input);
+         this.data.position(0);
+         
+         return ! fail;
+      }
+
+      public void writeResponse(
+            Nexus nexus,
+            long commandReferenceNumber,
+            Status status,
+            ByteBuffer senseData)
+      {
+         this.status = status;
+         if ( senseData != null )
+         {
+            this.sense = ByteBuffer.allocate(senseData.limit());
+            this.sense.put(senseData);
+            this.sense.position(0);
+         }
+      }
+      
+   }
+   
+   
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
    {

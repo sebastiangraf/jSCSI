@@ -325,8 +325,8 @@ public class DefaultTaskSet implements TaskSet
             throw new RuntimeException("Transport layer should have set untagged task as SIMPLE");
          }
          
-         // check for duplicate task tags
-         if (this.tasks.containsKey(taskTag)) // 'null' key is the untagged task
+         // check for duplicate task tags; 'null' key is the untagged task
+         if (this.tasks.containsKey(taskTag < 0 ? null : taskTag))
          {
             // Note that we treat two untagged tasks as an overlapped command condition.
             // FIXME: Is treating overlapping untagged tasks in this way actually proper?
@@ -344,7 +344,7 @@ public class DefaultTaskSet implements TaskSet
          TaskContainer container = new TaskContainer(task);
          
          // add task to the queue and map
-         this.tasks.put(taskTag > -1 ? taskTag : null, container); // -1 Q value is 'untagged'
+         this.tasks.put(taskTag < 0 ? null : taskTag, container); // -1 Q value is 'untagged'
          
          if ( task.getCommand().getTaskAttribute() == TaskAttribute.HEAD_OF_QUEUE )
          {
@@ -365,7 +365,8 @@ public class DefaultTaskSet implements TaskSet
       }
       finally
       {
-         lock.unlock();
+         if ( ((ReentrantLock)lock).isHeldByCurrentThread() )
+            lock.unlock();
       }
    }
 
