@@ -657,9 +657,11 @@ public class SerializerTest
                Number val = null;
                try
                {
-                  val = (Number)valObj;
+                  val = (Number) valObj;
                }
-               catch (ClassCastException e) {}
+               catch (ClassCastException e)
+               {
+               }
                if (accessMethod.getReturnType().equals("boolean"))
                {
                   // return value of the field is boolean
@@ -675,13 +677,14 @@ public class SerializerTest
                      checkResult = "Non-matching field detected";
                   }
                }
-               else if ( val != null )
+               else if (val != null)
                {
                   // return value of the field is some number (long, byte, int, etc)
                   Long valInput = (Long) tv.getIntValue();
-                  if ( tv.getBits() == 64 && val.longValue() < 0 )
+                  if (tv.getBits() == 64 && val.longValue() < 0)
                   {
-                     System.out.format("Limit: %s : %X (cannot check value over LONG_MAX) %n", tv.getTag(), val);
+                     System.out.format("Limit: %s : %X (cannot check value over LONG_MAX) %n",
+                           tv.getTag(), val);
                   }
                   else if (valInput.longValue() == val.longValue())
                   {
@@ -694,15 +697,15 @@ public class SerializerTest
                      checkResult = "Non-matching field detected";
                   }
                }
-               else if (accessMethod.getReturnType().equals("byte[]"))
+               else if (accessMethod.getReturnType().equals(byte[].class))
                {
-                  throw new RuntimeException();
+                  System.out.println("Fail: " + tv.getTag() + " : byte arrays are not supported");
+                  checkResult = "Unsupported return type for field (" + tv.getTag() + ")";
                }
                else
                {
-                  System.out.println(
-                        "Fail: " + tv.getTag() + " : unsupported field return type: " + 
-                        accessMethod.getReturnType());
+                  System.out.println("Fail: " + tv.getTag() + " : unsupported field return type: "
+                        + accessMethod.getReturnType());
                   checkResult = "Unsupported return type for field (" + tv.getTag() + ")";
                }
             }

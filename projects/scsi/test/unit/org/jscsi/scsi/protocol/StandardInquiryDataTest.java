@@ -45,6 +45,11 @@ public class StandardInquiryDataTest
 {
    private static final String DEFAULT_PACKAGE = "org.jscsi.scsi.protocol.inquiry";
       
+   
+   // TODO: add multiple lines with alternating boolean values
+   // TODO: remove byte arrays and test them separately
+   
+   
    private static String INQUIRY_DATA_NO_VENDOR_SPECIFIC_VALUES = "StandardInquiryData," +
    		"PeripheralQualifier=3:[0b000;0b001;0b010;0b011]," +
    		"PeripheralDeviceType=5:0x00," +
