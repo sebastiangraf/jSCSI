@@ -19,7 +19,8 @@ import org.jscsi.target.connection.Connection;
  * @author Marcus Specht
  *
  */
-public abstract class AbstractTask extends AbstractOperation implements MutableTask {
+public abstract class AbstractTask extends AbstractOperation implements
+		MutableTask {
 
 	/** The logger interface. */
 	private static final Log LOGGER = LogFactory.getLog(AbstractTask.class);
@@ -38,12 +39,18 @@ public abstract class AbstractTask extends AbstractOperation implements MutableT
 
 	/** The Task's PDU receiving Queue */
 	private final Queue<ProtocolDataUnit> receivedPDUs;
+	
+	/** the number of signaled/unprocessed PDUs **/
+	private int signaledPDUs;
 
-	/** only purpose is to use conditions */
-	private final Lock lock = new ReentrantLock();
+	/** control received PDU enqueue **/  
+	private final Lock enqueueLock = new ReentrantLock();
+	
+	/** only purpose is to use conditions signaling a receivedPDU */
+	private final Lock dequeLock = new ReentrantLock();
 
 	/** condition signals the arrival of new PDUs */
-	private final Condition receivedPDU = lock.newCondition();
+	private final Condition receivedPDU = dequeLock.newCondition();
 
 	/**
 	 * Creating a new task within a target environment, the task needs to have
@@ -57,12 +64,13 @@ public abstract class AbstractTask extends AbstractOperation implements MutableT
 		this.refConnection = refConnection;
 		initiatorTaskTag = new SerialArithmeticNumber(initialPDU
 				.getBasicHeaderSegment().getInitiatorTaskTag());
+		signaledPDUs = 0;
 		if (LOGGER.isTraceEnabled()) {
 			LOGGER.trace("Started new Task: ITT = "
 					+ initialPDU.getBasicHeaderSegment().getInitiatorTaskTag());
 		}
 	}
-	
+
 	/**
 	 * Returns the referenced Connection.
 	 * 
@@ -81,8 +89,8 @@ public abstract class AbstractTask extends AbstractOperation implements MutableT
 	 */
 	public ProtocolDataUnit receivePDU(long nanoWaitingTime) {
 		ProtocolDataUnit result = null;
-		lock.lock();
-		if (receivedPDUs.size() == 0) {
+		dequeLock.lock();
+		if (signaledPDUs <= 0) {
 			try {
 				if (nanoWaitingTime != 0) {
 					receivedPDU.awaitNanos(nanoWaitingTime);
@@ -96,8 +104,9 @@ public abstract class AbstractTask extends AbstractOperation implements MutableT
 		}
 		if (receivedPDUs.size() != 0) {
 			result = receivedPDUs.poll();
+			signaledPDUs--;
 		}
-		lock.unlock();
+		dequeLock.unlock();
 		return result;
 	}
 
@@ -135,7 +144,7 @@ public abstract class AbstractTask extends AbstractOperation implements MutableT
 	 * 
 	 * @throws OperationException
 	 */
-	public void setTTT(SerialArithmeticNumber ttt){
+	public void setTTT(SerialArithmeticNumber ttt) {
 		targetTransferTag = ttt;
 	}
 
@@ -143,10 +152,21 @@ public abstract class AbstractTask extends AbstractOperation implements MutableT
 	 * Assigns an appropriate PDU to this Task.
 	 */
 	public void assignPDU(ProtocolDataUnit pdu) {
+		enqueueLock.lock();
 		receivedPDUs.add(pdu);
-		// signals the receivePDU method that a PDU arrived.
-		receivedPDU.signal();
-
+		enqueueLock.unlock();
+	}
+	
+	/**
+	 * Assigns an appropriate PDU to this Task and tells the Task
+	 * to process it.
+	 * @param pdu
+	 */
+	public void assignAndSignalReceivedPDU(ProtocolDataUnit pdu){
+		enqueueLock.lock();
+		assignPDU(pdu);
+		signalReceivedPDU();
+		enqueueLock.unlock();
 	}
 
 	/**
@@ -178,11 +198,18 @@ public abstract class AbstractTask extends AbstractOperation implements MutableT
 	public State getState() {
 		return currentState;
 	}
-
-
-
 	
-
-
+	/**
+	 * Tells the Task to process a receivedPDU.
+	 */
+	public void signalReceivedPDU() {
+		enqueueLock.lock();
+		// signals the receivePDU method that a PDU arrived.
+		if (receivedPDUs.size() == 0) {
+			signaledPDUs++;
+			receivedPDU.signal();
+		}
+		enqueueLock.unlock();
+	}
 
 }

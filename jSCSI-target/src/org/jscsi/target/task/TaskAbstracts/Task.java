@@ -12,6 +12,13 @@ public interface Task{
 	public void assignPDU(ProtocolDataUnit pdu);
 	
 	/**
+	 * Assigns an appropriate PDU to this Task and tells the Task
+	 * to process it.
+	 * @param pdu
+	 */
+	public void assignAndSignalReceivedPDU(ProtocolDataUnit pdu);
+	
+	/**
 	 * Returns the Task's Initiator Transfer Tag.
 	 * The Initiator Transfer Tag is unique within an I-T Nexus and is 
 	 * used to identify appropriate existing Tasks.
@@ -31,5 +38,10 @@ public interface Task{
 	 * Executes the Task, i.e. starts the initial State.
 	 */
 	public void execute();
+	
+	/**
+	 * Tells the Task to process a receivedPDU.
+	 */
+	public void signalReceivedPDU();
 	
 }

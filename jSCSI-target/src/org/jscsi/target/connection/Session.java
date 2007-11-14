@@ -321,7 +321,7 @@ public class Session {
 	 * 
 	 * @return the next received PDU
 	 */
-	final ProtocolDataUnit pollReceivedPDU() {
+	public final ProtocolDataUnit pollReceivedPDU() {
 		return peekOrPollReceivingBuffer("poll", 0);
 	}
 
@@ -332,7 +332,7 @@ public class Session {
 	 * @param nanoSecs
 	 * @return the next received PDU or null if waiting time exceeded
 	 */
-	final ProtocolDataUnit pollReceivedPDU(long nanoSecs) {
+	 public final ProtocolDataUnit pollReceivedPDU(long nanoSecs) {
 		return peekOrPollReceivingBuffer("poll", nanoSecs);
 	}
 
@@ -342,7 +342,7 @@ public class Session {
 	 * 
 	 * @return the next received PDU
 	 */
-	final ProtocolDataUnit peekReceivedPDU() {
+	public final ProtocolDataUnit peekReceivedPDU() {
 		return peekOrPollReceivingBuffer("peek", 0);
 	}
 
@@ -353,7 +353,7 @@ public class Session {
 	 * @param nanoSecs
 	 * @return the next received PDU or null if waiting time exceeded
 	 */
-	final ProtocolDataUnit peekReceivedPDU(long nanoSecs) {
+	public final ProtocolDataUnit peekReceivedPDU(long nanoSecs) {
 		return peekOrPollReceivingBuffer("peek", nanoSecs);
 	}
 
@@ -501,7 +501,8 @@ public class Session {
 		// but the Session will not process them, because ExpCmdSN doesn't
 		// reaches the necessary value.
 		// The Session can decide whether to clear the connection's receiving
-		// PDU buffer
+		// PDU buffer and send a NOP-Response, signaling the initiator which
+		// CmdSN is expected.
 		// (clearing the buffer will only force initiator to send PDUs again, no
 		// lost if initiator behaves correct),
 		// or to completely drop the connection.
@@ -566,6 +567,18 @@ public class Session {
 			connection.sendPDU(this, pdu);
 		}
 
+	}
+	
+	public String getIdentifyingString(){
+		StringBuffer result = new StringBuffer();
+		result.append("InitiatorName = ");
+		result.append(getInitiatorName());
+		result.append("; ISID = ");
+		result.append(getInitiatorSessionID());
+		result.append("; TSIH = ");
+		result.append(getTargetSessionIdentifyingHandleD());
+		result.append(";");
+		return result.toString();
 	}
 
 	@Override

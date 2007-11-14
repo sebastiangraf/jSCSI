@@ -68,7 +68,9 @@ public class TaskDescriptorLoader {
 				return matchingDescriptor.createTask();
 			}
 		}
+		logDebug("Unsupported Opcode arrived: Opcode = " + opcode);
 		throw new Exception("Couldn't find a matching Task: Opcode = " + opcode);
+		
 	}
 	
 	public TaskDescriptor getTaskDescriptor(byte opcode){
@@ -97,7 +99,7 @@ public class TaskDescriptorLoader {
 				}
 				// if File is valid Object, check if Object implement
 				// TaskDescriptor
-				for (Class<? extends AbstractTaskDescriptor> implementedInterfaces : loadedTaskDescriptor
+				for (Class<?> implementedInterfaces : loadedTaskDescriptor
 						.getClass().getInterfaces()) {
 					if (implementedInterfaces.getSimpleName().equals(
 							TASK_DESCRIPTOR)) {

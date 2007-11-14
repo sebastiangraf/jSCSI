@@ -1,33 +1,22 @@
 package org.jscsi.target.connection;
 
 import java.nio.channels.SocketChannel;
-import java.util.Collection;
 import java.util.Map;
-import java.util.Queue;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.sound.midi.Receiver;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.target.conf.OperationalTextConfiguration;
-import org.jscsi.target.conf.OperationalTextException;
-import org.jscsi.target.connection.Connection;
 import org.jscsi.connection.SerialArithmeticNumber;
-import org.jscsi.target.connection.Session;
-import org.jscsi.target.parameter.connection.Phase;
 import org.jscsi.parser.InitiatorMessageParser;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
-import org.jscsi.parser.login.ISID;
+import org.jscsi.target.conf.OperationalTextConfiguration;
+import org.jscsi.target.conf.OperationalTextException;
+import org.jscsi.target.parameter.connection.Phase;
 
 /**
  * <h1>Connection</h1>
@@ -461,8 +450,6 @@ public class Connection {
 	 *            the initiator's ExpStatSN
 	 */
 	final void updateAndCleanSendedBuffer(int expectedStatusSequenceNumber) {
-		ProtocolDataUnit bufferedPDU = null;
-		TargetMessageParser parser = null;
 		int firstStatSN = sendingBuffer.firstKey();
 		while (firstStatSN < expectedStatusSequenceNumber) {
 			sendingBuffer.remove(firstStatSN);
