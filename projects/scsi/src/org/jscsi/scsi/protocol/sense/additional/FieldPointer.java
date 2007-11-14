@@ -38,7 +38,7 @@ public class FieldPointer implements SenseKeySpecificField
 
       this.BPV = ((encodedData[0] >>> 3) & 0x01) == 1;
 
-      this.bitPointer = (byte) (encodedData[0] & 0x03);
+      this.bitPointer = (byte) (encodedData[0] & 0x07);
 
       this.fieldPointer = (encodedData[2] & 0xFF); // 8 LSBs
       this.fieldPointer |= ((encodedData[1] & 0xFF) << 8);
