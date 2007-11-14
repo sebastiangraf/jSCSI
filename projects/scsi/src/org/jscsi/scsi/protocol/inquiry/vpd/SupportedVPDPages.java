@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.protocol.inquiry.vpd;
 
 import java.io.ByteArrayOutputStream;
@@ -12,54 +13,54 @@ import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
 public class SupportedVPDPages extends VPDPage
 {
-   private static final int PAGE_CODE = 0x00;
-   
+   public static final int PAGE_CODE = 0x00;
+
    private List<Integer> supportedCodes;
-   
-   public SupportedVPDPages(int peripheralQualifier, int peripheralDeviceType, List<Integer> supportedCodes)
+
+   public SupportedVPDPages(
+         int peripheralQualifier,
+         int peripheralDeviceType,
+         List<Integer> supportedCodes)
    {
       this.setPageCode(PAGE_CODE);
       this.setPeripheralQualifier(peripheralQualifier);
       this.setPeripheralDeviceType(peripheralDeviceType);
       this.supportedCodes = supportedCodes;
    }
-   
+
    public SupportedVPDPages(int peripheralQualifier, int peripheralDeviceType)
    {
       this(peripheralQualifier, peripheralDeviceType, new LinkedList<Integer>());
    }
-   
-   
+
    /////////////////////////////////////////////////////////////////////////////
    // constructors
-   
-   
-   @Override
+
    public void decode(byte[] header, ByteBuffer buffer) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(buffer));
-      
+
       // byte 0
       int b0 = in.readUnsignedByte();
       this.setPeripheralQualifier(b0 >>> 5);
       this.setPeripheralDeviceType(b0 & 0x1F);
-      
+
       // byte 1
       int b1 = in.readUnsignedByte();
-      
+
       if (b1 != PAGE_CODE)
       {
          throw new IOException("invalid page code: " + Integer.toHexString(b1));
       }
-      
+
       this.setPageCode(b1);
-      
+
       // byte 2
       in.readUnsignedByte();
-      
+
       // byte 3
       int b3 = in.readUnsignedByte();
-      
+
       // supported codes list
       for (int i = b3; i > 0; i--)
       {
@@ -67,8 +68,7 @@ public class SupportedVPDPages extends VPDPage
       }
    }
 
-   @Override
-   public byte[] encode() throws IOException
+   public byte[] encode()
    {
       ByteArrayOutputStream baos = new ByteArrayOutputStream(this.supportedCodes.size() + 4);
       DataOutputStream out = new DataOutputStream(baos);
@@ -76,14 +76,14 @@ public class SupportedVPDPages extends VPDPage
       try
       {
          // byte 0
-         out.writeByte((this.getPeripheralQualifier() << 5)|this.getPeripheralDeviceType());
-         
+         out.writeByte((this.getPeripheralQualifier() << 5) | this.getPeripheralDeviceType());
+
          // byte 1
          out.writeByte(this.getPageCode());
-         
+
          // byte 2
          out.writeByte(0);
-         
+
          // byte 3
          out.writeByte(this.supportedCodes.size());
 
@@ -100,11 +100,16 @@ public class SupportedVPDPages extends VPDPage
          throw new RuntimeException("Unable to encode CDB.");
       }
    }
-   
+
    /////////////////////////////////////////////////////////////////////////////
-   
+
    public void addSupportedCode(int pageCode)
    {
       this.supportedCodes.add(pageCode);
+   }
+
+   public List<Integer> getSupportedCodes()
+   {
+      return supportedCodes;
    }
 }
