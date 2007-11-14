@@ -38,7 +38,7 @@ public class BufferedReadCapacity16Task extends BufferedTask
       try
       {
          out.writeLong(this.getFileCapacity());
-         out.writeLong((long)blockLength);
+         out.writeInt(blockLength);
          out.writeByte(0);    // RTO_EN and PROT_EN set to false; do not support protection info
          // the remaining bytes are reserved
       }
