@@ -264,7 +264,7 @@ public class StandardInquiryData implements Encodable, Serializer
       if (this.VS2 && vendorSpecific2Length > 0)
       {
          this.vendorSpecific2 = new byte[vendorSpecific2Length];
-         System.arraycopy(data, STD_LENGTH, vendorSpecific2, 0, vendorSpecific2Length);
+         buffer.get(this.vendorSpecific2);
       }
 
       return this;
