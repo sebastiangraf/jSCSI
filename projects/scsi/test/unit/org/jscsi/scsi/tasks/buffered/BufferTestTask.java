@@ -33,7 +33,7 @@ public  class BufferTestTask implements TargetTransportPort
 {
    private static Logger _logger = Logger.getLogger(BufferTestTask.class);
    
-   static final int STORE_CAPACITY = 1024 * 1024 * 32; // 32MB
+   static final int STORE_CAPACITY = 1024 * 1024 * 4; // 4MB
    static final int STORE_BLOCK_SIZE = 4096;
    static final String STORE_FILE_PATH = "test-output/file-store.dat";
 
@@ -47,8 +47,8 @@ public  class BufferTestTask implements TargetTransportPort
    
 
    private Random rnd = new Random();
-   private HashMap<Long,byte[]> readDataMap = new HashMap<Long,byte[]>();
-   private HashMap<Long,byte[]> writeDataMap = new HashMap<Long,byte[]>();
+   private HashMap<Long,ByteBuffer> readDataMap = new HashMap<Long,ByteBuffer>();
+   private HashMap<Long,ByteBuffer> writeDataMap = new HashMap<Long,ByteBuffer>();
    
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
@@ -105,7 +105,11 @@ public  class BufferTestTask implements TargetTransportPort
          throws InterruptedException
    {
       _logger.debug("servicing writeData request");
-      this.writeDataMap.put(commandReferenceNumber, input.array().clone());
+      
+      ByteBuffer copy = ByteBuffer.allocate(input.limit());
+      copy.put(input);
+      
+      this.writeDataMap.put(commandReferenceNumber, copy);
       return true;
    }
    
@@ -136,12 +140,28 @@ public  class BufferTestTask implements TargetTransportPort
    
    /////////////////////////////////////////////////////////////////////////////
 
-   public byte[] createReadData(int size, long cmdRef)
+   public ByteBuffer createReadData(int size, long cmdRef)
    {
       byte[] data = new byte[size];
       this.rnd.nextBytes(data);
-      this.readDataMap.put(cmdRef, data);
-      return data;
+      
+      ByteBuffer buffData = ByteBuffer.allocate(size);
+      buffData.put(data);
+      
+      this.readDataMap.put(cmdRef, buffData);
+      return buffData;
+   }
+   
+   public ByteBuffer createWriteData(int size, long cmdRef)
+   {
+      byte[] data = new byte[size];
+      this.rnd.nextBytes(data);
+      
+      ByteBuffer buffData = ByteBuffer.allocate(size);
+      buffData.put(data);
+      
+      this.writeDataMap.put(cmdRef, buffData);
+      return buffData;
    }
    
    public void purgeReadData(long cmdRef)
@@ -149,9 +169,37 @@ public  class BufferTestTask implements TargetTransportPort
       this.readDataMap.remove(cmdRef);
    }
    
-   public byte[] getWriteData(long cmdRef)
+   public void purgeWriteData(long cmdRef)
+   {
+      this.writeDataMap.remove(cmdRef);
+   }
+   
+   public ByteBuffer getReadData(long cmdRef)
+   {
+      return this.readDataMap.remove(cmdRef);
+   }
+   
+   public ByteBuffer getWriteData(long cmdRef)
    {
       return this.writeDataMap.remove(cmdRef);
+   }
+   
+   public void submitRead(CDB cdb, int cmdRef)
+   {
+      Command cmd = new Command(new Nexus("initiator", "target", 0, 0), cdb, TaskAttribute.ORDERED, cmdRef, 0);
+
+      try
+      {
+         Task task = this.getMemoryTask(this, cmd);
+         task.run();
+         
+         task = this.getFileTask(this, cmd);
+         task.run();
+      }
+      catch (IllegalRequestException e)
+      {
+         Assert.fail("illegal request");
+      }
    }
    
    public void submitWrite(CDB cdb, int cmdRef)

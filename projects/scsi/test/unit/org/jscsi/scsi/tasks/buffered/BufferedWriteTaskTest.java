@@ -13,7 +13,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
    
    private static final int WRITE_BLOCKS = 10;
    
-   private int cmdRef = 0;
+   private static int cmdRef = 0;
 
    /////////////////////////////////////////////////////////////////////////////
    
@@ -25,7 +25,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
       this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitWrite(cdb, cmdRef);
       this.purgeReadData(cmdRef);
-      this.cmdRef++;
+      cmdRef++;
    }
    
    @Test
@@ -36,7 +36,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
       this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitWrite(cdb, cmdRef);
       this.purgeReadData(cmdRef);
-      this.cmdRef++;
+      cmdRef++;
    }
    
    @Test
@@ -47,7 +47,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
       this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitWrite(cdb, cmdRef);
       this.purgeReadData(cmdRef);
-      this.cmdRef++;
+      cmdRef++;
    }
    
    @Test
@@ -58,6 +58,6 @@ public class BufferedWriteTaskTest extends BufferTestTask
       this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitWrite(cdb, cmdRef);
       this.purgeReadData(cmdRef);
-      this.cmdRef++;
+      cmdRef++;
    }
 }
