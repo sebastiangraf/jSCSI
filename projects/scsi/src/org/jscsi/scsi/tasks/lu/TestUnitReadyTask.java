@@ -1,5 +1,5 @@
 
-package org.jscsi.scsi.tasks.generic;
+package org.jscsi.scsi.tasks.lu;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;

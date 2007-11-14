@@ -26,8 +26,8 @@ import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.protocol.sense.exceptions.InvalidCommandOperationCodeException;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
-import org.jscsi.scsi.tasks.generic.ModeSenseTask;
-import org.jscsi.scsi.tasks.generic.TestUnitReadyTask;
+import org.jscsi.scsi.tasks.lu.ModeSenseTask;
+import org.jscsi.scsi.tasks.lu.TestUnitReadyTask;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class BufferedTaskFactory implements TaskFactory

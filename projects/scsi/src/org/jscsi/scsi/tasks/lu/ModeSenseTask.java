@@ -1,5 +1,5 @@
 
-package org.jscsi.scsi.tasks.generic;
+package org.jscsi.scsi.tasks.lu;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
