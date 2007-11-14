@@ -22,6 +22,7 @@ import org.junit.Test;
 
 public class DefaultTaskSetTest extends AbstractTaskSetTest
 {
+   // TODO: Test abort(), clear(), clear(Nexus), and remove(Nexus) methods
 
    private static Logger _logger = Logger.getLogger(DefaultTaskSetTest.class);
    
