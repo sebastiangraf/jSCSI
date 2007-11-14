@@ -1,8 +1,5 @@
 package org.jscsi.scsi.protocol.inquiry.vpd;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
 import org.jscsi.scsi.protocol.Encodable;
 
 public abstract class VPDPage implements Encodable
@@ -10,16 +7,7 @@ public abstract class VPDPage implements Encodable
    private int peripheralQualifier;
    private int peripheralDeviceType;
    private int pageCode;   
-   
-   
-   /////////////////////////////////////////////////////////////////////////////
-   
-   
-   public abstract byte[] encode() throws IOException;
-
-   public abstract void decode(byte[] header, ByteBuffer buffer) throws IOException;
-
-   
+      
    /////////////////////////////////////////////////////////////////////////////
    // getters/setters
    
