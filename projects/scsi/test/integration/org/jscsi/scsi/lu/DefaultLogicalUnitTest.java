@@ -95,7 +95,7 @@ public class DefaultLogicalUnitTest extends DefaultLogicalUnit
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
    {
-      super(taskSet, taskManager, modePageRegistry, inquiryDataRegistry, taskFactory);
+      super(taskSet, taskManager, taskFactory);
    }
 
    /////////////////////////////////////////////////////////////////////////////

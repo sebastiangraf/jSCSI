@@ -5,8 +5,6 @@ import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
-import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.Task;
@@ -24,8 +22,6 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
    
    private TaskSet taskSet;
    private TaskManager taskManager;
-   private InquiryDataRegistry inquiryDataRegistry;
-   private ModePageRegistry modePageRegistry;
    private TaskFactory taskFactory;
    
    private Thread manager;
@@ -37,14 +33,10 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
    protected DefaultLogicalUnit(
          TaskSet taskSet, 
          TaskManager taskManager, 
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry,
          TaskFactory taskFactory)
    {
       this.taskSet = taskSet;
       this.taskManager = taskManager;
-      this.modePageRegistry = modePageRegistry;
-      this.inquiryDataRegistry = inquiryDataRegistry;
       this.taskFactory = taskFactory;
    }
 
@@ -164,16 +156,6 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
    public void setTaskManager(TaskManager taskManager)
    {
       this.taskManager = taskManager;
-   }
-
-   public InquiryDataRegistry getInquiryDataRegistry()
-   {
-      return inquiryDataRegistry;
-   }
-
-   public void setInquiryDataRegistry(InquiryDataRegistry inquiryDataRegistry)
-   {
-      this.inquiryDataRegistry = inquiryDataRegistry;
    }
 
    public TaskFactory getTaskFactory()
