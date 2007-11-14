@@ -18,45 +18,49 @@ public class BufferedWriteTaskTest extends BufferTestTask
    /////////////////////////////////////////////////////////////////////////////
    
    @Test
-   public void simpleWrite6()
+   public void testWrite6()
    {
-      _logger.debug("********** SIMPLE WRITE6 **********");
+      _logger.debug("********** WRITE6 **********");
       CDB cdb = new Write6(false, true, 0, WRITE_BLOCKS);
       this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
-      this.submitWrite(cdb, cmdRef);
+      this.submitCDB(cdb, cmdRef);
+      // TODO: Verify Write Return Value
       this.purgeReadData(cmdRef);
       cmdRef++;
    }
    
    @Test
-   public void simpleWrite10()
+   public void testWrite10()
    {
-      _logger.debug("********** SIMPLE WRITE10 **********");
+      _logger.debug("********** WRITE10 **********");
       CDB cdb = new Write10(0, false, false, false, false, false, 0, WRITE_BLOCKS);
       this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
-      this.submitWrite(cdb, cmdRef);
+      this.submitCDB(cdb, cmdRef);
+      // TODO: Verify Write Return Value
       this.purgeReadData(cmdRef);
       cmdRef++;
    }
    
    @Test
-   public void simpleWrite12()
+   public void testWrite12()
    {
-      _logger.debug("********** SIMPLE WRITE12 **********");
+      _logger.debug("********** WRITE12 **********");
       CDB cdb = new Write12(0, false, false, false, false, false, 0, WRITE_BLOCKS);
       this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
-      this.submitWrite(cdb, cmdRef);
+      this.submitCDB(cdb, cmdRef);
+      // TODO: Verify Write Return Value
       this.purgeReadData(cmdRef);
       cmdRef++;
    }
    
    @Test
-   public void simpleWrite16()
+   public void testWrite16()
    {
-      _logger.debug("********** SIMPLE WRITE16 **********");
+      _logger.debug("********** WRITE16 **********");
       CDB cdb = new Write12(0, false, false, false, false, false, 0, WRITE_BLOCKS);
       this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
-      this.submitWrite(cdb, cmdRef);
+      this.submitCDB(cdb, cmdRef);
+      // TODO: Verify Write Return Value
       this.purgeReadData(cmdRef);
       cmdRef++;
    }

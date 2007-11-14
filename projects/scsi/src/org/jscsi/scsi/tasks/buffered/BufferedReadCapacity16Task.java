@@ -3,11 +3,9 @@ package org.jscsi.scsi.tasks.buffered;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.cdb.ReadCapacity16;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
@@ -46,7 +44,7 @@ public class BufferedReadCapacity16Task extends BufferedTask
       }
       catch (IOException e1)
       {
-         throw new RuntimeException("unable to encode READ CAPACITY (10) parameter data");
+         throw new RuntimeException("unable to encode READ CAPACITY (16) parameter data");
       } 
       
       this.writeData(bs.toByteArray());

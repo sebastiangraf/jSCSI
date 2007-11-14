@@ -4,8 +4,8 @@ import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.cdb.CDB;
 import org.jscsi.scsi.protocol.cdb.Read10;
 import org.jscsi.scsi.protocol.cdb.Read12;
+import org.jscsi.scsi.protocol.cdb.Read16;
 import org.jscsi.scsi.protocol.cdb.Read6;
-import org.jscsi.scsi.protocol.cdb.Write12;
 import org.junit.Test;
 
 public class BufferedReadTaskTest extends BufferTestTask
@@ -19,45 +19,49 @@ public class BufferedReadTaskTest extends BufferTestTask
    /////////////////////////////////////////////////////////////////////////////
    
    @Test
-   public void simpleRead6()
+   public void testRead6()
    {
-      _logger.debug("********** SIMPLE READ6 **********");
+      _logger.debug("********** READ6 **********");
       CDB cdb = new Read6(false, true, 0, READ_BLOCKS);
       this.createWriteData(READ_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
-      this.submitRead(cdb, cmdRef);
+      this.submitCDB(cdb, cmdRef);
+      // TODO: Verify Read Return Value
       this.purgeWriteData(cmdRef);
       cmdRef++;
    }
    
    @Test
-   public void simpleRead10()
+   public void testRead10()
    {
-      _logger.debug("********** SIMPLE READ10 **********");
+      _logger.debug("********** READ10 **********");
       CDB cdb = new Read10(0, false, false, false, false, false, 0, READ_BLOCKS);
       this.createWriteData(READ_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
-      this.submitRead(cdb, cmdRef);
+      this.submitCDB(cdb, cmdRef);
+      // TODO: Verify Read Return Value
       this.purgeWriteData(cmdRef);
       cmdRef++;
    }
    
    @Test
-   public void simpleRead12()
+   public void testRead12()
    {
-      _logger.debug("********** SIMPLE READ12 **********");
+      _logger.debug("********** READ12 **********");
       CDB cdb = new Read12(0, false, false, false, false, false, 0, READ_BLOCKS);
       this.createWriteData(READ_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
-      this.submitRead(cdb, cmdRef);
+      this.submitCDB(cdb, cmdRef);
+      // TODO: Verify Read Return Value
       this.purgeWriteData(cmdRef);
       cmdRef++;
    }
    
    @Test
-   public void simpleRead16()
+   public void testRead16()
    {
-      _logger.debug("********** SIMPLE READ16 **********");
-      CDB cdb = new Read12(0, false, false, false, false, false, 0, READ_BLOCKS);
+      _logger.debug("********** READ16 **********");
+      CDB cdb = new Read16(0, false, false, false, false, false, 0, READ_BLOCKS);
       this.createWriteData(READ_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
-      this.submitRead(cdb, cmdRef);
+      this.submitCDB(cdb, cmdRef);
+      // TODO: Verify Read Return Value
       this.purgeWriteData(cmdRef);
       cmdRef++;
    }
