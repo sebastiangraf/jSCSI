@@ -527,7 +527,7 @@ public class SerializerTest
       {
          e.printStackTrace();
          System.err.println("Skipping spec line " + results[0] + "; class not found");
-         return;
+         throw new RuntimeException("Skipping spec line " + results[0] + "; class not found");
       }
 
       int bits = 0;
@@ -544,7 +544,8 @@ public class SerializerTest
 
       if ((encodable.getSize() % 8) != 0)
       {
-         System.out.println("Not at byte boundry: " + encodable.getSize());
+         System.err.println("Spec line not at byte boundry: " + encodable.getSize());
+         throw new RuntimeException("Spec line not at byte boundry: " + encodable.getSize());
       }
       else
       {
