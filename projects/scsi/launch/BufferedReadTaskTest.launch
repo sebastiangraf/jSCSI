@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/jscsi-scsi/test/unit/org/jscsi/scsi/tasks/buffered/BufferedWriteTaskTest.java"/>
+<listEntry value="/jscsi-scsi/test/unit/org/jscsi/scsi/tasks/buffered/BufferedReadTaskTest.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -20,7 +20,7 @@
 <listEntry value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;runtimeClasspathEntry internalArchive=&quot;/jscsi-common/misc&quot; path=&quot;3&quot; type=&quot;2&quot;/&gt;&#13;&#10;"/>
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.jscsi.scsi.tasks.buffered.BufferedWriteTaskTest"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.jscsi.scsi.tasks.buffered.BufferedReadTaskTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="jscsi-scsi"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dlog4j.configuration=log4j.xml"/>
 </launchConfiguration>

@@ -126,7 +126,7 @@ public class FixedSenseData extends SenseData
             info = new byte[4]; // Ignore invalid or null value, will write all zeros to field
          }
          
-         if ( cmdi.length != 4 )
+         if ( cmdi == null || cmdi.length != 4 )
          {
             cmdi = new byte[4]; // Ignore invalid command specific information lengths.
          }

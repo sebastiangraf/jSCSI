@@ -29,7 +29,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-public  class BufferTestTask implements TargetTransportPort
+public class BufferTestTask implements TargetTransportPort
 {
    private static Logger _logger = Logger.getLogger(BufferTestTask.class);
    
@@ -184,7 +184,7 @@ public  class BufferTestTask implements TargetTransportPort
       return this.writeDataMap.remove(cmdRef);
    }
    
-   public void submitRead(CDB cdb, int cmdRef)
+   public void submitCDB(CDB cdb, int cmdRef)
    {
       Command cmd = new Command(new Nexus("initiator", "target", 0, 0), cdb, TaskAttribute.ORDERED, cmdRef, 0);
 
@@ -200,24 +200,7 @@ public  class BufferTestTask implements TargetTransportPort
       {
          Assert.fail("illegal request");
       }
-   }
-   
-   public void submitWrite(CDB cdb, int cmdRef)
-   {
-      Command cmd = new Command(new Nexus("initiator", "target", 0, 0), cdb, TaskAttribute.ORDERED, cmdRef, 0);
-
-      try
-      {
-         Task task = this.getMemoryTask(this, cmd);
-         task.run();
-         
-         task = this.getFileTask(this, cmd);
-         task.run();
-      }
-      catch (IllegalRequestException e)
-      {
-         Assert.fail("illegal request");
-      }
+      
    }
    
    /////////////////////////////////////////////////////////////////////////////
