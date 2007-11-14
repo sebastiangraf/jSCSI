@@ -134,8 +134,6 @@ public enum SenseKey
          SenseKey.mapping = new HashMap<Integer,SenseKey>();
       }
       Map<Integer,SenseKey> map = SenseKey.mapping;
-      System.out.println("");
-      System.out.println(map.toString());
       SenseKey.mapping.put(value, this);
       this.value = value;
    }
@@ -147,8 +145,6 @@ public enum SenseKey
    
    public static final SenseKey valueOf( int value ) throws IOException
    {
-      System.out.println("Querying for value: " + value);
-      System.out.println(SenseKey.mapping.toString());
       SenseKey v = SenseKey.mapping.get(value);
       if ( v == null )
       {
