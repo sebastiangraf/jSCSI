@@ -10,6 +10,7 @@ public class NoSenseKeySpecific implements SenseKeySpecificField
    
    public NoSenseKeySpecific() {}
 
+   @SuppressWarnings("unchecked")
    public NoSenseKeySpecific decode(ByteBuffer buffer) throws IOException
    {
       buffer.get(readData);
