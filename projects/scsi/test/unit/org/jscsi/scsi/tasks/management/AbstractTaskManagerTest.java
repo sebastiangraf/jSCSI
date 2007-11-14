@@ -24,7 +24,7 @@ import org.junit.Test;
 /**
  * Tests task manager implementations for proper execution ordering.
  */
-public class GeneralTaskManagerTest
+public class AbstractTaskManagerTest
 {
    static
    {
@@ -39,10 +39,10 @@ public class GeneralTaskManagerTest
       private long delay;
       private Boolean done = false;
       
-      public TestTask( TaskAttribute attribute, long delay )
+      public TestTask( Nexus nexus, TaskAttribute attribute, long delay )
       {
          this.delay = delay;
-         this.command = new Command( (Nexus)null, (CDB)null, attribute, 0, 0 );
+         this.command = new Command( nexus, (CDB)null, attribute, 0, 0 );
          _logger.debug("constructed TestTask: " + this);
       }
       
@@ -58,6 +58,13 @@ public class GeneralTaskManagerTest
          }
       }
       
+      
+      
+      public boolean abort()
+      {
+         return false;
+      }
+
       /**
        * Returns <code>true</code> if the task was executed in the proper order;
        * <code>false</code> otherwise.
@@ -95,17 +102,23 @@ public class GeneralTaskManagerTest
          
          try
          {
+            _logger.debug("sleeping for " + this.delay + ": " + this);
             Thread.sleep(this.delay);
+            _logger.debug("done sleeping: " + this);
          }
          catch (InterruptedException e)
          {
             e.printStackTrace();
          }
+         
+         
          synchronized ( this )
          {
+            _logger.debug("marking task as done: " + this);
             this.done = true;
             this.notifyAll();
          }
+         _logger.debug("leaving run method: " + this);
       }
       
       public Command getCommand()
@@ -121,14 +134,16 @@ public class GeneralTaskManagerTest
    
    public static class SimpleTask extends TestTask
    {
+      private static Logger _logger = Logger.getLogger(HeadOfQueueTask.class);
+      
       private List<TestTask> taskSet;
       private int index;
       private Boolean properStart = false;
       private String reason;
       
-      public SimpleTask( List<TestTask> taskSet, long delay )
+      public SimpleTask( Nexus nexus, List<TestTask> taskSet, long delay )
       {
-         super(TaskAttribute.SIMPLE, delay);
+         super(nexus, TaskAttribute.SIMPLE, delay);
          
          synchronized ( taskSet )
          {
@@ -141,6 +156,7 @@ public class GeneralTaskManagerTest
       @Override
       protected void checkProperExecution()
       {
+         _logger.debug("Checking for proper execution order: " + this);
          synchronized ( this.taskSet )
          {
             this.properStart = true;
@@ -190,11 +206,13 @@ public class GeneralTaskManagerTest
       {
          super.reset();
          this.properStart = false;
-      }
-
-      public boolean abort()
+      }      
+      
+      @Override
+      public String toString()
       {
-         throw new NotImplementedException("abort facility must be implemented");
+         long tag = this.getCommand().getNexus().getTaskTag();
+         return "SimpleTask(tag=" + tag + ")";
       }
    }
    
@@ -210,9 +228,9 @@ public class GeneralTaskManagerTest
       private String reason = "Unknown reason";
       
       
-      public HeadOfQueueTask( List<TestTask> taskSet, long delay )
+      public HeadOfQueueTask( Nexus nexus, List<TestTask> taskSet, long delay )
       {
-         super(TaskAttribute.HEAD_OF_QUEUE, delay);
+         super(nexus, TaskAttribute.HEAD_OF_QUEUE, delay);
          
          synchronized ( taskSet )
          {
@@ -230,6 +248,7 @@ public class GeneralTaskManagerTest
       @Override
       protected void checkProperExecution()
       {
+         _logger.debug("Checking for proper execution order: " + this);
          synchronized ( this.taskSet )
          {
 
@@ -238,12 +257,7 @@ public class GeneralTaskManagerTest
             for ( int i = 0; i < this.index; i++ )
             {
                TestTask t = this.taskSet.get(i);
-               if ( (t instanceof HeadOfQueueTask) && t.isDone() )
-               {
-                  this.properStart = false;
-                  this.reason = "Previously inserted Head Of Queue Task finished preemptively";
-               }
-               else if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
+               if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
                {
                   this.properStart = false;
                   this.reason = "Previously inserted task preemptively finished";
@@ -252,12 +266,7 @@ public class GeneralTaskManagerTest
             for ( int i = this.index + 1; i < this.taskSet.size(); i++ )
             {
                TestTask t = this.taskSet.get(i);
-               if ( (t instanceof HeadOfQueueTask) && (!t.isDone()) )
-               {
-                  this.properStart = false;
-                  this.reason = "Later inserted Head Of Queue Task not finished";
-               }
-               else if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
+               if ( !(t instanceof HeadOfQueueTask) && t.isDone() )
                {
                   this.properStart = false;
                   this.reason = "Later inserted task preemptively finished";
@@ -286,23 +295,29 @@ public class GeneralTaskManagerTest
          this.properStart = false;
       }
 
-      public boolean abort()
+      @Override
+      public String toString()
       {
-         throw new NotImplementedException("abort facility must be implemented");
+         long tag = this.getCommand().getNexus().getTaskTag();
+         return "HeadOfQueueTask(tag=" + tag + ")";
       }
+      
+      
       
    }
    
    public static class OrderedTask extends TestTask
    {
+      private static Logger _logger = Logger.getLogger(HeadOfQueueTask.class);
+      
       private List<TestTask> taskSet;
       private int index;
       private Boolean properStart = false;
       private String reason;
       
-      public OrderedTask( List<TestTask> taskSet, long delay )
+      public OrderedTask( Nexus nexus, List<TestTask> taskSet, long delay )
       {
-         super(TaskAttribute.ORDERED, delay);
+         super(nexus, TaskAttribute.ORDERED, delay);
          
          synchronized ( taskSet )
          {
@@ -315,6 +330,7 @@ public class GeneralTaskManagerTest
       @Override
       protected void checkProperExecution()
       {
+         _logger.debug("Checking for proper execution order: " + this);
          synchronized ( this.taskSet )
          {
             this.properStart = true;
@@ -361,10 +377,12 @@ public class GeneralTaskManagerTest
          super.reset();
          this.properStart = false;
       }
-
-      public boolean abort()
+      
+      @Override
+      public String toString()
       {
-         throw new NotImplementedException("abort facility must be implemented");
+         long tag = this.getCommand().getNexus().getTaskTag();
+         return "OrderedTask(tag=" + tag + ")";
       }
    }
 
@@ -482,10 +500,11 @@ public class GeneralTaskManagerTest
    public void internalTest_HO()
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      Nexus nexus = new Nexus("initiator", "target", 0);
       
       internalBinaryTest(
-            new HeadOfQueueTask(taskSet, 0),
-            new OrderedTask(taskSet, 0),
+            new HeadOfQueueTask(new Nexus(nexus, 0), taskSet, 0),
+            new OrderedTask(new Nexus(nexus, 1), taskSet, 0),
             false,
             true );
    }
@@ -494,10 +513,11 @@ public class GeneralTaskManagerTest
    public void internalTest_HS()
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      Nexus nexus = new Nexus("initiator", "target", 0);
       
       internalBinaryTest(
-            new HeadOfQueueTask(taskSet, 0),
-            new SimpleTask(taskSet, 0),
+            new HeadOfQueueTask(new Nexus(nexus, 0), taskSet, 0),
+            new SimpleTask(new Nexus(nexus, 1), taskSet, 0),
             false,
             true );
    }
@@ -506,10 +526,11 @@ public class GeneralTaskManagerTest
    public void internalTest_OH()
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      Nexus nexus = new Nexus("initiator", "target", 0);
       
       internalBinaryTest(
-            new OrderedTask(taskSet, 0),
-            new HeadOfQueueTask(taskSet, 0),
+            new OrderedTask(new Nexus(nexus, 0), taskSet, 0),
+            new HeadOfQueueTask(new Nexus(nexus, 1), taskSet, 0),
             true,
             false );
    }
@@ -518,10 +539,11 @@ public class GeneralTaskManagerTest
    public void internalTest_OS()
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      Nexus nexus = new Nexus("initiator", "target", 0);
       
       internalBinaryTest(
-            new OrderedTask(taskSet, 0),
-            new SimpleTask(taskSet, 0),
+            new OrderedTask(new Nexus(nexus, 0), taskSet, 0),
+            new SimpleTask(new Nexus(nexus, 1), taskSet, 0),
             false,
             true );
    }
@@ -530,10 +552,11 @@ public class GeneralTaskManagerTest
    public void internalTest_SH()
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      Nexus nexus = new Nexus("initiator", "target", 0);
       
       internalBinaryTest(
-            new SimpleTask(taskSet, 0),
-            new HeadOfQueueTask(taskSet, 0),
+            new SimpleTask(new Nexus(nexus, 0), taskSet, 0),
+            new HeadOfQueueTask(new Nexus(nexus, 1), taskSet, 0),
             true,
             false );
    }
@@ -542,10 +565,11 @@ public class GeneralTaskManagerTest
    public void internalTest_SO()
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      Nexus nexus = new Nexus("initiator", "target", 0);
       
       internalBinaryTest(
-            new SimpleTask(taskSet, 0),
-            new OrderedTask(taskSet, 0),
+            new SimpleTask(new Nexus(nexus, 0), taskSet, 0),
+            new OrderedTask(new Nexus(nexus, 1), taskSet, 0),
             false,
             true );
    }
@@ -554,11 +578,12 @@ public class GeneralTaskManagerTest
    public void internalTest_H1H2()
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      Nexus nexus = new Nexus("initiator", "target", 0);
       
       internalBinaryTest(
-            new HeadOfQueueTask(taskSet, 0),
-            new HeadOfQueueTask(taskSet, 0),
-            true,
+            new HeadOfQueueTask(new Nexus(nexus, 0), taskSet, 0),
+            new HeadOfQueueTask(new Nexus(nexus, 1), taskSet, 0),
+            false,
             false );
    }
    
@@ -566,10 +591,11 @@ public class GeneralTaskManagerTest
    public void internalTest_S1S2()
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      Nexus nexus = new Nexus("initiator", "target", 0);
       
       internalBinaryTest(
-            new SimpleTask(taskSet, 0),
-            new SimpleTask(taskSet, 0),
+            new SimpleTask(new Nexus(nexus, 0), taskSet, 0),
+            new SimpleTask(new Nexus(nexus, 1), taskSet, 0),
             false,
             false );
    }
@@ -578,10 +604,11 @@ public class GeneralTaskManagerTest
    public void internalTest_O1O2()
    {
       List<TestTask> taskSet = new ArrayList<TestTask>();
+      Nexus nexus = new Nexus("initiator", "target", 0);
       
       internalBinaryTest(
-            new OrderedTask(taskSet, 0),
-            new OrderedTask(taskSet, 0),
+            new OrderedTask(new Nexus(nexus, 0), taskSet, 0),
+            new OrderedTask(new Nexus(nexus, 1), taskSet, 0),
             false,
             true );
    }

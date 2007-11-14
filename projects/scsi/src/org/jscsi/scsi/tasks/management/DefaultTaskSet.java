@@ -39,6 +39,7 @@ public class DefaultTaskSet implements TaskSet
    private final Lock lock = new ReentrantLock();
    private final Condition notEmpty = lock.newCondition();
    private final Condition notFull = lock.newCondition();
+   private final Condition unblocked = lock.newCondition();
 
    // Task set members
    private final Map<Long,TaskContainer> tasks; // Tag-to-Task map with 'null' key as the untagged task
@@ -84,9 +85,11 @@ public class DefaultTaskSet implements TaskSet
       lock.lock(); // task execution thread is finished now, so we don't check interrupts
       try
       {
-         this.tasks.remove(taskTag); // 'null' task tag is the untagged task
+         Task task = this.tasks.remove(taskTag); // 'null' task tag is the untagged task
+         this.enabled.remove(task);
          this.capacity++;
          this.notFull.signalAll();
+         this.unblocked.signalAll();
       }
       finally
       {
@@ -104,10 +107,8 @@ public class DefaultTaskSet implements TaskSet
     * before this task can execute.
     */
    private class TaskContainer implements Task
-   {
-      
+   {  
       private Task task;
-      private List<Task> blockingTasks;
       
       /**
        * Creates a task container for the given task. Uses the current enabled list and task
@@ -118,7 +119,6 @@ public class DefaultTaskSet implements TaskSet
       public TaskContainer(Task task) throws InterruptedException
       {
          this.task = task;
-         this.blockingTasks = this.findBlockingTasks();
       }
 
       public Command getCommand()
@@ -133,9 +133,12 @@ public class DefaultTaskSet implements TaskSet
 
       public void run()
       {
+         _logger.debug("Task now running: " + this.task);
          this.task.run();
+         _logger.debug("Task finished: " + this.task);
          long taskTag = this.task.getCommand().getNexus().getTaskTag();
          finished( taskTag > -1 ? taskTag : null ); // untagged tasks have a Q value of -1 (invalid)
+         _logger.debug("Marked task as finished in task set: " + this.task);
       }
       
       public boolean abort()
@@ -149,126 +152,11 @@ public class DefaultTaskSet implements TaskSet
          StringBuilder str = new StringBuilder();
          str.append("TaskContainer(")
             .append(this.task.toString())
-            .append(",[");
-         for ( Task t : this.blockingTasks )
-         {
-            str.append(t.toString()).append(",");
-         }
-         if ( this.blockingTasks.size() > 0 )
-            str.deleteCharAt(str.length()-1);
-         str.append("])");
+            .append(")");
          return str.toString();
       }
-
-      /**
-       * Waits until this task is no longer blocked. Blocking conditions are as specified in SAM-2.
-       * 
-       * @param timeout How long to wait before giving up, in units of <code>unit</code>.
-       * @param unit A <code>TimeUnit</code> determining how to interpret the <code>timeout</code>
-       *    parameter.
-       * @return This task, or <code>null</code> if the specified waiting time elapsed.
-       * @throws InterruptedException
-       */
-      public synchronized Task poll(long timeout, TimeUnit unit) throws InterruptedException
-      {
-         lock.lockInterruptibly();
-         try
-         {
-            timeout = unit.toNanos(timeout);
-            while ( this.blocked() )
-            {
-               if ( timeout > 0 )
-               {
-                  // "notFull" is notified whenever a task is finished. We wait on that before
-                  // checking if this task is still blocked.
-                  timeout = notFull.awaitNanos(timeout);
-               }
-               else
-               {
-                  return null; // a timeout occurred
-               }
-            }
-            return this;
-         }
-         finally
-         {
-            lock.unlock();
-         }
-      }
       
-      /**
-       * @return True if this task is not ready to be executed. Results comply with SAM-2 task
-       * management specifications.
-       * @deprecated
-       */
-      private synchronized boolean blocked() throws InterruptedException
-      {
-         lock.lockInterruptibly();
-         
-         try
-         {
-            
-            for ( Task t : this.blockingTasks )
-            {
-               if ( tasks.containsValue(t) )
-               {
-                  return true;
-               }
-            }
-            return false;
-         }
-         finally
-         {
-            lock.unlock();
-         }
-      }
       
-      /**
-       * @return A list of tasks this task is blocking on.
-       */
-      private synchronized List<Task> findBlockingTasks() throws InterruptedException
-      {
-         lock.lockInterruptibly();
-         
-         try
-         {
-            List<Task> blockedTasks = new LinkedList<Task>();
-            
-            switch (this.task.getCommand().getTaskAttribute())
-            {
-               case SIMPLE:
-                  // A task having the SIMPLE attribute shall not enter the enabled state until
-                  // all older head of queue and older ordered tasks have ended.
-                  for ( Task t : tasks.values() )
-                  {
-                     TaskAttribute attr = t.getCommand().getTaskAttribute();
-                     if ( attr == TaskAttribute.HEAD_OF_QUEUE || attr == TaskAttribute.ORDERED )
-                     {
-                        blockedTasks.add(t);
-                     }
-                  }
-                  break;
-               case ORDERED:
-                  // A task having the ORDERED attribute shall not enter the enabled state until
-                  // all older tasks in the task set have ended.
-                  blockedTasks.addAll(tasks.values());
-                  break;
-               case HEAD_OF_QUEUE:
-                  // A task having the HEAD OF QUEUE attribute shall be accepted into the task
-                  // set in the enabled state.
-                  break;
-               case ACA:
-                  throw new RuntimeException("unsupported task attribute: ACA");
-            }
-            
-            return blockedTasks;
-         }
-         finally
-         {
-            lock.unlock();
-         }
-
-      }
       
    }
    
@@ -296,6 +184,7 @@ public class DefaultTaskSet implements TaskSet
          this.dormant.remove(task); // removes the task from the dormant queue if present
          this.capacity++;
          this.notFull.signalAll();
+         this.unblocked.signalAll();
          
          return task.abort();
       }
@@ -328,7 +217,8 @@ public class DefaultTaskSet implements TaskSet
          this.tasks.clear();
          this.enabled.clear();
          this.dormant.clear();
-         this.notFull.notifyAll();
+         this.notFull.signalAll();
+         this.unblocked.signalAll();
       }
       finally
       {
@@ -354,7 +244,8 @@ public class DefaultTaskSet implements TaskSet
          this.tasks.clear();
          this.enabled.clear();
          this.dormant.clear();
-         this.notFull.notifyAll();
+         this.notFull.signalAll();
+         this.unblocked.signalAll();
       }
       finally
       {
@@ -429,7 +320,7 @@ public class DefaultTaskSet implements TaskSet
          
          // Check that untagged tasks have the SIMPLE task attribute
          long taskTag = task.getCommand().getNexus().getTaskTag();
-         if (task.getCommand().getTaskAttribute() != TaskAttribute.SIMPLE)
+         if (taskTag < 0 && task.getCommand().getTaskAttribute() != TaskAttribute.SIMPLE)
          {
             throw new RuntimeException("Transport layer should have set untagged task as SIMPLE");
          }
@@ -464,8 +355,11 @@ public class DefaultTaskSet implements TaskSet
             this.dormant.add(container);
          }
          
+         _logger.debug("Task set: " + this.dormant);
+         
          this.capacity--;
          this.notEmpty.signalAll();
+         this.unblocked.signalAll();
          return true;
          
       }
@@ -587,6 +481,7 @@ public class DefaultTaskSet implements TaskSet
          timeout = unit.toNanos(timeout);
          while ( this.dormant.size() == 0 )
          {
+            _logger.debug("Task set empty; waiting for new task to be added");
             if (timeout > 0)
             {
                // "notEmpty" is notified whenever a task is added to the set
@@ -598,16 +493,16 @@ public class DefaultTaskSet implements TaskSet
             }
          }
          
-         TaskContainer container = this.dormant.get(0);
-         
          // wait until the next task is not blocked
-         while ( this.blocked(container) )
+         while ( this.blocked(this.dormant.get(0)) )
          {
+            _logger.debug("Next task blocked; waiting for other tasks to finish");
             if ( timeout > 0 )
             {
-               // "notFull" is notified whenever a task is finished. We wait on that before
-               // checking if this task is still blocked.
-               timeout = notFull.awaitNanos(timeout);
+               // "unblocked" is notified whenever a task is finished or a new task is
+               // added to the set. We wait on that before checking if this task is still
+               // blocked.
+               timeout = unblocked.awaitNanos(timeout);
             }
             else
             {
@@ -615,8 +510,12 @@ public class DefaultTaskSet implements TaskSet
             }
          }
          
+         TaskContainer container = this.dormant.remove(0);
          this.enabled.add(container);
-         this.dormant.remove(0);
+         
+         _logger.debug("Enabling task: " + container.toString());
+         _logger.debug("Dormant task set: " + this.dormant);
+         
          return container;
          
       }
@@ -632,6 +531,7 @@ public class DefaultTaskSet implements TaskSet
       Task task = null;
       while (task == null)
       {
+         _logger.debug("Polling for next task; timeout in 10 seconds");
          task = this.poll(10, TimeUnit.SECONDS);
       }
       return task;

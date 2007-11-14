@@ -9,7 +9,7 @@ import org.jscsi.scsi.tasks.Task;
 
 public class DefaultTaskManager implements TaskManager
 {   
-   private static Logger _logger = Logger.getLogger(TaskSet.class);
+   private static Logger _logger = Logger.getLogger(DefaultTaskManager.class);
    
    
    private ExecutorService _executor;
@@ -44,6 +44,7 @@ public class DefaultTaskManager implements TaskManager
          Task nextTask = null;
          try
          {
+            _logger.debug("Waiting for next task...");
             nextTask = this.taskSet.take();
             this._executor.submit(nextTask);
             _logger.debug("TaskManager executed task: " + nextTask);
