@@ -13,7 +13,7 @@ import org.jscsi.scsi.tasks.management.TaskManager;
 import org.jscsi.scsi.tasks.management.TaskSet;
 
 // TODO: Describe class or interface
-public class BufferedLogicalUnit extends DefaultLogicalUnit
+public class BufferedLogicalUnit extends AbstractLogicalUnit
 {   
    private static Logger _logger = Logger.getLogger(TaskSet.class);
 

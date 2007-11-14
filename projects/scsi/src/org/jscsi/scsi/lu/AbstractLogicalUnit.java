@@ -16,9 +16,9 @@ import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 // TODO: Describe class or interface
-public abstract class DefaultLogicalUnit implements LogicalUnit
+public abstract class AbstractLogicalUnit implements LogicalUnit
 {
-   private static Logger _logger = Logger.getLogger(DefaultLogicalUnit.class);
+   private static Logger _logger = Logger.getLogger(AbstractLogicalUnit.class);
    
    private TaskSet taskSet;
    private TaskManager taskManager;
@@ -26,11 +26,11 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
    
    private Thread manager;
 
-   protected DefaultLogicalUnit()
+   protected AbstractLogicalUnit()
    {
    }
    
-   protected DefaultLogicalUnit(
+   protected AbstractLogicalUnit(
          TaskSet taskSet, 
          TaskManager taskManager, 
          TaskFactory taskFactory)
@@ -171,6 +171,6 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
    @Override
    public String toString()
    {
-      return "<DefaultLogicalUnit task: " + this.taskFactory + ">";
+      return "<AbstractLogicalUnit task: " + this.taskFactory + ">";
    }
 }
