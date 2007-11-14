@@ -20,10 +20,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DefaultTaskManagerTest extends AbstractTaskManagerTest
+public class DefaultTaskSetTest extends AbstractTaskSetTest
 {
 
-   private static Logger _logger = Logger.getLogger(DefaultTaskManagerTest.class);
+   private static Logger _logger = Logger.getLogger(DefaultTaskSetTest.class);
    
    // 10 threads is an arbitrary value chosen to always allow simultaneous task execution
    // for all the following test cases.
