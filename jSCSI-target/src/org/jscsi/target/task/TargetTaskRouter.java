@@ -1,4 +1,4 @@
-package org.jscsi.target.connection;
+package org.jscsi.target.task;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -6,12 +6,16 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.target.connection.Connection;
 import org.jscsi.target.task.TaskAbstracts.AbstractTask;
+import org.jscsi.target.util.Singleton;
 
-public class TaskRouter {
+public class TargetTaskRouter {
 	
-	private final Map<Integer, Connection> signaledPDUs;
+	
 	
 	/**
 	 * the SendingLock is used to synchronize every request for sending PDUs
@@ -49,48 +53,7 @@ public class TaskRouter {
 		
 	}
 	
-	private class ConnectionTaskRouter extends Thread{
-		
-		private final int signaledPDUs;
-		
-		private final Map<Integer, ? extends AbstractTask> activeTasks;
-		
-		private final Connection refConnection;
-		
-		public ConnectionTaskRouter(Connection refConnection){
-			activeTasks = new ConcurrentHashMap<Integer, AbstractTask>();
-			this.refConnection = refConnection;
-			//no active Tasks at Startup
-			signaledPDUs = 0;
-		}
-		
-		public void createTask(ProtocolDataUnit initialPDU){
-			
-		}
-		
-		public void addTask(Class<? extends AbstractTask> newTask){
-		
-		}
-		
-		public void getTask(int initiatorTaskTag){
-			
-		}
-		
-		public void signalPDU(){
-			
-		}
-		
-		public void signalImmediatePDU(){
-			
-		}
-		
-		public void run(){
-			
-		}
-		
-		
-		
-	}
+	
 	
 	
 }
