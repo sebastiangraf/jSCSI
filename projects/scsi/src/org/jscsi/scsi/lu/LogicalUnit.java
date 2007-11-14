@@ -1,8 +1,6 @@
-
 package org.jscsi.scsi.lu;
 
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.tasks.management.TaskServiceResponse;
 import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;

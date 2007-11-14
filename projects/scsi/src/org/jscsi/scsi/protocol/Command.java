@@ -24,7 +24,6 @@ import org.jscsi.scsi.transport.Nexus;
  */
 public class Command
 {
-   
    private static CDBFactory _factory = new CDBFactory();
    
    private Nexus nexus;

@@ -38,21 +38,24 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
          TaskSet taskSet, 
          TaskManager taskManager, 
          ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry)
+         InquiryDataRegistry inquiryDataRegistry,
+         TaskFactory taskFactory)
    {
       this.taskSet = taskSet;
       this.taskManager = taskManager;
       this.modePageRegistry = modePageRegistry;
       this.inquiryDataRegistry = inquiryDataRegistry;
+      this.taskFactory = taskFactory;
    }
-   
 
    public void enqueue(TargetTransportPort port, Command command)
    {
+      _logger.debug("enqueuing command: " + command + ", associate with TargetTransportPort: " + port);
       try
       {
          Task task = this.getTaskFactory().getInstance(port, command);
          assert task != null : "improper task factory implementation returned null task";
+         _logger.debug("successfully constructed task: " + task);
          this.taskSet.offer(task); // non-blocking, task set sends any errors to transport port
       }
       catch (IllegalRequestException e)
@@ -76,9 +79,6 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
       this.manager.interrupt();
    }
 
-   
-   
-   
    public TaskServiceResponse abortTask(Nexus nexus)
    {
       try
@@ -95,7 +95,6 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
          return TaskServiceResponse.SERVICE_DELIVERY_OR_TARGET_FAILURE;
       }
    }
-   
    
    public TaskServiceResponse abortTaskSet(Nexus nexus)
    {
@@ -146,6 +145,7 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
    /////////////////////////////////////////////////////////////////////////////
    // getters/setters
    
+
    public TaskSet getTaskSet()
    {
       return taskSet;
@@ -184,5 +184,11 @@ public abstract class DefaultLogicalUnit implements LogicalUnit
    public void setTaskFactory(TaskFactory taskFactory)
    {
       this.taskFactory = taskFactory;
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "<DefaultLogicalUnit task: " + this.taskFactory + ">";
    }
 }

@@ -1,6 +1,6 @@
 package org.jscsi.scsi.tasks.management;
+
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -96,9 +96,7 @@ public class DefaultTaskSet implements TaskSet
          lock.unlock();
       }
    }
-   
-   
-      
+
    /**
     * Used to encapsulate tasks. Notifies the task set when task execution is complete.
     * <p>
@@ -155,13 +153,11 @@ public class DefaultTaskSet implements TaskSet
             .append(")");
          return str.toString();
       }
-      
-      
-      
    }
    
-   
+
    /////////////////////////////////////////////////////////////////////////////////////////////////
+   //
    
    /*
     * @see TaskSet#remove(Nexus)
@@ -259,10 +255,10 @@ public class DefaultTaskSet implements TaskSet
       this.clear(nexus);
    }
 
-   /////////////////////////////////////////////////////////////////////////////////////////////////
    
-
-
+   /////////////////////////////////////////////////////////////////////////////////////////////////
+   //
+   
 
    /**
     * Attempts to insert the given task into the set. When an insertion failure is indicated
@@ -314,6 +310,7 @@ public class DefaultTaskSet implements TaskSet
                      command.getCommandReferenceNumber(), 
                      Status.TASK_SET_FULL, 
                      null);
+               _logger.warn("task set is full, rejecting task: " + task);
                return false;
             }
          }
@@ -391,10 +388,6 @@ public class DefaultTaskSet implements TaskSet
       }
    }
    
-   
-   
-   
-
    public boolean add(Task task)
    {
       if ( this.offer(task) )
@@ -406,7 +399,6 @@ public class DefaultTaskSet implements TaskSet
          throw new IllegalStateException("task set full");
       }
    }
-
 
    /**
     * Adds the specified element to this queue. This method deviates from the interface
@@ -423,7 +415,6 @@ public class DefaultTaskSet implements TaskSet
       this.offer(task);
    }
 
-   
    /*
     * Checks if the given task is currently blocked.
     */
@@ -460,9 +451,6 @@ public class DefaultTaskSet implements TaskSet
       {
          lock.unlock();
       }
-      
-      
-
    }
 
    /**
@@ -526,7 +514,6 @@ public class DefaultTaskSet implements TaskSet
       }
    }
 
-
    public Task take() throws InterruptedException
    {
       Task task = null;
@@ -537,7 +524,6 @@ public class DefaultTaskSet implements TaskSet
       }
       return task;
    }
-
 
    /**
     * Removes all available elements from this task set. Any tasks that are blocked will not
@@ -569,7 +555,6 @@ public class DefaultTaskSet implements TaskSet
       return count;
    }
 
-
    public int drainTo(Collection<? super Task> c, int maxElements)
    {
       if ( c == this )
@@ -597,19 +582,16 @@ public class DefaultTaskSet implements TaskSet
       return count;
    }
 
-
    public int remainingCapacity()
    {
       // we don't lock here because remainingCapacity() is not guarunteed to be correct
       return this.capacity;
    }
 
-
    public boolean retainAll(Collection<?> c)
    {
       throw new UnsupportedOperationException();
    }
-
 
    public Task element()
    {
@@ -618,7 +600,6 @@ public class DefaultTaskSet implements TaskSet
          throw new NoSuchElementException();
       return t;
    }
-
 
    public Task peek()
    {
@@ -633,7 +614,6 @@ public class DefaultTaskSet implements TaskSet
       }
    }
 
-
    public Task poll()
    {
       try
@@ -646,7 +626,6 @@ public class DefaultTaskSet implements TaskSet
       }
    }
 
-
    public Task remove()
    {
       Task t = this.poll();
@@ -654,7 +633,6 @@ public class DefaultTaskSet implements TaskSet
          throw new NoSuchElementException();
       return t;
    }
-
 
    public boolean addAll(Collection<? extends Task> c)
    {
@@ -675,7 +653,6 @@ public class DefaultTaskSet implements TaskSet
       }
    }
 
-
    public boolean contains(Object o)
    {
       lock.lock();
@@ -688,7 +665,6 @@ public class DefaultTaskSet implements TaskSet
          lock.unlock();
       }
    }
-
 
    public boolean containsAll(Collection<?> c)
    {
@@ -707,9 +683,7 @@ public class DefaultTaskSet implements TaskSet
       {
          lock.unlock();
       }
-
    }
-
 
    public boolean isEmpty()
    {
@@ -723,7 +697,6 @@ public class DefaultTaskSet implements TaskSet
          lock.unlock();
       }
    }
-
 
    public Iterator<Task> iterator()
    {
@@ -748,24 +721,20 @@ public class DefaultTaskSet implements TaskSet
       };
    }
 
-
    public boolean remove(Object o)
    {
       throw new UnsupportedOperationException();
    }
-
 
    public boolean removeAll(Collection<?> c)
    {
       throw new UnsupportedOperationException();
    }
 
-
    public int size()
    {
       return this.dormant.size();
    }
-
 
    public Object[] toArray()
    {
@@ -784,7 +753,6 @@ public class DefaultTaskSet implements TaskSet
          lock.unlock();
       }
    }
-
 
    @SuppressWarnings("unchecked")
    public <T> T[] toArray(T[] a)
@@ -811,15 +779,4 @@ public class DefaultTaskSet implements TaskSet
       
       return (T[])dst;
    }
-
-   
-   
-   
-   
-   
-   
-   
-   
 }
-
-

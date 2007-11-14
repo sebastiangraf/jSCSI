@@ -61,6 +61,4 @@ public interface TaskSet extends BlockingQueue<Task>
     * @throws IllegalArgumentException If an I_T_L nexus is not provided.
     */
    void abort(Nexus nexus) throws InterruptedException, IllegalArgumentException;
-   
-   
 }
