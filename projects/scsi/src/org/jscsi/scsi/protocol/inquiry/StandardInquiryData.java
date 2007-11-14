@@ -251,14 +251,14 @@ public class StandardInquiryData implements Encodable, Serializer
       this.QAS = ((data[56] >>> 1) & 1) == 1;
       this.IUS = (data[56] & 1) == 1;
 
-      this.versionDescriptor1 = data[58] << 8 | (data[59] & 0xFF);
-      this.versionDescriptor2 = data[60] << 8 | (data[61] & 0xFF);
-      this.versionDescriptor3 = data[62] << 8 | (data[63] & 0xFF);
-      this.versionDescriptor4 = data[64] << 8 | (data[65] & 0xFF);
-      this.versionDescriptor5 = data[66] << 8 | (data[67] & 0xFF);
-      this.versionDescriptor6 = data[68] << 8 | (data[69] & 0xFF);
-      this.versionDescriptor7 = data[70] << 8 | (data[71] & 0xFF);
-      this.versionDescriptor8 = data[72] << 8 | (data[73] & 0xFF);
+      this.versionDescriptor1 = (data[58] & 0xFF) << 8 | (data[59] & 0xFF);
+      this.versionDescriptor2 = (data[60] & 0xFF) << 8 | (data[61] & 0xFF);
+      this.versionDescriptor3 = (data[62] & 0xFF) << 8 | (data[63] & 0xFF);
+      this.versionDescriptor4 = (data[64] & 0xFF) << 8 | (data[65] & 0xFF);
+      this.versionDescriptor5 = (data[66] & 0xFF) << 8 | (data[67] & 0xFF);
+      this.versionDescriptor6 = (data[68] & 0xFF) << 8 | (data[69] & 0xFF);
+      this.versionDescriptor7 = (data[70] & 0xFF) << 8 | (data[71] & 0xFF);
+      this.versionDescriptor8 = (data[72] & 0xFF) << 8 | (data[73] & 0xFF);
 
       int vendorSpecific2Length = additionalLength - STD_LENGTH + 5;
       if (this.VS2 && vendorSpecific2Length > 0)
