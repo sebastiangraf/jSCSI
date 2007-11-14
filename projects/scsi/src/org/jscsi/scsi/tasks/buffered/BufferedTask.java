@@ -1,4 +1,3 @@
-
 package org.jscsi.scsi.tasks.buffered;
 
 import java.nio.ByteBuffer;
@@ -13,8 +12,8 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 
 public abstract class BufferedTask extends AbstractTask
 {
-   protected ByteBuffer file;
-   protected int blockLength;
+   protected ByteBuffer buffer;
+   protected int blockSize;
 
    public BufferedTask()
    {
@@ -30,8 +29,22 @@ public abstract class BufferedTask extends AbstractTask
          InquiryDataRegistry inquiryDataRegistry)
    {
       super(targetPort, command, modePageRegistry, inquiryDataRegistry);
-      this.file = file;
-      this.blockLength = blockLength;
+      this.buffer = file;
+      this.blockSize = blockLength;
+   }
+   
+   public BufferedTask(
+         String name,
+         ByteBuffer file,
+         int blockLength,
+         TargetTransportPort targetPort,
+         Command command,
+         ModePageRegistry modePageRegistry,
+         InquiryDataRegistry inquiryDataRegistry)
+   {
+      super(name, targetPort, command, modePageRegistry, inquiryDataRegistry);
+      this.buffer = file;
+      this.blockSize = blockLength;
    }
 
    /**
@@ -52,7 +65,7 @@ public abstract class BufferedTask extends AbstractTask
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException
    {
-      this.execute(file, blockLength, targetPort, command, modePageRegistry, inquiryDataRegistry);
+      this.execute(buffer, blockSize, targetPort, command, modePageRegistry, inquiryDataRegistry);
    }
 
    protected final Task load(
@@ -63,16 +76,16 @@ public abstract class BufferedTask extends AbstractTask
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
    {
-      this.file = file;
-      this.blockLength = blockLength;
+      this.buffer = file;
+      this.blockSize = blockLength;
       super.load(targetPort, command, modePageRegistry, inquiryDataRegistry);
       return this;
    }
 
    protected final long getFileCapacity()
    {
-      if (file.limit() % blockLength != 0)
+      if (buffer.limit() % blockSize != 0)
          throw new RuntimeException("invalid file length; not mulitple of block size");
-      return file.limit() / blockLength;
+      return buffer.limit() / blockSize;
    }
 }

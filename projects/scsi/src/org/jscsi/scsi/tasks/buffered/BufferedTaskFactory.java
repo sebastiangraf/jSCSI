@@ -107,4 +107,9 @@ public class BufferedTaskFactory implements TaskFactory
          throw new InvalidCommandOperationCodeException();
       }
    }
+   
+   public String toString()
+   {
+      return "<BufferedTask block-size: " + this.blockLength + ", backing-store: ByteBuffer>";
+   }
 }

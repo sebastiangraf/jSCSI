@@ -3,9 +3,6 @@ package org.jscsi.scsi.target;
 
 import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.mode.ModePageRegistry;
-import org.jscsi.scsi.protocol.mode.StaticModePageRegistry;
-import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.TaskRouter;
 import org.jscsi.scsi.tasks.management.DefaultTaskRouter;
 import org.jscsi.scsi.tasks.management.TaskManagementFunction;
@@ -48,8 +45,4 @@ public class DefaultTarget extends AbstractTarget
    {
       return this.taskRouter.removeLogicalUnit(lun);
    }
-   
-   
-   
-
 }
