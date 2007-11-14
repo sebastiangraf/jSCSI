@@ -25,42 +25,33 @@ public class ProgressIndication implements SenseKeySpecificField
       return progressIndication;
    }
 
-   public ProgressIndication decode(ByteBuffer buffer) throws IOException
-   {
-      byte[] encodedData = new byte[3];
-      
-      buffer.get(encodedData);
-      
-      int progressIndication = encodedData[2]; // 8 LSBs
-      progressIndication |= (encodedData[1] << 8);
-      
-      return new ProgressIndication(progressIndication);
-   }
-
    public void decode(byte[] header, ByteBuffer buffer) throws IOException
    {
-      ProgressIndication progressIndication = decode(buffer);
-      this.progressIndication = progressIndication.getProgressIndication();
+      decode(buffer);
    }
 
    public byte[] encode()
    {
       byte[] encodedData = new byte[3];
-      
+
       encodedData[0] = (byte) 0x80;
-      
-      encodedData[1] = (byte) ((this.progressIndication >> 8) & 0xFF);
-      
+      encodedData[1] = (byte) ((this.progressIndication >>> 8) & 0xFF);
       encodedData[2] = (byte) (this.progressIndication & 0xFF);
-      
+
       return encodedData;
    }
 
+   @SuppressWarnings("unchecked")
+   public ProgressIndication decode(ByteBuffer buffer) throws IOException
+   {
+      byte[] encodedData = new byte[3];
+      buffer.get(encodedData);
 
-   
-   
+      this.progressIndication = (encodedData[2] & 0xFF); // 8 LSBs
+      this.progressIndication |= ((encodedData[1] & 0xFF) << 8);
 
-
+      return this;
+   }
 }
 
 
