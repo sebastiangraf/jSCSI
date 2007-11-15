@@ -58,12 +58,12 @@ public abstract class ModePage implements Encodable
       this.parametersSavable = parametersSavable;
    }
 
-   public boolean getParametersSavable()
+   public boolean isParametersSavable()
    {
       return this.parametersSavable;
    }
 
-   public boolean getSubPageFormat()
+   public boolean isSubPageFormat()
    {
       return this.subPageFormat;
    }
@@ -110,11 +110,11 @@ public abstract class ModePage implements Encodable
       {
          int b0 = 0;
 
-         if (getParametersSavable())
+         if (isParametersSavable())
          {
             b0 |= 0x80;
          }
-         if (getSubPageFormat())
+         if (isSubPageFormat())
          {
             b0 |= 0x40;
          }
@@ -123,7 +123,7 @@ public abstract class ModePage implements Encodable
 
          dataOut.writeByte(b0);
 
-         if (getSubPageFormat())
+         if (isSubPageFormat())
          {
             dataOut.writeByte(getSubPageCode());
             dataOut.writeShort(getPageLength());

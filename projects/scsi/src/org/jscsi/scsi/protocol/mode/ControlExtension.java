@@ -32,8 +32,8 @@ public class ControlExtension extends ModePage
          int b6 = inputStream.readUnsignedByte();
 
          // byte 5
-         this.TCMOS = ((b5 >>> 3) & 1) == 1;
-         this.SCSIP = ((b5 >>> 2) & 1) == 1;
+         this.TCMOS = ((b5 >>> 2) & 1) == 1;
+         this.SCSIP = ((b5 >>> 1) & 1) == 1;
          this.IALUAE = (b5 & 1) == 1;
 
          // byte 6
