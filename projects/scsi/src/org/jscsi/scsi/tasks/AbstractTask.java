@@ -59,6 +59,9 @@ public abstract class AbstractTask implements Task
    {
    }
 
+   /**
+    * @deprecated
+    */
    protected AbstractTask(
          TargetTransportPort targetPort,
          Command command,
@@ -195,6 +198,7 @@ public abstract class AbstractTask implements Task
       // or up to the transfer length in input data.
       ByteBuffer data = ByteBuffer.allocate((int) transferLength);
       data.put(input, 0, (int) Math.min(transferLength, input.length));
+      data.rewind();
 
       if (Thread.interrupted())
          throw new InterruptedException();
@@ -244,42 +248,6 @@ public abstract class AbstractTask implements Task
    public String toString()
    {
       return "<BufferedTask name: " + this.getName() + ", command: " + this.command
-      + ", target-port: " + this.targetTransportPort;
-   }
-
-
-   public ModePageRegistry getModePageRegistry()
-   {
-      return this.modePageRegistry;
-   }
-
-
-   public void setModePageRegistry(ModePageRegistry modePageRegistry)
-   {
-      this.modePageRegistry = modePageRegistry;
-   }
-
-
-   public InquiryDataRegistry getInquiryDataRegistry()
-   {
-      return this.inquiryDataRegistry;
-   }
-
-
-   public void setInquiryDataRegistry(InquiryDataRegistry inquiryDataRegistry)
-   {
-      this.inquiryDataRegistry = inquiryDataRegistry;
-   }
-
-
-   public void setTargetTransportPort(TargetTransportPort targetTransportPort)
-   {
-      this.targetTransportPort = targetTransportPort;
-   }
-
-
-   public void setCommand(Command command)
-   {
-      this.command = command;
+      + ", target-port: " + this.targetTransportPort + ">";
    }
 }

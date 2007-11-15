@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.ModeSense10;
 import org.jscsi.scsi.protocol.cdb.ModeSense6;
@@ -17,11 +18,13 @@ import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.protocol.sense.exceptions.SynchronousDataTransferErrorException;
 import org.jscsi.scsi.tasks.AbstractTask;
 import org.jscsi.scsi.tasks.Status;
+import org.jscsi.scsi.tasks.management.DefaultTaskSet;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 // TODO: Describe class or interface
 public class ModeSenseTask extends AbstractTask
 {
+   private static Logger _logger = Logger.getLogger(ModeSenseTask.class);
 
    public ModeSenseTask(
          TargetTransportPort targetPort,
@@ -29,7 +32,7 @@ public class ModeSenseTask extends AbstractTask
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
    {
-      super(targetPort, command, modePageRegistry, inquiryDataRegistry);
+      super("ModeSenseTask", targetPort, command, modePageRegistry, inquiryDataRegistry);
    }
 
 
@@ -68,6 +71,7 @@ public class ModeSenseTask extends AbstractTask
          
          if ( cdb.getOperationCode() == ModeSense6.OPERATION_CODE )
          {
+            _logger.trace("Assembling return data for MODE SENSE (6)");
             out.writeByte(0);  // MODE DATA LENGTH placeholder, will be replaced later
             out.writeByte(0x00); // MEDIUM TYPE set to 0x00 according to SBC-2
             out.writeByte(devspec); // DEVICE-SPECIFIC PARAMETER
@@ -75,6 +79,7 @@ public class ModeSenseTask extends AbstractTask
          }
          else if ( cdb.getOperationCode() == ModeSense10.OPERATION_CODE )
          {
+            _logger.trace("Assembling return data for MODE SENSE (10)");
             out.writeShort(0); // MODE DATA LENGTH placeholder, will be replaced later
             out.writeByte(0x00); // MEDIUM TYPE set to 0x00 according to SBC-2
             out.writeByte(devspec); // DEVICE-SPECIFIC PARAMETER
@@ -107,8 +112,11 @@ public class ModeSenseTask extends AbstractTask
          
          if ( cdb.getPageCode() == 0x3F )
          {
+            _logger.trace("Initiator requested all mode pages");
             for ( ModePage page : modePageRegistry.get(cdb.getSubPageCode() == 0xFF) )
             {
+               _logger.trace("Encoding mode page: PAGE_CODE=" + page.getPageCode() +
+                     ", SUB_PAGE_CODE=" + page.getSubPageCode());
                out.write(page.encode());
             }
          }
@@ -120,8 +128,11 @@ public class ModeSenseTask extends AbstractTask
          {
             if ( cdb.getSubPageCode() == 0xFF )
             {
+               _logger.trace("Initiator requested all pages with PAGE_CODE=" + cdb.getPageCode());
                for ( ModePage page : modePageRegistry.get((byte)cdb.getPageCode()) )
                {
+                  _logger.trace("Encoding mode page: PAGE_CODE=" + page.getPageCode() +
+                        ", SUB_PAGE_CODE=" + page.getSubPageCode());
                   out.write(page.encode());
                }
             }
@@ -129,10 +140,14 @@ public class ModeSenseTask extends AbstractTask
             {
                if ( ! modePageRegistry.contains((byte)cdb.getPageCode(), cdb.getSubPageCode()) )
                {
+                  _logger.trace("Requested mode page does not exist: " + cdb.getPageCode() +
+                     ", SUB_PAGE_CODE=" + cdb.getSubPageCode());
                   throw new InvalidFieldInCDBException(true, 3);
                }
                else
                {
+                  _logger.trace("Initiator requested mode page: " + cdb.getPageCode() +
+                        ", SUB_PAGE_CODE=" + cdb.getSubPageCode());
                   out.write(
                      modePageRegistry.get((byte)cdb.getPageCode(), cdb.getSubPageCode()).encode());
                }

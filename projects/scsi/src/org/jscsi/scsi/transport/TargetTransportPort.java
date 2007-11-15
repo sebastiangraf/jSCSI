@@ -77,7 +77,8 @@ public interface TargetTransportPort
     * 
     * @param nexus Generally either an I_T_L nexus or an I_T_L_Q nexus.
     * @param commandReferenceNumber The command reference number associated with the nexus.
-    * @param input The data input buffer which data will be read from.
+    * @param input The data input buffer which data will be read from. The buffer must be set
+    *    to the correct position before this method is called.
     * @return True if all expected data has been written; False if no data or partial data has
     *    been written.
     */

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.CDB;
+import org.jscsi.scsi.protocol.cdb.Inquiry;
 import org.jscsi.scsi.protocol.cdb.ModeSense10;
 import org.jscsi.scsi.protocol.cdb.ModeSense6;
 import org.jscsi.scsi.protocol.cdb.Read10;
@@ -26,6 +27,7 @@ import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.protocol.sense.exceptions.InvalidCommandOperationCodeException;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
+import org.jscsi.scsi.tasks.lu.InquiryTask;
 import org.jscsi.scsi.tasks.lu.ModeSenseTask;
 import org.jscsi.scsi.tasks.lu.TestUnitReadyTask;
 import org.jscsi.scsi.transport.TargetTransportPort;
@@ -78,6 +80,8 @@ public class BufferedTaskFactory implements TaskFactory
             return new ModeSenseTask(port, command, modePageRegistry, inquiryDataRegistry);
          case TestUnitReady.OPERATION_CODE:
             return new TestUnitReadyTask(port, command, modePageRegistry, inquiryDataRegistry);
+         case Inquiry.OPERATION_CODE:
+            return new InquiryTask(port, command, modePageRegistry, inquiryDataRegistry);
       }
       
       
