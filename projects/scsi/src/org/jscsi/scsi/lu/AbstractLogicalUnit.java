@@ -70,7 +70,7 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
 
    public void start()
    {
-      this.manager = new Thread(this.taskManager);
+      this.manager = new Thread(this.taskManager, "TaskManager");
       this.manager.start();
    }
 
