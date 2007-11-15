@@ -18,7 +18,7 @@ public class BufferedRequestSenseTaskTest extends BufferTestTask
    {
       _logger.debug("********** REQUEST SENSE TEST **********");
       CDB cdb = new RequestSense(false, 252);
-      this.submitCDB(cdb, cmdRef);
+      this.submitMemoryTask(cdb, cmdRef);
       // TODO: Verify Sense Return Value
       cmdRef++;
    }

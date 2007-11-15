@@ -59,6 +59,12 @@ public class BufferTestTask implements TargetTransportPort
       
       // initialize the buffers
       memBuf = ByteBuffer.allocate(STORE_CAPACITY);
+      memBuf.put(new byte[STORE_CAPACITY]); // Zero out contents
+      
+      // Attempt to delete file if it is there
+      File deleteFile = new File(STORE_FILE_PATH);
+      deleteFile.delete();
+      
       file = new RandomAccessFile(STORE_FILE_PATH, "rw");
       fileBuf = file.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, STORE_CAPACITY);
 
@@ -106,13 +112,11 @@ public class BufferTestTask implements TargetTransportPort
    {
       _logger.debug("servicing writeData request");
       
-      //ByteBuffer copy = ByteBuffer.allocate(input.limit());
-      //copy.put(input);
+      ByteBuffer copy = ByteBuffer.allocate(input.limit());
+      copy.put(input);
       
-      //this.writeDataMap.put(commandReferenceNumber, copy);
-      
-      this.writeDataMap.put(commandReferenceNumber, input);
-      
+      this.writeDataMap.put(commandReferenceNumber, copy);
+
       return true;
    }
    
@@ -155,7 +159,7 @@ public class BufferTestTask implements TargetTransportPort
       return buffData;
    }
    
-   public ByteBuffer createWriteData(int size, long cmdRef)
+   public ByteBuffer writeDeviceData(int offset, int size, long cmdRef)
    {
       byte[] data = new byte[size];
       this.rnd.nextBytes(data);
@@ -163,7 +167,14 @@ public class BufferTestTask implements TargetTransportPort
       ByteBuffer buffData = ByteBuffer.allocate(size);
       buffData.put(data);
       
-      this.writeDataMap.put(cmdRef, buffData);
+      // Write to memory buffer
+      memBuf.position(offset);
+      memBuf.put(data);
+      
+      // Write to file buffer
+      fileBuf.position(offset);
+      fileBuf.put(data);
+      
       return buffData;
    }
    
@@ -172,9 +183,20 @@ public class BufferTestTask implements TargetTransportPort
       this.readDataMap.remove(cmdRef);
    }
    
-   public void purgeWriteData(long cmdRef)
+   public void purgeDeviceData()
    {
-      this.writeDataMap.remove(cmdRef);
+      byte[] zeros = new byte[STORE_CAPACITY];
+      
+      ByteBuffer buffData = ByteBuffer.allocate(zeros.length);
+      buffData.put(zeros);
+      
+      // Write to memory buffer
+      memBuf.rewind();
+      memBuf.put(zeros);
+      
+      // Write to file buffer
+      fileBuf.rewind();
+      fileBuf.put(zeros);
    }
    
    public ByteBuffer getReadData(long cmdRef)
@@ -187,7 +209,7 @@ public class BufferTestTask implements TargetTransportPort
       return this.writeDataMap.remove(cmdRef);
    }
    
-   public void submitCDB(CDB cdb, int cmdRef)
+   public void submitMemoryTask(CDB cdb, int cmdRef)
    {
       Command cmd = new Command(new Nexus("initiator", "target", 0, 0), cdb, TaskAttribute.ORDERED, cmdRef, 0);
 
@@ -196,9 +218,25 @@ public class BufferTestTask implements TargetTransportPort
          _logger.debug("running memory buffer task");
          Task task = this.getMemoryTask(this, cmd);
          task.run();
-         
+      }
+      catch (IllegalRequestException e)
+      {
+         Assert.fail("illegal request");
+      }
+      
+   }
+   
+   public void submitFileTask(CDB cdb, int cmdRef)
+   {
+      Command cmd = new Command(new Nexus("initiator", "target", 0, 0), cdb, TaskAttribute.ORDERED, cmdRef, 0);
+
+      try
+      {
+         Task task = this.getFileTask(this, cmd);
+
          _logger.debug("running file buffer task");
          task = this.getFileTask(this, cmd);
+
          task.run();
       }
       catch (IllegalRequestException e)
@@ -221,4 +259,23 @@ public class BufferTestTask implements TargetTransportPort
    {
       return fileFactory.getInstance(port, command);
    }
+   
+   /////////////////////////////////////////////////////////////////////////////
+   
+   public ByteBuffer getMemoryBuffer()
+   {
+      ByteBuffer copy = ByteBuffer.allocate(memBuf.limit());
+      copy.put(memBuf);
+      
+      return copy;
+   }
+   
+   public ByteBuffer getFileBuffer()
+   {
+      ByteBuffer copy = ByteBuffer.allocate(fileBuf.limit());
+      copy.put(fileBuf);
+      
+      return copy;
+   }
+   
 }
