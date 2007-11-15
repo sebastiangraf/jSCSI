@@ -2,6 +2,7 @@ package org.jscsi.target.task;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
@@ -31,7 +32,7 @@ public class TaskDescriptorLoader {
 
 	private static final String TASK_DESCRIPTOR = "TaskDescriptor";
 
-	private final Map<Byte, TaskDescriptor> availableTaskDescriptors;
+	private final Map<Byte, Set<TaskDescriptor>> availableTaskDescriptors;
 
 	private final File taskDescritptorDirectory;
 
@@ -80,9 +81,9 @@ public class TaskDescriptorLoader {
 	/**
 	 * Loads every TaskDescriptor the specified directory contains.
 	 */
-	public static Map<Byte, TaskDescriptor> loadAvailableTasks(
+	public static Map<Byte, Set<TaskDescriptor>> loadAvailableTasks(
 			File taskDirectory) {
-		Map<Byte, TaskDescriptor> availableTasks = new ConcurrentHashMap<Byte, TaskDescriptor>();
+		Map<Byte, Set<TaskDescriptor>> availableTasks = new ConcurrentHashMap<Byte, Set<TaskDescriptor>>();
 		String className = null;
 		Object loadedTaskDescriptor;
 		boolean test;
@@ -104,7 +105,13 @@ public class TaskDescriptorLoader {
 					if (implementedInterfaces.getSimpleName().equals(
 							TASK_DESCRIPTOR)) {
 						byte opcode = ((TaskDescriptor) loadedTaskDescriptor)
-								.getSuppotedOpcode().value();
+								.getSupportedOpcode().value();
+						if(availableTasks.containsKey(opcode)){
+							TaskDescriptor equalOpcode = availableTasks.get(opcode);
+							
+						} else{
+							test = true;
+						}
 						// add to availableTaskDescriptors, if not already
 						// existing
 						if (!availableTasks.containsKey(opcode)) {
