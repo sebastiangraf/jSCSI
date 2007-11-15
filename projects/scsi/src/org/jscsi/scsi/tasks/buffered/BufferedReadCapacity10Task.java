@@ -41,6 +41,8 @@ public class BufferedReadCapacity10Task extends BufferedTask
             .put(capacity, 4, 4)
             .putInt(blockLength);
       
+      data.rewind();
+      
       this.writeData(data);
       this.writeResponse(Status.GOOD, null);
    }
