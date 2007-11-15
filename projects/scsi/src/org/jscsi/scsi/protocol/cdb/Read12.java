@@ -99,4 +99,10 @@ public class Read12 extends Read10
    {
       return 12;
    }
+   
+   @Override
+   public String toString()
+   {
+      return "<Read12>";
+   }
 }

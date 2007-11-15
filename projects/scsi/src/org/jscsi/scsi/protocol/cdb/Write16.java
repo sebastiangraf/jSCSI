@@ -120,4 +120,10 @@ public class Write16 extends Write10
    {
       return 16;
    }
+   
+   @Override
+   public String toString()
+   {
+      return "<Write16>";
+   }
 }
