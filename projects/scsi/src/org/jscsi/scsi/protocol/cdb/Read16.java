@@ -119,4 +119,10 @@ public class Read16 extends Read10
    {
       return 16;
    }
+   
+   @Override
+   public String toString()
+   {
+      return "<Read16>";
+   }
 }

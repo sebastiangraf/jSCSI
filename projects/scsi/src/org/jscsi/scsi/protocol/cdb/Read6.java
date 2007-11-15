@@ -88,4 +88,10 @@ public class Read6 extends AbstractTransferCDB
    {
       return 6;
    }
+   
+   @Override
+   public String toString()
+   {
+      return "<Read6>";
+   }
 }

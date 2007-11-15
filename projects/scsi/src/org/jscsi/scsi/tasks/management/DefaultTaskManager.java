@@ -11,24 +11,22 @@ public class DefaultTaskManager implements TaskManager
 {   
    private static Logger _logger = Logger.getLogger(DefaultTaskManager.class);
    
-   
-   private ExecutorService _executor;
+   private ExecutorService executor;
    private final AtomicBoolean running = new AtomicBoolean(false);
    
    private TaskSet taskSet;
    
    private Thread currentThread;
    
-
+   
    /////////////////////////////////////////////////////////////////////////////
    // constructor(s)
    
    public DefaultTaskManager(int numThreads, TaskSet taskSet)
    {
-      _executor = Executors.newFixedThreadPool(numThreads);
+      executor = Executors.newFixedThreadPool(numThreads);
       this.taskSet = taskSet;
    }
-   
    
    
    /////////////////////////////////////////////////////////////////////////////
@@ -46,7 +44,7 @@ public class DefaultTaskManager implements TaskManager
          {
             _logger.debug("Waiting for next task...");
             nextTask = this.taskSet.take();
-            this._executor.submit(nextTask);
+            this.executor.submit(nextTask);
             _logger.debug("TaskManager executed task: " + nextTask);
          }
          catch (InterruptedException e)
@@ -60,7 +58,7 @@ public class DefaultTaskManager implements TaskManager
       //  - clear task set
       //  - wait for any outstanding tasks to finish executing
       this.taskSet.clear();
-      _executor.shutdown();
+      executor.shutdown();
    }
    
    public void shutdown() throws InterruptedException
@@ -72,6 +70,4 @@ public class DefaultTaskManager implements TaskManager
          this.currentThread.join();
       }
    }
-   
-   
 }

@@ -101,9 +101,8 @@ public class Command
    @Override
    public String toString()
    {
-      return "<Command [nexus: " + this.nexus + "] [CDB: "
-         + this.commandDescriptorBlock + "] [TaskAttribute: " + this.taskAttribute
-         + "] [cmdRef: " + this.commandReferenceNumber + "] [taskPriority: "
-         + this.taskPriority;
+      return "<Command nexus: " + this.nexus + " CDB: "
+         + this.commandDescriptorBlock + " TaskAttribute: " + this.taskAttribute
+         + " [cmdRef: " + this.commandReferenceNumber + ">";
    }
 }

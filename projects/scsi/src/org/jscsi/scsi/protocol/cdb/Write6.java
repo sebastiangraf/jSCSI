@@ -94,4 +94,10 @@ public class Write6 extends AbstractTransferCDB
    {
       return 6;
    }
+   
+   @Override
+   public String toString()
+   {
+      return "<Write6>";
+   }
 }

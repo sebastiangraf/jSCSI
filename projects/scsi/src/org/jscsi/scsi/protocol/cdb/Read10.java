@@ -190,4 +190,10 @@ public class Read10 extends AbstractTransferCDB
    {
       this.groupNumber = groupNumber;
    }
+   
+   @Override
+   public String toString()
+   {
+      return "<Read10>";
+   }
 }

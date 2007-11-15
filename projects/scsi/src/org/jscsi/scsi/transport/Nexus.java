@@ -165,23 +165,22 @@ public class Nexus
    public String toString()
    {
       String output = "<I_T nexus";
-      // I_T nexus
       if (this.logicalUnitNumber == -1 || this.taskTag == -1)
       {
-         output += " [initiatorPort: " + this.initiatorPortIdentifier
-            + "] [targetPort: " + this.targetPortIdentifier + "]";
+         output += " initiatorPort: " + this.initiatorPortIdentifier
+            + " targetPort: " + this.targetPortIdentifier;
       }
       else if (this.taskTag == -1)
       {
-         output += " [initiatorPort: " + this.initiatorPortIdentifier
-               + "] [targetPort: " + this.targetPortIdentifier + "] [LUN: "
-               + this.logicalUnitNumber + "]";
+         output += " initiatorPort: " + this.initiatorPortIdentifier
+               + " targetPort: " + this.targetPortIdentifier + " LUN: "
+               + this.logicalUnitNumber;
       }
       else
       {
-         output += " [initiatorPort: " + this.initiatorPortIdentifier
-               + "] [targetPort: " + this.targetPortIdentifier + "] [LUN: "
-               + this.logicalUnitNumber + "] [taskTag: " + this.taskTag + "]";
+         output += " initiatorPort: " + this.initiatorPortIdentifier
+               + " targetPort: " + this.targetPortIdentifier + " LUN: "
+               + this.logicalUnitNumber + " taskTag: " + this.taskTag;
       }
       output += ">";
       return output;
