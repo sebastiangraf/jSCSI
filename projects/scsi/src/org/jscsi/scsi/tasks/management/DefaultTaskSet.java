@@ -133,7 +133,7 @@ public class DefaultTaskSet implements TaskSet
 
       public void run()
       {
-         _logger.debug("Task now running: " + this.task);
+         _logger.debug("Command now running: " + this.task.getCommand());
          this.task.run();
          _logger.debug("Task finished: " + this.task);
          long taskTag = this.task.getCommand().getNexus().getTaskTag();
@@ -285,6 +285,8 @@ public class DefaultTaskSet implements TaskSet
     */
    public boolean offer(Task task, long timeout, TimeUnit unit) throws InterruptedException
    {
+      _logger.debug(" #### offering to taskset command: " + task.getCommand());
+
       if (task == null)
          throw new NullPointerException("task set does not take null objects");
 
@@ -329,6 +331,7 @@ public class DefaultTaskSet implements TaskSet
             task.getTargetTransportPort().writeResponse(command.getNexus(),
                   command.getCommandReferenceNumber(), Status.CHECK_CONDITION,
                   ByteBuffer.wrap((new OverlappedCommandsAttemptedException(true)).encode()));
+            _logger.warn("command not accepted due to preexisting untagged task");
             return false;
          }
 
@@ -352,6 +355,8 @@ public class DefaultTaskSet implements TaskSet
          this.capacity--;
          this.notEmpty.signalAll();
          this.unblocked.signalAll();
+         
+         _logger.debug(" $$$ offered successfully command: " + task.getCommand());
          return true;
 
       }
@@ -520,7 +525,7 @@ public class DefaultTaskSet implements TaskSet
       {
          _logger.debug("Polling for next task; timeout in 10 seconds");
          task = this.poll(10, TimeUnit.SECONDS);
-         _logger.debug("returning for execution task: " + task);
+         _logger.debug("returning command for execution: " + task.getCommand());
       }
       return task;
    }

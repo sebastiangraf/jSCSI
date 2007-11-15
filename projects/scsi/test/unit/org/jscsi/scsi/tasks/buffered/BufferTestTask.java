@@ -193,9 +193,11 @@ public class BufferTestTask implements TargetTransportPort
 
       try
       {
+         _logger.debug("running memory buffer task");
          Task task = this.getMemoryTask(this, cmd);
          task.run();
          
+         _logger.debug("running file buffer task");
          task = this.getFileTask(this, cmd);
          task.run();
       }
