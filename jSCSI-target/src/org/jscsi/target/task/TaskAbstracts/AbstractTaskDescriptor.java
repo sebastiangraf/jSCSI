@@ -135,28 +135,80 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 	
 	
 	/**
-	 * Compares the TaskDescriptor
+	 * Compares one TaskDescriptor to another. Returns true
+	 * if a Session could be in a state, both descriptors can be used.
+	 * 
 	 * @param taskDescriptor
 	 * @return true if both TaskDescripors describe the same Task
 	 */
 	public boolean compare(AbstractTaskDescriptor taskDescriptor){
-		if(taskDescriptor.opcode.compareTo(opcode) != 0){
-			return false;
-		}
 		
-		if(!taskDescriptor.allowedSessionPhases.containsAll(allowedSessionPhases)){
-			return false;
-		}
-		if(!taskDescriptor.allowedSessionTypes.containsAll(allowedSessionTypes)){
-			return false;
-		}
-		return true;
+		if(taskDescriptor.opcode.compareTo(opcode) == 0){
+			//if both descriptors support the same Opcode,
+			//there must be a different supported phase or type, else
+			//they both can support an incoming PDU at a specific state the Session can have
+			for(Phase phase : taskDescriptor.allowedSessionPhases){
+				if(allowedSessionPhases.contains(phase)){
+					return true;
+				}
+			}
+			for(SessionType type : taskDescriptor.allowedSessionTypes){
+				if(allowedSessionTypes.contains(type)){
+					return true;
+				}
+			}
+		}	
+		return false;
 	}
 
-	public OperationCode getSuppotedOpcode() {
+	public OperationCode getSupportedOpcode() {
 		// TODO Auto-generated method stub
 		return opcode;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((allowedSessionPhases == null) ? 0 : allowedSessionPhases
+						.hashCode());
+		result = prime
+				* result
+				+ ((allowedSessionTypes == null) ? 0 : allowedSessionTypes
+						.hashCode());
+		result = prime * result + ((opcode == null) ? 0 : opcode.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final AbstractTaskDescriptor other = (AbstractTaskDescriptor) obj;
+		if (allowedSessionPhases == null) {
+			if (other.allowedSessionPhases != null)
+				return false;
+		} else if (!allowedSessionPhases.equals(other.allowedSessionPhases))
+			return false;
+		if (allowedSessionTypes == null) {
+			if (other.allowedSessionTypes != null)
+				return false;
+		} else if (!allowedSessionTypes.equals(other.allowedSessionTypes))
+			return false;
+		if (opcode == null) {
+			if (other.opcode != null)
+				return false;
+		} else if (!opcode.equals(other.opcode))
+			return false;
+		return true;
+	}
+
 	
 	
 }

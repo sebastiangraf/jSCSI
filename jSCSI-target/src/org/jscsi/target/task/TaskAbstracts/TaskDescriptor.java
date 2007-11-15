@@ -11,7 +11,7 @@ public interface TaskDescriptor {
 	
 	public Task createTask() throws OperationException;
 	
-	public OperationCode getSuppotedOpcode();
+	public OperationCode getSupportedOpcode();
 	
 	public Class<? extends AbstractTask> getReferencedTask();
 	
