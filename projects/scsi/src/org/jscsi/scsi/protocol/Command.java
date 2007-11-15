@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.protocol;
 
 import java.io.IOException;
@@ -25,13 +26,13 @@ import org.jscsi.scsi.transport.Nexus;
 public class Command
 {
    private static CDBFactory _factory = new CDBFactory();
-   
+
    private Nexus nexus;
    private CDB commandDescriptorBlock;
    private TaskAttribute taskAttribute;
    private long commandReferenceNumber;
    private int taskPriority;
-   
+
    /**
     * Creates a Command object. The Command Descriptor Block is decoded using
     * {@link CommandDescriptorBlockFactory#decode(ByteBuffer).
@@ -44,12 +45,12 @@ public class Command
     * @throws BufferUnderflowException If the 
     * @throws IOException
     */
-   public Command(Nexus nexus,
-                  ByteBuffer commandDescriptorBlock,
-                  TaskAttribute taskAttribute,
-                  long commandReferenceNumber,
-                  int taskPriority)
-   throws BufferUnderflowException, IOException
+   public Command(
+         Nexus nexus,
+         ByteBuffer commandDescriptorBlock,
+         TaskAttribute taskAttribute,
+         long commandReferenceNumber,
+         int taskPriority) throws BufferUnderflowException, IOException
    {
       super();
       this.nexus = nexus;
@@ -59,11 +60,12 @@ public class Command
       this.taskPriority = taskPriority;
    }
 
-   public Command(Nexus nexus, 
-                  CDB commandDescriptorBlock,
-                  TaskAttribute taskAttribute,
-                  long commandReferenceNumber,
-                  int taskPriority)
+   public Command(
+         Nexus nexus,
+         CDB commandDescriptorBlock,
+         TaskAttribute taskAttribute,
+         long commandReferenceNumber,
+         int taskPriority)
    {
       super();
       this.nexus = nexus;
@@ -97,12 +99,12 @@ public class Command
    {
       return taskPriority;
    }
-   
+
    @Override
    public String toString()
    {
-      return "<Command nexus: " + this.nexus + " CDB: "
-         + this.commandDescriptorBlock + " TaskAttribute: " + this.taskAttribute
-         + " [cmdRef: " + this.commandReferenceNumber + ">";
+      return "<Command CDB: " + this.commandDescriptorBlock + " nexus: " + this.nexus
+            + " TaskAttribute: " + this.taskAttribute + " cmdRef: " + this.commandReferenceNumber
+            + ">";
    }
 }

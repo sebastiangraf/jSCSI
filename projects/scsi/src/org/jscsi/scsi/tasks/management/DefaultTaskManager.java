@@ -45,7 +45,7 @@ public class DefaultTaskManager implements TaskManager
             _logger.debug("Waiting for next task...");
             nextTask = this.taskSet.take();
             this.executor.submit(nextTask);
-            _logger.debug("TaskManager executed task: " + nextTask);
+            _logger.debug("submitted for execution task: " + nextTask);
          }
          catch (InterruptedException e)
          {
