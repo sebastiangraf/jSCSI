@@ -23,7 +23,7 @@ public class BufferedReadCapacityTaskTest extends BufferTestTask
    {
       _logger.debug("********** READ CAPACITY 10 **********");
       CDB cdb = new ReadCapacity10(false, 0);
-      this.submitCDB(cdb, cmdRef);
+      this.submitMemoryTask(cdb, cmdRef);
       verifyInputBufferCapacity10();
       cmdRef++;
    }
@@ -33,7 +33,7 @@ public class BufferedReadCapacityTaskTest extends BufferTestTask
    {
       _logger.debug("********** READ CAPACITY 16 **********");
       CDB cdb = new ReadCapacity16(32, false, 0);
-      this.submitCDB(cdb, cmdRef);
+      this.submitMemoryTask(cdb, cmdRef);
       verifyInputBufferCapacity16();
       cmdRef++;
    }
@@ -57,6 +57,9 @@ public class BufferedReadCapacityTaskTest extends BufferTestTask
       assertEquals(returnedBlockLength, STORE_BLOCK_SIZE);
    }
    
+   /**
+    * Whitebox test of ReadCapacity16
+    */
    public void verifyInputBufferCapacity16()
    {
       final long expectedNumberOfBlocks = STORE_CAPACITY / STORE_BLOCK_SIZE;
