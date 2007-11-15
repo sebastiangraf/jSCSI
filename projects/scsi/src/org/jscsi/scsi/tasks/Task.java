@@ -46,8 +46,4 @@ public interface Task extends Runnable
     * uses this transport port to transfer data and write response data to.
     */
    public TargetTransportPort getTargetTransportPort();
-   
-   public ModePageRegistry getModePageRegistry();
-   
-   public InquiryDataRegistry getInquiryDataRegistry();
 }

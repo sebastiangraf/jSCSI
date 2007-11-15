@@ -20,6 +20,9 @@ public abstract class BufferedTask extends AbstractTask
       super();
    }
 
+   /**
+    * @deprecated
+    */
    public BufferedTask(
          ByteBuffer file,
          int blockLength,

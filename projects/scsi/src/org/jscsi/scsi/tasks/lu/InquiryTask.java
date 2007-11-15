@@ -51,6 +51,15 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 // TODO: Describe class or interface
 public class InquiryTask extends AbstractTask
 {
+   public InquiryTask(
+         TargetTransportPort targetPort,
+         Command command,
+         ModePageRegistry modePageRegistry,
+         InquiryDataRegistry inquiryDataRegistry)
+   {
+      super("InquiryTask", targetPort, command, modePageRegistry, inquiryDataRegistry);
+   }
+
    @Override
    protected void execute(
          TargetTransportPort targetPort,

@@ -153,16 +153,6 @@ public class DefaultTaskSet implements TaskSet
          str.append("TaskContainer(").append(this.task.toString()).append(")");
          return str.toString();
       }
-
-      public InquiryDataRegistry getInquiryDataRegistry()
-      {
-         return task.getInquiryDataRegistry();
-      }
-
-      public ModePageRegistry getModePageRegistry()
-      {
-         return task.getModePageRegistry();
-      }
    }
 
    /////////////////////////////////////////////////////////////////////////////////////////////////
