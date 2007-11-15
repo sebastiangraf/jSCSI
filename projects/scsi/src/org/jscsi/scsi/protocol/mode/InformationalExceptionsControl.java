@@ -18,8 +18,8 @@ public class InformationalExceptionsControl extends ModePage
    private boolean TEST;
    private boolean LOGERR;
    private int MRIE;
-   private int intervalTimer;
-   private int reportCount;
+   private long intervalTimer;
+   private long reportCount;
 
    public InformationalExceptionsControl()
    {
@@ -45,10 +45,14 @@ public class InformationalExceptionsControl extends ModePage
          this.MRIE = inputStream.readUnsignedByte();
 
          //bytes 4 - 7
-         this.intervalTimer = inputStream.readInt();
+         int mss = inputStream.readUnsignedShort();
+         int lss = inputStream.readUnsignedShort();
+         this.intervalTimer = ((mss << 16) | lss) & 0xFFFFFFFFL;
 
          // bytes 8 - 11
-         this.reportCount = inputStream.readInt();
+         mss = inputStream.readUnsignedShort();
+         lss = inputStream.readUnsignedShort();
+         this.reportCount = ((mss << 16) | lss) & 0xFFFFFFFFL;
       }
       catch (IOException e)
       {
@@ -93,10 +97,10 @@ public class InformationalExceptionsControl extends ModePage
          output.writeByte(this.MRIE);
 
          // bytes 4 - 7
-         output.writeInt(this.intervalTimer);
+         output.writeInt((int)this.intervalTimer);
 
          // bytes 8 - 11
-         output.writeInt(this.reportCount);
+         output.writeInt((int)this.reportCount);
       }
       catch (IOException e)
       {
@@ -174,22 +178,22 @@ public class InformationalExceptionsControl extends ModePage
       this.MRIE = mrie;
    }
 
-   public int getIntervalTimer()
+   public long getIntervalTimer()
    {
       return this.intervalTimer;
    }
 
-   public void setIntervalTimer(int intervalTimer)
+   public void setIntervalTimer(long intervalTimer)
    {
       this.intervalTimer = intervalTimer;
    }
 
-   public int getReportCount()
+   public long getReportCount()
    {
       return this.reportCount;
    }
 
-   public void setReportCount(int reportCount)
+   public void setReportCount(long reportCount)
    {
       this.reportCount = reportCount;
    }

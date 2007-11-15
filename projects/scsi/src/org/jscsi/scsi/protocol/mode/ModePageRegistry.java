@@ -131,7 +131,7 @@ public abstract class ModePageRegistry implements Serializer
       //register(BackgroundControl.PAGE_CODE, BackgroundControl.SUBPAGE_CODE, backgroundControl);
       register(Caching.PAGE_CODE, caching);
       register(Control.PAGE_CODE, control);
-      //register(ControlExtension.PAGE_CODE, ControlExtension.SUBPAGE_CODE, controlExtension);
+      register(ControlExtension.PAGE_CODE, ControlExtension.SUBPAGE_CODE, controlExtension);
       //register(DisconnectReconnect.PAGE_CODE, disconnectReconnect);
       register(InformationalExceptionsControl.PAGE_CODE, informationalExceptionsControl);
       //register(PowerCondition.PAGE_CODE, powerCondition);
@@ -141,7 +141,7 @@ public abstract class ModePageRegistry implements Serializer
    @SuppressWarnings("unchecked")
    public ModePage decode(ByteBuffer buffer) throws IOException
    {
-      DataInputStream dataIn = new DataInputStream(new ByteBufferInputStream(buffer.duplicate()));
+      DataInputStream dataIn = new DataInputStream(new ByteBufferInputStream(buffer));
 
       boolean subPageFormat;
       byte[] header;

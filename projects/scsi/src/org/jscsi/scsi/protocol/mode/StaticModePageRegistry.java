@@ -56,16 +56,16 @@ public class StaticModePageRegistry extends ModePageRegistry
       page.setD_SENSE(false); // Fixed format sense data is returned with autosense
       page.setGLTSD(true); // Log parameters not implicitly saved
       page.setRLEC(false); // Log exception conditions are not reported
-      page.setQUEUE_ALGORIHTM_MODIFIER(0x01); // Unrestricted reordering allowed
+      page.setQueueAlgorithmModifier(0x01); // Unrestricted reordering allowed
       page.setQERR(0x00); // All tasks are processed normally after a task returns CHECK CONDITION
       page.setRAC(false); // BUSY status may be returned regardless of BUSY TIMEOUT PERIOD
       page.setUA_INTLCK_CTRL(0x00); // UA not established for BUSY, TASK SET FULL, or RESERVATION CONFLICT
       page.setSWP(false); // Write protect is disabled
       page.setATO(false); // LOGICAL BLOCK APPLICATION TAG field will not be modified by server
       page.setTAS(false); // Tasks are aborted silently
-      page.setAUTOLOAD_MODE(0x00); // Field is reserved
-      page.setBUSY_TIMEOUT_PERIOD(0xFFFF); // Client shall allow BUSY status for unlimited period
-      page.setEXTENDED_SELF_TEST_COMPLETION_TIME(587); // Arbitrary value; self test not supported
+      page.setAutoloadMode(0x00); // Field is reserved
+      page.setBusyTimeoutPeriod(0xFFFF); // Client shall allow BUSY status for unlimited period
+      page.setExtendedSelfTestCompletionTime(587); // Arbitrary value; self test not supported
       
       this.setControl(page);
    }
@@ -107,6 +107,19 @@ public class StaticModePageRegistry extends ModePageRegistry
       page.setRecoveryTimeLimit(0);
       
       this.setReadWriteErrorRecovery(page);
+   }
+   
+   
+   protected void populateControlExtension()
+   {
+      ControlExtension page = new ControlExtension();
+      
+      page.setTCMOS(false);
+      page.setSCSIP(false);
+      page.setIALUAE(false);
+      page.setInitialPriority(0);
+      
+      this.setControlExtension(page);
    }
    
 }

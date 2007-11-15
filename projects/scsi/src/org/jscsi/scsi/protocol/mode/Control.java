@@ -16,16 +16,16 @@ public class Control extends ModePage
    private boolean D_SENSE = true;
    private boolean GLTSD;
    private boolean RLEC;
-   private int QUEUE_ALGORIHTM_MODIFIER; // MAX VALUE 0x0F (4-bit)
+   private int queueAlgorithmModifier; // MAX VALUE 0x0F (4-bit)
    private int QERR;
    private boolean RAC;
    private int UA_INTLCK_CTRL;
    private boolean SWP;
    private boolean ATO;
    private boolean TAS;
-   private int AUTOLOAD_MODE;
-   private int BUSY_TIMEOUT_PERIOD; // MAX USHORT_MAX
-   private int EXTENDED_SELF_TEST_COMPLETION_TIME; // MAX USHORT_MAX
+   private int autoloadMode;
+   private int busyTimeoutPeriod; // MAX USHORT_MAX
+   private int extendedSelfTestCompletionTime; // MAX USHORT_MAX
 
    public Control()
    {
@@ -51,7 +51,7 @@ public class Control extends ModePage
          this.RLEC = (b1 & 0x01) == 1;
 
          // byte 2
-         this.QUEUE_ALGORIHTM_MODIFIER = (b2 >>> 4) & 0x0F;
+         this.queueAlgorithmModifier = (b2 >>> 4) & 0x0F;
          this.QERR = (b2 >>> 1) & 0x3;
 
          // byte 3
@@ -62,12 +62,12 @@ public class Control extends ModePage
          // byte 4
          this.ATO = ((b4 >>> 7) & 0x01) == 1;
          this.TAS = ((b4 >>> 6) & 0x01) == 1;
-         this.AUTOLOAD_MODE = b4 & 0x07;
+         this.autoloadMode = b4 & 0x07;
 
          inputStream.readShort();
 
-         this.BUSY_TIMEOUT_PERIOD = inputStream.readUnsignedShort();
-         this.EXTENDED_SELF_TEST_COMPLETION_TIME = inputStream.readUnsignedShort();
+         this.busyTimeoutPeriod = inputStream.readUnsignedShort();
+         this.extendedSelfTestCompletionTime = inputStream.readUnsignedShort();
       }
       catch (IOException e)
       {
@@ -103,7 +103,7 @@ public class Control extends ModePage
 
          // byte #4
          b = 0;
-         b = this.QUEUE_ALGORIHTM_MODIFIER << 4;
+         b = this.queueAlgorithmModifier << 4;
          b |= ((this.QERR << 1) & 0x06);
          output.writeByte(b);
 
@@ -130,7 +130,7 @@ public class Control extends ModePage
          {
             b |= 0x40;
          }
-         b |= this.AUTOLOAD_MODE & 0x07;
+         b |= this.autoloadMode & 0x07;
          output.writeByte(b);
 
          // byte #7
@@ -140,10 +140,10 @@ public class Control extends ModePage
          output.writeByte(0);
 
          // byte #9 - 10
-         output.writeShort(this.BUSY_TIMEOUT_PERIOD);
+         output.writeShort(this.busyTimeoutPeriod);
 
          // byte #11 - 12
-         output.writeShort(this.EXTENDED_SELF_TEST_COMPLETION_TIME);
+         output.writeShort(this.extendedSelfTestCompletionTime);
       }
       catch (IOException e)
       {
@@ -201,14 +201,14 @@ public class Control extends ModePage
       this.RLEC = rlec;
    }
 
-   public int getQUEUE_ALGORIHTM_MODIFIER()
+   public int getQueueAlgorithmModifier()
    {
-      return this.QUEUE_ALGORIHTM_MODIFIER;
+      return this.queueAlgorithmModifier;
    }
 
-   public void setQUEUE_ALGORIHTM_MODIFIER(int queue_algorihtm_modifier)
+   public void setQueueAlgorithmModifier(int queue_algorihtm_modifier)
    {
-      this.QUEUE_ALGORIHTM_MODIFIER = queue_algorihtm_modifier;
+      this.queueAlgorithmModifier = queue_algorihtm_modifier;
    }
 
    public int getQERR()
@@ -271,33 +271,33 @@ public class Control extends ModePage
       this.TAS = tas;
    }
 
-   public int getAUTOLOAD_MODE()
+   public int getAutoloadMode()
    {
-      return this.AUTOLOAD_MODE;
+      return this.autoloadMode;
    }
 
-   public void setAUTOLOAD_MODE(int autoload_mode)
+   public void setAutoloadMode(int autoload_mode)
    {
-      this.AUTOLOAD_MODE = autoload_mode;
+      this.autoloadMode = autoload_mode;
    }
 
-   public int getBUSY_TIMEOUT_PERIOD()
+   public int getBusyTimeoutPeriod()
    {
-      return this.BUSY_TIMEOUT_PERIOD;
+      return this.busyTimeoutPeriod;
    }
 
-   public void setBUSY_TIMEOUT_PERIOD(int busy_timeout_period)
+   public void setBusyTimeoutPeriod(int busy_timeout_period)
    {
-      this.BUSY_TIMEOUT_PERIOD = busy_timeout_period;
+      this.busyTimeoutPeriod = busy_timeout_period;
    }
 
-   public int getEXTENDED_SELF_TEST_COMPLETION_TIME()
+   public int getExtendedSelfTestCompletionTime()
    {
-      return this.EXTENDED_SELF_TEST_COMPLETION_TIME;
+      return this.extendedSelfTestCompletionTime;
    }
 
-   public void setEXTENDED_SELF_TEST_COMPLETION_TIME(int extended_self_test_completion_time)
+   public void setExtendedSelfTestCompletionTime(int extended_self_test_completion_time)
    {
-      this.EXTENDED_SELF_TEST_COMPLETION_TIME = extended_self_test_completion_time;
+      this.extendedSelfTestCompletionTime = extended_self_test_completion_time;
    }
 }
