@@ -47,7 +47,13 @@ public class BufferedReadCapacity16Task extends BufferedTask
          throw new RuntimeException("unable to encode READ CAPACITY (16) parameter data");
       } 
       
-      this.writeData(bs.toByteArray());
+      byte[] array = bs.toByteArray();
+      
+      ByteBuffer data = ByteBuffer.allocate(array.length);
+      data.put(array);
+      data.rewind();
+      
+      this.writeData(data);
       this.writeResponse(Status.GOOD, null);
    }
 
