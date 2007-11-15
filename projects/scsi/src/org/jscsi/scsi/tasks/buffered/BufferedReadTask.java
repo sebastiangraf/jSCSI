@@ -3,6 +3,7 @@ package org.jscsi.scsi.tasks.buffered;
 import java.nio.ByteBuffer;
 
 import org.apache.log4j.Logger;
+import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.lu.DefaultLogicalUnitTest;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.Read6;
@@ -12,7 +13,6 @@ import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.LogicalBlockAddressOutOfRangeException;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.protocol.sense.exceptions.SynchronousDataTransferErrorException;
-import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class BufferedReadTask extends BufferedTask

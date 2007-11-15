@@ -15,11 +15,11 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
+import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.OverlappedCommandsAttemptedException;
-import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskAttribute;
 import org.jscsi.scsi.transport.Nexus;

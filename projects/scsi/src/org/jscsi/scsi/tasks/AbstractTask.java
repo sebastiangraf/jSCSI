@@ -4,6 +4,7 @@ package org.jscsi.scsi.tasks;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.CDB;
 import org.jscsi.scsi.protocol.cdb.ParameterCDB;

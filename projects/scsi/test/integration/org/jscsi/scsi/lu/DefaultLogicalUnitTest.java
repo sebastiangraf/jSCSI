@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
+import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.CDB;
 import org.jscsi.scsi.protocol.cdb.Read6;
@@ -15,7 +16,6 @@ import org.jscsi.scsi.protocol.inquiry.StaticInquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.mode.StaticModePageRegistry;
 import org.jscsi.scsi.target.Target;
-import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.TaskAttribute;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.buffered.BufferedTaskFactory;

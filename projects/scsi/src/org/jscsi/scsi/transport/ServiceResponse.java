@@ -40,7 +40,7 @@ package org.jscsi.scsi.transport;
  * shall be serialized in a transport layer dependent manner.
  * <p>
  * Value descriptions are quoted from SAM-3 section 5.1. "Status argument" refers to the
- * {@link org.jscsi.scsi.tasks.Status} value returned by the SCSI target.
+ * {@link org.jscsi.core.scsi.Status} value returned by the SCSI target.
  */
 public enum ServiceResponse
 {

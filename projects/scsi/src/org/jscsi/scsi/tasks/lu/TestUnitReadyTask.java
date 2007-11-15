@@ -1,11 +1,11 @@
 
 package org.jscsi.scsi.tasks.lu;
+import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.tasks.AbstractTask;
-import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class TestUnitReadyTask extends AbstractTask

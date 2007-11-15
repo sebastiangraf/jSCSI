@@ -4,13 +4,13 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.Set;
 
+import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.ReportLuns;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.tasks.AbstractTask;
-import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.transport.TargetTransportPort;
 

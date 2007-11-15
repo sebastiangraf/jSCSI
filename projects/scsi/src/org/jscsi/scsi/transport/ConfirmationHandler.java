@@ -2,7 +2,7 @@ package org.jscsi.scsi.transport;
 
 import java.nio.ByteBuffer;
 
-import org.jscsi.scsi.tasks.Status;
+import org.jscsi.core.scsi.Status;
 
 /**
  * Asynchronous handler used to handle confirmation of a complete command.
