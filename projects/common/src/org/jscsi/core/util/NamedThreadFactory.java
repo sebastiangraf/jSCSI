@@ -37,6 +37,7 @@ public class NamedThreadFactory implements ThreadFactory
    public Thread newThread(Runnable target)
    {
       String tname = this.name + ":" + this.numThreads.incrementAndGet();
+      _logger.debug("spawning new thread: " + tname);
       Thread t = new Thread(target, tname);
       t.setPriority(this.priority);
       return t;
