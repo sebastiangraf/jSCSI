@@ -34,7 +34,6 @@ public class NamedThreadFactory implements ThreadFactory
    /////////////////////////////////////////////////////////////////////////////
    // operations
    
-   @Override
    public Thread newThread(Runnable target)
    {
       String tname = this.name + ":" + this.numThreads.incrementAndGet();
