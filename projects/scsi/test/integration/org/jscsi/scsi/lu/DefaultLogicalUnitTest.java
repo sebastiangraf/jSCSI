@@ -1,5 +1,6 @@
 package org.jscsi.scsi.lu;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,6 +16,8 @@ import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.inquiry.StaticInquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.mode.StaticModePageRegistry;
+import org.jscsi.scsi.protocol.sense.SenseData;
+import org.jscsi.scsi.protocol.sense.SenseDataFactory;
 import org.jscsi.scsi.target.Target;
 import org.jscsi.scsi.tasks.TaskAttribute;
 import org.jscsi.scsi.tasks.TaskFactory;
@@ -109,11 +112,7 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
       lu.enqueue(this, cmd1);
       cmdRef++;
       
-      CDB cdb3 = new Write6(false, true, 64, NUM_BLOCKS_TRANSMIT);
-      Command cmd3 = new Command(this.nexus, cdb3, TaskAttribute.SIMPLE, cmdRef, 0);
-      this.createReadData(NUM_BLOCKS_TRANSMIT * STORE_BLOCK_SIZE, cmdRef);
-      lu.enqueue(this, cmd3);
-      cmdRef++;
+      //try {Thread.sleep(1000);} catch (InterruptedException e){}
       
       CDB cdb2 = new Read6(false, true, 0, NUM_BLOCKS_TRANSMIT);
       Command cmd2 = new Command(this.nexus, cdb2, TaskAttribute.SIMPLE, cmdRef, 0);
@@ -121,6 +120,8 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
       
       try {Thread.sleep(1000);} catch (InterruptedException e){}
       
+      _logger.debug("readDataMap length: " + readDataMap.size());
+      _logger.debug("writeDataMap length: " + writeDataMap.size());
       Assert.assertEquals("inconsistent read/write comparison", Arrays.equals(this.readDataMap.get(cmdRef-1).array(), this.writeDataMap.get(cmdRef).array()));
       
       
@@ -150,6 +151,8 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
          throws InterruptedException
    {
       _logger.debug("servicing readData request: nexus: " + nexus + ", cmdRef: " + cmdRef);
+      _logger.debug(" ----- output buffer size: " + output.limit());
+      _logger.debug(" ----- readData buffer size: " + this.readDataMap.get(cmdRef));
       output.put(this.readDataMap.get(cmdRef));
       return true;
    }
@@ -185,6 +188,19 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
    {
       _logger.debug("servicing writeResponse request: nexus: " + nexus + ", cmdRef: " + commandReferenceNumber);
       _logger.debug("response was status: " + status);
+      if (status.equals(Status.CHECK_CONDITION))
+      {
+         SenseData sense = null;
+         try
+         {
+            sense = new SenseDataFactory().decode(senseData);
+         }
+         catch (IOException e)
+         {
+            _logger.warn("I/O exception while decoding sense data");
+         }
+         _logger.error("sense data: " + sense);
+      }
    }
    
    @Override
@@ -207,5 +223,4 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
       this.readDataMap.put(cmdRef, buffData);
       return buffData;
    }
-
 }
