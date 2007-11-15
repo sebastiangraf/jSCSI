@@ -5,6 +5,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
+
+import org.jscsi.core.util.NamedThreadFactory;
 import org.jscsi.scsi.tasks.Task;
 
 public class DefaultTaskManager implements TaskManager
@@ -24,7 +26,7 @@ public class DefaultTaskManager implements TaskManager
    
    public DefaultTaskManager(int numThreads, TaskSet taskSet)
    {
-      executor = Executors.newFixedThreadPool(numThreads);
+      executor = Executors.newFixedThreadPool(numThreads, new NamedThreadFactory("TaskExecutor"));
       this.taskSet = taskSet;
    }
    

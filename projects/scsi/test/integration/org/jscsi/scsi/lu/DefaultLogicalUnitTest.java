@@ -109,15 +109,19 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
       lu.enqueue(this, cmd1);
       cmdRef++;
       
+      CDB cdb3 = new Write6(false, true, 64, NUM_BLOCKS_TRANSMIT);
+      Command cmd3 = new Command(this.nexus, cdb3, TaskAttribute.SIMPLE, cmdRef, 0);
+      this.createReadData(NUM_BLOCKS_TRANSMIT * STORE_BLOCK_SIZE, cmdRef);
+      lu.enqueue(this, cmd3);
+      cmdRef++;
+      
       CDB cdb2 = new Read6(false, true, 0, NUM_BLOCKS_TRANSMIT);
       Command cmd2 = new Command(this.nexus, cdb2, TaskAttribute.SIMPLE, cmdRef, 0);
       lu.enqueue(this, cmd2);
       
-      try {Thread.sleep(5000);} catch (InterruptedException e){}
+      try {Thread.sleep(1000);} catch (InterruptedException e){}
       
       Assert.assertEquals("inconsistent read/write comparison", Arrays.equals(this.readDataMap.get(cmdRef-1).array(), this.writeDataMap.get(cmdRef).array()));
-      
-      cmdRef++;
       
       
    }
