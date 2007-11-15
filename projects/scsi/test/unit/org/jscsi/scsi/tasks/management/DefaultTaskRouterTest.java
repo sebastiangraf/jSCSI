@@ -10,6 +10,7 @@ import java.util.Random;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.jscsi.core.exceptions.NotImplementedException;
+import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.ReportLuns;
@@ -23,7 +24,6 @@ import org.jscsi.scsi.protocol.sense.exceptions.LogicalUnitNotSupportedException
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.target.Target;
 import org.jscsi.scsi.tasks.AbstractTask;
-import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskAttribute;
 import org.jscsi.scsi.tasks.TaskFactory;

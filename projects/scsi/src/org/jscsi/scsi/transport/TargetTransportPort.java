@@ -3,8 +3,8 @@ package org.jscsi.scsi.transport;
 
 import java.nio.ByteBuffer;
 
+import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.target.Target;
-import org.jscsi.scsi.tasks.Status;
 
 /**
  * The SCSI Target Transport Port provides an interface to the Service Delivery Subsystem services

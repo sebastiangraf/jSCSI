@@ -6,12 +6,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 import org.jscsi.core.exceptions.NotImplementedException;
+import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.exceptions.TaskSetException;
 import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.protocol.sense.exceptions.LogicalUnitNotSupportedException;
-import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.TaskRouter;

@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
+import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.sense.KCQ;
 import org.jscsi.scsi.protocol.sense.SenseData;
 import org.jscsi.scsi.protocol.sense.SenseDataFactory;
-import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.transport.Nexus;
 import org.junit.After;

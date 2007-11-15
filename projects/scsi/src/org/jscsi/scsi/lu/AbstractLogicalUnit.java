@@ -4,9 +4,9 @@ import java.nio.ByteBuffer;
 import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
+import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
-import org.jscsi.scsi.tasks.Status;
 import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.management.TaskManager;
