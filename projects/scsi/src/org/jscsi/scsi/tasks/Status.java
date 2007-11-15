@@ -243,7 +243,7 @@ public enum Status {
   @Override
   public String toString()
   {
-     String output = "<status:";
+     String output = "<Status:";
      
      switch(Status.valueOf(value))
      {

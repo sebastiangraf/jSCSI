@@ -2,6 +2,8 @@ package org.jscsi.scsi.tasks.buffered;
 
 import java.nio.ByteBuffer;
 
+import org.apache.log4j.Logger;
+import org.jscsi.scsi.lu.DefaultLogicalUnitTest;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.Read6;
 import org.jscsi.scsi.protocol.cdb.TransferCDB;
@@ -15,6 +17,7 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class BufferedReadTask extends BufferedTask
 {
+   private static Logger _logger = Logger.getLogger(BufferedReadTask.class);
 
    public BufferedReadTask()
    {
@@ -30,6 +33,7 @@ public class BufferedReadTask extends BufferedTask
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException
    {
+      _logger.debug(">>> executing task: " + this);
       long capacity = this.getFileCapacity();
       
       TransferCDB cdb = (TransferCDB)command.getCommandDescriptorBlock();

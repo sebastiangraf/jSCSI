@@ -39,7 +39,7 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
    private static final int NUM_BLOCKS_TRANSMIT = 16;
    
    private static final int TASK_SET_QUEUE_DEPTH = 16;
-   private static final int TASK_MGR_NUM_THREADS = 1;
+   private static final int TASK_MGR_NUM_THREADS = 2;
    private static final int STORE_BLOCK_SIZE = 4096;
    // STORE_CAPACITY is representative of the number of blocks, thus:
    //   8192 * 4096B = 32MB
@@ -73,15 +73,17 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
       store = ByteBuffer.allocate(STORE_BLOCK_SIZE * STORE_CAPACITY);
       taskFactory = new BufferedTaskFactory(store, STORE_BLOCK_SIZE, modeRegistry, inquiryRegistry);
 
-      lu = new DefaultLogicalUnitTest(taskSet, taskManager, modeRegistry, inquiryRegistry);
+      lu = new DefaultLogicalUnitTest(taskSet, taskManager, taskFactory);
       _logger.debug("created logical unit: " + lu);
       
       lu.start();
+      _logger.debug("logical unit successfully started");
    }
 
    @AfterClass
    public static void tearDownAfterClass() throws Exception
    {
+      lu.stop();
       _logger.debug("exiting test");
    }
 
@@ -102,13 +104,13 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
    public void TestRead6()
    {
       CDB cdb1 = new Write6(false, true, 0, NUM_BLOCKS_TRANSMIT);
-      Command cmd1 = new Command(this.nexus, cdb1, TaskAttribute.ORDERED, cmdRef, 0);
+      Command cmd1 = new Command(this.nexus, cdb1, TaskAttribute.SIMPLE, cmdRef, 0);
       this.createReadData(NUM_BLOCKS_TRANSMIT * STORE_BLOCK_SIZE, cmdRef);
       lu.enqueue(this, cmd1);
       cmdRef++;
       
       CDB cdb2 = new Read6(false, true, 0, NUM_BLOCKS_TRANSMIT);
-      Command cmd2 = new Command(this.nexus, cdb2, TaskAttribute.ORDERED, cmdRef, 0);
+      Command cmd2 = new Command(this.nexus, cdb2, TaskAttribute.SIMPLE, cmdRef, 0);
       lu.enqueue(this, cmd2);
       
       try {Thread.sleep(5000);} catch (InterruptedException e){}
@@ -131,8 +133,7 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
    public DefaultLogicalUnitTest(
          TaskSet taskSet,
          TaskManager taskManager,
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry)
+         TaskFactory taskFactory)
    {
       super(taskSet, taskManager, taskFactory);
    }
@@ -180,6 +181,12 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
    {
       _logger.debug("servicing writeResponse request: nexus: " + nexus + ", cmdRef: " + commandReferenceNumber);
       _logger.debug("response was status: " + status);
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "<DummyTargetTransportPort>";
    }
 
    /////////////////////////////////////////////////////////////////////////////

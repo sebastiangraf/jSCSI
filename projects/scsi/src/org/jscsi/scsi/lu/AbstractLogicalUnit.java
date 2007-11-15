@@ -25,7 +25,11 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
    private TaskFactory taskFactory;
    
    private Thread manager;
-
+   
+   
+   /////////////////////////////////////////////////////////////////////////////
+   // constructors
+   
    protected AbstractLogicalUnit()
    {
    }
@@ -39,10 +43,14 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
       this.taskManager = taskManager;
       this.taskFactory = taskFactory;
    }
-
+   
+   
+   /////////////////////////////////////////////////////////////////////////////
+   // operations
+   
    public void enqueue(TargetTransportPort port, Command command)
    {
-      _logger.debug("enqueuing command: " + command + ", associate with TargetTransportPort: " + port);
+      _logger.debug("enqueuing command: " + command + ", associated with TargetTransportPort: " + port);
       try
       {
          Task task = this.getTaskFactory().getInstance(port, command);
@@ -171,6 +179,6 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
    @Override
    public String toString()
    {
-      return "<AbstractLogicalUnit task: " + this.taskFactory + ">";
+      return "<LogicalUnit task: " + this.taskFactory + ">";
    }
 }
