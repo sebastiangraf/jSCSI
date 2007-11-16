@@ -16,7 +16,7 @@ import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.protocol.sense.exceptions.SynchronousDataTransferErrorException;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
-// TODO: Describe class or interface
+//TODO: Describe class or interface
 public abstract class AbstractTask implements Task
 {
    private static Logger _logger = Logger.getLogger(AbstractTask.class);
@@ -202,6 +202,9 @@ public abstract class AbstractTask implements Task
          return;
       }
    }
+
+   /////////////////////////////////////////////////////////////////////////////
+   // getters/setters
 
    public final Command getCommand()
    {
