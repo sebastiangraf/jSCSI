@@ -248,7 +248,7 @@ public abstract class AbstractTask implements Task
    @Override
    public String toString()
    {
-      return "<BufferedTask name: " + this.getName() + ", command: " + this.command
+      return "<Task name: " + this.getName() + ", command: " + this.command
       + ", target-port: " + this.targetTransportPort + ">";
    }
 }

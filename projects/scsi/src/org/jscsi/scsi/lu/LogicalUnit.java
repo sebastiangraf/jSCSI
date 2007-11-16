@@ -73,8 +73,15 @@ public interface LogicalUnit
    TaskServiceResponse reset();
    
 
+   /**
+    * Starts this logical unit. Called by a running target when the logical unit is registered.
+    */
    void start();
 
+   /**
+    * Stops this logical unit. Called by a target when this logical unit is unregistered or the
+    * target is shutting down.
+    */
    void stop();
 
    void nexusLost();

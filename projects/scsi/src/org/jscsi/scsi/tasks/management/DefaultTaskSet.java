@@ -285,6 +285,7 @@ public class DefaultTaskSet implements TaskSet
     */
    public boolean offer(Task task, long timeout, TimeUnit unit) throws InterruptedException
    {
+      _logger.debug("Task set BEFORE offer(): " + this.dormant);
       _logger.debug("offering to taskset command: " + task.getCommand());
 
       if (task == null)
@@ -331,7 +332,7 @@ public class DefaultTaskSet implements TaskSet
             task.getTargetTransportPort().writeResponse(command.getNexus(),
                   command.getCommandReferenceNumber(), Status.CHECK_CONDITION,
                   ByteBuffer.wrap((new OverlappedCommandsAttemptedException(true)).encode()));
-            _logger.warn("command not accepted due to preexisting untagged task");
+            _logger.warn("command not accepted due to preexisting untagged task: " + task);
             return false;
          }
 
