@@ -76,7 +76,18 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
 
    public void stop()
    {
+      _logger.debug("Signalling LU task manager to stop");
       this.manager.interrupt();
+      try
+      {
+         _logger.debug("Waiting for LU task manager to terminate");
+         this.manager.join();
+         _logger.debug("LU task manger finished");
+      }
+      catch (InterruptedException e)
+      {
+         _logger.debug("Interrupted while waiting for LU task manager to finish");
+      }
    }
 
    public TaskServiceResponse abortTask(Nexus nexus)

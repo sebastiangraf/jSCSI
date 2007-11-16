@@ -73,6 +73,19 @@ public interface Target
     */
    public void setAuthHandlers(List<AuthenticationHandler> handlers);
 
+
+   /**
+    * Starts this target device. Called by a running target transport port when the target is
+    * registered.
+    */
+   void start();
+
+   /**
+    * Stops this target device. Called by a target transport port when this target is unregistered
+    * or the transport port is shutting down.
+    */
+   void stop();
+   
    /**
     * Used by the TargetTransportPort to indicate an I_T Nexus loss event. Indicates to each Logical
     * Unit that an I_T Nexus loss has occurred.

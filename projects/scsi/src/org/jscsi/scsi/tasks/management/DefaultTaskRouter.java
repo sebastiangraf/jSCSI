@@ -35,6 +35,10 @@ public class DefaultTaskRouter implements TaskRouter
    private Map<Long, LogicalUnit> logicalUnitMap;
    private TaskFactory taskFactory;
 
+   private Thread manager;
+   
+   private boolean running;
+
 
    ////////////////////////////////////////////////////////////////////////////
    // constructor(s)
@@ -174,18 +178,66 @@ public class DefaultTaskRouter implements TaskRouter
       this.targetTaskSet.clear();
    }
 
-   public void registerLogicalUnit(long id, LogicalUnit lu) throws Exception
+   public synchronized void registerLogicalUnit(long id, LogicalUnit lu) throws Exception
    {
-      lu.start();
+      if ( this.running )
+         lu.start();
       logicalUnitMap.put(id, lu);
       _logger.debug("registering logical unit: " + lu + " (id: " + id + ")");
    }
 
-   public LogicalUnit removeLogicalUnit(long id) throws Exception
+   public synchronized LogicalUnit removeLogicalUnit(long id) throws Exception
    {
       LogicalUnit discardedLU = logicalUnitMap.remove(id);
       discardedLU.stop();
       _logger.debug("removing logical unit: " + discardedLU);
       return discardedLU;
    }
+
+   public synchronized void start()
+   {
+      if ( this.running )
+         return;
+      
+      for ( LogicalUnit lu : this.logicalUnitMap.values() )
+      {
+         lu.start();
+      }
+      
+      this.manager = new Thread(this.targetTaskManager, "TargetTaskManager");
+      this.manager.start();
+      
+      this.running = true;
+   }
+
+   public synchronized void stop()
+   {
+      if ( ! this.running )
+         return;
+      
+      for ( Map.Entry<Long, LogicalUnit> lu : this.logicalUnitMap.entrySet() )
+      {
+         _logger.debug("Stopping Logical Unit " + lu.getKey());
+         lu.getValue().stop();
+         _logger.debug("Logical Unit " + lu.getKey() + " finished");
+      }
+      
+      _logger.debug("Signalling router task manager to stop");
+      this.manager.interrupt();
+      try
+      {
+         _logger.debug("Waiting for router task manager to terminate");
+         this.manager.join();
+         _logger.debug("router task manger finished");
+      }
+      catch (InterruptedException e)
+      {
+         _logger.debug("Interrupted while waiting for router task manager to finish");
+      }
+      
+      this.running = false;
+   }
+   
+   
+   
 }

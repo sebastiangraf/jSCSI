@@ -25,7 +25,7 @@ public class ReportLunsTask extends AbstractTask
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
    {
-      super(targetPort, command, modePageRegistry, inquiryDataRegistry);
+      super("ReportLuns", targetPort, command, modePageRegistry, inquiryDataRegistry);
       this.logicalUnits = logicalUnits;
    }
    

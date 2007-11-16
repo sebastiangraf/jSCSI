@@ -45,4 +45,16 @@ public class DefaultTarget extends AbstractTarget
    {
       return this.taskRouter.removeLogicalUnit(lun);
    }
+
+   public synchronized void start()
+   {
+      this.taskRouter.start();
+   }
+
+   public synchronized void stop()
+   {
+      this.taskRouter.stop();
+   }
+   
+   
 }

@@ -72,6 +72,17 @@ public interface TaskRouter
     */
    TaskServiceResponse execute(Nexus nexus, TaskManagementFunction function);
    
+
+   /**
+    * Starts this task router. Called by a starting target.
+    */
+   void start();
+
+   /**
+    * Stops this task router. Called by a stopping target.
+    */
+   void stop();
+   
    
    /**
     * Used by the Target Transport Port to indicate an I_T nexus loss event.
