@@ -40,7 +40,6 @@ public class BufferedReadCapacity10Task extends BufferedTask
             .allocate(8)
             .put(capacity, 4, 4)
             .putInt(blockLength);
-      data.rewind();
       
       data.rewind();
       

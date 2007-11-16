@@ -19,9 +19,9 @@ public class BufferedReadCapacityTaskTest extends BufferTestTask
    ///////////////////////////////////////////////////////////////////////////// 
    
    @Test
-   public void testReadCapacity10()
+   public void testReadCapacity10inMemory()
    {
-      _logger.debug("********** READ CAPACITY 10 **********");
+      _logger.debug("********** READ CAPACITY 10 MEMORY **********");
       CDB cdb = new ReadCapacity10(false, 0);
       this.submitMemoryTask(cdb, cmdRef);
       verifyInputBufferCapacity10();
@@ -29,11 +29,31 @@ public class BufferedReadCapacityTaskTest extends BufferTestTask
    }
    
    @Test
-   public void testReadCapacity16()
+   public void testReadCapacity10inFile()
    {
-      _logger.debug("********** READ CAPACITY 16 **********");
+      _logger.debug("********** READ CAPACITY 10 FILE **********");
+      CDB cdb = new ReadCapacity10(false, 0);
+      this.submitFileTask(cdb, cmdRef);
+      verifyInputBufferCapacity10();
+      cmdRef++;
+   }
+   
+   @Test
+   public void testReadCapacity16inMemory()
+   {
+      _logger.debug("********** READ CAPACITY 16 MEMORY **********");
       CDB cdb = new ReadCapacity16(32, false, 0);
       this.submitMemoryTask(cdb, cmdRef);
+      verifyInputBufferCapacity16();
+      cmdRef++;
+   }
+   
+   @Test
+   public void testReadCapacity16inFile()
+   {
+      _logger.debug("********** READ CAPACITY 16 FILE **********");
+      CDB cdb = new ReadCapacity16(32, false, 0);
+      this.submitFileTask(cdb, cmdRef);
       verifyInputBufferCapacity16();
       cmdRef++;
    }
