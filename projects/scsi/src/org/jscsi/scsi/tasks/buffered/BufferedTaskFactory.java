@@ -55,7 +55,6 @@ public class BufferedTaskFactory implements TaskFactory
       BufferedTaskFactory._tasks.put(Write16.class, BufferedWriteTask.class);
       BufferedTaskFactory._tasks.put(ReadCapacity10.class, BufferedReadCapacityTask.class);
       BufferedTaskFactory._tasks.put(ReadCapacity16.class, BufferedReadCapacityTask.class);
-      BufferedTaskFactory._tasks.put(RequestSense.class, BufferedRequestSenseTask.class);
    }
 
    public BufferedTaskFactory(
