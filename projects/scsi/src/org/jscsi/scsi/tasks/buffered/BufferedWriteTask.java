@@ -5,15 +5,11 @@ import java.nio.ByteBuffer;
 
 import org.apache.log4j.Logger;
 import org.jscsi.core.scsi.Status;
-import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.TransferCDB;
 import org.jscsi.scsi.protocol.cdb.Write6;
-import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
-import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.LogicalBlockAddressOutOfRangeException;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.protocol.sense.exceptions.SynchronousDataTransferErrorException;
-import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class BufferedWriteTask extends BufferedTask
 {
@@ -25,18 +21,13 @@ public class BufferedWriteTask extends BufferedTask
    }
 
    @Override
-   protected void execute(ByteBuffer buffer,
-                          int blockSize,
-                          TargetTransportPort targetPort,
-                          Command command,
-                          ModePageRegistry modePageRegistry,
-                          InquiryDataRegistry inquiryDataRegistry)
-   throws InterruptedException, SenseException
+   protected void execute(ByteBuffer buffer, int blockSize) throws InterruptedException,
+         SenseException
    {
       _logger.debug("executing task: " + this);
       long capacity = this.getFileCapacity();
 
-      TransferCDB cdb = (TransferCDB) command.getCommandDescriptorBlock();
+      TransferCDB cdb = (TransferCDB) getCommand().getCommandDescriptorBlock();
       long lba = cdb.getLogicalBlockAddress();
       long transferLength = cdb.getTransferLength();
 
@@ -58,7 +49,7 @@ public class BufferedWriteTask extends BufferedTask
       // set file position
       // deviceSize will always be less than Integer.MAX_VALUE so truncating will be safe
       buffer.position((int) (lba * blockSize));
-      buffer.limit((int)(transferLength * blockSize) + (int)(lba * blockSize));
+      buffer.limit((int) (transferLength * blockSize) + (int) (lba * blockSize));
 
       // attempt to read data from transport port
       if (!this.readData(buffer))

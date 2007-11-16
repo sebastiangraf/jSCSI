@@ -2,17 +2,12 @@ package org.jscsi.scsi.target;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.jscsi.scsi.authentication.AuthenticationHandler;
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.tasks.TaskRouter;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 public abstract class AbstractTarget implements Target
 {
-   private static Logger _logger = Logger.getLogger(AbstractTarget.class);
-   
-   
    ////////////////////////////////////////////////////////////////////////////////////////////////
    // private data members
    

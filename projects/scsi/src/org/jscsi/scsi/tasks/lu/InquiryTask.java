@@ -61,20 +61,16 @@ public class InquiryTask extends AbstractTask
    }
 
    @Override
-   protected void execute(
-         TargetTransportPort targetPort,
-         Command command,
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException
+   protected void execute() throws InterruptedException, SenseException
    {
-      CDB cdb = command.getCommandDescriptorBlock();
+      CDB cdb = getCommand().getCommandDescriptorBlock();
       assert cdb instanceof Inquiry;
 
       Inquiry inquiryCDB = (Inquiry) cdb;
 
       if (inquiryCDB.isEVPD())
       {
-         VPDPage vpdPage = inquiryDataRegistry.getVPDPage(inquiryCDB.getPageCode());
+         VPDPage vpdPage = getInquiryDataRegistry().getVPDPage(inquiryCDB.getPageCode());
          if (vpdPage != null)
          {
             try
@@ -96,7 +92,7 @@ public class InquiryTask extends AbstractTask
       {
          if (inquiryCDB.getPageCode() == 0x00)
          {
-            this.writeData(inquiryDataRegistry.getStandardInquiryData().encode());
+            this.writeData(getInquiryDataRegistry().getStandardInquiryData().encode());
          }
          else
          {

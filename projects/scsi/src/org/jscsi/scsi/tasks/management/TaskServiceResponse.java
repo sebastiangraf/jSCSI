@@ -33,7 +33,6 @@
 //---------------------
 
 package org.jscsi.scsi.tasks.management;
-import org.apache.log4j.Logger;
 
 // TODO: Describe class or interface
 public enum TaskServiceResponse

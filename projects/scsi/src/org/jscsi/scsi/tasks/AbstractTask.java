@@ -30,49 +30,26 @@ public abstract class AbstractTask implements Task
     * Abort variable specifies whether task can be aborted or is currently aborted.
     * <p>
     * <ul>
-    *    <li>If abort is true, task is already aborted or can no longer be aborted.</li>
-    *    <li>If abort is false, task is not aborted and can be aborted.</li>
+    * <li>If abort is true, task is already aborted or can no longer be aborted.</li>
+    * <li>If abort is false, task is not aborted and can be aborted.</li>
     * </ul>
     * <p>
-    * The {@link #abort()} method will fail if the this is true. The {@link #run()} method will
-    * not enter the {@link #writeResponse(Status, ByteBuffer)} phase. However, abort is not polled.
+    * The {@link #abort()} method will fail if the this is true. The {@link #run()} method will not
+    * enter the {@link #writeResponse(Status, ByteBuffer)} phase. However, abort is not polled.
     * Instead, we check {@link Thread#isInterrupted()}.
     */
    private final AtomicBoolean abort = new AtomicBoolean(false);
-   
 
    /////////////////////////////////////////////////////////////////////////////
    // abstract methods
 
-   
-   protected abstract void execute(
-         TargetTransportPort targetPort,
-         Command command,
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException;
+   protected abstract void execute() throws InterruptedException, SenseException;
 
-   
    /////////////////////////////////////////////////////////////////////////////
    // constructors
 
-   
    protected AbstractTask()
    {
-   }
-
-   /**
-    * @deprecated
-    */
-   protected AbstractTask(
-         TargetTransportPort targetPort,
-         Command command,
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry)
-   {
-      this.targetTransportPort = targetPort;
-      this.command = command;
-      this.modePageRegistry = modePageRegistry;
-      this.inquiryDataRegistry = inquiryDataRegistry;
    }
 
    protected AbstractTask(
@@ -89,11 +66,9 @@ public abstract class AbstractTask implements Task
       this.inquiryDataRegistry = inquiryDataRegistry;
    }
 
-   
    /////////////////////////////////////////////////////////////////////////////
    // operations
 
-   
    protected final Task load(
          TargetTransportPort targetPort,
          Command command,
@@ -140,8 +115,7 @@ public abstract class AbstractTask implements Task
       this.thread = Thread.currentThread();
       try
       {
-         this.execute(this.targetTransportPort, this.command, this.modePageRegistry,
-               this.inquiryDataRegistry);
+         this.execute();
       }
       catch (SenseException e)
       {
@@ -230,6 +204,16 @@ public abstract class AbstractTask implements Task
       return this.command;
    }
 
+   public final InquiryDataRegistry getInquiryDataRegistry()
+   {
+      return this.inquiryDataRegistry;
+   }
+
+   public final ModePageRegistry getModePageRegistry()
+   {
+      return this.modePageRegistry;
+   }
+
    public final TargetTransportPort getTargetTransportPort()
    {
       return this.targetTransportPort;
@@ -248,7 +232,7 @@ public abstract class AbstractTask implements Task
    @Override
    public String toString()
    {
-      return "<Task name: " + this.getName() + ", command: " + this.command
-      + ", target-port: " + this.targetTransportPort + ">";
+      return "<Task name: " + this.getName() + ", command: " + this.command + ", target-port: "
+            + this.targetTransportPort + ">";
    }
 }
