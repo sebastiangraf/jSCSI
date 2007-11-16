@@ -57,7 +57,8 @@ public class BufferedReadTask extends BufferedTask
       
       // set file position
       // deviceSize will always be less than Integer.MAX_VALUE so truncating will be safe
-      buffer.position( (int)(lba * blockLength) );
+      buffer.position((int)(lba * blockLength));
+      buffer.limit((int)(transferLength * blockLength));
       
       // attempt to write data to transport port
       if ( ! this.writeData(buffer) )
