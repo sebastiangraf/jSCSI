@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.tasks.buffered;
 
 import java.nio.ByteBuffer;
@@ -52,15 +53,16 @@ public class BufferedTaskFactory implements TaskFactory
       BufferedTaskFactory._tasks.put(Write10.class, BufferedWriteTask.class);
       BufferedTaskFactory._tasks.put(Write12.class, BufferedWriteTask.class);
       BufferedTaskFactory._tasks.put(Write16.class, BufferedWriteTask.class);
-      BufferedTaskFactory._tasks.put(ReadCapacity10.class, BufferedReadCapacity10Task.class);
-      BufferedTaskFactory._tasks.put(ReadCapacity16.class, BufferedReadCapacity16Task.class);
+      BufferedTaskFactory._tasks.put(ReadCapacity10.class, BufferedReadCapacityTask.class);
+      BufferedTaskFactory._tasks.put(ReadCapacity16.class, BufferedReadCapacityTask.class);
       BufferedTaskFactory._tasks.put(RequestSense.class, BufferedRequestSenseTask.class);
    }
 
-   public BufferedTaskFactory(ByteBuffer buffer,
-                              int blockLength,
-                              ModePageRegistry modePageRegistry,
-                              InquiryDataRegistry inquiryDataRegistry)
+   public BufferedTaskFactory(
+         ByteBuffer buffer,
+         int blockLength,
+         ModePageRegistry modePageRegistry,
+         InquiryDataRegistry inquiryDataRegistry)
    {
       this.buffer = buffer;
       this.blockLength = blockLength;
@@ -69,22 +71,21 @@ public class BufferedTaskFactory implements TaskFactory
    }
 
    public Task getInstance(TargetTransportPort port, Command command)
-   throws IllegalRequestException
+         throws IllegalRequestException
    {
-      
+
       // check for basic commands
       switch (command.getCommandDescriptorBlock().getOperationCode())
       {
-         case ModeSense6.OPERATION_CODE:
-         case ModeSense10.OPERATION_CODE:
+         case ModeSense6.OPERATION_CODE :
+         case ModeSense10.OPERATION_CODE :
             return new ModeSenseTask(port, command, modePageRegistry, inquiryDataRegistry);
-         case TestUnitReady.OPERATION_CODE:
+         case TestUnitReady.OPERATION_CODE :
             return new TestUnitReadyTask(port, command, modePageRegistry, inquiryDataRegistry);
-         case Inquiry.OPERATION_CODE:
+         case Inquiry.OPERATION_CODE :
             return new InquiryTask(port, command, modePageRegistry, inquiryDataRegistry);
       }
-      
-      
+
       Class<? extends BufferedTask> taskClass =
             _tasks.get(command.getCommandDescriptorBlock().getClass());
 
@@ -111,7 +112,7 @@ public class BufferedTaskFactory implements TaskFactory
          throw new InvalidCommandOperationCodeException();
       }
    }
-   
+
    public String toString()
    {
       return "<BufferedTask block-size: " + this.blockLength + ", backing-store: ByteBuffer>";
