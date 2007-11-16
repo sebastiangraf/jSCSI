@@ -4,6 +4,7 @@ package org.jscsi.scsi.tasks;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.log4j.Logger;
 import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.CDB;
@@ -18,6 +19,8 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 // TODO: Describe class or interface
 public abstract class AbstractTask implements Task
 {
+   private static Logger _logger = Logger.getLogger(AbstractTask.class);
+
    private TargetTransportPort targetTransportPort;
    private Command command;
    private ModePageRegistry modePageRegistry;
@@ -126,6 +129,7 @@ public abstract class AbstractTask implements Task
       }
       catch (InterruptedException e)
       {
+         _logger.info("Task " + name + " was aborted.");
          // Task was aborted, don't do anything
       }
    }
