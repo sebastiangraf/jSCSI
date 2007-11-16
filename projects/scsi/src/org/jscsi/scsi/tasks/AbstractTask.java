@@ -208,21 +208,21 @@ public abstract class AbstractTask implements Task
       return this.command;
    }
 
-   public final InquiryDataRegistry getInquiryDataRegistry()
-   {
-      return this.inquiryDataRegistry;
-   }
-
-   public final ModePageRegistry getModePageRegistry()
-   {
-      return this.modePageRegistry;
-   }
-
    public final TargetTransportPort getTargetTransportPort()
    {
       return this.targetTransportPort;
    }
 
+   protected final InquiryDataRegistry getInquiryDataRegistry()
+   {
+      return this.inquiryDataRegistry;
+   }
+
+   protected final ModePageRegistry getModePageRegistry()
+   {
+      return this.modePageRegistry;
+   }
+   
    public final String getName()
    {
       return this.name;
