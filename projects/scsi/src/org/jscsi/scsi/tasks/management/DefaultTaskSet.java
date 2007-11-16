@@ -522,8 +522,8 @@ public class DefaultTaskSet implements TaskSet
       Task task = null;
       while (task == null)
       {
-         _logger.debug("Polling for next task; timeout in 10 seconds");
-         task = this.poll(10, TimeUnit.SECONDS);
+         _logger.debug("Polling for next task; timeout in 30 seconds");
+         task = this.poll(30, TimeUnit.SECONDS);
          _logger.debug("returning command for execution: " + 
                (task == null ? "null" : task.getCommand()));
       }
