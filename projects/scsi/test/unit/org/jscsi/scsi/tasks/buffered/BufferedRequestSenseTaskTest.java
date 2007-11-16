@@ -24,7 +24,7 @@ public class BufferedRequestSenseTaskTest extends BufferTestTask
    @Test
    public void testRequestSenseinMemory()
    {
-      _logger.debug("********** REQUEST SENSE TEST **********");
+      _logger.debug("********** REQUEST SENSE TEST - MEMORY **********");
       CDB cdb = new RequestSense(false, ALLOCATION_LENGTH);
       this.submitMemoryTask(cdb, cmdRef);
       verifyInputBuffer();
@@ -34,7 +34,7 @@ public class BufferedRequestSenseTaskTest extends BufferTestTask
    @Test
    public void testRequestSenseinFile()
    {
-      _logger.debug("********** REQUEST SENSE TEST **********");
+      _logger.debug("********** REQUEST SENSE TEST - FILE **********");
       CDB cdb = new RequestSense(false, ALLOCATION_LENGTH);
       this.submitFileTask(cdb, cmdRef);
       verifyInputBuffer();
@@ -64,18 +64,12 @@ public class BufferedRequestSenseTaskTest extends BufferTestTask
       int responseCodeValue = (int) ResponseCode.CURRENT_FIXED.code();
       assertEquals(responseCodeValue, (responseCode & 0x7F));
       
-      //int remainingLength = 
-      //assertEquals()
+      // Check the remaining length field
+      byte[] nextSix = new byte[7];
+      writtenBuffer.get(nextSix);
+      int remainingLength = (int) nextSix[6];
+      assertEquals(writtenBuffer.limit()-8, remainingLength);
       
-      /*
-      for (int i=0; i<ALLOCATION_LENGTH; i++)
-      {
-         byte d = data.get();
-         byte w = writtenBuffer.get();
-         
-         assertEquals(d, w);
-      }
-      */
    }
      
 }
