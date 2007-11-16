@@ -33,7 +33,7 @@ public class BufferedWriteTask extends BufferedTask
                           InquiryDataRegistry inquiryDataRegistry)
    throws InterruptedException, SenseException
    {
-      _logger.debug(">>> executing task: " + this);
+      _logger.debug("executing task: " + this);
       long capacity = this.getFileCapacity();
 
       TransferCDB cdb = (TransferCDB) command.getCommandDescriptorBlock();
@@ -58,6 +58,7 @@ public class BufferedWriteTask extends BufferedTask
       // set file position
       // deviceSize will always be less than Integer.MAX_VALUE so truncating will be safe
       buffer.position((int) (lba * blockLength));
+      buffer.limit((int)(transferLength * blockLength) + (int)(lba * blockLength));
 
       // attempt to read data from transport port
       if (!this.readData(buffer))
