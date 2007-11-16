@@ -26,7 +26,7 @@ public class BufferedRequestSenseTaskTest extends BufferTestTask
       _logger.debug("********** REQUEST SENSE TEST **********");
       CDB cdb = new RequestSense(false, ALLOCATION_LENGTH);
       this.submitMemoryTask(cdb, cmdRef);
-      // TODO: Verify Sense Return Value
+      verifyInputBuffer();
       cmdRef++;
    }
    
@@ -36,7 +36,7 @@ public class BufferedRequestSenseTaskTest extends BufferTestTask
       _logger.debug("********** REQUEST SENSE TEST **********");
       CDB cdb = new RequestSense(false, ALLOCATION_LENGTH);
       this.submitFileTask(cdb, cmdRef);
-      // TODO: Verify Sense Return Value
+      verifyInputBuffer();
       cmdRef++;
    }
    
