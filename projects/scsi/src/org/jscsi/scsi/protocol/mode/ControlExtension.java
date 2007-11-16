@@ -38,6 +38,8 @@ public class ControlExtension extends ModePage
 
          // byte 6
          this.initialPriority = (b6 & 0xF);
+         
+         inputStream.skip(dataLength); // The remaining bytes are reserved
       }
       catch (IOException e)
       {
@@ -77,7 +79,7 @@ public class ControlExtension extends ModePage
       }
       catch (IOException e)
       {
-         throw new RuntimeException("Unable to encode CDB.");
+         throw new RuntimeException("Unable to encode mode page.");
       }
    }
 

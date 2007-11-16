@@ -35,7 +35,7 @@ public abstract class ModePage implements Encodable
    {
       this.pageCode = pageCode;
       this.subPageFormat = false;
-      this.subPageCode = -1;
+      this.subPageCode = 0;
       this.pageLength = pageLength;
    }
 
@@ -157,11 +157,11 @@ public abstract class ModePage implements Encodable
       {
          this.subPageCode = header[1];
          pageLength = ((int) header[2] << 8) | header[3];
-         dataLength = pageLength - 4;
+         dataLength = pageLength - 2;
       }
       else
       {
-         this.subPageCode = -1;
+         this.subPageCode = 0;
          pageLength = header[1];
          dataLength = pageLength - 2;
       }
