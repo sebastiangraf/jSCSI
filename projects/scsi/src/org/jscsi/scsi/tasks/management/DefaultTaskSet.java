@@ -525,7 +525,8 @@ public class DefaultTaskSet implements TaskSet
       {
          _logger.debug("Polling for next task; timeout in 10 seconds");
          task = this.poll(10, TimeUnit.SECONDS);
-         _logger.debug("returning command for execution: " + task.getCommand());
+         _logger.debug("returning command for execution: " + 
+               (task == null ? "null" : task.getCommand()));
       }
       return task;
    }
