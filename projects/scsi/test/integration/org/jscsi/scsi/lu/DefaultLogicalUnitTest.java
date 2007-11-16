@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.jscsi.core.scsi.Status;
@@ -39,7 +40,7 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
 {
    private static Logger _logger = Logger.getLogger(DefaultLogicalUnitTest.class);
 
-   private static final int NUM_BLOCKS_TRANSMIT = 16;
+   private static final int NUM_BLOCKS_TRANSFER = 16;
    
    private static final int TASK_SET_QUEUE_DEPTH = 16;
    private static final int TASK_MGR_NUM_THREADS = 2;
@@ -57,7 +58,7 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
    private static TaskFactory taskFactory;
    private static ByteBuffer store;
    
-   private int cmdRef = 0;
+   private long cmdRef = 0;
    private Random rnd = new Random();
    private HashMap<Long,ByteBuffer> readDataMap = new HashMap<Long,ByteBuffer>();
    private HashMap<Long,ByteBuffer> writeDataMap = new HashMap<Long,ByteBuffer>();
@@ -105,24 +106,23 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
    @Test
    public void TestRead6()
    {
-      CDB cdb1 = new Write6(false, true, 10, NUM_BLOCKS_TRANSMIT);
-      Command cmd1 = new Command(this.createNexus(cmdRef), cdb1, TaskAttribute.ORDERED, cmdRef, 0);
-      this.createReadData(NUM_BLOCKS_TRANSMIT * STORE_BLOCK_SIZE, cmdRef);
+      CDB cdb1 = new Write6(false, true, 10, NUM_BLOCKS_TRANSFER);
+      Command cmd1 = new Command(this.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED, this.cmdRef, 0);
+      this.createReadData(NUM_BLOCKS_TRANSFER * STORE_BLOCK_SIZE, this.cmdRef);
       lu.enqueue(this, cmd1);
-      cmdRef++;
+      this.cmdRef++;
       
       
-      CDB cdb2 = new Read6(false, true, 10, NUM_BLOCKS_TRANSMIT);
-      Command cmd2 = new Command(this.createNexus(cmdRef), cdb2, TaskAttribute.ORDERED, cmdRef, 0);
+      CDB cdb2 = new Read6(false, true, 10, NUM_BLOCKS_TRANSFER);
+      Command cmd2 = new Command(this.createNexus(this.cmdRef), cdb2, TaskAttribute.ORDERED, this.cmdRef, 0);
       lu.enqueue(this, cmd2);
       
-      try {Thread.sleep(1000);} catch (InterruptedException e){}
+      try {Thread.sleep(500);} catch (InterruptedException e){}
+            
+      byte[] readBuf = this.readDataMap.get(cmdRef-1).array();
+      byte[] writeBuf = this.writeDataMap.get(cmdRef).array();
       
-      _logger.debug("readDataMap length: " + readDataMap.size());
-      _logger.debug("writeDataMap length: " + writeDataMap.size());
-      Assert.assertEquals("inconsistent read/write comparison", Arrays.equals(this.readDataMap.get(cmdRef-1).array(), this.writeDataMap.get(cmdRef).array()));
-      
-      
+      Assert.assertTrue("inconsistent read/write comparison", Arrays.equals(readBuf, writeBuf));
    }
 
    /////////////////////////////////////////////////////////////////////////////
@@ -149,9 +149,7 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
          throws InterruptedException
    {
       _logger.debug("servicing readData request: nexus: " + nexus + ", cmdRef: " + cmdRef);
-      _logger.debug(" ----- output buffer position: " + output.position());
-      _logger.debug(" ----- readData buffer size: " + this.readDataMap.get(cmdRef).limit());
-      output.put(this.readDataMap.get(cmdRef));
+      output.put(this.readDataMap.get(cmdRef).array());
       return true;
    }
 
@@ -174,11 +172,9 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
          throws InterruptedException
    {
       _logger.debug("servicing writeData request: nexus: " + nexus + ", cmdRef: " + cmdRef);
-      
-      
+
       ByteBuffer newbuf = ByteBuffer.allocate(input.limit() - input.position());
       newbuf.put(input);
-      _logger.debug(" $$$$$ newbuf buffer size: " + newbuf.limit());
       this.writeDataMap.put(cmdRef, newbuf);
       return true;
    }
@@ -215,7 +211,7 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
    /////////////////////////////////////////////////////////////////////////////
    // utilities
    
-   private ByteBuffer createReadData(int size, long cmdRef)
+   private ByteBuffer createReadData(int size, long cmdRefNum)
    {
       byte[] data = new byte[size];
       this.rnd.nextBytes(data);
@@ -223,11 +219,11 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
       ByteBuffer buffData = ByteBuffer.allocate(size);
       buffData.put(data);
       
-      this.readDataMap.put(cmdRef, buffData);
+      this.readDataMap.put(cmdRefNum, buffData);
       return buffData;
    }
    
-   private Nexus createNexus(int taskTag)
+   private Nexus createNexus(long taskTag)
    {
       return new Nexus("TestInitiator", "TestTarget", 0, taskTag);
    }

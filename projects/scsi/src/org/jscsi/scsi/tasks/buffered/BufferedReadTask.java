@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 
 import org.apache.log4j.Logger;
 import org.jscsi.core.scsi.Status;
-import org.jscsi.scsi.lu.DefaultLogicalUnitTest;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.Read6;
 import org.jscsi.scsi.protocol.cdb.TransferCDB;
@@ -33,7 +32,7 @@ public class BufferedReadTask extends BufferedTask
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException
    {
-      _logger.debug(">>> executing task: " + this);
+      _logger.debug("executing task: " + this);
       long capacity = this.getFileCapacity();
       
       TransferCDB cdb = (TransferCDB)command.getCommandDescriptorBlock();
@@ -51,7 +50,7 @@ public class BufferedReadTask extends BufferedTask
                throw new LogicalBlockAddressOutOfRangeException(true, true, 2);
          }
       }
-      
+
       // duplicate file byte buffer to avoid interference with other tasks
       buffer = buffer.duplicate();
       
