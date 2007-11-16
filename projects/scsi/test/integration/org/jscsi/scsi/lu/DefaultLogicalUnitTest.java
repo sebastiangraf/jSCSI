@@ -5,13 +5,18 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.CDB;
+import org.jscsi.scsi.protocol.cdb.Read10;
+import org.jscsi.scsi.protocol.cdb.Read12;
+import org.jscsi.scsi.protocol.cdb.Read16;
 import org.jscsi.scsi.protocol.cdb.Read6;
+import org.jscsi.scsi.protocol.cdb.Write10;
+import org.jscsi.scsi.protocol.cdb.Write12;
+import org.jscsi.scsi.protocol.cdb.Write16;
 import org.jscsi.scsi.protocol.cdb.Write6;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.inquiry.StaticInquiryDataRegistry;
@@ -104,7 +109,7 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
    //
 
    @Test
-   public void TestRead6()
+   public void TestReadWriteCompare6()
    {
       CDB cdb1 = new Write6(false, true, 10, NUM_BLOCKS_TRANSFER);
       Command cmd1 = new Command(this.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED, this.cmdRef, 0);
@@ -124,7 +129,75 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit implements Targe
       
       Assert.assertTrue("inconsistent read/write comparison", Arrays.equals(readBuf, writeBuf));
    }
+   
+   @Test
+   public void TestReadWriteCompare10()
+   {
+      CDB cdb1 = new Write10(0, false, false, false, false, false, 10, NUM_BLOCKS_TRANSFER);
+      Command cmd1 = new Command(this.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED, this.cmdRef, 0);
+      this.createReadData(NUM_BLOCKS_TRANSFER * STORE_BLOCK_SIZE, this.cmdRef);
+      lu.enqueue(this, cmd1);
+      this.cmdRef++;
+      
+      
+      CDB cdb2 = new Read10(0, false, false, false, false, false, 10, NUM_BLOCKS_TRANSFER);
+      Command cmd2 = new Command(this.createNexus(this.cmdRef), cdb2, TaskAttribute.ORDERED, this.cmdRef, 0);
+      lu.enqueue(this, cmd2);
+      
+      try {Thread.sleep(500);} catch (InterruptedException e){}
+            
+      byte[] readBuf = this.readDataMap.get(cmdRef-1).array();
+      byte[] writeBuf = this.writeDataMap.get(cmdRef).array();
+      
+      Assert.assertTrue("inconsistent read/write comparison", Arrays.equals(readBuf, writeBuf));
+   }
 
+   @Test
+   public void TestReadWriteCompare12()
+   {
+      CDB cdb1 = new Write12(0, false, false, false, false, false, 10, NUM_BLOCKS_TRANSFER);
+      Command cmd1 = new Command(this.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED, this.cmdRef, 0);
+      this.createReadData(NUM_BLOCKS_TRANSFER * STORE_BLOCK_SIZE, this.cmdRef);
+      lu.enqueue(this, cmd1);
+      this.cmdRef++;
+      
+      
+      CDB cdb2 = new Read12(0, false, false, false, false, false, 10, NUM_BLOCKS_TRANSFER);
+      Command cmd2 = new Command(this.createNexus(this.cmdRef), cdb2, TaskAttribute.ORDERED, this.cmdRef, 0);
+      lu.enqueue(this, cmd2);
+      
+      try {Thread.sleep(500);} catch (InterruptedException e){}
+            
+      byte[] readBuf = this.readDataMap.get(cmdRef-1).array();
+      byte[] writeBuf = this.writeDataMap.get(cmdRef).array();
+      
+      Assert.assertTrue("inconsistent read/write comparison", Arrays.equals(readBuf, writeBuf));
+   }
+   
+   @Test
+   public void TestReadWriteCompare16()
+   {
+      CDB cdb1 = new Write16(0, false, false, false, false, false, 10, NUM_BLOCKS_TRANSFER);
+      Command cmd1 = new Command(this.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED, this.cmdRef, 0);
+      this.createReadData(NUM_BLOCKS_TRANSFER * STORE_BLOCK_SIZE, this.cmdRef);
+      lu.enqueue(this, cmd1);
+      this.cmdRef++;
+      
+      
+      CDB cdb2 = new Read16(0, false, false, false, false, false, 10, NUM_BLOCKS_TRANSFER);
+      Command cmd2 = new Command(this.createNexus(this.cmdRef), cdb2, TaskAttribute.ORDERED, this.cmdRef, 0);
+      lu.enqueue(this, cmd2);
+      
+      try {Thread.sleep(500);} catch (InterruptedException e){}
+            
+      byte[] readBuf = this.readDataMap.get(cmdRef-1).array();
+      byte[] writeBuf = this.writeDataMap.get(cmdRef).array();
+      
+      Assert.assertTrue("inconsistent read/write comparison", Arrays.equals(readBuf, writeBuf));
+   }
+   
+ 
+   
    /////////////////////////////////////////////////////////////////////////////
    // constructor(s)
 
