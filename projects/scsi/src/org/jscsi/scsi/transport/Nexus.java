@@ -164,21 +164,21 @@ public class Nexus
    @Override
    public String toString()
    {
-      String output = "<I_T nexus";
+      String output = new String();
       if (this.logicalUnitNumber == -1 || this.taskTag == -1)
       {
-         output += " initiatorPort: " + this.initiatorPortIdentifier
+         output += "<I_T nexus initiatorPort: " + this.initiatorPortIdentifier
             + " targetPort: " + this.targetPortIdentifier;
       }
       else if (this.taskTag == -1)
       {
-         output += " initiatorPort: " + this.initiatorPortIdentifier
+         output += "<I_T_L nexus initiatorPort: " + this.initiatorPortIdentifier
                + " targetPort: " + this.targetPortIdentifier + " LUN: "
                + this.logicalUnitNumber;
       }
       else
       {
-         output += " initiatorPort: " + this.initiatorPortIdentifier
+         output += "<I_T_L_Q nexus initiatorPort: " + this.initiatorPortIdentifier
                + " targetPort: " + this.targetPortIdentifier + " LUN: "
                + this.logicalUnitNumber + " taskTag: " + this.taskTag;
       }

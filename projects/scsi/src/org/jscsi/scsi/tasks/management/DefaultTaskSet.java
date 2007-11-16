@@ -285,7 +285,7 @@ public class DefaultTaskSet implements TaskSet
     */
    public boolean offer(Task task, long timeout, TimeUnit unit) throws InterruptedException
    {
-      _logger.debug(" #### offering to taskset command: " + task.getCommand());
+      _logger.debug("offering to taskset command: " + task.getCommand());
 
       if (task == null)
          throw new NullPointerException("task set does not take null objects");
@@ -356,7 +356,7 @@ public class DefaultTaskSet implements TaskSet
          this.notEmpty.signalAll();
          this.unblocked.signalAll();
          
-         _logger.debug(" $$$ offered successfully command: " + task.getCommand());
+         _logger.debug("offered successfully command: " + task.getCommand());
          return true;
 
       }
@@ -506,7 +506,7 @@ public class DefaultTaskSet implements TaskSet
          TaskContainer container = this.dormant.remove(0);
          this.enabled.add(container);
 
-         _logger.debug("Enabling task: " + container.toString());
+         _logger.debug("Enabling command: " + container.getCommand());
          _logger.debug("Dormant task set: " + this.dormant);
 
          return container;
