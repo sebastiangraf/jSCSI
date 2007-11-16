@@ -26,7 +26,7 @@ public class BufferedWriteTask extends BufferedTask
 
    @Override
    protected void execute(ByteBuffer buffer,
-                          int blockLength,
+                          int blockSize,
                           TargetTransportPort targetPort,
                           Command command,
                           ModePageRegistry modePageRegistry,
@@ -57,8 +57,8 @@ public class BufferedWriteTask extends BufferedTask
 
       // set file position
       // deviceSize will always be less than Integer.MAX_VALUE so truncating will be safe
-      buffer.position((int) (lba * blockLength));
-      buffer.limit((int)(transferLength * blockLength) + (int)(lba * blockLength));
+      buffer.position((int) (lba * blockSize));
+      buffer.limit((int)(transferLength * blockSize) + (int)(lba * blockSize));
 
       // attempt to read data from transport port
       if (!this.readData(buffer))
