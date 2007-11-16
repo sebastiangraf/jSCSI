@@ -29,7 +29,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
    public void testWrite6inMemory()
    {
       _logger.debug("********** WRITE6 MEMORY **********");
-      int lba = 0;//generateRandomLBA();
+      int lba = generateRandomLBA();
       CDB cdb = new Write6(false, true, lba, WRITE_BLOCKS);
       ByteBuffer data = this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitMemoryTask(cdb, cmdRef);
@@ -43,11 +43,13 @@ public class BufferedWriteTaskTest extends BufferTestTask
    public void testWrite6inFile()
    {
       _logger.debug("********** WRITE6 FILE **********");
-      CDB cdb = new Write6(false, true, 0, WRITE_BLOCKS);
-      this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
+      int lba = generateRandomLBA();
+      CDB cdb = new Write6(false, true, lba, WRITE_BLOCKS);
+      ByteBuffer data = this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitFileTask(cdb, cmdRef);
-      // TODO: Verify Write Return Value
+      verifyDeviceBuffer(data, this.getFileBuffer(), lba);
       this.purgeReadData(cmdRef);
+      this.purgeDeviceData();
       cmdRef++;
    }
    
@@ -55,11 +57,13 @@ public class BufferedWriteTaskTest extends BufferTestTask
    public void testWrite10inMemory()
    {
       _logger.debug("********** WRITE10 MEMORY **********");
-      CDB cdb = new Write10(0, false, false, false, false, false, 0, WRITE_BLOCKS);
-      this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
+      int lba = generateRandomLBA();
+      CDB cdb = new Write10(0, false, false, false, false, false, lba, WRITE_BLOCKS);
+      ByteBuffer data = this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitMemoryTask(cdb, cmdRef);
-      // TODO: Verify Write Return Value
+      verifyDeviceBuffer(data, this.getMemoryBuffer(), lba);
       this.purgeReadData(cmdRef);
+      this.purgeDeviceData();
       cmdRef++;
    }
    
@@ -67,11 +71,13 @@ public class BufferedWriteTaskTest extends BufferTestTask
    public void testWrite10inFile()
    {
       _logger.debug("********** WRITE10 FILE **********");
-      CDB cdb = new Write10(0, false, false, false, false, false, 0, WRITE_BLOCKS);
-      this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
+      int lba = generateRandomLBA();
+      CDB cdb = new Write10(0, false, false, false, false, false, lba, WRITE_BLOCKS);
+      ByteBuffer data = this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitFileTask(cdb, cmdRef);
-      // TODO: Verify Write Return Value
+      verifyDeviceBuffer(data, this.getFileBuffer(), lba);
       this.purgeReadData(cmdRef);
+      this.purgeDeviceData();
       cmdRef++;
    }
    
@@ -79,11 +85,13 @@ public class BufferedWriteTaskTest extends BufferTestTask
    public void testWrite12InMemory()
    {
       _logger.debug("********** WRITE12 MEMORY **********");
-      CDB cdb = new Write12(0, false, false, false, false, false, 0, WRITE_BLOCKS);
-      this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
+      int lba = generateRandomLBA();
+      CDB cdb = new Write12(0, false, false, false, false, false, lba, WRITE_BLOCKS);
+      ByteBuffer data = this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitMemoryTask(cdb, cmdRef);
-      // TODO: Verify Write Return Value
+      verifyDeviceBuffer(data, this.getMemoryBuffer(), lba);
       this.purgeReadData(cmdRef);
+      this.purgeDeviceData();
       cmdRef++;
    }
    
@@ -91,11 +99,13 @@ public class BufferedWriteTaskTest extends BufferTestTask
    public void testWrite12InFile()
    {
       _logger.debug("********** WRITE12 FILE **********");
-      CDB cdb = new Write12(0, false, false, false, false, false, 0, WRITE_BLOCKS);
-      this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
+      int lba = generateRandomLBA();
+      CDB cdb = new Write12(0, false, false, false, false, false, lba, WRITE_BLOCKS);
+      ByteBuffer data = this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitFileTask(cdb, cmdRef);
-      // TODO: Verify Write Return Value
+      verifyDeviceBuffer(data, this.getFileBuffer(), lba);
       this.purgeReadData(cmdRef);
+      this.purgeDeviceData();
       cmdRef++;
    }
    
@@ -103,11 +113,13 @@ public class BufferedWriteTaskTest extends BufferTestTask
    public void testWrite16inMemory()
    {
       _logger.debug("********** WRITE16 MEMORY **********");
-      CDB cdb = new Write12(0, false, false, false, false, false, 0, WRITE_BLOCKS);
-      this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
+      int lba = generateRandomLBA();
+      CDB cdb = new Write12(0, false, false, false, false, false, lba, WRITE_BLOCKS);
+      ByteBuffer data = this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitMemoryTask(cdb, cmdRef);
-      // TODO: Verify Write Return Value
+      verifyDeviceBuffer(data, this.getMemoryBuffer(), lba);
       this.purgeReadData(cmdRef);
+      this.purgeDeviceData();
       cmdRef++;
    }
    
@@ -115,11 +127,13 @@ public class BufferedWriteTaskTest extends BufferTestTask
    public void testWrite16inFile()
    {
       _logger.debug("********** WRITE16 FILE **********");
-      CDB cdb = new Write12(0, false, false, false, false, false, 0, WRITE_BLOCKS);
-      this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
+      int lba = generateRandomLBA();
+      CDB cdb = new Write12(0, false, false, false, false, false, lba, WRITE_BLOCKS);
+      ByteBuffer data = this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitFileTask(cdb, cmdRef);
-      // TODO: Verify Write Return Value
+      verifyDeviceBuffer(data, this.getFileBuffer(), lba);
       this.purgeReadData(cmdRef);
+      this.purgeDeviceData();
       cmdRef++;
    }
    
