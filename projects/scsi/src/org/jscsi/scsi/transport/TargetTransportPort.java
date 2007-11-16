@@ -57,7 +57,8 @@ public interface TargetTransportPort
     * @param commandReferenceNumber The command reference number associated with the nexus.
     * @param output The data output buffer which data will be written to. The transport port
     *    shall put at {@link ByteBuffer#position()} until all incoming data is written. The
-    *    operation will fail if a {@link BufferOverflowException} occurs.
+    *    operation will fail if a {@link BufferOverflowException} occurs. The caller should
+    *    take care to rewind or reset the buffer on completion.
     * @return True if all expected data has been written; False if no data or partial data
     *    has been written.
     */
