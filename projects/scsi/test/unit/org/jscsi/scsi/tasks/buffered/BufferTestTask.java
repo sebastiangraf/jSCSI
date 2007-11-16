@@ -103,7 +103,9 @@ public class BufferTestTask implements TargetTransportPort
          throws InterruptedException
    {
       _logger.debug("servicing readData request: nexus: " + nexus + ", cmdRef: " + commandReferenceNumber);
-      output.put(this.readDataMap.get(commandReferenceNumber));      
+      ByteBuffer data = this.readDataMap.get(commandReferenceNumber);
+      data.rewind();
+      output.put(data);      
       return true;
    }
 
@@ -265,7 +267,11 @@ public class BufferTestTask implements TargetTransportPort
    public ByteBuffer getMemoryBuffer()
    {
       ByteBuffer copy = ByteBuffer.allocate(memBuf.limit());
-      copy.put(memBuf);
+      
+      ByteBuffer rewoundCopy = memBuf.duplicate();
+      rewoundCopy.rewind();
+      
+      copy.put(rewoundCopy);
       
       return copy;
    }
@@ -273,7 +279,11 @@ public class BufferTestTask implements TargetTransportPort
    public ByteBuffer getFileBuffer()
    {
       ByteBuffer copy = ByteBuffer.allocate(fileBuf.limit());
-      copy.put(fileBuf);
+
+      ByteBuffer rewoundCopy = fileBuf.duplicate();
+      rewoundCopy.rewind();
+      
+      copy.put(rewoundCopy);
       
       return copy;
    }
