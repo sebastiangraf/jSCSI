@@ -55,7 +55,9 @@ public interface TargetTransportPort
     * 
     * @param nexus Generally either an I_T_L nexus or an I_T_L_Q nexus
     * @param commandReferenceNumber The command reference number associated with the nexus.
-    * @param output The data output buffer which data will be written to.
+    * @param output The data output buffer which data will be written to. The transport port
+    *    shall put at {@link ByteBuffer#position()} until all incoming data is written. The
+    *    operation will fail if a {@link BufferOverflowException} occurs.
     * @return True if all expected data has been written; False if no data or partial data
     *    has been written.
     */
@@ -77,8 +79,9 @@ public interface TargetTransportPort
     * 
     * @param nexus Generally either an I_T_L nexus or an I_T_L_Q nexus.
     * @param commandReferenceNumber The command reference number associated with the nexus.
-    * @param input The data input buffer which data will be read from. The buffer must be set
-    *    to the correct position before this method is called.
+    * @param input The data input buffer which data will be read from. The transport port shall
+    *    transfer all data from {@link ByteBuffer#position()} to {@link ByteBuffer#limit()}. The
+    *    expected transfer length is thus (limit - position).
     * @return True if all expected data has been written; False if no data or partial data has
     *    been written.
     */
@@ -113,7 +116,8 @@ public interface TargetTransportPort
     * @param commandReferenceNumber The command reference number associated with the nexus.
     * @param status The final status of the command.
     * @param senseData Autosense data; <code>null</code> if the status is not 
-    *    {@link Status#CHECK_CONDITION}.
+    *    {@link Status#CHECK_CONDITION}. Transfer from the sense data buffer shall occur in the
+    *    same manner as the data buffer in {@link #writeData(Nexus, long, ByteBuffer)}.
     */
    void writeResponse(Nexus nexus, long commandReferenceNumber, Status status, ByteBuffer senseData);
 }
