@@ -175,7 +175,7 @@ public abstract class AbstractTask implements Task
 
       // We allocate a byte buffer of transfer length and write either all input data
       // or up to the transfer length in input data.
-      ByteBuffer data = ByteBuffer.allocate((int) transferLength);
+      ByteBuffer data = ByteBuffer.allocate((int) Math.min(transferLength, input.length));
       data.put(input, 0, (int) Math.min(transferLength, input.length));
       data.rewind();
 

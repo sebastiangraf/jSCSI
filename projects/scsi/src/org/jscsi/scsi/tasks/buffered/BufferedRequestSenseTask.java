@@ -42,10 +42,6 @@ public class BufferedRequestSenseTask extends BufferedTask
             out.write((new FixedSenseData(true, KCQ.NO_ERROR, null, null, null)).encode());
          }
 
-         out.writeLong(this.getFileCapacity());
-         out.writeLong((long) blockLength);
-         out.writeByte(0); // RTO_EN and PROT_EN set to false; do not support protection info
-         // the remaining bytes are reserved
       }
       catch (IOException e1)
       {
