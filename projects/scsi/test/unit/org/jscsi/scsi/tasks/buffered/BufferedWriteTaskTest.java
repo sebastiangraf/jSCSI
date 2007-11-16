@@ -151,15 +151,27 @@ public class BufferedWriteTaskTest extends BufferTestTask
       assertNotNull(deviceData);
       assertNotNull(writtenData);
       
-      deviceData.position(lba * STORE_BLOCK_SIZE);
+      deviceData.rewind();
       writtenData.rewind();
       
-      for (int i=0; i<bytesWritten; i++)
+      
+      for (int i=0; i<STORE_CAPACITY; i++)
       {
          byte d = deviceData.get();
-         byte w = writtenData.get();
          
-         assertEquals(w, d);
+         if (i < (lba * STORE_BLOCK_SIZE))
+         {
+            assertEquals(0, d);
+         }
+         else if (i < (lba * STORE_BLOCK_SIZE) + bytesWritten)
+         {
+            byte w = writtenData.get();
+            assertEquals(w, d);
+         }
+         else
+         {
+            assertEquals(0, d);
+         }
       }
    }
    

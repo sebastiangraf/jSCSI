@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.cdb.CDB;
 import org.jscsi.scsi.protocol.cdb.RequestSense;
+import org.jscsi.scsi.protocol.sense.exceptions.SenseException.ResponseCode;
 import org.junit.Test;
 
 public class BufferedRequestSenseTaskTest extends BufferTestTask
@@ -53,6 +54,19 @@ public class BufferedRequestSenseTaskTest extends BufferTestTask
       assertNotNull(writtenBuffer);
       
       writtenBuffer.rewind();
+      
+      byte responseCode = writtenBuffer.get();
+      
+      // Check that the valid bit is set
+      assertEquals(1, (responseCode >> 7) & 1);
+      
+      // Check that the response code is for fixed sense data
+      int responseCodeValue = (int) ResponseCode.CURRENT_FIXED.code();
+      assertEquals(responseCodeValue, (responseCode & 0x7F));
+      
+      //int remainingLength = 
+      //assertEquals()
+      
       /*
       for (int i=0; i<ALLOCATION_LENGTH; i++)
       {
