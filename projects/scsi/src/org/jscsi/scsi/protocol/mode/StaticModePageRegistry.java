@@ -14,8 +14,18 @@ public class StaticModePageRegistry extends ModePageRegistry
    {
       this.populateCaching();
       this.populateControl();
+      this.populateControlExtension();
       this.populateInformationalExceptionsControl();
       this.populateReadWriteErrorRecovery();
+      
+      //register(BackgroundControl.PAGE_CODE, BackgroundControl.SUBPAGE_CODE, backgroundControl);
+      register(Caching.PAGE_CODE, caching);
+      register(Control.PAGE_CODE, control);
+      register(ControlExtension.PAGE_CODE, ControlExtension.SUBPAGE_CODE, controlExtension);
+      //register(DisconnectReconnect.PAGE_CODE, disconnectReconnect);
+      register(InformationalExceptionsControl.PAGE_CODE, informationalExceptionsControl);
+      //register(PowerCondition.PAGE_CODE, powerCondition);
+      register(ReadWriteErrorRecovery.PAGE_CODE, readWriteErrorRecovery);
    }
    
    protected void populateCaching()

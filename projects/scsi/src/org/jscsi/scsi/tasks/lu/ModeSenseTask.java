@@ -115,9 +115,14 @@ public class ModeSenseTask extends AbstractTask
             _logger.trace("Initiator requested all mode pages");
             for ( ModePage page : modePageRegistry.get(cdb.getSubPageCode() == 0xFF) )
             {
-               _logger.trace("Encoding mode page: PAGE_CODE=" + page.getPageCode() +
-                     ", SUB_PAGE_CODE=" + page.getSubPageCode());
+               _logger.trace(
+                  String.format(
+                     "Encoding mode page: PAGE_CODE=%X, SUB_PAGE_CODE=%X (at buffer position %d)",
+                     page.getPageCode(),
+                     page.getSubPageCode(),
+                     out.size()) );
                out.write(page.encode());
+               _logger.trace("Encoded mode page up to buffer position: " + out.size());
             }
          }
          else if ( ! modePageRegistry.contains((byte)cdb.getPageCode()) )
@@ -132,8 +137,10 @@ public class ModeSenseTask extends AbstractTask
                for ( ModePage page : modePageRegistry.get((byte)cdb.getPageCode()) )
                {
                   _logger.trace("Encoding mode page: PAGE_CODE=" + page.getPageCode() +
-                        ", SUB_PAGE_CODE=" + page.getSubPageCode());
+                        ", SUB_PAGE_CODE=" + page.getSubPageCode() + 
+                        " to buffer position: " + out.size());
                   out.write(page.encode());
+                  _logger.trace("Encoded mode page up to buffer position: " + out.size());
                }
             }
             else
@@ -159,12 +166,16 @@ public class ModeSenseTask extends AbstractTask
          if ( cdb.getOperationCode() == ModeSense6.OPERATION_CODE )
          {
             // MODE DATA LENGTH = data size - len(MODE DATA LENGTH)
-            out.writeByte(data.limit() - 1); 
+            // this should generally be okay because data.limit() will
+            // never be larger than BYTE_MAX
+            data.put((byte)(data.limit() - 1)); 
          }
          else // ModeSense10.OPERATION_CODE
          {
             // MODE DATA LENGTH = data size - len(MODE DATA LENGTH)
-            out.writeShort(data.limit() - 2);
+            // this should generally be okay because data.limit() will
+            // never be larger than SHORT_MAX
+            data.putShort((short)(data.limit() - 2));
          }
          
          data.position(0);

@@ -9,30 +9,36 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
+import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Serializer;
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
 public abstract class ModePageRegistry implements Serializer
 {
+   private static Logger _logger = Logger.getLogger(ModePageRegistry.class);
+   
    // Long to ModePage map
-   private Map<Byte, Map<Integer,ModePage>> pages = null;
+   private SortedMap<Byte, SortedMap<Integer,ModePage>> pages = null;
 
 
    // Factory registration methods
-   private void register(byte pageCode, ModePage page)
+   protected void register(byte pageCode, ModePage page)
    {
       register(pageCode, 0, page);
    }
 
-   private void register(byte pageCode, int subPageCode, ModePage page)
+   protected void register(byte pageCode, int subPageCode, ModePage page)
    {
       if ( this.pages == null )
-         this.pages = new HashMap<Byte, Map<Integer,ModePage>>();
+         this.pages = new TreeMap<Byte, SortedMap<Integer,ModePage>>();
       if ( ! this.pages.containsKey(pageCode) )
-         this.pages.put(pageCode, new HashMap<Integer,ModePage>());
+         this.pages.put(pageCode, new TreeMap<Integer,ModePage>());
       this.pages.get(pageCode).put(subPageCode, page);
    }
+   
    
    public boolean contains(byte pageCode)
    {
@@ -128,19 +134,14 @@ public abstract class ModePageRegistry implements Serializer
    // Registration
    private void registerObjects()
    {
-      //register(BackgroundControl.PAGE_CODE, BackgroundControl.SUBPAGE_CODE, backgroundControl);
-      register(Caching.PAGE_CODE, caching);
-      register(Control.PAGE_CODE, control);
-      register(ControlExtension.PAGE_CODE, ControlExtension.SUBPAGE_CODE, controlExtension);
-      //register(DisconnectReconnect.PAGE_CODE, disconnectReconnect);
-      register(InformationalExceptionsControl.PAGE_CODE, informationalExceptionsControl);
-      //register(PowerCondition.PAGE_CODE, powerCondition);
-      register(ReadWriteErrorRecovery.PAGE_CODE, readWriteErrorRecovery);
+      this.populateModePages();
    }
 
    @SuppressWarnings("unchecked")
    public ModePage decode(ByteBuffer buffer) throws IOException
    {
+      _logger.trace("Decoding mode page at buffer position: " + buffer.position());
+      
       DataInputStream dataIn = new DataInputStream(new ByteBufferInputStream(buffer));
 
       boolean subPageFormat;
@@ -174,7 +175,9 @@ public abstract class ModePageRegistry implements Serializer
       
       if(page != null)
       {
+         _logger.trace("Decoding mode page: " + page);
          page.decode(header, buffer);
+         _logger.trace("Mode page decoded up to buffer position: " + buffer.position());
          return page;
       }
       else
