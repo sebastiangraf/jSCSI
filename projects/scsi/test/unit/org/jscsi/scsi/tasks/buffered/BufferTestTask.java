@@ -149,6 +149,11 @@ public class BufferTestTask implements TargetTransportPort
    
    /////////////////////////////////////////////////////////////////////////////
 
+   public void addReadData(int size, long cmdRef, ByteBuffer data)
+   {
+      this.readDataMap.put(cmdRef, data);
+   }
+   
    public ByteBuffer createReadData(int size, long cmdRef)
    {
       byte[] data = new byte[size];

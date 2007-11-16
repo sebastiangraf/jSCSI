@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.cdb.CDB;
 import org.jscsi.scsi.protocol.cdb.Write10;
 import org.jscsi.scsi.protocol.cdb.Write12;
+import org.jscsi.scsi.protocol.cdb.Write16;
 import org.jscsi.scsi.protocol.cdb.Write6;
 import org.junit.Test;
 
@@ -114,7 +115,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
    {
       _logger.debug("********** WRITE16 MEMORY **********");
       int lba = generateRandomLBA();
-      CDB cdb = new Write12(0, false, false, false, false, false, lba, WRITE_BLOCKS);
+      CDB cdb = new Write16(0, false, false, false, false, false, lba, WRITE_BLOCKS);
       ByteBuffer data = this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitMemoryTask(cdb, cmdRef);
       verifyDeviceBuffer(data, this.getMemoryBuffer(), lba);
@@ -128,7 +129,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
    {
       _logger.debug("********** WRITE16 FILE **********");
       int lba = generateRandomLBA();
-      CDB cdb = new Write12(0, false, false, false, false, false, lba, WRITE_BLOCKS);
+      CDB cdb = new Write16(0, false, false, false, false, false, lba, WRITE_BLOCKS);
       ByteBuffer data = this.createReadData(WRITE_BLOCKS * STORE_BLOCK_SIZE, cmdRef);
       this.submitFileTask(cdb, cmdRef);
       verifyDeviceBuffer(data, this.getFileBuffer(), lba);
