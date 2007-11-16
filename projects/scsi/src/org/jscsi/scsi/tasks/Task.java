@@ -1,8 +1,6 @@
 package org.jscsi.scsi.tasks;
 
 import org.jscsi.scsi.protocol.Command;
-import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
-import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 public interface Task extends Runnable

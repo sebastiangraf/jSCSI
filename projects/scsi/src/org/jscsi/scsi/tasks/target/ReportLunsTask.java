@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.tasks.target;
 
 import java.nio.BufferOverflowException;
@@ -11,13 +12,12 @@ import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.tasks.AbstractTask;
-import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class ReportLunsTask extends AbstractTask
 {
    Set<Long> logicalUnits;
-   
+
    public ReportLunsTask(
          Set<Long> logicalUnits,
          TargetTransportPort targetPort,
@@ -28,21 +28,17 @@ public class ReportLunsTask extends AbstractTask
       super("ReportLuns", targetPort, command, modePageRegistry, inquiryDataRegistry);
       this.logicalUnits = logicalUnits;
    }
-   
+
    @Override
-   protected void execute(
-         TargetTransportPort targetPort,
-         Command command,
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException
+   protected void execute() throws InterruptedException, SenseException
    {
-      ReportLuns cdb = (ReportLuns)command.getCommandDescriptorBlock();
-      
-      ByteBuffer data = ByteBuffer.allocate((int)cdb.getAllocationLength());
-      
+      ReportLuns cdb = (ReportLuns) getCommand().getCommandDescriptorBlock();
+
+      ByteBuffer data = ByteBuffer.allocate((int) cdb.getAllocationLength());
+
       try
       {
-         if ( cdb.getSelectReport() == 0x01)
+         if (cdb.getSelectReport() == 0x01)
          {
             // SELECT REPORT 0x01
             // Report only well known logical units. Because this implementation does not
@@ -54,12 +50,12 @@ public class ReportLunsTask extends AbstractTask
             // SELECT REPORT 0x00 or 0x02
             data.putInt(this.logicalUnits.size() * 8); // LUN LIST LENGTH (each entry is 8 bytes)
             data.putInt(0); // 4-byte reserved field
-            for ( long lun : this.logicalUnits )
+            for (long lun : this.logicalUnits)
             {
                data.putLong(lun);
             }
          }
-         
+
       }
       catch (BufferOverflowException e)
       {
@@ -68,19 +64,17 @@ public class ReportLunsTask extends AbstractTask
           * that no indication of this event shall be returned to the client.
           * 
           * Note that because and exception is thrown the final write will not actually proceed.
-          * This slightly violates SBC-2. However, proper initiator behavior will yield and
-          * adequate allocation length and improper initiators will receive a capacity or block
-          * length of zero. This is actually probably the best approach.
+          * This slightly violates SBC-2. However, proper initiator behavior will yield and adequate
+          * allocation length and improper initiators will receive a capacity or block length of
+          * zero. This is actually probably the best approach.
           */
       }
-      
+
       this.writeData(data);
       this.writeResponse(Status.GOOD, null);
-      
+
       // TODO Auto-generated method stub
-      
+
    }
-   
-   
 
 }

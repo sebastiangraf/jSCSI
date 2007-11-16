@@ -1,3 +1,4 @@
+
 package org.jscsi.scsi.tasks.buffered;
 
 import java.nio.ByteBuffer;
@@ -19,22 +20,6 @@ public abstract class BufferedTask extends AbstractTask
    {
       super();
    }
-
-   /**
-    * @deprecated
-    */
-   public BufferedTask(
-         ByteBuffer file,
-         int blockLength,
-         TargetTransportPort targetPort,
-         Command command,
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry)
-   {
-      super(targetPort, command, modePageRegistry, inquiryDataRegistry);
-      this.buffer = file;
-      this.blockSize = blockLength;
-   }
    
    public BufferedTask(
          String name,
@@ -53,22 +38,13 @@ public abstract class BufferedTask extends AbstractTask
    /**
     * Executes the task operation.
     */
-   protected abstract void execute(
-         ByteBuffer file,
-         int blockLength,
-         TargetTransportPort targetPort,
-         Command command,
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException;
+   protected abstract void execute(ByteBuffer file, int blockLength) throws InterruptedException,
+         SenseException;
 
    @Override
-   protected final void execute(
-         TargetTransportPort targetPort,
-         Command command,
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException
+   protected final void execute() throws InterruptedException, SenseException
    {
-      this.execute(buffer, blockSize, targetPort, command, modePageRegistry, inquiryDataRegistry);
+      this.execute(buffer, blockSize);
    }
 
    protected final Task load(

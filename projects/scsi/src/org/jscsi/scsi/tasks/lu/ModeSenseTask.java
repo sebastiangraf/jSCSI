@@ -18,7 +18,6 @@ import org.jscsi.scsi.protocol.sense.exceptions.SavingParametersNotSupportedExce
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.protocol.sense.exceptions.SynchronousDataTransferErrorException;
 import org.jscsi.scsi.tasks.AbstractTask;
-import org.jscsi.scsi.tasks.management.DefaultTaskSet;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 // TODO: Describe class or interface
@@ -37,14 +36,10 @@ public class ModeSenseTask extends AbstractTask
 
 
    @Override
-   protected void execute(
-         TargetTransportPort targetPort,
-         Command command,
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException
+   protected void execute() throws InterruptedException, SenseException
    {
       // The LLBAA field in MODE SENSE (10) is ignored because block descriptors aren't supported
-      ModeSense6 cdb = (ModeSense6)command.getCommandDescriptorBlock();
+      ModeSense6 cdb = (ModeSense6)getCommand().getCommandDescriptorBlock();
       
       // The DBD field in MODE SENSE (6,10) are ignored because block descriptor's are supported
       
@@ -66,8 +61,8 @@ public class ModeSenseTask extends AbstractTask
       try
       {
          int devspec = 0; // DEVICE-SPECIFIC PARAMETER field
-         devspec |= modePageRegistry.isWP() ? 0x80 : 0x00;
-         devspec |= modePageRegistry.isDPOFUA() ? 0x10 : 0x00;
+         devspec |= getModePageRegistry().isWP() ? 0x80 : 0x00;
+         devspec |= getModePageRegistry().isDPOFUA() ? 0x10 : 0x00;
          
          if ( cdb.getOperationCode() == ModeSense6.OPERATION_CODE )
          {
@@ -113,7 +108,7 @@ public class ModeSenseTask extends AbstractTask
          if ( cdb.getPageCode() == 0x3F )
          {
             _logger.trace("Initiator requested all mode pages");
-            for ( ModePage page : modePageRegistry.get(cdb.getSubPageCode() == 0xFF) )
+            for ( ModePage page : getModePageRegistry().get(cdb.getSubPageCode() == 0xFF) )
             {
                _logger.trace(
                   String.format(
@@ -125,7 +120,7 @@ public class ModeSenseTask extends AbstractTask
                _logger.trace("Encoded mode page up to buffer position: " + out.size());
             }
          }
-         else if ( ! modePageRegistry.contains((byte)cdb.getPageCode()) )
+         else if ( ! getModePageRegistry().contains((byte)cdb.getPageCode()) )
          {
             throw new InvalidFieldInCDBException(true, (byte)5, 2);
          }
@@ -134,7 +129,7 @@ public class ModeSenseTask extends AbstractTask
             if ( cdb.getSubPageCode() == 0xFF )
             {
                _logger.trace("Initiator requested all pages with PAGE_CODE=" + cdb.getPageCode());
-               for ( ModePage page : modePageRegistry.get((byte)cdb.getPageCode()) )
+               for ( ModePage page : getModePageRegistry().get((byte)cdb.getPageCode()) )
                {
                   _logger.trace("Encoding mode page: PAGE_CODE=" + page.getPageCode() +
                         ", SUB_PAGE_CODE=" + page.getSubPageCode() + 
@@ -145,7 +140,7 @@ public class ModeSenseTask extends AbstractTask
             }
             else
             {
-               if ( ! modePageRegistry.contains((byte)cdb.getPageCode(), cdb.getSubPageCode()) )
+               if ( ! getModePageRegistry().contains((byte)cdb.getPageCode(), cdb.getSubPageCode()) )
                {
                   _logger.trace("Requested mode page does not exist: " + cdb.getPageCode() +
                      ", SUB_PAGE_CODE=" + cdb.getSubPageCode());
@@ -156,7 +151,7 @@ public class ModeSenseTask extends AbstractTask
                   _logger.trace("Initiator requested mode page: " + cdb.getPageCode() +
                         ", SUB_PAGE_CODE=" + cdb.getSubPageCode());
                   out.write(
-                     modePageRegistry.get((byte)cdb.getPageCode(), cdb.getSubPageCode()).encode());
+                        getModePageRegistry().get((byte)cdb.getPageCode(), cdb.getSubPageCode()).encode());
                }
             }
          }
@@ -191,10 +186,6 @@ public class ModeSenseTask extends AbstractTask
       {
          throw new RuntimeException("Unable to write mode sense data to byte array");
       }
-      
-
-      
-      
 
    }
 

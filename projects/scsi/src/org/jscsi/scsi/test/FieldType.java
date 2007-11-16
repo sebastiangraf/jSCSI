@@ -33,7 +33,6 @@
 //---------------------
 
 package org.jscsi.scsi.test;
-import org.apache.log4j.Logger;
 
 // TODO: Describe class or interface
 public enum FieldType

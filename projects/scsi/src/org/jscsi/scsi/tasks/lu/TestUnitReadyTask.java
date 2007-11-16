@@ -1,5 +1,6 @@
 
 package org.jscsi.scsi.tasks.lu;
+
 import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
@@ -16,19 +17,13 @@ public class TestUnitReadyTask extends AbstractTask
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
    {
-      super(targetPort, command, modePageRegistry, inquiryDataRegistry);
+      super("TestUnitReadyTask", targetPort, command, modePageRegistry, inquiryDataRegistry);
    }
 
    @Override
-   protected void execute(
-         TargetTransportPort targetPort,
-         Command command,
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry) throws InterruptedException, SenseException
+   protected void execute() throws InterruptedException, SenseException
    {
       this.writeResponse(Status.GOOD, null);
    }
 
 }
-
-
