@@ -38,16 +38,16 @@ public class BufferedRequestSenseTask extends BufferedTask
       
       ByteArrayOutputStream bs = new ByteArrayOutputStream();
       DataOutputStream out = new DataOutputStream(bs);
-      
+     
       try
       {
          if ( cdb.isDESC() )
          {
-            this.writeData((new DescriptorSenseData()).encode());
+            out.write((new DescriptorSenseData()).encode());
          }
          else
          {
-            this.writeData((new FixedSenseData(true, KCQ.NO_ERROR, null, null, null)).encode());
+            out.write((new FixedSenseData(true, KCQ.NO_ERROR, null, null, null)).encode());
          }
          
          out.writeLong(this.getFileCapacity());
@@ -58,7 +58,7 @@ public class BufferedRequestSenseTask extends BufferedTask
       catch (IOException e1)
       {
          throw new RuntimeException("unable to encode READ CAPACITY (10) parameter data");
-      } 
+      }
       
       this.writeData(bs.toByteArray());
       this.writeResponse(Status.GOOD, null);
