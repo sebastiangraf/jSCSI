@@ -283,13 +283,13 @@ public class DefaultTaskSet implements TaskSet
     */
    public boolean offer(Task task, long timeout, TimeUnit unit) throws InterruptedException
    {
-      _logger.debug("Task set BEFORE offer(): " + this.dormant);
-      _logger.debug("offering to taskset command: " + task.getCommand());
-
       if (task == null)
          throw new NullPointerException("task set does not take null objects");
 
       lock.lockInterruptibly();
+      
+      _logger.debug("Task set BEFORE offer(): " + this.dormant);
+      _logger.debug("offering to taskset command: " + task.getCommand());
 
       try
       {
