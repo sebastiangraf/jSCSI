@@ -17,6 +17,7 @@ import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.target.conf.OperationalTextConfiguration;
 import org.jscsi.target.conf.OperationalTextException;
 import org.jscsi.target.parameter.connection.Phase;
+import org.jscsi.target.task.ConnectionTaskRouter;
 
 /**
  * <h1>Connection</h1>
@@ -90,6 +91,8 @@ public class Connection {
 	 * the Condition is used to signal waiting Threads for reveived PDUs
 	 */
 	private final Condition somethingReceived = ReceivingLock.newCondition();
+	
+	private final ConnectionTaskRouter taskRouter;
 
 	/**
 	 * this Connection's NetWorker
@@ -99,6 +102,8 @@ public class Connection {
 	public Connection(SocketChannel sChannel) throws OperationalTextException {
 		//create a new Configuration for this Connection 
 		configuration = OperationalTextConfiguration.create(this);
+		//a new TaskRouter holding every active Task Object restricted to this Connection
+		taskRouter = new ConnectionTaskRouter(this);
 		// when java 1.6 available for mac, change TreeMap to
 		// ConcurrentSkipListMap, should be done in the Session and NetWorker too
 		sendingBuffer = new TreeMap<Integer, ProtocolDataUnit>();
@@ -133,6 +138,18 @@ public class Connection {
 		return configuration;
 	}
 
+	public final String getIdentifyingString(boolean recursiv){
+		StringBuffer result = new StringBuffer();
+		result.append("ConnectionID = ");
+		result.append(getConnectionID());
+		result.append(";");
+		if(recursiv == true){
+			result.append(" Referenced Session: ");
+			result.append(getReferencedSession().getIdentifyingString());
+		}
+		return result.toString();
+	}
+	
 	/**
 	 * Returns the lowest CmdSN the receiving Buffer contains
 	 * 
@@ -176,6 +193,10 @@ public class Connection {
 				return statusSequenceNumber;
 			}
 		}
+	}
+	
+	public final ConnectionTaskRouter getTaskRouter(){
+		return taskRouter;
 	}
 
 	/**

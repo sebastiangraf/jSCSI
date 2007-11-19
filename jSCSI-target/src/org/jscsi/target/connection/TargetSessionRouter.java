@@ -15,20 +15,20 @@ import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.ISID;
 import org.jscsi.parser.login.LoginRequestParser;
 
-
 /**
- * The SessionManager holds every active Session within the jSCSI target
+ * The TargetSessionRouter holds every active Session within the jSCSI target
  * environment. As a SocketHandler, possible SocketListener can assign a Socket
- * to the SessionManager, the SessionManager then tries to create a valid
- * <code>Connection</code>/<code>Session</code>.
+ * to the TargetSessionRouter, the TargetSessionRouter then tries to create a
+ * valid <code>Connection</code>/<code>Session</code>.
  * 
  * @author Marcus Specht
  * 
  */
-public final class SessionManager implements ISocketHandler {
+public final class TargetSessionRouter implements ISocketHandler {
 
 	/** The logger interface. */
-	private static final Log LOGGER = LogFactory.getLog(SessionManager.class);
+	private static final Log LOGGER = LogFactory
+			.getLog(TargetSessionRouter.class);
 
 	// --------------------------------------------------------------------------
 	// --------------------------------------------------------------------------
@@ -39,15 +39,15 @@ public final class SessionManager implements ISocketHandler {
 	/** the only instance of a <code>TSIHFactory</code> */
 	private static TSIHFactory tsihFactory;
 
-	public SessionManager() {
+	public TargetSessionRouter() {
 		// thread safe ConcurrentHashMap
 		sessions = new ConcurrentHashMap<Short, Session>();
 		try {
 			tsihFactory = Singleton.getInstance(TSIHFactory.class);
 		} catch (ClassNotFoundException e) {
-			if(LOGGER.isDebugEnabled()){
-				LOGGER.debug("Couldn't load " + TSIHFactory.class);
-			}
+
+			logDebug("Couldn't load " + TSIHFactory.class);
+
 		}
 	}
 
@@ -154,8 +154,7 @@ public final class SessionManager implements ISocketHandler {
 			// Session would be possible too
 
 		}
-		
-		
+
 		@SuppressWarnings("unused")
 		private void processDiscoveryRequest() {
 
@@ -175,9 +174,9 @@ public final class SessionManager implements ISocketHandler {
 		 *            the LoginRequestParser from the first incoming PDU
 		 */
 		private void processLoginRequest(LoginRequestParser parser) {
-			if (LOGGER.isTraceEnabled()) {
-				LOGGER.trace("Processing a new LoginRequest!");
-			}
+
+			logTrace("Processing a new LoginRequest!");
+
 			// prepare Connection
 			newConnection.setConnectionID((short) parser.getConnectionID());
 			// find appropriate Session
@@ -198,11 +197,16 @@ public final class SessionManager implements ISocketHandler {
 		 */
 		private void createNewSession() {
 			short newUniqueTSIH = tsihFactory.getNewTSIH();
-			Session newSession = new Session(newConnection, newUniqueTSIH);
-			getSessionMap().put(newUniqueTSIH, newSession);
-			if (LOGGER.isTraceEnabled()) {
-				LOGGER.trace("Created new Session: TSIH = " + newUniqueTSIH);
+			Session newSession = null;
+			try {
+				newSession = new Session(newConnection, newUniqueTSIH);
+			} catch (OperationalTextException e) {
+				logTrace("Had to drop a Socket, error occured creating a Session!");
 			}
+			getSessionMap().put(newUniqueTSIH, newSession);
+
+			logTrace("Created new Session: TSIH = " + newUniqueTSIH);
+
 		}
 
 		/**
@@ -216,6 +220,31 @@ public final class SessionManager implements ISocketHandler {
 								+ session.getTargetSessionIdentifyingHandleD()
 								+ ", CID = " + newConnection.getConnectionID());
 			}
+		}
+
+		/**
+		 * Logs a trace Message , if trace log is enabled within the logging
+		 * environment.
+		 * 
+		 * @param logMessage
+		 */
+		private void logTrace(String logMessage) {
+			if (LOGGER.isTraceEnabled()) {
+				LOGGER.trace(" Message: " + logMessage);
+			}
+		}
+	}
+
+	/**
+	 * Logs a debug Message, if debug log is enabled within the logging
+	 * environment.
+	 * 
+	 * @param logMessage
+	 */
+	private void logDebug(String logMessage) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.trace(" Message: " + logMessage);
+
 		}
 	}
 

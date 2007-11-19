@@ -9,7 +9,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.Configuration;
 import org.jscsi.target.conf.OperationalTextConfiguration;
 import org.jscsi.target.util.Singleton;
 
@@ -29,8 +28,8 @@ public class Target {
 	/** The logger interface. */
 	private static final Log LOGGER = LogFactory.getLog(Target.class);
 
-	/** This targets SessionManager */
-	private static SessionManager SESSION_MANAGER;
+	/** This targets TargetSessionRouter */
+	private static TargetSessionRouter SESSION_MANAGER;
 
 	/** all active SocketListener */
 	private final Map<Integer, SocketListener> socketListeners;
@@ -44,10 +43,10 @@ public class Target {
 	public Target(OperationalTextConfiguration conf) {
 		config = conf;
 		try {
-			SESSION_MANAGER = Singleton.getInstance(SessionManager.class);
+			SESSION_MANAGER = Singleton.getInstance(TargetSessionRouter.class);
 		} catch (ClassNotFoundException e) {
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Couldn't load " + SessionManager.class);
+				LOGGER.debug("Couldn't load " + TargetSessionRouter.class);
 			}
 		}
 		socketListeners = new ConcurrentHashMap<Integer, SocketListener>();
