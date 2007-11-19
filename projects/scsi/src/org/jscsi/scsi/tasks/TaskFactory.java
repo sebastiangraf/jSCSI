@@ -20,4 +20,12 @@ public interface TaskFactory
     *    command. This means an illegal request has been sent from the initiator.
     */
    Task getInstance(TargetTransportPort port, Command command) throws IllegalRequestException;
+   
+   /**
+    * Returns a boolean indicating whether this factory responds to a particular Task class.
+    * 
+    * @param cls The command class we're inspecting.
+    * @return boolean True if this factory supports the Task class, false otherwise.
+    */
+   boolean respondsTo(Class<? extends Command> cls);
 }

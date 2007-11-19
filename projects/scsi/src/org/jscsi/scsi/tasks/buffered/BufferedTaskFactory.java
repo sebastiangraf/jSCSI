@@ -16,7 +16,6 @@ import org.jscsi.scsi.protocol.cdb.Read16;
 import org.jscsi.scsi.protocol.cdb.Read6;
 import org.jscsi.scsi.protocol.cdb.ReadCapacity10;
 import org.jscsi.scsi.protocol.cdb.ReadCapacity16;
-import org.jscsi.scsi.protocol.cdb.RequestSense;
 import org.jscsi.scsi.protocol.cdb.TestUnitReady;
 import org.jscsi.scsi.protocol.cdb.Write10;
 import org.jscsi.scsi.protocol.cdb.Write12;
@@ -35,7 +34,7 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class BufferedTaskFactory implements TaskFactory
 {
-   private static Map<Class<? extends CDB>, Class<? extends BufferedTask>> _tasks =
+   private static Map<Class<? extends CDB>, Class<? extends BufferedTask>> tasks =
          new HashMap<Class<? extends CDB>, Class<? extends BufferedTask>>();
 
    private ByteBuffer buffer;
@@ -45,16 +44,16 @@ public class BufferedTaskFactory implements TaskFactory
 
    static
    {
-      BufferedTaskFactory._tasks.put(Read6.class, BufferedReadTask.class);
-      BufferedTaskFactory._tasks.put(Read10.class, BufferedReadTask.class);
-      BufferedTaskFactory._tasks.put(Read12.class, BufferedReadTask.class);
-      BufferedTaskFactory._tasks.put(Read16.class, BufferedReadTask.class);
-      BufferedTaskFactory._tasks.put(Write6.class, BufferedWriteTask.class);
-      BufferedTaskFactory._tasks.put(Write10.class, BufferedWriteTask.class);
-      BufferedTaskFactory._tasks.put(Write12.class, BufferedWriteTask.class);
-      BufferedTaskFactory._tasks.put(Write16.class, BufferedWriteTask.class);
-      BufferedTaskFactory._tasks.put(ReadCapacity10.class, BufferedReadCapacityTask.class);
-      BufferedTaskFactory._tasks.put(ReadCapacity16.class, BufferedReadCapacityTask.class);
+      BufferedTaskFactory.tasks.put(Read6.class, BufferedReadTask.class);
+      BufferedTaskFactory.tasks.put(Read10.class, BufferedReadTask.class);
+      BufferedTaskFactory.tasks.put(Read12.class, BufferedReadTask.class);
+      BufferedTaskFactory.tasks.put(Read16.class, BufferedReadTask.class);
+      BufferedTaskFactory.tasks.put(Write6.class, BufferedWriteTask.class);
+      BufferedTaskFactory.tasks.put(Write10.class, BufferedWriteTask.class);
+      BufferedTaskFactory.tasks.put(Write12.class, BufferedWriteTask.class);
+      BufferedTaskFactory.tasks.put(Write16.class, BufferedWriteTask.class);
+      BufferedTaskFactory.tasks.put(ReadCapacity10.class, BufferedReadCapacityTask.class);
+      BufferedTaskFactory.tasks.put(ReadCapacity16.class, BufferedReadCapacityTask.class);
    }
 
    public BufferedTaskFactory(
@@ -86,7 +85,7 @@ public class BufferedTaskFactory implements TaskFactory
       }
 
       Class<? extends BufferedTask> taskClass =
-            _tasks.get(command.getCommandDescriptorBlock().getClass());
+            tasks.get(command.getCommandDescriptorBlock().getClass());
 
       if (taskClass != null)
       {
@@ -115,5 +114,10 @@ public class BufferedTaskFactory implements TaskFactory
    public String toString()
    {
       return "<BufferedTask block-size: " + this.blockLength + ", backing-store: ByteBuffer>";
+   }
+
+   public boolean respondsTo(Class<? extends Command> cls)
+   {
+      return tasks.containsKey(cls);
    }
 }

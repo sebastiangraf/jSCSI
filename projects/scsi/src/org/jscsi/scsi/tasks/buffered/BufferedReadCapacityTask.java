@@ -32,19 +32,19 @@ public class BufferedReadCapacityTask extends BufferedTask
       {
          if (getCommand().getCommandDescriptorBlock() instanceof ReadCapacity10)
          {
-            if (this.getFileCapacity() >= 0xFFFFFFFFL)
+            if (this.getDeviceCapacity() >= 0xFFFFFFFFL)
             {
                out.writeInt(-1);
             }
             else
             {
-               out.writeInt((int) this.getFileCapacity());
+               out.writeInt((int) this.getDeviceCapacity());
             }
             out.writeInt(blockLength);
          }
          else if (getCommand().getCommandDescriptorBlock() instanceof ReadCapacity16)
          {
-            out.writeLong(this.getFileCapacity());
+            out.writeLong(this.getDeviceCapacity());
             out.writeInt(blockLength);
 
             out.writeInt(0);

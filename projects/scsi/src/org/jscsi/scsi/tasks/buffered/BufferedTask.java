@@ -57,11 +57,11 @@ public abstract class BufferedTask extends AbstractTask
    {
       this.buffer = file;
       this.blockSize = blockLength;
-      super.load(targetPort, command, modePageRegistry, inquiryDataRegistry);
+      super.load("BufferedTask", targetPort, command, modePageRegistry, inquiryDataRegistry);
       return this;
    }
 
-   protected final long getFileCapacity()
+   protected final long getDeviceCapacity()
    {
       if (buffer.limit() % blockSize != 0)
          throw new RuntimeException("invalid file length; not mulitple of block size");
