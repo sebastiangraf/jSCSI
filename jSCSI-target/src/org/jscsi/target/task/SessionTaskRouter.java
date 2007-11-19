@@ -17,7 +17,7 @@ import org.jscsi.target.task.TaskAbstracts.Task;
 import org.jscsi.target.util.Singleton;
 
 /**
- * A Session's TaskRouter will hold every active within a Session and all it's Connections.
+ * A Session's TaskRouter will hold every active Task within a Session and all it's Connections.
  * The Task Router will decide the order the tasks process the received PDUs.
  * @author Marcus Specht
  *

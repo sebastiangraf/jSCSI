@@ -15,4 +15,13 @@ public interface TaskDescriptor {
 	
 	public Class<? extends AbstractTask> getReferencedTask();
 	
+	/**
+	 * Compares one TaskDescriptor to another. Returns true
+	 * if a Session could be in a state, both descriptors can be used.
+	 * 
+	 * @param taskDescriptor
+	 * @return true if both TaskDescripors describe the same Task
+	 */
+	public boolean compare(AbstractTaskDescriptor taskDescriptor);
+	
 }
