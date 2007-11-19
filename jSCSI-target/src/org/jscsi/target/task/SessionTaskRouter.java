@@ -1,7 +1,6 @@
 package org.jscsi.target.task;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Condition;
@@ -17,36 +16,37 @@ import org.jscsi.target.task.TaskAbstracts.Task;
 import org.jscsi.target.util.Singleton;
 
 /**
- * A Session's TaskRouter will hold every active Task within a Session and all it's Connections.
- * The Task Router will decide the order the tasks process the received PDUs.
+ * A Session's TaskRouter will hold every active Task within a Session and all
+ * it's Connections. The Task Router will decide the order the tasks process the
+ * received PDUs.
+ * 
  * @author Marcus Specht
- *
+ * 
  */
 public class SessionTaskRouter extends Thread {
 
 	/** The logger interface. */
-	private static final Log LOGGER = LogFactory.getLog(Connection.class);
-	
-	/** The single TaskDescriptorLoader is used to create appropriate Tasks **/
+	private static final Log LOGGER = LogFactory.getLog(SessionTaskRouter.class);
+
+	/** The single TaskDescriptorLoader is used to create appropriate Tasks * */
 	private TaskDescriptorLoader taskDescriptorLoader;
-	
-	/** the Session this TaskRouter is working for **/
+
+	/** the Session this TaskRouter is working for * */
 	private final Session refSession;
 
-	/** every active Task mapped by their ITTs **/
-	private final Map<Integer, Task> activeTasks;
-	
-	
+	/** every active Task mapped by their ITTs * */
+	private final Map<Integer, ConnectionTaskRouter> activeTasks;
+
 	private final LinkedList<Integer> signaledPDUs;
 
-	/** the position in the signaled PDUs, where un-immediate PDUs start **/
+	/** the position in the signaled PDUs, where un-immediate PDUs start * */
 	private int immediateListPosition;
-	
+
 	/**
 	 * the SendingLock is used to synchronize every request for sending PDUs
 	 */
 	private final Lock signaledPDULock = new ReentrantLock();
-	
+
 	private final Lock awaitSignaledPDULock = new ReentrantLock();
 
 	/**
@@ -54,8 +54,6 @@ public class SessionTaskRouter extends Thread {
 	 */
 	private final Condition PDUReceived = awaitSignaledPDULock.newCondition();
 
-	
-	
 	public SessionTaskRouter(Session refSesssion) {
 		try {
 			taskDescriptorLoader = Singleton
@@ -66,7 +64,7 @@ public class SessionTaskRouter extends Thread {
 		this.refSession = refSesssion;
 		signaledPDUs = new LinkedList<Integer>();
 		immediateListPosition = 0;
-		activeTasks = new ConcurrentHashMap<Integer, Task>();
+		activeTasks = new ConcurrentHashMap<Integer, ConnectionTaskRouter>();
 		// no active Tasks at Startup
 	}
 
@@ -84,25 +82,39 @@ public class SessionTaskRouter extends Thread {
 		}
 		// forward initialPDU to the Task and add to Session's active Tasks
 		newTask.assignPDU(initialPDU);
-		addTask(newTask);
+		addTask(newTask, callingConnection);
 
 	}
-
-	public void addTask(Task newTask) {
-		if (!activeTasks.containsKey(newTask.getITT().getValue())) {
-			activeTasks.put(newTask.getITT().getValue(), newTask);
+	
+	/**
+	 * Adds the Task to the Connections TaskRouter
+	 * @param newTask
+	 * @param parentConnection
+	 */
+	public void addTask(Task newTask, Connection parentConnection) {
+		if (activeTasks.values().contains(parentConnection)) {
+			parentConnection.getTaskRouter().addTask(newTask);
 		} else {
-			logDebug("Tried to add a new Task with an already existing initiator task tag: ITT = " + newTask.getITT());
+			logDebug("Tried to add a new Task to a Connection not managed by this SessionTaskRouter = "
+					+ parentConnection.getIdentifyingString(true));
 		}
 
 	}
 
-	public Task getTask(int initiatorTaskTag) {
-		return activeTasks.get(initiatorTaskTag);
-	}
-	
 	/**
-	 * Enqueue the signaled PDU. Immediate will enqueue the signal at the head of the queue.
+	 * Returns the Task object having the specified initiatorTaskTag.
+	 * Will look through every Connection.
+	 * @param initiatorTaskTag
+	 * @return
+	 */
+	public Task getTask(int initiatorTaskTag) {
+		return activeTasks.get(initiatorTaskTag).getTask(initiatorTaskTag);
+	}
+
+	/**
+	 * Enqueue the signaled PDU. Immediate will enqueue the signal at the head
+	 * of the queue.
+	 * 
 	 * @param immediate
 	 * @param initiatorTaskTag
 	 */
@@ -114,16 +126,20 @@ public class SessionTaskRouter extends Thread {
 		} else {
 			signaledPDUs.addLast(initiatorTaskTag);
 		}
-		//signal a received PDU
+		// signal a received PDU
 		PDUReceived.signal();
 		signaledPDULock.unlock();
 	}
-
+	
+	/**
+	 * Returns the head of queue, signaling the next processing PDU.
+	 * @return
+	 */
 	private int dequeueSignaledPDUs() {
 		int result;
-		//await a received PDU
+		// await a received PDU
 		awaitSignaledPDULock.lock();
-		while(signaledPDUs.size() <= 0){
+		while (signaledPDUs.size() <= 0) {
 			try {
 				PDUReceived.await();
 			} catch (InterruptedException e) {
@@ -131,63 +147,69 @@ public class SessionTaskRouter extends Thread {
 			}
 		}
 		awaitSignaledPDULock.unlock();
-		//dequeue the received PDU
+		// dequeue the received PDU
 		signaledPDULock.lock();
 		result = signaledPDUs.remove();
-		if(immediateListPosition > 0){
+		if (immediateListPosition > 0) {
 			immediateListPosition--;
 		}
 		signaledPDULock.unlock();
 		return result;
 	}
-	
+
 	/**
-	 * Signals the Session's TaskRouter a new received PDU.
-	 * The TaskRouter will poll the PDU, assign it to the appropriate active Task or
-	 * will create a new one. This Task will be signaled processing the PDU later,
-	 * when the TaskRouter decides to. 
-	 * @param initiatorTaskTag the received PDU's ITT
-	 * @param callingConnection the connection the PDU was received
+	 * Signals the Session's TaskRouter a new received PDU. The TaskRouter will
+	 * poll the PDU, assign it to the appropriate active Task or will create a
+	 * new one. This Task will be signaled processing the PDU later, when the
+	 * TaskRouter decides to.
+	 * 
+	 * @param initiatorTaskTag
+	 *            the received PDU's ITT
+	 * @param callingConnection
+	 *            the connection the PDU was received
 	 */
 	public void signalPDU(int initiatorTaskTag, Connection callingConnection) {
 		if (activeTasks.containsKey(initiatorTaskTag)) {
-			activeTasks.get(initiatorTaskTag).assignPDU(
-					refSession.pollReceivedPDU());
+			activeTasks.get(initiatorTaskTag).getTask(initiatorTaskTag)
+					.assignPDU(refSession.pollReceivedPDU());
 		} else {
 			createTask(refSession.pollReceivedPDU(), callingConnection);
 		}
 		queueSignaledPDU(false, initiatorTaskTag);
 	}
-	
+
 	/**
-	 * Signals the Session's TaskRouter a new received PDU with immediate flag set.
-	 * The TaskRouter will poll the PDU, assign it to the appropriate active Task or
-	 * will create a new one. This task will be signaled processing the PDU later,
-	 * when the TaskRouter decides to. Immediate tasks will be processed before 
-	 * normal/un-immediate  tasks.
+	 * Signals the Session's TaskRouter a new received PDU with immediate flag
+	 * set. The TaskRouter will poll the PDU, assign it to the appropriate
+	 * active Task or will create a new one. This task will be signaled
+	 * processing the PDU later, when the TaskRouter decides to. Immediate tasks
+	 * will be processed before normal/un-immediate tasks.
+	 * 
 	 * @param initiatorTaskTag
 	 * @param callingConnection
 	 */
 	public void signalImmediatePDU(int initiatorTaskTag,
 			Connection callingConnection) {
 		if (activeTasks.containsKey(initiatorTaskTag)) {
-			activeTasks.get(initiatorTaskTag).assignPDU(
-					refSession.pollReceivedPDU());
+			activeTasks.get(initiatorTaskTag).getTask(initiatorTaskTag)
+					.assignPDU(refSession.pollReceivedPDU());
 		} else {
 			createTask(refSession.pollReceivedPDU(), callingConnection);
 		}
 		queueSignaledPDU(true, initiatorTaskTag);
 	}
-	
+
 	/**
-	 * Signals Tasks to process received PDUs,
-	 * in an order the signals are queued.
+	 * Signals Tasks to process received PDUs, in an order the signals are
+	 * queued.
 	 */
+	@Override
 	public void run() {
 		int initiatorTaskTag;
-		while(!isInterrupted()){
+		while (!isInterrupted()) {
 			initiatorTaskTag = dequeueSignaledPDUs();
-			activeTasks.get(initiatorTaskTag).signalReceivedPDU();
+			activeTasks.get(initiatorTaskTag).getTask(initiatorTaskTag)
+					.signalReceivedPDU();
 		}
 	}
 

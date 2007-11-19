@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.security.DigestException;
 import java.util.Map;
-import java.util.Queue;
-import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.locks.Condition;
@@ -20,8 +18,6 @@ import org.jscsi.target.connection.Connection;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.ProtocolDataUnitFactory;
 import org.jscsi.parser.exception.InternetSCSIException;
-
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 /**
  * Every Connection has one NetWorker. The NetWorker represents the Connection's

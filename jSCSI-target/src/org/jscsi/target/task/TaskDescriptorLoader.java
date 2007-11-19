@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.target.conf.OperationalTextConfiguration;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.task.TaskAbstracts.AbstractTaskDescriptor;
 import org.jscsi.target.task.TaskAbstracts.Task;
@@ -110,7 +109,7 @@ public class TaskDescriptorLoader {
 				}
 				// if Object is a TaskDescriptor, check if a descriptor yet
 				// exists, that has identical parameter
-				loadedOpcode = ((TaskDescriptor) loadedTaskDescriptor)
+				loadedOpcode = (loadedTaskDescriptor)
 						.getSupportedOpcode().value();
 				if (availableTasks.containsKey(loadedOpcode)) {
 					for (TaskDescriptor equalOpcode : availableTasks

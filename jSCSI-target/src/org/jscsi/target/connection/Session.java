@@ -16,8 +16,8 @@ import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.conf.OperationalTextConfiguration;
 import org.jscsi.target.conf.OperationalTextException;
 import org.jscsi.target.connection.Connection;
-import org.jscsi.target.parameter.connection.Phase;
 import org.jscsi.target.parameter.connection.SessionType;
+import org.jscsi.target.task.SessionTaskRouter;
 import org.jscsi.connection.SerialArithmeticNumber;
 import org.jscsi.parser.InitiatorMessageParser;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -80,6 +80,8 @@ public class Session {
 	private final SortedMap<Integer, Connection> signalledPDUs;
 
 	private final Queue<ProtocolDataUnit> receivedPDUs;
+	
+	private final SessionTaskRouter taskRouter;
 
 	/**
 	 * the LOCK is used to synchronize every request for receiving PDUs
@@ -94,6 +96,7 @@ public class Session {
 	public Session(Connection connection, short tsih)
 			throws OperationalTextException {
 		configuration = OperationalTextConfiguration.create(this);
+		taskRouter = new SessionTaskRouter(this);
 		targetSessionIdentifyingHandle = tsih;
 		connections = new ConcurrentHashMap<Connection, SortedMap<Integer, ProtocolDataUnit>>();
 		signalledPDUs = new TreeMap<Integer, Connection>();
@@ -181,6 +184,10 @@ public class Session {
 
 	public final OperationalTextConfiguration getConfiguration() {
 		return configuration;
+	}
+	
+	public final SessionTaskRouter getTaskRouter(){
+		return taskRouter;
 	}
 
 	/**
