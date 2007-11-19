@@ -11,13 +11,10 @@ import org.jscsi.scsi.protocol.cdb.ReportLuns;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
-import org.jscsi.scsi.tasks.AbstractTask;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
-public class ReportLunsTask extends AbstractTask
+public class ReportLunsTask extends TargetTask
 {
-   Set<Long> logicalUnits;
-
    public ReportLunsTask(
          Set<Long> logicalUnits,
          TargetTransportPort targetPort,
@@ -25,15 +22,13 @@ public class ReportLunsTask extends AbstractTask
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
    {
-      super("ReportLuns", targetPort, command, modePageRegistry, inquiryDataRegistry);
-      this.logicalUnits = logicalUnits;
+      super("ReportLuns", logicalUnits, targetPort, command, modePageRegistry, inquiryDataRegistry);
    }
 
    @Override
    protected void execute() throws InterruptedException, SenseException
    {
       ReportLuns cdb = (ReportLuns) getCommand().getCommandDescriptorBlock();
-
       ByteBuffer data = ByteBuffer.allocate((int) cdb.getAllocationLength());
 
       try
@@ -48,9 +43,9 @@ public class ReportLunsTask extends AbstractTask
          else
          {
             // SELECT REPORT 0x00 or 0x02
-            data.putInt(this.logicalUnits.size() * 8); // LUN LIST LENGTH (each entry is 8 bytes)
+            data.putInt(this.getLogicalUnits().size() * 8); // LUN LIST LENGTH (each entry is 8 bytes)
             data.putInt(0); // 4-byte reserved field
-            for (long lun : this.logicalUnits)
+            for (long lun : this.getLogicalUnits())
             {
                data.putLong(lun);
             }
@@ -76,5 +71,4 @@ public class ReportLunsTask extends AbstractTask
       // TODO Auto-generated method stub
 
    }
-
 }

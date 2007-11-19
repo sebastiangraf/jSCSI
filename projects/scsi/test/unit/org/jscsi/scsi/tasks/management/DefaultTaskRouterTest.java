@@ -8,26 +8,18 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
 import org.jscsi.core.exceptions.NotImplementedException;
 import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.ReportLuns;
 import org.jscsi.scsi.protocol.cdb.TestUnitReady;
-import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
 import org.jscsi.scsi.protocol.sense.SenseData;
 import org.jscsi.scsi.protocol.sense.SenseDataFactory;
-import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.protocol.sense.exceptions.LogicalUnitNotSupportedException;
-import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.target.Target;
-import org.jscsi.scsi.tasks.AbstractTask;
-import org.jscsi.scsi.tasks.Task;
 import org.jscsi.scsi.tasks.TaskAttribute;
-import org.jscsi.scsi.tasks.TaskFactory;
 import org.jscsi.scsi.tasks.TaskRouter;
 import org.jscsi.scsi.transport.Nexus;
 import org.jscsi.scsi.transport.TargetTransportPort;
@@ -39,53 +31,6 @@ import org.junit.Test;
 
 public class DefaultTaskRouterTest
 {
-   private static Logger _logger = Logger.getLogger(DefaultTaskRouterTest.class);
-
-   static
-   {
-      BasicConfigurator.configure();
-   }
-
-   ////////////////////////////////////////////////////////////////////////////
-   // dummy task implementation
-
-   private static class DummyTask extends AbstractTask implements TaskFactory
-   {
-      private static Logger _logger = Logger.getLogger(DummyTask.class);
-
-      ////////////////////////////////////////////////////////////////////////////
-      // constructor(s)
-
-      public DummyTask()
-      {
-         super();
-      }
-
-      public DummyTask(
-            TargetTransportPort targetPort,
-            Command command,
-            ModePageRegistry modePageRegistry,
-            InquiryDataRegistry inquiryDataRegistry)
-      {
-         super("DummyTask", targetPort, command, modePageRegistry, inquiryDataRegistry);
-      }
-
-      /////////////////////////////////////////////////////////////////////////
-      // TaskFactory implementation
-
-      public Task getInstance(TargetTransportPort port, Command command)
-            throws IllegalRequestException
-      {
-         return this;
-      }
-
-      @Override
-      protected void execute() throws InterruptedException, SenseException
-      {
-         throw new NotImplementedException("execute method has not been implemented");
-      }
-   }
-
    public TaskRouter getTaskRouterInstance()
    {
       return new DefaultTaskRouter();
