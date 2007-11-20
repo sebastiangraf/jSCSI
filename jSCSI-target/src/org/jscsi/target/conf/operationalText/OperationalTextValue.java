@@ -1,4 +1,4 @@
-package org.jscsi.target.conf;
+package org.jscsi.target.conf.operationalText;
 
 import org.jscsi.parser.datasegment.IResultFunction;
 import org.jscsi.parser.datasegment.ResultFunctionFactory;

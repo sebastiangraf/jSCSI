@@ -1,4 +1,4 @@
-package org.jscsi.target.conf;
+package org.jscsi.target.conf.operationalText;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

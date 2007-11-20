@@ -13,8 +13,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.target.conf.OperationalTextConfiguration;
-import org.jscsi.target.conf.OperationalTextException;
+import org.jscsi.target.conf.operationalText.OperationalTextConfiguration;
+import org.jscsi.target.conf.operationalText.OperationalTextException;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.parameter.connection.SessionType;
 import org.jscsi.target.task.SessionTaskRouter;
