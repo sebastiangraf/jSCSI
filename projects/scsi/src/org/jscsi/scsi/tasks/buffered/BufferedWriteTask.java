@@ -24,7 +24,10 @@ public class BufferedWriteTask extends BufferedTask
    protected void execute(ByteBuffer buffer, int blockSize) throws InterruptedException,
          SenseException
    {
-      _logger.debug("executing task: " + this);
+      if (_logger.isDebugEnabled())
+      {
+         _logger.debug("executing task: " + this);  
+      }
       long capacity = this.getDeviceCapacity();
 
       TransferCDB cdb = (TransferCDB) getCommand().getCommandDescriptorBlock();

@@ -84,7 +84,8 @@ public class DefaultTaskRouter implements TaskRouter
             Task task = this.taskFactory.getInstance(port, command);
             assert task != null : "improper task factory implementation returned null task";
             this.targetTaskSet.offer(task); // non-blocking, sends any errors to transport port
-            _logger.debug("successfully enqueued target command with TaskRouter: " + command);
+            if (_logger.isDebugEnabled())
+               _logger.debug("successfully enqueued target command with TaskRouter: " + command);
          }
          catch (IllegalRequestException e)
          {
@@ -99,7 +100,8 @@ public class DefaultTaskRouter implements TaskRouter
       else if ( logicalUnitMap.containsKey(lun) )
       {
          logicalUnitMap.get(lun).enqueue(port, command);
-         _logger.debug("successfully enqueued command to logical unit with TaskRouter: " + command);
+         if (_logger.isDebugEnabled())
+            _logger.debug("successfully enqueued command to logical unit with TaskRouter: " + command);
       }
       else
       {
@@ -181,14 +183,16 @@ public class DefaultTaskRouter implements TaskRouter
       if ( this.running )
          lu.start();
       logicalUnitMap.put(id, lu);
-      _logger.debug("registering logical unit: " + lu + " (id: " + id + ")");
+      if (_logger.isDebugEnabled())
+         _logger.debug("registering logical unit: " + lu + " (id: " + id + ")");
    }
 
    public synchronized LogicalUnit removeLogicalUnit(long id) throws Exception
    {
       LogicalUnit discardedLU = logicalUnitMap.remove(id);
       discardedLU.stop();
-      _logger.debug("removing logical unit: " + discardedLU);
+      if (_logger.isDebugEnabled())
+         _logger.debug("removing logical unit: " + discardedLU);
       return discardedLU;
    }
 
