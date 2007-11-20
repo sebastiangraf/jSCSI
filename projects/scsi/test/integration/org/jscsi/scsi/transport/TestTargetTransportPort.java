@@ -36,7 +36,6 @@ public class TestTargetTransportPort implements TargetTransportPort
       _logger.debug("servicing readData request: nexus: " + nexus + ", cmdRef: " + cmdRef);
       assert this.readDataMap.containsKey(cmdRef): "read data unavailable for crn: " + cmdRef;
       output.put(this.readDataMap.get(cmdRef).array());
-      _logger.debug("*********** read data successful");
       return true;
    }
 
