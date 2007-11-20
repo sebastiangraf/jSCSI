@@ -141,6 +141,8 @@ public abstract class AbstractTask implements Task
       if (Thread.interrupted())
          throw new InterruptedException();
 
+      _logger.debug("task is reading data from transport port");
+      
       return this.targetTransportPort.readData(this.command.getNexus(),
             this.command.getCommandReferenceNumber(), output);
    }
