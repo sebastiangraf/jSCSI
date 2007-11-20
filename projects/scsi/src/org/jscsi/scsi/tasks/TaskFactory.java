@@ -1,6 +1,7 @@
 package org.jscsi.scsi.tasks;
 
 import org.jscsi.scsi.protocol.Command;
+import org.jscsi.scsi.protocol.cdb.CDB;
 import org.jscsi.scsi.protocol.sense.exceptions.IllegalRequestException;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
@@ -27,5 +28,5 @@ public interface TaskFactory
     * @param cls The command class we're inspecting.
     * @return boolean True if this factory supports the Task class, false otherwise.
     */
-   boolean respondsTo(Class<? extends Command> cls);
+   boolean respondsTo(Class<? extends CDB> cls);
 }

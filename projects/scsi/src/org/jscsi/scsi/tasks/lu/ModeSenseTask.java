@@ -18,14 +18,18 @@ import org.jscsi.scsi.protocol.sense.exceptions.InvalidFieldInCDBException;
 import org.jscsi.scsi.protocol.sense.exceptions.SavingParametersNotSupportedException;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.protocol.sense.exceptions.SynchronousDataTransferErrorException;
-import org.jscsi.scsi.tasks.AbstractTask;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
 //TODO: Describe class or interface
-public class ModeSenseTask extends AbstractTask
+public class ModeSenseTask extends LUTask
 {
    private static Logger _logger = Logger.getLogger(ModeSenseTask.class);
 
+   public ModeSenseTask()
+   {
+      super();
+   }
+   
    public ModeSenseTask(
          TargetTransportPort targetPort,
          Command command,

@@ -12,9 +12,8 @@ import org.jscsi.scsi.protocol.sense.DescriptorSenseData;
 import org.jscsi.scsi.protocol.sense.FixedSenseData;
 import org.jscsi.scsi.protocol.sense.KCQ;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
-import org.jscsi.scsi.tasks.AbstractTask;
 
-public class RequestSenseTask extends AbstractTask
+public class RequestSenseTask extends LUTask
 {
    private static Logger _logger = Logger.getLogger(RequestSenseTask.class);
 

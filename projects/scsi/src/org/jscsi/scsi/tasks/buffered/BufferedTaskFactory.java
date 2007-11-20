@@ -116,7 +116,7 @@ public class BufferedTaskFactory implements TaskFactory
       return "<BufferedTask block-size: " + this.blockLength + ", backing-store: ByteBuffer>";
    }
 
-   public boolean respondsTo(Class<? extends Command> cls)
+   public boolean respondsTo(Class<? extends CDB> cls)
    {
       return tasks.containsKey(cls);
    }

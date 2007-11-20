@@ -53,7 +53,7 @@ public class TargetTaskFactory implements TaskFactory
       return newTask.load("TargetTask", logicalUnits, port, command, null, null);
    }
 
-   public boolean respondsTo(Class<? extends Command> cls)
+   public boolean respondsTo(Class<? extends CDB> cls)
    {
       return TargetTaskFactory.tasks.containsKey(cls);
    }
