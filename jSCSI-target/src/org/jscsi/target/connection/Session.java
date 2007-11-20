@@ -30,8 +30,8 @@ import org.jscsi.parser.snack.SNACKRequestParser;
  * <h1>Session</h1>
  * <p/>
  * 
- * A session or Initiator Target Nexus is a directed communication from an iSCSI
- * Initiator to an iSCSI Target. Each session can contains of several
+ * A session or Initiator TargetTest Nexus is a directed communication from an iSCSI
+ * Initiator to an iSCSI TargetTest. Each session can contains of several
  * connections. This allows a better usage of bandwidth and decreases latency
  * times.
  * 
@@ -57,7 +57,7 @@ public class Session {
 	/** The <code>Configuration</code> instance for this session. */
 	private final OperationalTextConfiguration configuration;
 
-	/** The Target Session Identifying Handle. */
+	/** The TargetTest Session Identifying Handle. */
 	private short targetSessionIdentifyingHandle;
 
 	/** The Initiator Session ID */
@@ -132,7 +132,7 @@ public class Session {
 	 * @param isid
 	 *            a Connection's Initiator Session ID
 	 * @param tsih
-	 *            a Session's Target Session Identifying Handle
+	 *            a Session's TargetTest Session Identifying Handle
 	 * @return true if parameters are equal, false else.
 	 */
 	final boolean checkAppropriateConnection(ISID isid, short tsih) {
@@ -195,7 +195,7 @@ public class Session {
 	 * 
 	 * @return
 	 */
-	final ISID getInitiatorSessionID() {
+	public final ISID getInitiatorSessionID() {
 		return initiatorSessionID;
 	}
 
@@ -204,7 +204,7 @@ public class Session {
 	 * 
 	 * @return
 	 */
-	final String getInitiatorName() {
+	public final String getInitiatorName() {
 		return initiatorName;
 	}
 
@@ -258,7 +258,7 @@ public class Session {
 	}
 
 	/**
-	 * Returns the Session's Target Identifying Handle.
+	 * Returns the Session's TargetTest Identifying Handle.
 	 * 
 	 * @return
 	 */

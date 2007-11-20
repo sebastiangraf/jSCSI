@@ -22,8 +22,8 @@ import org.jscsi.target.task.ConnectionTaskRouter;
 /**
  * <h1>Connection</h1>
  * <p/> This class represents a connection, which is used in the iSCSI Standard
- * (RFC3720). Such a connection is directed from the initiator to the target.
- * One or more Connections between an initiator and a target represent a
+ * (RFC3720). Such a connection is directed from the initiator to the targetTest.
+ * One or more Connections between an initiator and a targetTest represent a
  * session.
  * 
  * @author Marcus Specht
@@ -464,7 +464,7 @@ public class Connection {
 	}
 
 	/**
-	 * Cleaning the Connection's sended PDU buffer. A target buffers any sending
+	 * Cleaning the Connection's sended PDU buffer. A targetTest buffers any sending
 	 * PDU until a received ExpStatSN is signaling the successful delivery.
 	 * 
 	 * @param expectedStatusSequenceNumber

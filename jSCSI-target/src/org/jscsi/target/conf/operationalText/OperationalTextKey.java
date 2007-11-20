@@ -18,7 +18,7 @@ public class OperationalTextKey {
 //			.getLog(OperationalTextKey.class);
 
 	/**
-	 * Use: During Login - Security Negotiation Senders: Initiator and Target
+	 * Use: During Login - Security Negotiation Senders: Initiator and TargetTest
 	 * Scope: connection AuthMethod = &lt;list-of-values&gt; The main item of
 	 * security negotiation is the authentication method (AuthMethod). The
 	 * authentication methods that can be used (appear in the list-of-values)
@@ -55,14 +55,14 @@ public class OperationalTextKey {
 	 * </table> <br/> The AuthMethod selection is followed by an "authentication
 	 * exchange" specific to the authentication method selected. The
 	 * authentication method proposal may be made by either the initiator or the
-	 * target. However the initiator MUST make the first step specific to the
+	 * targetTest. However the initiator MUST make the first step specific to the
 	 * selected authentication method as soon as it is selected. It follows that
-	 * if the target makes the authentication method proposal the initiator
+	 * if the targetTest makes the authentication method proposal the initiator
 	 * sends the first keys(s) of the exchange together with its authentication
 	 * method selection. The authentication exchange authenticates the initiator
-	 * to the target, and optionally, the target to the initiator.
-	 * Authentication is OPTIONAL to use but MUST be supported by the target and
-	 * initiator. The initiator and target MUST implement CHAP. All other
+	 * to the targetTest, and optionally, the targetTest to the initiator.
+	 * Authentication is OPTIONAL to use but MUST be supported by the targetTest and
+	 * initiator. The initiator and targetTest MUST implement CHAP. All other
 	 * authentication methods are OPTIONAL. Private or public extension
 	 * algorithms MAY also be negotiated for authentication methods. Whenever a
 	 * private or public extension algorithm is part of the default offer (the
@@ -98,7 +98,7 @@ public class OperationalTextKey {
 	public static final String DATA_DIGEST = "DataDigest";
 
 	/**
-	 * Use: LO <br/> Senders: Initiator and Target <br/> Scope: SW <br/>
+	 * Use: LO <br/> Senders: Initiator and TargetTest <br/> Scope: SW <br/>
 	 * Irrelevant when: SessionType=Discovery <p/>
 	 * DataPDUInOrder=&lt;boolean-value&gt; <p/> Default is Yes. <br/> Result
 	 * function is OR.<p/> No is used by iSCSI to indicate that the data PDUs
@@ -109,7 +109,7 @@ public class OperationalTextKey {
 	public static final String DATA_PDU_IN_ORDER = "DataPDUInOrder";
 
 	/**
-	 * Use: LO <br/> Senders: Initiator and Target <br/> Scope: SW <br/>
+	 * Use: LO <br/> Senders: Initiator and TargetTest <br/> Scope: SW <br/>
 	 * Irrelevant when: SessionType=Discovery <p/>
 	 * DataSequenceInOrder=&lt;boolean-value&gt;<p/> Default is Yes. <br/>
 	 * Result function is OR.<p/> A Data Sequence is a sequence of Data-In or
@@ -120,7 +120,7 @@ public class OperationalTextKey {
 	 * DataSequenceInOrder is set to Yes, Data Sequences MUST be transferred
 	 * using continuously non-decreasing sequence offsets (R2T buffer offset for
 	 * writes, or the smallest SCSI Data-In buffer offset within a read data
-	 * sequence). <br/> If DataSequenceInOrder is set to Yes, a target may retry
+	 * sequence). <br/> If DataSequenceInOrder is set to Yes, a targetTest may retry
 	 * at most the last R2T, and an initiator may at most request retransmission
 	 * for the last read data sequence. For this reason, if ErrorRecoveryLevel
 	 * is not <code>0</code> and DataSequenceInOrder is set to Yes then
@@ -129,24 +129,24 @@ public class OperationalTextKey {
 	public static final String DATA_SEQUENCE_IN_ORDER = "DataSequenceInOrder";
 
 	/**
-	 * Use: LO<br/> Senders: Initiator and Target<br/> Scope: SW <p/>
+	 * Use: LO<br/> Senders: Initiator and TargetTest<br/> Scope: SW <p/>
 	 * DefaultTime2Retain=&lt;numerical-value-0-to-3600&gt;<p/> Default is
 	 * <code>20</code>. Result function is Minimum. <p/> The initiator and
-	 * target negotiate the maximum time, in seconds after an initial wait
+	 * targetTest negotiate the maximum time, in seconds after an initial wait
 	 * (Time2Wait), before which an active task reassignment is still possible
 	 * after an unexpected connection termination or a connection reset. <br/>
 	 * This value is also the session state timeout if the connection in
 	 * question is the last LOGGED_IN connection in the session. A value of 0
 	 * indicates that connection/task state is immediately discarded by the
-	 * target.
+	 * targetTest.
 	 */
 	public static final String DEFAULT_TIME_2_RETAIN = "DefaultTime2Retain";
 
 	/**
-	 * Use: LO <br/> Senders: Initiator and Target <br/> Scope: SW <p/>
+	 * Use: LO <br/> Senders: Initiator and TargetTest <br/> Scope: SW <p/>
 	 * DefaultTime2Wait=&lt;numerical-value-0-to-3600&gt;<p/> Default is
 	 * <code>2</code>. <br/> Result function is Maximum. <p/> The initiator
-	 * and target negotiate the minimum time, in seconds, to wait before
+	 * and targetTest negotiate the minimum time, in seconds, to wait before
 	 * attempting an explicit/implicit logout or an active task reassignment
 	 * after an unexpected connection termination or a connection reset. <br/> A
 	 * value of <code>0</code> indicates that logout or active task
@@ -157,7 +157,7 @@ public class OperationalTextKey {
 	/**
 	 * Use: LO
 	 * <p>
-	 * Senders: Initiator and Target
+	 * Senders: Initiator and TargetTest
 	 * <p>
 	 * Scope: SW
 	 * <p>
@@ -168,7 +168,7 @@ public class OperationalTextKey {
 	 * <p>
 	 * Result function is Minimum.
 	 * <p>
-	 * The initiator and target negotiate the recovery level supported. Recovery
+	 * The initiator and targetTest negotiate the recovery level supported. Recovery
 	 * levels represent a combination of recovery capabilities. Each recovery
 	 * level includes all the capabilities of the lower recovery levels and adds
 	 * some new ones to them.
@@ -180,13 +180,13 @@ public class OperationalTextKey {
 	public static final String ERROR_RECOVERY_LEVEL = "ErrorRecoveryLevel";
 
 	/**
-	 * Use: LO <br/> Senders: Initiator and Target <br/> Scope: SW <br/>
+	 * Use: LO <br/> Senders: Initiator and TargetTest <br/> Scope: SW <br/>
 	 * Irrelevant when: SessionType=Discovery <br/> Irrelevant when: (
 	 * InitialR2T=Yes and ImmediateData=No ) <p/>
 	 * FirstBurstLength=&lt;numerical-value-512-to-(2**24-1)&gt; <p/> Default is
 	 * <code>65536</code> (<code>64</code> Kbytes).<br/> Result function
-	 * is Minimum.<p/> The initiator and target negotiate the maximum amount in
-	 * bytes of unsolicited data an iSCSI initiator may send to the target
+	 * is Minimum.<p/> The initiator and targetTest negotiate the maximum amount in
+	 * bytes of unsolicited data an iSCSI initiator may send to the targetTest
 	 * during the execution of a single SCSI command. This covers the immediate
 	 * data (if any) and the sequence of unsolicited Data-Out PDUs (if any) that
 	 * follow the command.<br/> FirstBurstLength MUST NOT exceed
@@ -195,7 +195,7 @@ public class OperationalTextKey {
 	public static final String FIRST_BURST_LENGTH = "FirstBurstLength";
 
 	/**
-	 * Use: IO <br/> Senders: Initiator and Target<br/> Scope: CO <p/>
+	 * Use: IO <br/> Senders: Initiator and TargetTest<br/> Scope: CO <p/>
 	 * HeaderDigest = &lt;list-of-values&gt; <br/> DataDigest =
 	 * &lt;list-of-values&gt; <p/> Default is None for both HeaderDigest and
 	 * DataDigest.<p/> Digests enable the checking of end-to-end,
@@ -204,7 +204,7 @@ public class OperationalTextKey {
 	 * including all elements that may change the network level PDUs such as
 	 * routers, switches, and proxies. <br/> The following table lists cyclic
 	 * integrity checksums that can be negotiated for the digests and that MUST
-	 * be implemented by every iSCSI initiator and target. These digest options
+	 * be implemented by every iSCSI initiator and targetTest. These digest options
 	 * only have error detection significance.<p/> <table border="1">
 	 * <tr>
 	 * <th>Name</th>
@@ -222,7 +222,7 @@ public class OperationalTextKey {
 	 * </tr>
 	 * </table> <br/> The generator polynomial for this digest is given in
 	 * hex-notation (e.g., 0x3b stands for 0011 1011 and the polynomial is
-	 * x**5+X**4+x**3+x+1). <p/> When the Initiator and Target agree on a
+	 * x**5+X**4+x**3+x+1). <p/> When the Initiator and TargetTest agree on a
 	 * digest, this digest MUST be used for every PDU in Full Feature Phase.
 	 * <br/> Padding bytes, when present in a segment covered by a CRC, SHOULD
 	 * be set to 0 and are included in the CRC. <br/> The CRC MUST be calculated
@@ -282,7 +282,7 @@ public class OperationalTextKey {
 	 * <p>
 	 * Default is <code>No</code>. Result function is <code>AND</code>.
 	 * <p>
-	 * IFMarker is used to turn on or off the target to initiator markers on the
+	 * IFMarker is used to turn on or off the targetTest to initiator markers on the
 	 * connection.
 	 * <p>
 	 * Examples:
@@ -297,8 +297,8 @@ public class OperationalTextKey {
 	 * <p>
 	 * T-&gt;OFMarker=Yes,IFMarker=No
 	 * <p>
-	 * Results in Marker being used from the initiator to the target, but not
-	 * from the target to initiator.
+	 * Results in Marker being used from the initiator to the targetTest, but not
+	 * from the targetTest to initiator.
 	 */
 	public static final String IF_MARKER = "IFMarker";
 
@@ -319,10 +319,10 @@ public class OperationalTextKey {
 	 * OFMarkInt=<code>&lt;numeric-value-from-1-to-65535&gt|Reject</code><br/>
 	 * IFMarkInt=<code>&lt;numeric-value-from-1-to-65535&gt;|Reject</code>
 	 * <p>
-	 * IFMarkInt is used to set the interval for the target to initiator markers
+	 * IFMarkInt is used to set the interval for the targetTest to initiator markers
 	 * on the connection.
 	 * <p>
-	 * For the offering, the initiator or target indicates the minimum to
+	 * For the offering, the initiator or targetTest indicates the minimum to
 	 * maximum interval (in 4-byte words) it wants the markers for one or both
 	 * directions. In case it only wants a specific value, only a single value
 	 * has to be specified. The responder selects a value within the minimum and
@@ -345,17 +345,17 @@ public class OperationalTextKey {
 	public static final String IF_MARKER_INT = "IFMarkInt";
 
 	/**
-	 * Use: LO <br/> Senders: Initiator and Target <br/> Scope: SW <br/>
+	 * Use: LO <br/> Senders: Initiator and TargetTest <br/> Scope: SW <br/>
 	 * Irrelevant when: SessionType=Discovery <p/>
 	 * ImmediateData=&lt;boolean-value&gt; <p/> Default is Yes. <br/> Result
-	 * function is AND. <p/> The initiator and target negotiate support for
-	 * immediate data. To turn immediate data off, the initiator or target must
+	 * function is AND. <p/> The initiator and targetTest negotiate support for
+	 * immediate data. To turn immediate data off, the initiator or targetTest must
 	 * state its desire to do so. ImmediateData can be turned on if both the
-	 * initiator and target have ImmediateData=Yes.<br/> If ImmediateData is
+	 * initiator and targetTest have ImmediateData=Yes.<br/> If ImmediateData is
 	 * set to Yes and InitialR2T is set to Yes (default), then only immediate
 	 * data are accepted in the first burst. If ImmediateData is set to No and
 	 * InitialR2T is set to Yes, then the initiator MUST NOT send unsolicited
-	 * data and the target MUST reject unsolicited data with the corresponding
+	 * data and the targetTest MUST reject unsolicited data with the corresponding
 	 * response code. <br/> If ImmediateData is set to No and InitialR2T is set
 	 * to No, then the initiator MUST NOT send unsolicited immediate data, but
 	 * MAY send one unsolicited burst of Data-Out PDUs. <br/> If ImmediateData
@@ -400,17 +400,17 @@ public class OperationalTextKey {
 	public static final String IMMEDIATE_DATA = "ImmediateData";
 
 	/**
-	 * Use: LO <br/> Senders: Initiator and Target<br/> Scope: SW <br/>
+	 * Use: LO <br/> Senders: Initiator and TargetTest<br/> Scope: SW <br/>
 	 * Irrelevant when: SessionType=Discovery <p/>
 	 * InitialR2T=&lt;boolean-value&gt; <p/> Examples: <br/> I-&gt;InitialR2T=No
 	 * <br/> T-&gt;InitialR2T=No <p/> Default is Yes. <br/> Result function is
 	 * OR. <p/> The InitialR2T key is used to turn off the default use of R2T
 	 * for unidirectional and the output part of bidirectional commands, thus
-	 * allowing an initiator to start sending data to a target as if it has
+	 * allowing an initiator to start sending data to a targetTest as if it has
 	 * received an initial R2T with Buffer Offset=Immediate Data Length and
 	 * Desired Data Transfer Length=(min(FirstBurstLength, Expected Data
 	 * Transfer Length) - Received Immediate Data Length). <br/> The default
-	 * action is that R2T is required, unless both the initiator and the target
+	 * action is that R2T is required, unless both the initiator and the targetTest
 	 * send this key-pair attribute specifying InitialR2T=No. Only the first
 	 * outgoing data burst (immediate data and/or separate PDUs) can be sent
 	 * unsolicited (i.e., not requiring an explicit R2T).
@@ -423,10 +423,10 @@ public class OperationalTextKey {
 	 * InitiatorAlias=Web Server 4 <br/> InitiatorAlias=spyalley.nsa.gov <br/>
 	 * InitiatorAlias=Exchange Server <p/> If an initiator has been configured
 	 * with a human-readable name or description, it SHOULD be communicated to
-	 * the target during a Login Request PDU. If not, the host name can be used
+	 * the targetTest during a Login Request PDU. If not, the host name can be used
 	 * instead. This string is not used as an identifier, nor is meant to be
 	 * used for authentication or authorization decisions. It can be displayed
-	 * by the target's user interface in a list of initiators to which it is
+	 * by the targetTest's user interface in a list of initiators to which it is
 	 * connected.
 	 */
 	public static final String INITIATOR_ALIAS = "InitiatorAlias";
@@ -445,11 +445,11 @@ public class OperationalTextKey {
 	public static final String INITIATOR_NAME = "InitiatorName";
 
 	/**
-	 * Use: LO <br/> Senders: Initiator and Target <br/> Scope: SW <br/>
+	 * Use: LO <br/> Senders: Initiator and TargetTest <br/> Scope: SW <br/>
 	 * Irrelevant when: SessionType=Discovery <p/>
 	 * MaxBurstLength=&lt;numerical-value-512-to-(2**24-1)&gt; <p/> Default is
 	 * <code>262144</code> (<code>256</code> Kbytes). <br/> Result function
-	 * is Minimum. <p/> The initiator and target negotiate maximum SCSI data
+	 * is Minimum. <p/> The initiator and targetTest negotiate maximum SCSI data
 	 * payload in bytes in a Data-In or a solicited Data-Out iSCSI sequence. A
 	 * sequence consists of one or more consecutive Data-In or Data-Out PDUs
 	 * that end with a Data-In or Data-Out PDU with the F bit set to one.
@@ -457,19 +457,19 @@ public class OperationalTextKey {
 	public static final String MAX_BURST_LENGTH = "MaxBurstLength";
 
 	/**
-	 * Use: LO <br/> Senders: Initiator and Target<br/> Scope: SW <br/>
+	 * Use: LO <br/> Senders: Initiator and TargetTest<br/> Scope: SW <br/>
 	 * Irrelevant when: SessionType=Discovery<p/>
 	 * MaxConnections=&lt;numerical-value-from-1-to-65535&gt;<p/> Default is
 	 * <code>1</code>. <br/> Result function is Minimum.<p/> Initiator and
-	 * target negotiate the maximum number of connections requested/acceptable.
+	 * targetTest negotiate the maximum number of connections requested/acceptable.
 	 */
 	public static final String MAX_CONNECTIONS = "MaxConnections";
 
 	/**
-	 * Use: LO <br/> Senders: Initiator and Target <br/> Scope: SW <p/>
+	 * Use: LO <br/> Senders: Initiator and TargetTest <br/> Scope: SW <p/>
 	 * MaxOutstandingR2T=&lt;numerical-value-from-1-to-65535&gt;<p/> Irrelevant
 	 * when: SessionType=Discovery <br/> Default is <code>1</code>. <br/>
-	 * Result function is Minimum. <p/> Initiator and target negotiate the
+	 * Result function is Minimum. <p/> Initiator and targetTest negotiate the
 	 * maximum number of outstanding R2Ts per task, excluding any implied
 	 * initial R2T that might be part of that task. An R2T is considered
 	 * outstanding until the last data PDU (with the <code>F</code> bit set to
@@ -480,13 +480,13 @@ public class OperationalTextKey {
 	public static final String MAX_OUTSTANDING_R2T = "MaxOutstandingR2T";
 
 	/**
-	 * Use: ALL, Declarative <br/> Senders: Initiator and Target <p/> Scope: CO
+	 * Use: ALL, Declarative <br/> Senders: Initiator and TargetTest <p/> Scope: CO
 	 * <p/> MaxRecvDataSegmentLength=&lt;numerical-value-512-to-(2**24-1)&gt;
-	 * <br/> <p/> Default is 8192 bytes.<p/> The initiator or target declares
+	 * <br/> <p/> Default is 8192 bytes.<p/> The initiator or targetTest declares
 	 * the maximum data segment length in bytes it can receive in an iSCSI PDU.
-	 * <br/> The transmitter (initiator or target) is required to send PDUs with
+	 * <br/> The transmitter (initiator or targetTest) is required to send PDUs with
 	 * a data segment that does not exceed MaxRecvDataSegmentLength of the
-	 * receiver. <br/> A target receiver is additionally limited by
+	 * receiver. <br/> A targetTest receiver is additionally limited by
 	 * MaxBurstLength for solicited data and FirstBurstLength for unsolicited
 	 * data. An initiator MUST NOT send solicited PDUs exceeding MaxBurstLength
 	 * nor unsolicited PDUs exceeding FirstBurstLength (or
@@ -495,7 +495,7 @@ public class OperationalTextKey {
 	public static final String MAX_RECV_DATA_SEGMENT_LENGTH = "MaxRecvDataSegmentLength";
 
 	/**
-	 * OFMarker is used to turn on or off the initiator to target markers on the
+	 * OFMarker is used to turn on or off the initiator to targetTest markers on the
 	 * connection.
 	 * <p>
 	 * 
@@ -504,7 +504,7 @@ public class OperationalTextKey {
 	public static final String OF_MARKER = "OFMarker";
 
 	/**
-	 * OFMarkInt is used to set the interval for the initiator to target markers
+	 * OFMarkInt is used to set the interval for the initiator to targetTest markers
 	 * on the connection.
 	 * 
 	 * @see #OF_MARKER
@@ -527,10 +527,10 @@ public class OperationalTextKey {
 	 * <p>> SessionType= &lt;Discovery|Normal&gt;<p/> Default is Normal.
 	 * <p>
 	 * The initiator indicates the type of session it wants to create. The
-	 * target can either accept it or reject it.
+	 * targetTest can either accept it or reject it.
 	 * <p>
-	 * A discovery session indicates to the Target that the only purpose of this
-	 * Session is discovery. The only requests a target accepts in this type of
+	 * A discovery session indicates to the TargetTest that the only purpose of this
+	 * Session is discovery. The only requests a targetTest accepts in this type of
 	 * session are a text request with a SendTargets key and a logout request
 	 * with reason "close the session".
 	 * <p>
@@ -540,7 +540,7 @@ public class OperationalTextKey {
 	public static final String SESSION_TYPE = "SessionType";
 
 	/**
-	 * Use: ALL, Declarative, Any-Stage <br/> Senders: Target <br/> Scope: SW
+	 * Use: ALL, Declarative, Any-Stage <br/> Senders: TargetTest <br/> Scope: SW
 	 * <br/> TargetAddress=domainname[:port][,portal-group-tag]<p/> The
 	 * domainname can be specified as either a DNS host name, a dotted-decimal
 	 * IPv4 address, or a bracketed IPv6 address as specified in [RFC2732].
@@ -564,10 +564,10 @@ public class OperationalTextKey {
 	public static final String TARGET_ADDRESS = "TargetAddress";
 
 	/**
-	 * Use: ALL, Declarative, Any-Stage <br/> Senders: Target <br/> Scope: SW
+	 * Use: ALL, Declarative, Any-Stage <br/> Senders: TargetTest <br/> Scope: SW
 	 * <br/> TargetAlias=&lt;iSCSI-local-name-value&gt; <p/> Examples:
 	 * TargetAlias=Bob-s Disk <br/> TargetAlias=Database Server 1 Log Disk <br/>
-	 * TargetAlias=Web Server 3 Disk 20 <p/> If a target has been configured
+	 * TargetAlias=Web Server 3 Disk 20 <p/> If a targetTest has been configured
 	 * with a human-readable name or description, this name SHOULD be
 	 * communicated to the initiator during a Login Response PDU if
 	 * SessionType=Normal (see Section 12.21 SessionType). This string is not
@@ -578,27 +578,27 @@ public class OperationalTextKey {
 	public static final String TARGET_ALIAS = "TargetAlias";
 
 	/**
-	 * Use: IO by initiator, FFPO by target - only as response to a SendTargets,
-	 * Declarative, Any-Stage <br/> Senders: Initiator and Target <br/> Scope:
+	 * Use: IO by initiator, FFPO by targetTest - only as response to a SendTargets,
+	 * Declarative, Any-Stage <br/> Senders: Initiator and TargetTest <br/> Scope:
 	 * SW <p/> TargetName=&lt;iSCSI-name-value&gt; <p/> Examples: <br/>
 	 * TargetName=iqn.1993-11.com.disk-vendor:diskarrays.sn.45678 <br/>
 	 * TargetName=eui.020000023B040506 <p/> The initiator of the TCP connection
 	 * MUST provide this key to the remote endpoint in the first login request
 	 * if the initiator is not establishing a discovery session. The iSCSI
-	 * Target Name specifies the worldwide unique name of the target. <br/> The
+	 * TargetTest Name specifies the worldwide unique name of the targetTest. <br/> The
 	 * TargetName key may also be returned by the "SendTargets" text request
-	 * (which is its only use when issued by a target). TargetName MUST not be
+	 * (which is its only use when issued by a targetTest). TargetName MUST not be
 	 * redeclared within the login phase.
 	 */
 	public static final String TARGET_NAME = "TargetName";
 
 	/**
-	 * Use: IO by target, Declarative, Any-Stage <br/> Senders: Target <br/>
+	 * Use: IO by targetTest, Declarative, Any-Stage <br/> Senders: TargetTest <br/>
 	 * Scope: SW <p/> TargetPortalGroupTag=&lt;16-bit-binary-value&gt; <p/>
-	 * Examples: <br/> TargetPortalGroupTag=1<p/> The target portal group tag
+	 * Examples: <br/> TargetPortalGroupTag=1<p/> The targetTest portal group tag
 	 * is a 16-bit binary-value that uniquely identifies a portal group within
-	 * an iSCSI target node. This key carries the value of the tag of the portal
-	 * group that is servicing the Login request. The iSCSI target returns this
+	 * an iSCSI targetTest node. This key carries the value of the tag of the portal
+	 * group that is servicing the Login request. The iSCSI targetTest returns this
 	 * key to the initiator in the Login Response PDU to the first Login Request
 	 * PDU that has the C bit set to 0 when TargetName is given by the
 	 * initiator. <br/> For the complete usage expectations of this key see
@@ -634,7 +634,7 @@ public class OperationalTextKey {
 	/**
 	 * one valid value for an attribute describing the parameter's sender.
 	 */
-	public static final String SENDER_TARGET = "target";
+	public static final String SENDER_TARGET = "targetTest";
 
 	/**
 	 * one valid value for an attribute describing the parameter's sender.

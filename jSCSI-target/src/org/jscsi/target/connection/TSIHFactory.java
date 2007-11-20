@@ -7,8 +7,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * An iSCSI target environment generates a unique identifier for every existing
- * Session, the Target Session Identifying Handle (TSIH). This Factory produces
+ * An iSCSI targetTest environment generates a unique identifier for every existing
+ * Session, the TargetTest Session Identifying Handle (TSIH). This Factory produces
  * unique TSIHs and produced TSIHs can be removed.
  * 
  * @author Marcus Specht
@@ -36,9 +36,9 @@ public class TSIHFactory {
 	}
 
 	/**
-	 * Returns a new unique TSIH within a target
+	 * Returns a new unique TSIH within a targetTest
 	 * 
-	 * @return a short representing a target session identifying handle
+	 * @return a short representing a targetTest session identifying handle
 	 */
 	public final short getNewTSIH() {
 		synchronized (this) {
@@ -66,7 +66,7 @@ public class TSIHFactory {
 	}
 
 	/**
-	 * Removes a used "target session identifying handle".
+	 * Removes a used "targetTest session identifying handle".
 	 * 
 	 * @param tsih
 	 */

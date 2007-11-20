@@ -27,7 +27,7 @@ public interface Task{
 	public SerialArithmeticNumber getITT();
 	
 	/**
-	 * The TargetTransferTag can be used within a target environment 
+	 * The TargetTransferTag can be used within a targetTest environment 
 	 * to place information in a response PDU. The initiator guarantees to
 	 * use the TTT for every following PDUs. 
 	 * @return the task's TTT, if used.

@@ -10,12 +10,12 @@ import org.jscsi.target.parameter.connection.Phase;
 import org.jscsi.target.parameter.connection.SessionType;
 
 /**
- * A task descriptor is used by an iSCSI target environment to
+ * A task descriptor is used by an iSCSI targetTest environment to
  * create an appropriate task, analyzing an initializing PDU. 
  * This class is only representing an abstract TaskDescriptor.
  * A working descriptor needs to extend this one,
  * loading this constructor with well chosen parameters and place it in a directory
- * the target environment is using to load task descriptors.
+ * the targetTest environment is using to load task descriptors.
  * @author Marcus Specht
  *
  */
