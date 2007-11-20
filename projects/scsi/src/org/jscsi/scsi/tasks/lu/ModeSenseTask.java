@@ -27,7 +27,7 @@ public class ModeSenseTask extends LUTask
 
    public ModeSenseTask()
    {
-      super();
+      super("ModeSenseTask");
    }
    
    public ModeSenseTask(

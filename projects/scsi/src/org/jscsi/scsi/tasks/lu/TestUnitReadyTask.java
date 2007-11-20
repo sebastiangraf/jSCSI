@@ -12,7 +12,7 @@ public class TestUnitReadyTask extends LUTask
 {
    public TestUnitReadyTask()
    {
-      super();
+      super("TestUnitReadyTask");
    }
    
    public TestUnitReadyTask(

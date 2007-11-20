@@ -19,7 +19,7 @@ public class InquiryTask extends LUTask
 {
    public InquiryTask()
    {
-      super();
+      super("InquiryTask");
    }
    
    public InquiryTask(

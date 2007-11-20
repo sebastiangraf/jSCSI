@@ -16,9 +16,9 @@ public abstract class BufferedTask extends AbstractTask
    protected ByteBuffer buffer;
    protected int blockSize;
 
-   public BufferedTask()
+   protected BufferedTask(String name)
    {
-      super();
+      super(name);
    }
    
    public BufferedTask(
@@ -57,7 +57,7 @@ public abstract class BufferedTask extends AbstractTask
    {
       this.buffer = file;
       this.blockSize = blockLength;
-      super.load("BufferedTask", targetPort, command, modePageRegistry, inquiryDataRegistry);
+      super.load(targetPort, command, modePageRegistry, inquiryDataRegistry);
       return this;
    }
 

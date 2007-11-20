@@ -17,7 +17,7 @@ public class BufferedReadTask extends BufferedTask
 
    public BufferedReadTask()
    {
-      super();
+      super("BufferedReadTask");
    }
 
    @Override

@@ -54,6 +54,11 @@ public abstract class AbstractTask implements Task
    protected AbstractTask()
    {
    }
+   
+   protected AbstractTask(String name)
+   {
+      this.name = name;
+   }
 
    protected AbstractTask(
          String name,
@@ -73,7 +78,6 @@ public abstract class AbstractTask implements Task
    // operations
 
    protected final Task load(
-         String name,
          TargetTransportPort targetPort,
          Command command,
          ModePageRegistry modePageRegistry,

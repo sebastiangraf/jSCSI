@@ -17,7 +17,7 @@ public class BufferedWriteTask extends BufferedTask
 
    public BufferedWriteTask()
    {
-      super();
+      super("BufferedWriteTask");
    }
 
    @Override
