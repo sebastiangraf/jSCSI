@@ -37,20 +37,18 @@ public class TargetTaskFactory implements TaskFactory
    public Task getInstance(TargetTransportPort port, Command command)
    throws IllegalRequestException
    {
-      Class<? extends TargetTask> taskClass = TargetTaskFactory.tasks.get(command.getCommandDescriptorBlock().getClass());
-
-      TargetTask newTask = null;
-      try
+      switch (command.getCommandDescriptorBlock().getOperationCode())
       {
-         newTask = taskClass.newInstance();
-      }
-      catch (Exception e)
-      {
-         _logger.error("sense exception occured when instantiating task from command: " + e.getMessage());
-         throw new InvalidCommandOperationCodeException();
+         case ReportLuns.OPERATION_CODE:
+            return new ReportLunsTask(logicalUnits, port, command, null, null);
+         default:
+            _logger.error(
+                  "Initiator attempted to execute unsupported command: (" +
+                  command.getCommandDescriptorBlock().getOperationCode() + ") " +
+                  command.getCommandDescriptorBlock().getClass().getName());
+            throw new InvalidCommandOperationCodeException();
       }
       
-      return newTask.load("TargetTask", logicalUnits, port, command, null, null);
    }
 
    public boolean respondsTo(Class<? extends CDB> cls)

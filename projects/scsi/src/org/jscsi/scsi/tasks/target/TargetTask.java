@@ -51,9 +51,9 @@ public abstract class TargetTask extends AbstractTask
 
    private Set<Long> logicalUnits;
    
-   public TargetTask()
+   protected TargetTask(String name)
    {
-      super();
+      super(name);
    }
    
    public TargetTask(
@@ -74,14 +74,13 @@ public abstract class TargetTask extends AbstractTask
    protected abstract void execute() throws InterruptedException, SenseException;
 
    protected final Task load(
-         String name,
          Set<Long> logicalUnits,
          TargetTransportPort targetPort,
          Command command,
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
    {
-      super.load(name, targetPort, command, modePageRegistry, inquiryDataRegistry);
+      super.load(targetPort, command, modePageRegistry, inquiryDataRegistry);
       return this;
    }
    

@@ -15,6 +15,11 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class ReportLunsTask extends TargetTask
 {
+   public ReportLunsTask()
+   {
+      super("ReportLunsTask");
+   }
+   
    public ReportLunsTask(
          Set<Long> logicalUnits,
          TargetTransportPort targetPort,

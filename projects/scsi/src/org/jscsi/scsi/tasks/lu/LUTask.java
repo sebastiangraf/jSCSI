@@ -14,12 +14,12 @@ public abstract class LUTask extends AbstractTask
 {
    private static Logger _logger = Logger.getLogger(LUTask.class);
 
-   public LUTask()
+   protected LUTask(String name)
    {
-      super();
+      super(name);
    }
 
-   public LUTask(
+   protected LUTask(
          String name,
          TargetTransportPort targetPort,
          Command command,
@@ -31,13 +31,13 @@ public abstract class LUTask extends AbstractTask
 
    protected abstract void execute() throws InterruptedException, SenseException;
 
-   protected final Task load(
+   public final Task loadTask(
          TargetTransportPort targetPort,
          Command command,
          ModePageRegistry modePageRegistry,
          InquiryDataRegistry inquiryDataRegistry)
    {
-      super.load("BufferedTask", targetPort, command, modePageRegistry, inquiryDataRegistry);
+      super.load(targetPort, command, modePageRegistry, inquiryDataRegistry);
       return this;
    }
 }

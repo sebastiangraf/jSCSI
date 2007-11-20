@@ -57,17 +57,22 @@ public class LUTaskFactory implements TaskFactory
       {
          try
          {
-            return taskClass.newInstance().load(port, command, modePageRegistry, inquiryDataRegistry);
+            return taskClass.newInstance().loadTask(port, command, modePageRegistry, inquiryDataRegistry);
          }
          catch (InstantiationException e)
          {
-            _logger.error("sense exception when instantiating task from command");
+            _logger.error(
+                  "Initiator attempted to execute unsupported command: (" +
+                  command.getCommandDescriptorBlock().getOperationCode() + ") " +
+                  command.getCommandDescriptorBlock().getClass().getName());
             throw new InvalidCommandOperationCodeException();
          }
          catch (IllegalAccessException e)
          {
-            _logger.error("sense exception when instanting task from command");
-            
+            _logger.error(
+                  "Initiator attempted to execute unsupported command: (" +
+                  command.getCommandDescriptorBlock().getOperationCode() + ") " +
+                  command.getCommandDescriptorBlock().getClass().getName());
             throw new InvalidCommandOperationCodeException();
          }
       }
