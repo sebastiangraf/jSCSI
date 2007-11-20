@@ -15,6 +15,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.sense.exceptions.OverlappedCommandsAttemptedException;
@@ -131,12 +132,19 @@ public class DefaultTaskSet implements TaskSet
 
       public void run()
       {
-         _logger.debug("Command now running: " + this.task.getCommand());
+         if (_logger.isTraceEnabled())
+            _logger.trace("Command now running: " + this.task.getCommand());
+         
          this.task.run();
-         _logger.debug("Task finished: " + this.task);
+         
+         if (_logger.isTraceEnabled())
+            _logger.trace("Task finished: " + this.task);
+         
          long taskTag = this.task.getCommand().getNexus().getTaskTag();
          finished(taskTag > -1 ? taskTag : null); // untagged tasks have a Q value of -1 (invalid)
-         _logger.debug("Marked task as finished in task set: " + this.task);
+         
+         if (_logger.isTraceEnabled())
+            _logger.trace("Marked task as finished in task set: " + this.task);
       }
 
       public boolean abort()
@@ -147,9 +155,7 @@ public class DefaultTaskSet implements TaskSet
       @Override
       public String toString()
       {
-         StringBuilder str = new StringBuilder();
-         str.append("TaskContainer(").append(this.task.toString()).append(")");
-         return str.toString();
+         return "TaskContainer(" + this.task.toString() + ")";
       }
    }
 
@@ -288,8 +294,11 @@ public class DefaultTaskSet implements TaskSet
 
       lock.lockInterruptibly();
       
-      _logger.debug("Task set BEFORE offer(): " + this.dormant);
-      _logger.debug("offering to taskset command: " + task.getCommand());
+      if (_logger.isTraceEnabled())
+      {
+         _logger.trace("Task set BEFORE offer(): " + this.dormant);
+         _logger.trace("offering to taskset command: " + task.getCommand());
+      }
 
       try
       {
@@ -330,7 +339,8 @@ public class DefaultTaskSet implements TaskSet
             task.getTargetTransportPort().writeResponse(command.getNexus(),
                   command.getCommandReferenceNumber(), Status.CHECK_CONDITION,
                   ByteBuffer.wrap((new OverlappedCommandsAttemptedException(true)).encode()));
-            _logger.warn("command not accepted due to preexisting untagged task: " + task);
+            if (_logger.isDebugEnabled())
+               _logger.warn("command not accepted due to preexisting untagged task: " + task);
             return false;
          }
 
@@ -349,13 +359,15 @@ public class DefaultTaskSet implements TaskSet
             this.dormant.add(container);
          }
 
-         _logger.debug("Task set: " + this.dormant);
+         if (_logger.isTraceEnabled())
+            _logger.trace("Task set: " + this.dormant);
 
          this.capacity--;
          this.notEmpty.signalAll();
          this.unblocked.signalAll();
          
-         _logger.debug("offered successfully command: " + task.getCommand());
+         if (_logger.isTraceEnabled())
+            _logger.trace("offered successfully command: " + task.getCommand());
          return true;
 
       }
@@ -473,7 +485,7 @@ public class DefaultTaskSet implements TaskSet
          timeout = unit.toNanos(timeout);
          while (this.dormant.size() == 0)
          {
-            _logger.debug("Task set empty; waiting for new task to be added");
+            _logger.trace("Task set empty; waiting for new task to be added");
             if (timeout > 0)
             {
                // "notEmpty" is notified whenever a task is added to the set
@@ -488,7 +500,7 @@ public class DefaultTaskSet implements TaskSet
          // wait until the next task is not blocked
          while (this.blocked(this.dormant.get(0)))
          {
-            _logger.debug("Next task blocked; waiting for other tasks to finish");
+            _logger.trace("Next task blocked; waiting for other tasks to finish");
             if (timeout > 0)
             {
                // "unblocked" is notified whenever a task is finished or a new task is
@@ -505,8 +517,11 @@ public class DefaultTaskSet implements TaskSet
          TaskContainer container = this.dormant.remove(0);
          this.enabled.add(container);
 
-         _logger.debug("Enabling command: " + container.getCommand());
-         _logger.debug("Dormant task set: " + this.dormant);
+         if (_logger.isDebugEnabled())
+         {
+            _logger.debug("Enabling command: " + container.getCommand());
+            _logger.debug("Dormant task set: " + this.dormant);  
+         }
 
          return container;
 
@@ -522,9 +537,11 @@ public class DefaultTaskSet implements TaskSet
       Task task = null;
       while (task == null)
       {
-         _logger.debug("Polling for next task; timeout in 30 seconds");
+         if (_logger.isTraceEnabled())
+            _logger.trace("Polling for next task; timeout in 30 seconds");
          task = this.poll(30, TimeUnit.SECONDS);
-         _logger.debug("returning command for execution: " + 
+         if (_logger.isTraceEnabled())
+            _logger.trace("returning command for execution: " + 
                (task == null ? "null" : task.getCommand()));
       }
       return task;

@@ -50,12 +50,18 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
    
    public void enqueue(TargetTransportPort port, Command command)
    {
-      _logger.debug("enqueuing command: " + command + ", associated with TargetTransportPort: " + port);
+      if (_logger.isDebugEnabled())
+      {
+         _logger.debug("enqueuing command: " + command + ", associated with TargetTransportPort: " + port);
+      }
       try
       {
          Task task = this.getTaskFactory().getInstance(port, command);
          assert task != null : "improper task factory implementation returned null task";
-         _logger.debug("successfully constructed task: " + task);
+         if (_logger.isDebugEnabled())
+         {
+            _logger.debug("successfully constructed task: " + task);
+         }
          this.taskSet.offer(task); // non-blocking, task set sends any errors to transport port
       }
       catch (IllegalRequestException e)
