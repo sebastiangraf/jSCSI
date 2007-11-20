@@ -168,7 +168,7 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
       return taskSet;
    }
 
-   public void setTaskSet(TaskSet taskSet)
+   protected void setTaskSet(TaskSet taskSet)
    {
       this.taskSet = taskSet;
    }
@@ -178,7 +178,7 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
       return taskManager;
    }
 
-   public void setTaskManager(TaskManager taskManager)
+   protected void setTaskManager(TaskManager taskManager)
    {
       this.taskManager = taskManager;
    }
@@ -188,7 +188,7 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
       return taskFactory;
    }
 
-   public void setTaskFactory(TaskFactory taskFactory)
+   protected void setTaskFactory(TaskFactory taskFactory)
    {
       this.taskFactory = taskFactory;
    }
