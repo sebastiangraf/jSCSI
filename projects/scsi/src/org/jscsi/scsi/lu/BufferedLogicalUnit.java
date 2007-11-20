@@ -16,15 +16,12 @@ public class BufferedLogicalUnit extends AbstractLogicalUnit
 {
    private static Logger _logger = Logger.getLogger(TaskSet.class);
 
-   private final int NUM_TASK_THREADS = 10;
-   private final int SET_QUEUE_DEPTH = 10;
-
-   public BufferedLogicalUnit(ByteBuffer store, int blockSize)
+   public BufferedLogicalUnit(ByteBuffer store, int blockSize, int taskThreads, int queueDepth)
    {
       super();
-      TaskSet taskSet = new DefaultTaskSet(SET_QUEUE_DEPTH);
+      TaskSet taskSet = new DefaultTaskSet(queueDepth);
       this.setTaskSet(taskSet);
-      this.setTaskManager(new DefaultTaskManager(NUM_TASK_THREADS, taskSet));
+      this.setTaskManager(new DefaultTaskManager(taskThreads, taskSet));
 
       this.setTaskFactory(new BufferedTaskFactory(store, blockSize, new StaticModePageRegistry(),
             new StaticInquiryDataRegistry()));
