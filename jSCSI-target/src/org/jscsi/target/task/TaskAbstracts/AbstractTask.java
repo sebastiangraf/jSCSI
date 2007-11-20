@@ -31,7 +31,7 @@ public abstract class AbstractTask extends AbstractOperation implements
 	/** The Task's initiator task tag */
 	private SerialArithmeticNumber initiatorTaskTag;
 
-	/** The Task's target transfer tag, if used */
+	/** The Task's targetTest transfer tag, if used */
 	private SerialArithmeticNumber targetTransferTag;
 
 	/** The Task's current processing State */
@@ -53,7 +53,7 @@ public abstract class AbstractTask extends AbstractOperation implements
 	private final Condition receivedPDU = dequeLock.newCondition();
 
 	/**
-	 * Creating a new task within a target environment, the task needs to have
+	 * Creating a new task within a targetTest environment, the task needs to have
 	 * a Connection allegiance and an initialPDU.
 	 * @param refConnection
 	 * @param initialPDU
@@ -181,7 +181,7 @@ public abstract class AbstractTask extends AbstractOperation implements
 	}
 
 	/**
-	 * The TargetTransferTag can be used within a target environment to place
+	 * The TargetTransferTag can be used within a targetTest environment to place
 	 * information in a response PDU. The initiator guarantees to use the TTT
 	 * for every following PDUs.
 	 * 

@@ -76,9 +76,9 @@ public class SessionTaskRouter extends Thread {
 			newTask = taskDescriptorLoader.createTask(initialPDU,
 					callingConnection);
 		} catch (Exception e) {
-			// here the target should start a Task sending an unsupported method
+			// here the targetTest should start a Task sending an unsupported method
 			// status response
-			logDebug("Unsupported PDU arrived, target should send appropriate status response");
+			logDebug("Unsupported PDU arrived, targetTest should send appropriate status response");
 		}
 		// forward initialPDU to the Task and add to Session's active Tasks
 		newTask.assignPDU(initialPDU);

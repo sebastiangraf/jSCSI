@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.target.Target;
+import org.jscsi.target.TargetException;
 import org.jscsi.target.conf.operationalText.OperationalTextException;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.Session;
@@ -16,7 +18,7 @@ import org.jscsi.parser.login.ISID;
 import org.jscsi.parser.login.LoginRequestParser;
 
 /**
- * The TargetSocketRouter holds every active Session within the jSCSI target
+ * The TargetSocketRouter holds every active Session within the jSCSI targetTest
  * environment. As a SocketHandler, possible SocketListener can assign a Socket
  * to the TargetSocketRouter, the TargetSocketRouter then tries to create a
  * valid <code>Connection</code>/<code>Session</code>.
@@ -33,27 +35,33 @@ public final class TargetSocketRouter implements ISocketHandler {
 	// --------------------------------------------------------------------------
 	// --------------------------------------------------------------------------
 
-	/** all active Sessions and their target session identifying handles */
+	/** all active Sessions and their targetTest session identifying handles */
 	private final Map<Short, Session> sessions;
+
+	private final Target target;
+
+	private final Map<Integer, SocketListener> listeningSockets;
 
 	/** the only instance of a <code>TSIHFactory</code> */
 	private static TSIHFactory tsihFactory;
 
-	public TargetSocketRouter() {
+	public TargetSocketRouter(Target target) {
 		// thread safe ConcurrentHashMap
 		sessions = new ConcurrentHashMap<Short, Session>();
+		listeningSockets = new ConcurrentHashMap<Integer, SocketListener>();
+		this.target = target;
 		try {
 			tsihFactory = Singleton.getInstance(TSIHFactory.class);
 		} catch (ClassNotFoundException e) {
-
 			logDebug("Couldn't load " + TSIHFactory.class);
-
 		}
+		logTrace("Started TargetSocketRouter");
+
 	}
 
 	/**
-	 * Every Connection/Session within the jSCSI target starts with a Socket, so
-	 * here we go!
+	 * Every Connection/Session within the jSCSI targetTest starts with a
+	 * Socket, so here we go!
 	 * 
 	 * @return true if this Socket can be handled, else false
 	 */
@@ -63,60 +71,56 @@ public final class TargetSocketRouter implements ISocketHandler {
 		return true;
 	}
 
-	/**
-	 * Return the SessionMap, which is a ConcurrentHashMap, e.g. should be
-	 * thread safe.
-	 * 
-	 * @return the SessionMap
-	 */
-	private Map<Short, Session> getSessionMap() {
-		return sessions;
+	public Target getReferencedTarget() {
+		return target;
 	}
 
-	/**
-	 * Get the Session by the target session identifying handle.
-	 * 
-	 * @param targetSessionIdentifyingHandle
-	 *            the session's TSIH
-	 * @return a session object or null if no such session
-	 */
-	public Session getSession(short targetSessionIdentifyingHandle) {
-		return getSessionMap().get(targetSessionIdentifyingHandle);
-	}
-
-	/**
-	 * Get the Session with the initiator session id and initiator name.
-	 * 
-	 * @param initiatorSessionID
-	 *            the sessions ISID
-	 * @param initiatorName
-	 *            the sessions connected initiator name
-	 * @return a session object or null if no such session
-	 */
-	public Session getSession(ISID initiatorSessionID, String initiatorName) {
-		Iterator<Session> sessions = getSessions();
-		Session result = null;
-		// find matching Session
-		while (sessions.hasNext()) {
-			Session checkedSession = sessions.next();
-			if (checkedSession.getInitiatorSessionID().equals(
-					initiatorSessionID)
-					&& checkedSession.getInitiatorName().equals(initiatorName)) {
-				result = checkedSession;
-				break;
-			}
+	public final int[] getListeningPorts() {
+		int[] result = new int[listeningSockets.size()];
+		int i = 0;
+		for (int port : listeningSockets.keySet()) {
+			result[i++] = port;
 		}
-		// returns null if no session matched
 		return result;
 	}
 
+	public String getDescribingString() {
+		StringBuffer result = new StringBuffer();
+		result
+				.append("TargetSocketListener is listening to the following ports :");
+		for (int port : getListeningPorts()) {
+			result.append(port + ", ");
+		}
+		result.delete(result.length() - 2, result.length() - 1);
+		result.append(";");
+		return result.toString();
+	}
+
+	public void startListening(int port) throws TargetException {
+		if (listeningSockets.containsKey(port)) {
+			logDebug("Tried to start listening on port that target is already listening: "
+					+ port);
+			throw new TargetException(
+					"Tried to start listening on port that target is already listening: "
+							+ port);
+		} else {
+			SocketListener newListener = new SocketListener(port, this);
+			listeningSockets.put(port, newListener);
+			newListener.start();
+			logTrace("Started listening on port " + port);
+		}
+	}
+
 	/**
-	 * Returns an Iterator over all existing Sessions
 	 * 
-	 * @return all existing Sessions
+	 * @param port
 	 */
-	public Iterator<Session> getSessions() {
-		return getSessionMap().values().iterator();
+	public void stopListening(int port) {
+		if (listeningSockets.containsKey(port)) {
+			listeningSockets.get(port).stopListening();
+			listeningSockets.remove(port);
+			logTrace("Stopped listening on port " + port);
+		}
 	}
 
 	/**
@@ -166,7 +170,7 @@ public final class TargetSocketRouter implements ISocketHandler {
 		}
 
 		/**
-		 * If the initiator's socket tries to login, the target must check
+		 * If the initiator's socket tries to login, the targetTest must check
 		 * whether he wants to create a new Session, or he wants to assign a new
 		 * Connection to an existing Session
 		 * 
@@ -181,7 +185,7 @@ public final class TargetSocketRouter implements ISocketHandler {
 			newConnection.setConnectionID((short) parser.getConnectionID());
 			// find appropriate Session
 			short tsih = parser.getTargetSessionIdentifyingHandle();
-			Session testedSession = getSession(tsih);
+			Session testedSession = getReferencedTarget().getSession(tsih);
 			if (testedSession != null) {
 				ISID isid = parser.getInitiatorSessionID();
 				if (testedSession.getInitiatorSessionID().equals(isid)) {
@@ -203,7 +207,7 @@ public final class TargetSocketRouter implements ISocketHandler {
 			} catch (OperationalTextException e) {
 				logTrace("Had to drop a Socket, error occured creating a Session!");
 			}
-			getSessionMap().put(newUniqueTSIH, newSession);
+			getReferencedTarget().getSessionMap().put(newUniqueTSIH, newSession);
 
 			logTrace("Created new Session: TSIH = " + newUniqueTSIH);
 
@@ -222,16 +226,17 @@ public final class TargetSocketRouter implements ISocketHandler {
 			}
 		}
 
-		/**
-		 * Logs a trace Message , if trace log is enabled within the logging
-		 * environment.
-		 * 
-		 * @param logMessage
-		 */
-		private void logTrace(String logMessage) {
-			if (LOGGER.isTraceEnabled()) {
-				LOGGER.trace(" Message: " + logMessage);
-			}
+	}
+
+	/**
+	 * Logs a trace Message , if trace log is enabled within the logging
+	 * environment.
+	 * 
+	 * @param logMessage
+	 */
+	private void logTrace(String logMessage) {
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace(" Message: " + logMessage);
 		}
 	}
 

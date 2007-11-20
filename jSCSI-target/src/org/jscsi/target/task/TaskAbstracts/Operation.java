@@ -2,7 +2,7 @@ package org.jscsi.target.task.TaskAbstracts;
 
 /**
  * An Operation builds the basis for all working task processors
- * within a target environment. It provides several methods that can
+ * within a targetTest environment. It provides several methods that can
  * be especially used for task management functions.
  * @author Marcus Specht
  *

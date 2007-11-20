@@ -299,7 +299,7 @@ public class NetWorker {
 				} catch (IOException e) {
 					successfulRead = false;
 				}
-				// target can ignore error transmissions, because he's signaling
+				// targetTest can ignore error transmissions, because he's signaling
 				// these with responses containing ExpCmdSN
 				if (successfulRead) {
 					addReceivedPDU(pdu);

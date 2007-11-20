@@ -224,7 +224,7 @@ public class TargetTaskRouter {
 
 	/**
 	 * A TargetTaskRouter signaled PDU is carrying every necessary information
-	 * the Target environment needs to locate the correct Task.
+	 * the TargetTest environment needs to locate the correct Task.
 	 * 
 	 * @author Marcus Specht
 	 * 

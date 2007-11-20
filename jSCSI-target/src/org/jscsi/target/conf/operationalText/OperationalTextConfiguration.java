@@ -275,9 +275,22 @@ public class OperationalTextConfiguration {
 		return result;
 	}
 
+	public static OperationalTextConfiguration createGlobalConfig() throws OperationalTextException{
+		createEmptyGlobalConfig();
+		try {
+			globalConfig = parseGlobalConfig();
+		} catch (Exception e){
+			throw new OperationalTextException("Error occured parsing global Config: " + e.getMessage());
+		}
+		return globalConfig;
+		
+	}
+	
 	private static OperationalTextConfiguration createEmptyGlobalConfig() {
 		return new OperationalTextConfiguration();
 	}
+	
+	
 
 	protected static OperationalTextConfiguration getGlobalConfig() {
 		return globalConfig;
@@ -379,6 +392,7 @@ public class OperationalTextConfiguration {
 			final DOMResult result = new DOMResult();
 
 			validator.validate(source, result);
+			
 			return (Document) result.getNode();
 		}
 

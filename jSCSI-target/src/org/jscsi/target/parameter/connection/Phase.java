@@ -18,7 +18,7 @@ public enum Phase {
 	FullFeaturePhase(3),
 
 	/**
-	 * Unknown can be used to signal a target environment that the actual
+	 * Unknown can be used to signal a targetTest environment that the actual
 	 * session type is unknown, i.e. at startup.
 	 */
 	Unknown(4);
