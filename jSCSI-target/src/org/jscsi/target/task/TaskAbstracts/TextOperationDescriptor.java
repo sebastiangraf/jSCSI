@@ -1,6 +1,6 @@
 package org.jscsi.target.task.TaskAbstracts;
 
-import org.jscsi.target.conf.OperationalTextKey;
+import org.jscsi.target.conf.operationalText.OperationalTextKey;
 
 
 public interface TextOperationDescriptor {

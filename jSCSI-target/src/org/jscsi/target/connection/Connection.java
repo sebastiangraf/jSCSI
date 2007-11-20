@@ -14,8 +14,8 @@ import org.jscsi.connection.SerialArithmeticNumber;
 import org.jscsi.parser.InitiatorMessageParser;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
-import org.jscsi.target.conf.OperationalTextConfiguration;
-import org.jscsi.target.conf.OperationalTextException;
+import org.jscsi.target.conf.operationalText.OperationalTextConfiguration;
+import org.jscsi.target.conf.operationalText.OperationalTextException;
 import org.jscsi.target.parameter.connection.Phase;
 import org.jscsi.target.task.ConnectionTaskRouter;
 

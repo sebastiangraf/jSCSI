@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.target.conf.OperationalTextException;
+import org.jscsi.target.conf.operationalText.OperationalTextException;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.Session;
 import org.jscsi.target.util.Singleton;
@@ -16,19 +16,19 @@ import org.jscsi.parser.login.ISID;
 import org.jscsi.parser.login.LoginRequestParser;
 
 /**
- * The TargetSessionRouter holds every active Session within the jSCSI target
+ * The TargetSocketRouter holds every active Session within the jSCSI target
  * environment. As a SocketHandler, possible SocketListener can assign a Socket
- * to the TargetSessionRouter, the TargetSessionRouter then tries to create a
+ * to the TargetSocketRouter, the TargetSocketRouter then tries to create a
  * valid <code>Connection</code>/<code>Session</code>.
  * 
  * @author Marcus Specht
  * 
  */
-public final class TargetSessionRouter implements ISocketHandler {
+public final class TargetSocketRouter implements ISocketHandler {
 
 	/** The logger interface. */
 	private static final Log LOGGER = LogFactory
-			.getLog(TargetSessionRouter.class);
+			.getLog(TargetSocketRouter.class);
 
 	// --------------------------------------------------------------------------
 	// --------------------------------------------------------------------------
@@ -39,7 +39,7 @@ public final class TargetSessionRouter implements ISocketHandler {
 	/** the only instance of a <code>TSIHFactory</code> */
 	private static TSIHFactory tsihFactory;
 
-	public TargetSessionRouter() {
+	public TargetSocketRouter() {
 		// thread safe ConcurrentHashMap
 		sessions = new ConcurrentHashMap<Short, Session>();
 		try {

@@ -1,4 +1,4 @@
-package org.jscsi.target.conf;
+package org.jscsi.target.conf.operationalText;
 
 import java.util.HashSet;
 import java.util.Set;

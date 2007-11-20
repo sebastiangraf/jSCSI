@@ -3,7 +3,7 @@ package org.jscsi.target.task.TaskAbstracts;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jscsi.target.conf.OperationalTextKey;
+import org.jscsi.target.conf.operationalText.OperationalTextKey;
 
 
 public class AbstractTextOperationDescriptor implements TextOperationDescriptor{

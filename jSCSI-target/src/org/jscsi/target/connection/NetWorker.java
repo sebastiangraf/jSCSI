@@ -12,8 +12,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.target.conf.OperationalTextException;
-import org.jscsi.target.conf.OperationalTextKey;
+import org.jscsi.target.conf.operationalText.OperationalTextException;
+import org.jscsi.target.conf.operationalText.OperationalTextKey;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.ProtocolDataUnitFactory;

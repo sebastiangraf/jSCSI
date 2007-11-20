@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.target.conf.OperationalTextKey;
+import org.jscsi.target.conf.operationalText.OperationalTextKey;
 
 public abstract class AbstractTextOperation extends AbstractOperation implements
 		TextOperation, Runnable {

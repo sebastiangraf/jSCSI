@@ -1,4 +1,4 @@
-package org.jscsi.target.conf;
+package org.jscsi.target.conf.operationalText;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import javax.xml.validation.Validator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.target.conf.OperationalTextKey;
+import org.jscsi.target.conf.operationalText.OperationalTextKey;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.Session;
 import org.w3c.dom.Document;
