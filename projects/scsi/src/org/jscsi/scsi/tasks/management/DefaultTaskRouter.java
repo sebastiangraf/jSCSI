@@ -181,7 +181,15 @@ public class DefaultTaskRouter implements TaskRouter
    public synchronized void registerLogicalUnit(long id, LogicalUnit lu) throws Exception
    {
       if ( this.running )
+      {
          lu.start();
+         _logger.debug("logical unit started: " + lu);
+      }
+      else
+      {
+         _logger.warn("not starting logical unit since router not running: " + lu);
+      }
+      
       logicalUnitMap.put(id, lu);
       if (_logger.isDebugEnabled())
          _logger.debug("registering logical unit: " + lu + " (id: " + id + ")");

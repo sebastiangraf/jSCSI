@@ -34,7 +34,9 @@ public class TestTargetTransportPort implements TargetTransportPort
    public boolean readData(Nexus nexus, long cmdRef, ByteBuffer output) throws InterruptedException
    {
       _logger.debug("servicing readData request: nexus: " + nexus + ", cmdRef: " + cmdRef);
+      assert this.readDataMap.containsKey(cmdRef): "read data unavailable for crn: " + cmdRef;
       output.put(this.readDataMap.get(cmdRef).array());
+      _logger.debug("*********** read data successful");
       return true;
    }
 
@@ -90,7 +92,7 @@ public class TestTargetTransportPort implements TargetTransportPort
    @Override
    public String toString()
    {
-      return "<DummyTargetTransportPort>";
+      return "<TestTargetTransportPort>";
    }
    
    /////////////////////////////////////////////////////////////////////////////
