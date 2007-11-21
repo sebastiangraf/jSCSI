@@ -23,7 +23,6 @@ public class TestTargetTransportPort implements TargetTransportPort
    
    private HashMap<Long,ByteBuffer> readDataMap = new HashMap<Long,ByteBuffer>();
    private HashMap<Long,ByteBuffer> writeDataMap = new HashMap<Long,ByteBuffer>();
-
    
    public TestTargetTransportPort(long deviceCapacity, int blockSize)
    {
@@ -36,7 +35,6 @@ public class TestTargetTransportPort implements TargetTransportPort
       _logger.debug("servicing readData request: nexus: " + nexus + ", cmdRef: " + cmdRef);
       assert this.readDataMap.containsKey(cmdRef): "read data unavailable for crn: " + cmdRef;
       output.put(this.readDataMap.get(cmdRef).array());
-      System.out.println("==================");
       return true;
    }
 
@@ -114,10 +112,6 @@ public class TestTargetTransportPort implements TargetTransportPort
       return new Nexus("TestInitiator", "TestTarget", 0, taskTag);
    }
    
-   
-   
-   
-   
    /////////////////////////////////////////////////////////////////////////////
    // getters/setters
 
@@ -130,6 +124,14 @@ public class TestTargetTransportPort implements TargetTransportPort
    {
       return writeDataMap;
    }
+   
+   public ByteBuffer removeReadBuffer(long crn)
+   {
+      return this.readDataMap.remove(crn);
+   }
 
-
+   public ByteBuffer removeWriteBuffer(long crn)
+   {
+      return this.writeDataMap.remove(crn);
+   }
 }
