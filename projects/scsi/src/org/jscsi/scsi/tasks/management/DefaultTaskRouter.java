@@ -209,9 +209,10 @@ public class DefaultTaskRouter implements TaskRouter
       if ( this.running )
          return;
       
-      for ( LogicalUnit lu : this.logicalUnitMap.values() )
+      for ( Map.Entry<Long, LogicalUnit> lu : this.logicalUnitMap.entrySet() )
       {
-         lu.start();
+         _logger.debug("Starting Logical Unit " + lu.getKey());
+         lu.getValue().start();
       }
       
       this.manager = new Thread(this.targetTaskManager, "TargetTaskManager");

@@ -1,6 +1,7 @@
 
 package org.jscsi.scsi.target;
 
+import org.apache.log4j.Logger;
 import org.jscsi.scsi.lu.LogicalUnit;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.tasks.TaskRouter;
@@ -12,6 +13,8 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class DefaultTarget extends AbstractTarget
 {
+   private static Logger _logger = Logger.getLogger(DefaultTarget.class);
+   
    private TaskRouter taskRouter;
 
    public DefaultTarget(String targetName) throws Exception
@@ -48,11 +51,13 @@ public class DefaultTarget extends AbstractTarget
 
    public synchronized void start()
    {
+      _logger.debug("Starting task router for target " + this.getTargetName());
       this.taskRouter.start();
    }
 
    public synchronized void stop()
    {
+      _logger.debug("Stopping task router for target " + this.getTargetName());
       this.taskRouter.stop();
    }
    
