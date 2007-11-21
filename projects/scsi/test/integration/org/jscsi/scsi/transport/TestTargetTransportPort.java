@@ -36,6 +36,7 @@ public class TestTargetTransportPort implements TargetTransportPort
       _logger.debug("servicing readData request: nexus: " + nexus + ", cmdRef: " + cmdRef);
       assert this.readDataMap.containsKey(cmdRef): "read data unavailable for crn: " + cmdRef;
       output.put(this.readDataMap.get(cmdRef).array());
+      System.out.println("==================");
       return true;
    }
 
@@ -97,14 +98,13 @@ public class TestTargetTransportPort implements TargetTransportPort
    /////////////////////////////////////////////////////////////////////////////
    // utilities
    
-   public ByteBuffer createReadData(int size, long cmdRefNum)
+   public ByteBuffer createReadData(int numBlocks, long cmdRefNum)
    {
-      byte[] data = new byte[size];
+      byte[] data = new byte[numBlocks*this.blockSize];
       this.rnd.nextBytes(data);
       
-      ByteBuffer buffData = ByteBuffer.allocate(size);
-      buffData.put(data);
-      
+      ByteBuffer buffData = ByteBuffer.wrap(data);
+
       this.readDataMap.put(cmdRefNum, buffData);
       return buffData;
    }
