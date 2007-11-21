@@ -3,6 +3,8 @@
     <!-- Properties -->
     <property name="lib.dir" value="lib" />
     <property name="src.dir" value="src" />
+    <property name="test.unit.dir" value="test/unit" />
+    <property name="test.int.dir" value="test/integration" />
     <property name="classes.dir" value="classes" />
     <property name="jar.dir" value="jar" />
 
@@ -18,7 +20,7 @@
     <!-- Compile -->
     <target name="compile">
         <mkdir dir="${classes.dir}" />
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath" debug="true" />
+        <javac srcdir="${src.dir}:${test.int.dir}" destdir="${classes.dir}" classpathref="classpath" debug="true" />
     </target>
 
     <!-- Jar -->
