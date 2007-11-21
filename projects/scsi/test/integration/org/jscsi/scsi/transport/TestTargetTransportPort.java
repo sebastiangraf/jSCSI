@@ -18,14 +18,14 @@ public class TestTargetTransportPort implements TargetTransportPort
 
    private Random rnd = new Random();
    
-   protected int deviceCapacity;
+   protected long deviceCapacity;
    protected int blockSize;
    
    private HashMap<Long,ByteBuffer> readDataMap = new HashMap<Long,ByteBuffer>();
    private HashMap<Long,ByteBuffer> writeDataMap = new HashMap<Long,ByteBuffer>();
 
    
-   public TestTargetTransportPort(int deviceCapacity, int blockSize)
+   public TestTargetTransportPort(long deviceCapacity, int blockSize)
    {
       this.deviceCapacity = deviceCapacity;
       this.blockSize = blockSize;
