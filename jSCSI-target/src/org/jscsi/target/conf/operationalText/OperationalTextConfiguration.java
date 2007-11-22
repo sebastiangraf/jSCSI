@@ -29,6 +29,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import sun.security.provider.ConfigSpiFile;
+
 /**
  * The OperationalTextConfiguration represents a standard system to work with
  * iSCSI text parameter. The global used iSCSI parameters are stored within a
@@ -122,7 +124,7 @@ public class OperationalTextConfiguration {
 		localConfig = new HashSet<OperationalTextKey>();
 	}
 
-	private Set<OperationalTextKey> getConfigSet() {
+	public Set<OperationalTextKey> getConfigSet() {
 		return localConfig;
 	}
 
@@ -155,6 +157,10 @@ public class OperationalTextConfiguration {
 		}
 		throw new OperationalTextException(
 				"Configuration doesn't contain Key: " + key);
+	}
+
+	public Set<OperationalTextKey> getAllKeys() {
+		return localConfig;
 	}
 
 	/**
@@ -275,22 +281,23 @@ public class OperationalTextConfiguration {
 		return result;
 	}
 
-	public static OperationalTextConfiguration createGlobalConfig() throws OperationalTextException{
+	public static OperationalTextConfiguration createGlobalConfig()
+			throws OperationalTextException {
 		createEmptyGlobalConfig();
 		try {
 			globalConfig = parseGlobalConfig();
-		} catch (Exception e){
-			throw new OperationalTextException("Error occured parsing global Config: " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new OperationalTextException(
+					"Error occured parsing global Config: " + e.getMessage());
 		}
 		return globalConfig;
-		
+
 	}
-	
+
 	private static OperationalTextConfiguration createEmptyGlobalConfig() {
 		return new OperationalTextConfiguration();
 	}
-	
-	
 
 	protected static OperationalTextConfiguration getGlobalConfig() {
 		return globalConfig;
@@ -298,7 +305,9 @@ public class OperationalTextConfiguration {
 
 	public static OperationalTextConfiguration parseGlobalConfig()
 			throws SAXException, ParserConfigurationException, IOException {
-		return globalParser.parse();
+		OperationalTextConfiguration newGlobal = globalParser.parse();
+		
+		return newGlobal;
 	}
 
 	public static String toString(String key, String value) {
@@ -317,7 +326,7 @@ public class OperationalTextConfiguration {
 					.getString()));
 			result.append(PAIR_DELIMITER);
 		}
-		result.deleteCharAt(result.length() - 1);
+		//result.deleteCharAt(result.length() - 1);
 		return result.toString();
 	}
 
@@ -349,12 +358,18 @@ public class OperationalTextConfiguration {
 
 		public synchronized OperationalTextConfiguration parse()
 				throws SAXException, ParserConfigurationException, IOException {
-			Element root = (Element) parseXMLDocument(XSD_FILE_ADRESS,
-					XML_FILE_ADRESS);
-			if (root == null) {
+			Document doc = parseXMLDocument(XSD_FILE_ADRESS, XML_FILE_ADRESS);
+			if (doc == null) {
 				throw new NullPointerException();
 			}
-			return parseGlobalKeys(root);
+			OperationalTextConfiguration result = parseGlobalKeys(doc
+					.getDocumentElement());
+			for(OperationalTextKey loadedKey : result.getAllKeys()){
+				logTrace("Loaded parameter: " +  OperationalTextConfiguration.toString(loadedKey.getKey(), loadedKey.getValue().getString()));
+			}
+			logTrace("Succesfully parsed global configuration parameter from "
+					+ XML_FILE_ADRESS);
+			return result;
 		}
 
 		/**
@@ -373,7 +388,8 @@ public class OperationalTextConfiguration {
 		private final Document parseXMLDocument(final String schemaFile,
 				final String configFile) throws SAXException,
 				ParserConfigurationException, IOException {
-
+			logTrace("Loading xml document \"" + configFile
+					+ "as iSCSI operational text configuration");
 			final SchemaFactory schemaFactory = SchemaFactory
 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			final File schemaLocation = new File(schemaFile);
@@ -387,12 +403,13 @@ public class OperationalTextConfiguration {
 			domFactory.setNamespaceAware(true); // never forget this
 			final DocumentBuilder builder = domFactory.newDocumentBuilder();
 			final Document doc = builder.parse(new File(configFile));
-
+			logTrace("Loading finshed successful ");
 			final DOMSource source = new DOMSource(doc);
 			final DOMResult result = new DOMResult();
-
+			logTrace("Validating \"" + configFile + "\" with \"" + schemaFile
+					+ "\"");
 			validator.validate(source, result);
-			
+			logTrace("Validating finished successful");
 			return (Document) result.getNode();
 		}
 
@@ -404,6 +421,7 @@ public class OperationalTextConfiguration {
 		 */
 		private final OperationalTextConfiguration parseGlobalKeys(
 				final Element root) {
+			logTrace("Parsing xml");
 			// new configuration
 			OperationalTextConfiguration newGlobalConfig = OperationalTextConfiguration
 					.createEmptyGlobalConfig();
@@ -422,7 +440,7 @@ public class OperationalTextConfiguration {
 			String newValue;
 			for (int i = 0; i < globalConfiguration.getLength(); i++) {
 				parameters = globalConfiguration.item(i).getChildNodes();
-
+				
 				for (int j = 0; j < parameters.getLength(); j++) {
 					parameter = parameters.item(j);
 					newKey = parameter.getNodeName();
@@ -444,7 +462,7 @@ public class OperationalTextConfiguration {
 								// this will never happen, but an empty catch
 								// block...never :)
 								LOGGER
-										.debug("Couldn't parse key from iscsi.xsd: "
+										.debug("Couldn't parse key from iscsi.xml: "
 												+ e.getMessage());
 							}
 						}
@@ -462,7 +480,7 @@ public class OperationalTextConfiguration {
 						}
 						key.setValue(value);
 
-						synchronized (globalConfig) {
+						synchronized (newGlobalConfig) {
 							try {
 								newGlobalConfig.addKey(key);
 							} catch (OperationalTextException e) {
@@ -479,9 +497,36 @@ public class OperationalTextConfiguration {
 					}
 				}
 			}
+			logTrace("Parsing finished successful, loaded " + newGlobalConfig.getAllKeys().size() + " key value pairs");
 			return newGlobalConfig;
 		}
 
+	}
+
+	/**
+	 * Logs a trace Message, if trace log is enabled within the logging
+	 * environment.
+	 * 
+	 * @param logMessage
+	 */
+	private static void logTrace(String logMessage) {
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace(" Message: " + logMessage);
+
+		}
+	}
+
+	/**
+	 * Logs a debug Message , if debug log is enabled within the logging
+	 * environment.
+	 * 
+	 * @param logMessage
+	 */
+	private static void logDebug(String logMessage) {
+		if (LOGGER.isDebugEnabled()) {
+
+			LOGGER.trace(" Message: " + logMessage);
+		}
 	}
 
 }

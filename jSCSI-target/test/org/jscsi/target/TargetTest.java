@@ -1,6 +1,7 @@
 package org.jscsi.target;
 
 
+import org.jscsi.target.conf.operationalText.OperationalTextException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,11 +24,13 @@ public class TargetTest {
 	@Test
 	public void initializeTarget(){
 		try {
-			target.initialize();
+			target.start();
 			System.out.println("Target Initialization finished");
-		} catch (TargetException e) {
-			System.out.println("Error occured initializing target: " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		System.out.println("Waiting 2 minutes before shutdown");
+		target.awaitShutdown(120);
 	}
 	
 }

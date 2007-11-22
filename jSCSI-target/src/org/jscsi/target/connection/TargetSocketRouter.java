@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.Target;
 import org.jscsi.target.TargetException;
 import org.jscsi.target.conf.operationalText.OperationalTextException;
+import org.jscsi.target.conf.target.TargetConfiguration;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.Session;
 import org.jscsi.target.util.Singleton;
@@ -38,12 +39,17 @@ public final class TargetSocketRouter implements ISocketHandler {
 	/** all active Sessions and their targetTest session identifying handles */
 	private final Map<Short, Session> sessions;
 
+	/** the target I am doing all the work for* */
 	private final Target target;
 
+	/** port-numbers and their SocketListener * */
 	private final Map<Integer, SocketListener> listeningSockets;
 
 	/** the only instance of a <code>TSIHFactory</code> */
 	private static TSIHFactory tsihFactory;
+
+	/** the only instance of a <code>TargetConfiguration</code> */
+	private static TargetConfiguration targetConfiguration;
 
 	public TargetSocketRouter(Target target) {
 		// thread safe ConcurrentHashMap
@@ -51,11 +57,17 @@ public final class TargetSocketRouter implements ISocketHandler {
 		listeningSockets = new ConcurrentHashMap<Integer, SocketListener>();
 		this.target = target;
 		try {
+			targetConfiguration = Singleton
+					.getInstance(TargetConfiguration.class);
+		} catch (ClassNotFoundException e1) {
+			logTrace("Couldn't load " + TargetConfiguration.class);
+		}
+		try {
 			tsihFactory = Singleton.getInstance(TSIHFactory.class);
 		} catch (ClassNotFoundException e) {
 			logDebug("Couldn't load " + TSIHFactory.class);
 		}
-		logTrace("Started TargetSocketRouter");
+		logTrace("Initialized TargetSocketRouter");
 
 	}
 
@@ -71,10 +83,18 @@ public final class TargetSocketRouter implements ISocketHandler {
 		return true;
 	}
 
+	/**
+	 * Returns the target this TaskRouter is referenced to
+	 * @return
+	 */
 	public Target getReferencedTarget() {
 		return target;
 	}
 
+	/**
+	 * An array filled with all port numbers the SocketRouter is listening to
+	 * @return
+	 */
 	public final int[] getListeningPorts() {
 		int[] result = new int[listeningSockets.size()];
 		int i = 0;
@@ -95,7 +115,23 @@ public final class TargetSocketRouter implements ISocketHandler {
 		result.append(";");
 		return result.toString();
 	}
-
+	
+	public void loadConfig(TargetConfiguration config){
+		for(int port : config.getListeningPorts()){
+				try {
+					startListening(port);
+				} catch (TargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param port
+	 * @throws TargetException
+	 */
 	public void startListening(int port) throws TargetException {
 		if (listeningSockets.containsKey(port)) {
 			logDebug("Tried to start listening on port that target is already listening: "
@@ -107,7 +143,6 @@ public final class TargetSocketRouter implements ISocketHandler {
 			SocketListener newListener = new SocketListener(port, this);
 			listeningSockets.put(port, newListener);
 			newListener.start();
-			logTrace("Started listening on port " + port);
 		}
 	}
 
@@ -122,6 +157,7 @@ public final class TargetSocketRouter implements ISocketHandler {
 			logTrace("Stopped listening on port " + port);
 		}
 	}
+
 
 	/**
 	 * Every incoming Socket is temporarily managed from the SocketHandler. He
@@ -192,14 +228,20 @@ public final class TargetSocketRouter implements ISocketHandler {
 					assignToSession(testedSession);
 				}
 			} else {
-				createNewSession();
+				try {
+					createNewSession();
+				} catch (Exception e) {
+					logTrace("Dropped incoming Socket, couldn't create new Session");
+				}
 			}
 		}
 
 		/**
 		 * Create a new Session
+		 * 
+		 * @throws Exception
 		 */
-		private void createNewSession() {
+		private void createNewSession() throws Exception {
 			short newUniqueTSIH = tsihFactory.getNewTSIH();
 			Session newSession = null;
 			try {
@@ -207,7 +249,8 @@ public final class TargetSocketRouter implements ISocketHandler {
 			} catch (OperationalTextException e) {
 				logTrace("Had to drop a Socket, error occured creating a Session!");
 			}
-			getReferencedTarget().getSessionMap().put(newUniqueTSIH, newSession);
+			getReferencedTarget().getSessionMap()
+					.put(newUniqueTSIH, newSession);
 
 			logTrace("Created new Session: TSIH = " + newUniqueTSIH);
 

@@ -634,27 +634,27 @@ public class OperationalTextKey {
 	/**
 	 * one valid value for an attribute describing the parameter's sender.
 	 */
-	public static final String SENDER_TARGET = "targetTest";
+	public static final String SENDER_TARGET = "Target";
 
 	/**
 	 * one valid value for an attribute describing the parameter's sender.
 	 */
-	public static final String SENDER_INITIATOR = "initiator";
+	public static final String SENDER_INITIATOR = "Initiator";
 
 	/**
 	 * one valid value for an attribute describing the parameter's sender.
 	 */
-	public static final String SENDER_BOTH = "both";
+	public static final String SENDER_BOTH = "Both";
 
 	/**
 	 * one valid value for an attribute describing the parameter's scope.
 	 */
-	public static final String SCOPE_SESSION_WIDE = "SessionWide";
+	public static final String SCOPE_SESSION_WIDE = "Session";
 
 	/**
 	 * one valid value for an attribute describing the parameter's scope.
 	 */
-	public static final String SCOPE_CONNECTION_WIDE = "ConnectionWide";
+	public static final String SCOPE_CONNECTION_WIDE = "Connection";
 
 	private static final int MAX_KEY_LENGTH = 63;
 	/** the key's String representation */

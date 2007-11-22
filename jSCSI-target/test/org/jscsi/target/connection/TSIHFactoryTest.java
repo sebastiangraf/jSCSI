@@ -130,7 +130,13 @@ public class TSIHFactoryTest {
 		}
 
 		private short receiveTSIH() {
-			short newOne = myTSIHFactory.getNewTSIH();
+			short newOne = 0;
+			try {
+				newOne = myTSIHFactory.getNewTSIH();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			myUsedTSIHs.add(newOne);
 			return newOne;
 		}

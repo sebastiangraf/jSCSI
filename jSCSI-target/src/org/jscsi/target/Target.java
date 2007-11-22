@@ -15,39 +15,44 @@ import org.jscsi.target.conf.operationalText.OperationalTextConfiguration;
 import org.jscsi.target.conf.operationalText.OperationalTextException;
 import org.jscsi.target.conf.target.TargetConfiguration;
 import org.jscsi.target.connection.Session;
+import org.jscsi.target.connection.TSIHFactory;
 import org.jscsi.target.connection.TargetSocketRouter;
 import org.jscsi.target.task.TargetTaskRouter;
+import org.jscsi.target.task.TaskDescriptorLoader;
 import org.jscsi.target.util.Singleton;
 
 public class Target {
-	
+
 	/** The logger interface. */
-	private static final Log LOGGER = LogFactory.getLog(TargetTaskRouter.class);
-	
+	private static final Log LOGGER = LogFactory.getLog(Target.class);
+
 	private final Lock workingLOCK = new ReentrantLock();
 
 	private final Condition shutdownCondition = workingLOCK.newCondition();
-	
+
 	/** all active Sessions and their targetTest session identifying handles */
 	private final Map<Short, Session> sessions;
-	
+
 	private String targetName;
-	
+
 	private int targetPortalGroupTag;
-	
-	private TargetSocketRouter sessionRouter;
-	
+
+	private TargetSocketRouter socketRouter;
+
 	private TargetTaskRouter taskRouter;
-	
+
 	private OperationalTextConfiguration operationalTextConfiguration;
-	
+
 	private TargetConfiguration configuration;
-	
-	
-	public Target(){
+
+	private TSIHFactory targetSessionIdentifyingHandleFactory;
+
+	private TaskDescriptorLoader descriptorLoader;
+
+	public Target() {
 		sessions = new ConcurrentHashMap<Short, Session>();
 	}
-	
+
 	/**
 	 * Return the SessionMap, which is a ConcurrentHashMap, e.g. should be
 	 * thread safe.
@@ -56,6 +61,22 @@ public class Target {
 	 */
 	public Map<Short, Session> getSessionMap() {
 		return sessions;
+	}
+
+	public String getTargetName() {
+		return targetName;
+	}
+
+	public void setTargetName(String targetName) {
+		this.targetName = targetName;
+	}
+
+	public int getTargetPortalGroupTag() {
+		return targetPortalGroupTag;
+	}
+
+	public void setTargetPortalGroupTag(int targetPortalGroupTag) {
+		this.targetPortalGroupTag = targetPortalGroupTag;
 	}
 
 	/**
@@ -94,18 +115,18 @@ public class Target {
 		// returns null if no session matched
 		return result;
 	}
-	
-	public void awaitShutdown(){
+
+	public void awaitShutdown() {
 		awaitShutdown(0);
 	}
-	
+
 	public void awaitShutdown(int seconds) {
 		boolean stop = false;
 		workingLOCK.lock();
-		
+
 		while (!stop) {
 			try {
-				if(seconds <= 0){
+				if (seconds <= 0) {
 					shutdownCondition.await();
 				} else {
 					shutdownCondition.await(seconds, TimeUnit.SECONDS);
@@ -133,34 +154,64 @@ public class Target {
 	public Iterator<Session> getSessions() {
 		return getSessionMap().values().iterator();
 	}
-	
-	public void startWorking(){
-		
+
+	public void startWorking() {
+
 	}
-	
-	public void stopWorking(){
-		
+
+	public void stopWorking() {
+
 	}
-	
-	public void initialize() throws TargetException, OperationalTextException{
+
+	public void start() throws TargetException, OperationalTextException {
+		initialize();
+		configuration.configureTarget(this);
+		taskRouter.start();
+		// last but not least, start the socket listening
+		socketRouter.loadConfig(configuration);
+
+	}
+
+	public void restart() {
+
+	}
+
+	public void stop() {
+
+	}
+
+	public void initialize() throws TargetException, OperationalTextException {
 		try {
-			operationalTextConfiguration = OperationalTextConfiguration.createGlobalConfig();
+			logTrace("Initializing Target environment");
 			configuration = Singleton.getInstance(TargetConfiguration.class);
+			operationalTextConfiguration = OperationalTextConfiguration
+					.createGlobalConfig();
+			descriptorLoader = new TaskDescriptorLoader(configuration);
+			Singleton.setInstance(descriptorLoader);
+			targetSessionIdentifyingHandleFactory = new TSIHFactory();
+			Singleton.setInstance(targetSessionIdentifyingHandleFactory);
 			taskRouter = Singleton.getInstance(TargetTaskRouter.class);
-			sessionRouter = Singleton.getInstance(TargetSocketRouter.class);
-			//operationalTextConfiguration.createGlobal();
-		} catch (ClassNotFoundException e) {
-			throw new TargetException("Error initializing targetTest. Error-message: " + e.getMessage());
+			socketRouter = new TargetSocketRouter(this);
+			Singleton.setInstance(socketRouter);
+			
+			// operationalTextConfiguration.createGlobal();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new TargetException(
+					"Error initializing target. Error-message: "
+							+ e.getMessage());
 		}
+
+		logTrace("Succcesfully initialized Target");
 	}
-	
-	public void loadTargetConfiguration(){
-		
+
+	public void loadTargetConfiguration() {
+
 	}
-	
+
 	/**
-	 * Logs a trace Message, if trace log is enabled
-	 * within the logging environment.
+	 * Logs a trace Message, if trace log is enabled within the logging
+	 * environment.
 	 * 
 	 * @param logMessage
 	 */
@@ -172,8 +223,8 @@ public class Target {
 	}
 
 	/**
-	 * Logs a debug Message , if debug log is enabled
-	 * within the logging environment.
+	 * Logs a debug Message , if debug log is enabled within the logging
+	 * environment.
 	 * 
 	 * @param logMessage
 	 */
@@ -183,5 +234,5 @@ public class Target {
 			LOGGER.trace(" Message: " + logMessage);
 		}
 	}
-	
+
 }
