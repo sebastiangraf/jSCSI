@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.connection.Connection;
-import org.jscsi.target.task.TaskAbstracts.Task;
+import org.jscsi.target.task.abstracts.Task;
 
 public class ConnectionTaskRouter {
 	

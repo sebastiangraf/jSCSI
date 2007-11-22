@@ -9,10 +9,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.target.conf.target.TargetConfiguration;
 import org.jscsi.target.connection.Connection;
-import org.jscsi.target.task.TaskAbstracts.AbstractTaskDescriptor;
-import org.jscsi.target.task.TaskAbstracts.Task;
-import org.jscsi.target.task.TaskAbstracts.TaskDescriptor;
+import org.jscsi.target.task.abstracts.AbstractTaskDescriptor;
+import org.jscsi.target.task.abstracts.Task;
+import org.jscsi.target.task.abstracts.TaskDescriptor;
 
 /**
  * The TaskDescriptorLoader looks for all TaskDescriptors within a given
@@ -34,23 +35,11 @@ public class TaskDescriptorLoader {
 
 	private final Map<Byte, Set<TaskDescriptor>> availableTaskDescriptors;
 
-	private final File taskDescritptorDirectory;
+	private final Set<File> taskDescritptorDirectories;
 
-	public TaskDescriptorLoader() {
-		this.taskDescritptorDirectory = new File(
-				DEFAULT_TASK_DESCRIPTOR_DIRECTORY);
-		availableTaskDescriptors = loadAvailableTasks(taskDescritptorDirectory);
-	}
-
-	public TaskDescriptorLoader(String taskDirectory) throws Exception {
-		this.taskDescritptorDirectory = new File(taskDirectory);
-		if (!this.taskDescritptorDirectory.isDirectory()) {
-			throw new Exception(
-					"Cannot load tasks , argument is not a directory: "
-							+ taskDirectory);
-		}
-		availableTaskDescriptors = loadAvailableTasks(this.taskDescritptorDirectory);
-
+	public TaskDescriptorLoader(TargetConfiguration config) throws Exception {
+		taskDescritptorDirectories = config.getTaskDescriptorDirectories();
+		availableTaskDescriptors = loadAvailableTasks(this.taskDescritptorDirectories);
 		logTrace("TaskLoader is supporting " + getSuppurtedNumberOfOpcodes()
 				+ " different Opcodes using "
 				+ getTotalNumberOfImplementedTasks()
@@ -88,60 +77,64 @@ public class TaskDescriptorLoader {
 	 * Loads every TaskDescriptor the specified directory contains.
 	 */
 	public static Map<Byte, Set<TaskDescriptor>> loadAvailableTasks(
-			File taskDirectory) {
+			Set<File> taskDirectories) {
 		Map<Byte, Set<TaskDescriptor>> availableTasks = new ConcurrentHashMap<Byte, Set<TaskDescriptor>>();
 		String className = null;
 		TaskDescriptor loadedTaskDescriptor;
 		boolean test;
-		for (File possibleTaskDescriptor : taskDirectory.listFiles()) {
-			test = true;
-			byte loadedOpcode;
-			Class<?> conflictedTaskDescriptor = null;
-			if (possibleTaskDescriptor.isFile()) {
-				className = possibleTaskDescriptor.getName();
-				// try to load a java Object from the file
-				try {
-					loadedTaskDescriptor = (TaskDescriptor) Class.forName(
-							className).newInstance();
-				} catch (Exception e) {
-					logDebug("Loading TaskDescriptor failed: " + className);
-					continue;
-				}
-				// if Object is a TaskDescriptor, check if a descriptor yet
-				// exists, that has identical parameter
-				loadedOpcode = (loadedTaskDescriptor)
-						.getSupportedOpcode().value();
-				if (availableTasks.containsKey(loadedOpcode)) {
-					for (TaskDescriptor equalOpcode : availableTasks
-							.get(loadedOpcode)) {
-						if (equalOpcode
-								.compare((AbstractTaskDescriptor) loadedTaskDescriptor)) {
-							test = false;
-							conflictedTaskDescriptor = equalOpcode.getClass();
-							break;
+		for (File directory : taskDirectories) {
+			for (File possibleTaskDescriptor : directory.listFiles()) {
+				test = true;
+				byte loadedOpcode;
+				Class<?> conflictedTaskDescriptor = null;
+				if (possibleTaskDescriptor.isFile()) {
+					className = possibleTaskDescriptor.getName();
+					// try to load a java Object from the file
+					try {
+						loadedTaskDescriptor = (TaskDescriptor) Class.forName(
+								className).newInstance();
+					} catch (Exception e) {
+						logDebug("Loading TaskDescriptor failed: " + className);
+						continue;
+					}
+					// if Object is a TaskDescriptor, check if a descriptor yet
+					// exists, that has identical parameter
+					loadedOpcode = (loadedTaskDescriptor).getSupportedOpcode()
+							.value();
+					if (availableTasks.containsKey(loadedOpcode)) {
+						for (TaskDescriptor equalOpcode : availableTasks
+								.get(loadedOpcode)) {
+							if (equalOpcode
+									.compare((AbstractTaskDescriptor) loadedTaskDescriptor)) {
+								test = false;
+								conflictedTaskDescriptor = equalOpcode
+										.getClass();
+								break;
+							}
 						}
 					}
-				}
 
-			} else {
-				logDebug("Couldn't load TaskDescriptor, file is no TaskDescriptor: "
-						+ possibleTaskDescriptor.getAbsolutePath());
-				continue;
-			}
-			if (test) {
-				// if there isn't yet a loaded Set, create one
-				if (!availableTasks.containsKey(loadedOpcode)) {
-					Set<TaskDescriptor> newDescriptorSet = new HashSet<TaskDescriptor>();
-					availableTasks.put(loadedOpcode, newDescriptorSet);
+				} else {
+					logDebug("Couldn't load TaskDescriptor, file is no TaskDescriptor: "
+							+ possibleTaskDescriptor.getAbsolutePath());
+					continue;
 				}
-				// add Task to the appropriate Set
-				availableTasks.get(loadedOpcode).add(loadedTaskDescriptor);
-				logTrace("Succesfully loaded Task Descriptor: " + className);
-			} else {
-				logDebug("Tried to load a TaskDescriptor that would conflict with an already existing one: "
-						+ possibleTaskDescriptor.getAbsolutePath());
+				if (test) {
+					// if there isn't yet a loaded Set, create one
+					if (!availableTasks.containsKey(loadedOpcode)) {
+						Set<TaskDescriptor> newDescriptorSet = new HashSet<TaskDescriptor>();
+						availableTasks.put(loadedOpcode, newDescriptorSet);
+					}
+					// add Task to the appropriate Set
+					availableTasks.get(loadedOpcode).add(loadedTaskDescriptor);
+					logTrace("Succesfully loaded Task Descriptor: " + className);
+				} else {
+					logDebug("Tried to load a TaskDescriptor that would conflict with an already existing one: "
+							+ possibleTaskDescriptor.getAbsolutePath());
+				}
 			}
 		}
+		logTrace("Loaded " + availableTasks.size() + " task descriptors from " + taskDirectories.size() + " different directories");
 		return availableTasks;
 	}
 

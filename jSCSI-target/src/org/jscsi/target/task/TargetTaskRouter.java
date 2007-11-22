@@ -37,7 +37,7 @@ public class TargetTaskRouter {
 		activeSessions = new ConcurrentHashMap<Session, SessionTaskRouter>();
 		signaledPDUs = new ConcurrentLinkedQueue<TTRSignaledPDU>();
 		worker = new TargetTaskRouterWorker(this);
-		logTrace("Started TargetTaskRouter");
+		logTrace("Initialized TargetTaskRouter");
 	}
 
 	public void assignSession(Session newSession) {
@@ -113,6 +113,15 @@ public class TargetTaskRouter {
 					.append("Dr. Strangelove: 'No sane man would trigger the doomsday machine. It's triggered automatically'.");
 		}
 		return result.toString();
+	}
+	
+	public void start(){
+		logTrace("TargetTaskRouter started");
+		worker.start();
+	}
+	
+	public void stop(){
+		worker.interrupt();
 	}
 
 	/**

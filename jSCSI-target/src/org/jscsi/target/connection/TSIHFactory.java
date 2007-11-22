@@ -21,7 +21,7 @@ public class TSIHFactory {
 
 	/** The next TSIH if there are no removed ones */
 	private static short nextTSIH;
-	
+
 	/** Can't be zero, reeved*/
 	private final short FIRST_TSIH = 1;
 
@@ -31,6 +31,7 @@ public class TSIHFactory {
 	public TSIHFactory() {
 		// nextTSIH, i.e. here first TSIH could be Short.MIN_VALUE too, but you
 		// know...
+		logTrace("Initialized target session identifying handle factory - TSIHFactory");
 		nextTSIH = FIRST_TSIH;
 		removedTSIHs = new TreeSet<Short>();
 	}
@@ -39,8 +40,9 @@ public class TSIHFactory {
 	 * Returns a new unique TSIH within a targetTest
 	 * 
 	 * @return a short representing a targetTest session identifying handle
+	 * @throws Exception 
 	 */
-	public final short getNewTSIH() {
+	public final short getNewTSIH() throws Exception {
 		synchronized (this) {
 			short result = 0;
 			// if there are some already removed TSIHs, use one of them,
@@ -54,11 +56,10 @@ public class TSIHFactory {
 					result = nextTSIH;
 					++nextTSIH;
 				} else {
-					if (LOGGER.isWarnEnabled()) {
-						LOGGER.warn("Maximum TSIH reached: MAX_VALUE = "
-								+ Short.MAX_VALUE);
-					}
-					// FixMe: throw Exception
+					logTrace("Maximum TSIH reached: MAX_VALUE = "
+							+ Short.MAX_VALUE);
+
+					throw new Exception("No more resources, maximum possible number of sessions reached");
 				}
 			}
 			return result;
@@ -76,9 +77,8 @@ public class TSIHFactory {
 					&& (!removedTSIHs.contains(tsih))) {
 				removedTSIHs.add(tsih);
 			} else {
-				if (LOGGER.isWarnEnabled()) {
-					LOGGER.warn("Tried to remove non existing TSIH: " + tsih);
-				}
+				logTrace("Tried to remove non existing TSIH: " + tsih);
+
 			}
 			clean();
 		}
@@ -95,6 +95,32 @@ public class TSIHFactory {
 			removedTSIHs.remove(removedTSIHs.last());
 		}
 
+	}
+
+	/**
+	 * Logs a trace Message, if trace log is enabled
+	 * within the logging environment.
+	 * 
+	 * @param logMessage
+	 */
+	private void logTrace(String logMessage) {
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace(" Message: " + logMessage);
+
+		}
+	}
+
+	/**
+	 * Logs a debug Message , if debug log is enabled
+	 * within the logging environment.
+	 * 
+	 * @param logMessage
+	 */
+	private void logDebug(String logMessage) {
+		if (LOGGER.isDebugEnabled()) {
+
+			LOGGER.trace(" Message: " + logMessage);
+		}
 	}
 
 }

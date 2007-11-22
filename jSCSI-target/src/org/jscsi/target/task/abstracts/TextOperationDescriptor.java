@@ -1,4 +1,4 @@
-package org.jscsi.target.task.TaskAbstracts;
+package org.jscsi.target.task.abstracts;
 
 import org.jscsi.target.conf.operationalText.OperationalTextKey;
 

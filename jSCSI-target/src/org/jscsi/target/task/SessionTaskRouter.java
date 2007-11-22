@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.Session;
-import org.jscsi.target.task.TaskAbstracts.Task;
+import org.jscsi.target.task.abstracts.Task;
 import org.jscsi.target.util.Singleton;
 
 /**
