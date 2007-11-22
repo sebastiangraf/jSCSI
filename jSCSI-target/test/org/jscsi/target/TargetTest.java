@@ -1,7 +1,6 @@
 package org.jscsi.target;
 
 
-import org.jscsi.target.conf.operationalText.OperationalTextException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

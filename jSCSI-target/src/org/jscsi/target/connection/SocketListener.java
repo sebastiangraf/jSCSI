@@ -6,7 +6,6 @@ import java.net.Socket;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.target.Target;
 
 public class SocketListener extends Thread {
 

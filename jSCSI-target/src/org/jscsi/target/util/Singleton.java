@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * This class represents a Singleton pattern for all classes needed to be
  * Singleton.
@@ -13,7 +16,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * 
  */
 public final class Singleton {
-
+	
+	/** The logger interface. */
+	private static final Log LOGGER = LogFactory.getLog(Singleton.class);
+	
 	/** used for synchronization */
 	private final static Lock LOCK = new ReentrantLock();
 	
@@ -60,6 +66,8 @@ public final class Singleton {
 		String className = classInstance.getClass().getName();
 		Singletons.put(className, classInstance);
 		LOCK.unlock();
+		logTrace("Set single Instance for " + classInstance.getClass().getName());
+		
 	}
 	
 	/**
@@ -74,5 +82,30 @@ public final class Singleton {
 		}
 		return false;
 
+	}
+	
+	/**
+	 * Logs a trace Message, if trace log is enabled
+	 * within the logging environment.
+	 * 
+	 * @param logMessage
+	 */
+	private static void logTrace(String logMessage) {
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace(" Message: " + logMessage);
+
+		}
+	}
+
+	/**
+	 * Logs a debug Message , if debug log is enabled
+	 * within the logging environment.
+	 * 
+	 * @param logMessage
+	 */
+	private static void logDebug(String logMessage) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.trace(" Message: " + logMessage);
+		}
 	}
 }

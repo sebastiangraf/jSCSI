@@ -1,7 +1,6 @@
 package org.jscsi.target.connection;
 
 import java.net.Socket;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

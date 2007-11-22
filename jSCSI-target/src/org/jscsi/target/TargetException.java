@@ -2,7 +2,6 @@ package org.jscsi.target;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.target.conf.operationalText.OperationalTextException;
 
 public class TargetException extends Exception {
 	/** The logger interface. */

@@ -29,7 +29,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import sun.security.provider.ConfigSpiFile;
 
 /**
  * The OperationalTextConfiguration represents a standard system to work with
@@ -389,7 +388,7 @@ public class OperationalTextConfiguration {
 				final String configFile) throws SAXException,
 				ParserConfigurationException, IOException {
 			logTrace("Loading xml document \"" + configFile
-					+ "as iSCSI operational text configuration");
+					+ " as iSCSI operational text configuration");
 			final SchemaFactory schemaFactory = SchemaFactory
 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			final File schemaLocation = new File(schemaFile);

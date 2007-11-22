@@ -3,8 +3,6 @@ package org.jscsi.target.conf.target;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.Target;
@@ -78,7 +76,7 @@ public class TargetConfiguration {
 		targetPortalGroupTag = 1;
 		listeningPorts.add(3260);
 		listeningPorts.add(3262);
-		addTaskDescriptorDirectory("src/org/jscsi/target/task/standard/");
+		addTaskDescriptorDirectory("src/org/jscsi/target/task/iscsi/");
 		logTrace("loaded test parameters, no config file is used");
 	}
 	

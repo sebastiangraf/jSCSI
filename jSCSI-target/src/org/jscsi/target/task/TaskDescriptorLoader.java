@@ -29,21 +29,15 @@ public class TaskDescriptorLoader {
 	private static final Log LOGGER = LogFactory
 			.getLog(TaskDescriptorLoader.class);
 
-	private static final String DEFAULT_TASK_DESCRIPTOR_DIRECTORY = "task/tasks/";
 
-	private static final String TASK_DESCRIPTOR = "TaskDescriptor";
-
-	private final Map<Byte, Set<TaskDescriptor>> availableTaskDescriptors;
+	private Map<Byte, Set<TaskDescriptor>> availableTaskDescriptors;
 
 	private final Set<File> taskDescritptorDirectories;
 
 	public TaskDescriptorLoader(TargetConfiguration config) throws Exception {
 		taskDescritptorDirectories = config.getTaskDescriptorDirectories();
-		availableTaskDescriptors = loadAvailableTasks(this.taskDescritptorDirectories);
-		logTrace("TaskLoader is supporting " + getSuppurtedNumberOfOpcodes()
-				+ " different Opcodes using "
-				+ getTotalNumberOfImplementedTasks()
-				+ " different implemented Tasks");
+		load();
+		
 	}
 
 	/**
@@ -74,77 +68,123 @@ public class TaskDescriptorLoader {
 	}
 
 	/**
-	 * Loads every TaskDescriptor the specified directory contains.
-	 */
-	public static Map<Byte, Set<TaskDescriptor>> loadAvailableTasks(
-			Set<File> taskDirectories) {
-		Map<Byte, Set<TaskDescriptor>> availableTasks = new ConcurrentHashMap<Byte, Set<TaskDescriptor>>();
-		String className = null;
-		TaskDescriptor loadedTaskDescriptor;
-		boolean test;
-		for (File directory : taskDirectories) {
-			for (File possibleTaskDescriptor : directory.listFiles()) {
-				test = true;
-				byte loadedOpcode;
-				Class<?> conflictedTaskDescriptor = null;
-				if (possibleTaskDescriptor.isFile()) {
-					className = possibleTaskDescriptor.getName();
-					// try to load a java Object from the file
-					try {
-						loadedTaskDescriptor = (TaskDescriptor) Class.forName(
-								className).newInstance();
-					} catch (Exception e) {
-						logDebug("Loading TaskDescriptor failed: " + className);
-						continue;
-					}
-					// if Object is a TaskDescriptor, check if a descriptor yet
-					// exists, that has identical parameter
-					loadedOpcode = (loadedTaskDescriptor).getSupportedOpcode()
-							.value();
-					if (availableTasks.containsKey(loadedOpcode)) {
-						for (TaskDescriptor equalOpcode : availableTasks
-								.get(loadedOpcode)) {
-							if (equalOpcode
-									.compare((AbstractTaskDescriptor) loadedTaskDescriptor)) {
-								test = false;
-								conflictedTaskDescriptor = equalOpcode
-										.getClass();
-								break;
-							}
-						}
-					}
-
-				} else {
-					logDebug("Couldn't load TaskDescriptor, file is no TaskDescriptor: "
-							+ possibleTaskDescriptor.getAbsolutePath());
-					continue;
-				}
-				if (test) {
-					// if there isn't yet a loaded Set, create one
-					if (!availableTasks.containsKey(loadedOpcode)) {
-						Set<TaskDescriptor> newDescriptorSet = new HashSet<TaskDescriptor>();
-						availableTasks.put(loadedOpcode, newDescriptorSet);
-					}
-					// add Task to the appropriate Set
-					availableTasks.get(loadedOpcode).add(loadedTaskDescriptor);
-					logTrace("Succesfully loaded Task Descriptor: " + className);
-				} else {
-					logDebug("Tried to load a TaskDescriptor that would conflict with an already existing one: "
-							+ possibleTaskDescriptor.getAbsolutePath());
-				}
-			}
-		}
-		logTrace("Loaded " + availableTasks.size() + " task descriptors from " + taskDirectories.size() + " different directories");
-		return availableTasks;
-	}
-
-	/**
 	 * Returns the number of different Opcodes supported
 	 * 
 	 * @return
 	 */
 	private int getSuppurtedNumberOfOpcodes() {
 		return availableTaskDescriptors.keySet().size();
+	}
+
+	
+	public void load(){
+		logTrace("Loading available task descriptor files from " + taskDescritptorDirectories.size() + " different directories:");
+		logTrace("");
+		Map<Byte, Set<TaskDescriptor>> newLoaded = new ConcurrentHashMap<Byte, Set<TaskDescriptor>>();	
+		for(File directory : taskDescritptorDirectories){
+			logTrace("Loading from " + directory.getAbsolutePath());
+			loadAvailableTaskDescriptors(directory, newLoaded);
+		}
+		availableTaskDescriptors = newLoaded;
+		logTrace("TaskLoader is supporting " + getSuppurtedNumberOfOpcodes()
+				+ " different Opcodes using "
+				+ getTotalNumberOfImplementedTasks()
+				+ " different implemented Tasks");
+	}
+	
+	/**
+	 * Loads one TaskDescriptor from a file.
+	 * @param taskDescriptor file address
+	 * @return
+	 * @throws TaskException
+	 * @throws ConflictedTaskException
+	 */
+	private TaskDescriptor loadAvailableTaskDescriptor(File taskDescriptor)
+			throws TaskException, ConflictedTaskException {
+		String className = null;
+		TaskDescriptor loadedTaskDescriptor = null;
+		Class<?> conflictedTaskDescriptor = null;
+		if (taskDescriptor.isFile()) {
+			byte loadedOpcode;
+			className = taskDescriptor.getAbsolutePath();
+			// try to load a java Object from the file
+			try {
+				
+				ClassLoader.getSystemClassLoader().loadClass(className);
+				//loadedTaskDescriptor = (TaskDescriptor) Class
+					//	.forName(className).newInstance();
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new TaskException(
+						"Loading TaskDescriptor failed, no valid TaskDescriptor.class: "
+								+ e.getMessage());
+
+			}
+			// if Object is a TaskDescriptor, check if a descriptor yet
+			// exists, that has identical parameter
+			loadedOpcode = loadedTaskDescriptor.getSupportedOpcode().value();
+			if (availableTaskDescriptors.containsKey(loadedOpcode)) {
+				for (TaskDescriptor equalOpcode : availableTaskDescriptors
+						.get(loadedOpcode)) {
+					if (equalOpcode
+							.compare((AbstractTaskDescriptor) loadedTaskDescriptor)) {
+						conflictedTaskDescriptor = equalOpcode.getClass();
+						throw new ConflictedTaskException(
+								"Tried to load a TaskDescriptor that would conflict with an already existing one: "
+										+ taskDescriptor.getAbsolutePath()
+										+ " and "
+										+ conflictedTaskDescriptor.getName());
+					}
+				}
+			}
+
+		} else {
+			throw new TaskException("Parameter is no file address: "
+					+ taskDescriptor.getAbsolutePath());
+		}
+		return loadedTaskDescriptor;
+
+	}
+	
+	/**
+	 * Loads recursively every contained <? extends AbstractTaskDescriptor>.class into
+	 * loadedTaskDescriptors. LoadedTaskDescriptors may be null 
+	 * @param rootDirectory will load recursively from root
+	 * @param loadedTaskDescriptors may be null
+	 * @return Map filled with all loaded TaskDescriptor
+	 */
+	private Map<Byte, Set<TaskDescriptor>> loadAvailableTaskDescriptors(
+			File rootDirectory,
+			Map<Byte, Set<TaskDescriptor>> loadedTaskDescriptors) {
+		if (loadedTaskDescriptors == null) {
+			loadedTaskDescriptors = new ConcurrentHashMap<Byte, Set<TaskDescriptor>>();
+		}
+		for (File possibleTaskDescriptor : rootDirectory.listFiles()) {
+			if (possibleTaskDescriptor.isDirectory()) {
+				loadedTaskDescriptors.putAll(loadAvailableTaskDescriptors(
+						possibleTaskDescriptor, loadedTaskDescriptors));
+			} else {
+				TaskDescriptor newDescriptor;
+				try {
+					newDescriptor = loadAvailableTaskDescriptor(possibleTaskDescriptor);
+				} catch (Exception e) {
+					continue;
+				}
+				if (!loadedTaskDescriptors.containsKey(newDescriptor
+						.getSupportedOpcode())) {
+					Set<TaskDescriptor> newSet = new HashSet<TaskDescriptor>();
+					newSet.add(newDescriptor);
+					loadedTaskDescriptors.put(newDescriptor
+							.getSupportedOpcode().value(), newSet);
+				} else {
+					loadedTaskDescriptors.get(
+							newDescriptor.getSupportedOpcode().value()).add(
+							newDescriptor);
+				}
+
+			}
+		}
+		return loadedTaskDescriptors;
 	}
 
 	/**
