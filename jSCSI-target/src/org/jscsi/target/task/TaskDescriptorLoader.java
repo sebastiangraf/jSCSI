@@ -1,6 +1,8 @@
 package org.jscsi.target.task;
 
 import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +31,6 @@ public class TaskDescriptorLoader {
 	private static final Log LOGGER = LogFactory
 			.getLog(TaskDescriptorLoader.class);
 
-
 	private Map<Byte, Set<TaskDescriptor>> availableTaskDescriptors;
 
 	private final Set<File> taskDescritptorDirectories;
@@ -37,7 +38,7 @@ public class TaskDescriptorLoader {
 	public TaskDescriptorLoader(TargetConfiguration config) throws Exception {
 		taskDescritptorDirectories = config.getTaskDescriptorDirectories();
 		load();
-		
+
 	}
 
 	/**
@@ -76,12 +77,12 @@ public class TaskDescriptorLoader {
 		return availableTaskDescriptors.keySet().size();
 	}
 
-	
-	public void load(){
-		logTrace("Loading available task descriptor files from " + taskDescritptorDirectories.size() + " different directories:");
+	public void load() {
+		logTrace("Loading available task descriptor files from "
+				+ taskDescritptorDirectories.size() + " different directories:");
 		logTrace("");
-		Map<Byte, Set<TaskDescriptor>> newLoaded = new ConcurrentHashMap<Byte, Set<TaskDescriptor>>();	
-		for(File directory : taskDescritptorDirectories){
+		Map<Byte, Set<TaskDescriptor>> newLoaded = new ConcurrentHashMap<Byte, Set<TaskDescriptor>>();
+		for (File directory : taskDescritptorDirectories) {
 			logTrace("Loading from " + directory.getAbsolutePath());
 			loadAvailableTaskDescriptors(directory, newLoaded);
 		}
@@ -91,7 +92,7 @@ public class TaskDescriptorLoader {
 				+ getTotalNumberOfImplementedTasks()
 				+ " different implemented Tasks");
 	}
-	
+
 	/**
 	 * Loads one TaskDescriptor from a file.
 	 * @param taskDescriptor file address
@@ -102,17 +103,34 @@ public class TaskDescriptorLoader {
 	private TaskDescriptor loadAvailableTaskDescriptor(File taskDescriptor)
 			throws TaskException, ConflictedTaskException {
 		String className = null;
+		String classPath = null;
 		TaskDescriptor loadedTaskDescriptor = null;
 		Class<?> conflictedTaskDescriptor = null;
 		if (taskDescriptor.isFile()) {
 			byte loadedOpcode;
-			className = taskDescriptor.getAbsolutePath();
 			// try to load a java Object from the file
 			try {
+				//prepare String
+				classPath = taskDescriptor.getPath();
+				classPath = classPath.substring(0, classPath.lastIndexOf(File.separatorChar ) + 1);
 				
-				ClassLoader.getSystemClassLoader().loadClass(className);
-				//loadedTaskDescriptor = (TaskDescriptor) Class
-					//	.forName(className).newInstance();
+				className = taskDescriptor.getName().replace(".class", "");
+				//String classPathtest = System.getProperty("java.class.path",".");
+				//logTrace(classPathtest);
+				//classPath.replaceAll(classPathtest, "");
+				logTrace("try load " + classPath + " " + className);
+				//className ="org.jscsi.target.task.standard.login.LoginRequestTaskDescriptor";
+				URL url = new File(classPath).toURI().toURL();
+				URLClassLoader classLoader = new URLClassLoader(
+						new URL[] { url });
+				loadedTaskDescriptor = (TaskDescriptor) Class.forName(className, true, classLoader).newInstance();
+				//Class<?> newClass = Class.forName(className, true, classLoader).newInstance();
+				//Class<?> newClass = classLoader.loadClass(className);
+				
+				logTrace("loaded " + classPath + " " + className);
+				//Class<?> newClass = ClassLoader.getSystemClassLoader().loadClass(className);
+				logTrace("--------------success------------------");
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new TaskException(
@@ -145,7 +163,7 @@ public class TaskDescriptorLoader {
 		return loadedTaskDescriptor;
 
 	}
-	
+
 	/**
 	 * Loads recursively every contained <? extends AbstractTaskDescriptor>.class into
 	 * loadedTaskDescriptors. LoadedTaskDescriptors may be null 
