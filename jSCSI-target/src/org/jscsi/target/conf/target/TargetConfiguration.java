@@ -76,7 +76,7 @@ public class TargetConfiguration {
 		targetPortalGroupTag = 1;
 		listeningPorts.add(3260);
 		listeningPorts.add(3262);
-		addTaskDescriptorDirectory("src/org/jscsi/target/task/iscsi/");
+		addTaskDescriptorDirectory("E:\\eclipse-workspace\\jSCSI-target\\bin\\org\\jscsi\\target\\task\\standard\\");
 		logTrace("loaded test parameters, no config file is used");
 	}
 	
