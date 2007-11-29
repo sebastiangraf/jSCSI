@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.task.TargetTaskLibrary;
 import org.jscsi.target.task.TargetTaskLoader;
 
-public class CreativeTaskLoader extends ClassLoader {
+public class CreativeClassLoader extends ClassLoader {
 
 	/** The Log interface. */
 	private static final Log LOGGER = LogFactory
@@ -29,11 +30,11 @@ public class CreativeTaskLoader extends ClassLoader {
 
 	private static final Set<URL> additionalClassPaths = new HashSet<URL>();
 
-	private CreativeTaskLoader() {
+	private CreativeClassLoader() {
 		this(Thread.currentThread().getContextClassLoader());
 	}
 
-	private CreativeTaskLoader(ClassLoader parent) {
+	private CreativeClassLoader(ClassLoader parent) {
 		super(parent);
 	}
 
@@ -76,8 +77,9 @@ public class CreativeTaskLoader extends ClassLoader {
 	 * 
 	 * @return all URLs from java.class.path
 	 */
-	private static Set<URL> getSystemClassPaths() {
+	public static Set<URL> getSystemClassPaths() {
 		Set<URL> classPaths = new HashSet<URL>();
+		System.out.println(System.getProperty("java.class.path"));
 		for (String path : System.getProperty("java.class.path", ".")
 				.split(";")) {
 			try {
@@ -119,8 +121,9 @@ public class CreativeTaskLoader extends ClassLoader {
 			}
 		}
 		return result;
-
 	}
+	
+	
 
 	/**
 	 * coverts a absolte class name to the classes simple name.
@@ -157,7 +160,7 @@ public class CreativeTaskLoader extends ClassLoader {
 	}
 
 	public Class<?> loadClass(URL url) throws MalformedURLException,
-			CreativeTaskLoaderException {
+			CreativeClassLoaderException {
 		InputStream fileInput = null;
 		byte[] code = null;
 		try {
@@ -171,13 +174,13 @@ public class CreativeTaskLoader extends ClassLoader {
 	}
 
 	public final Class<?> defineAndLoadClass(byte[] code)
-			throws CreativeTaskLoaderException {
+			throws CreativeClassLoaderException {
 		Class<?> loadedClass = null;
 		loadedClass = defineClass(null, code, 0, code.length);
 		try {
 			loadedClass = loadClass(loadedClass.getName());
 		} catch (ClassNotFoundException e) {
-			throw new CreativeTaskLoaderException("Could");
+			throw new CreativeClassLoaderException("Could");
 		}
 		logTrace("Defined and loaded new class: " + loadedClass.getName());
 		return loadedClass;
@@ -233,16 +236,16 @@ public class CreativeTaskLoader extends ClassLoader {
 		return false;
 	}
 
-	public static CreativeTaskLoader getInstance() {
+	public static CreativeClassLoader getInstance() {
 		if (!Singleton.hasInstance(TargetTaskLibrary.class)) {
-			Singleton.setInstance(new CreativeTaskLoader());
+			Singleton.setInstance(new CreativeClassLoader());
 		}
-		CreativeTaskLoader instance = null;
+		CreativeClassLoader instance = null;
 		try {
-			instance = Singleton.getInstance(CreativeTaskLoader.class);
+			instance = Singleton.getInstance(CreativeClassLoader.class);
 		} catch (ClassNotFoundException e) {
 			throw new Error("Couldn't load instance of "
-					+ CreativeTaskLoader.class);
+					+ CreativeClassLoader.class);
 		}
 		return instance;
 	}
@@ -271,5 +274,7 @@ public class CreativeTaskLoader extends ClassLoader {
 
 		}
 	}
+	
+	
 
 }
