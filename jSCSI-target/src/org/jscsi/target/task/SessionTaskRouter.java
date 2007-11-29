@@ -28,8 +28,8 @@ public class SessionTaskRouter extends Thread {
 	/** The logger interface. */
 	private static final Log LOGGER = LogFactory.getLog(SessionTaskRouter.class);
 
-	/** The single TaskDescriptorLoader is used to create appropriate Tasks * */
-	private TaskDescriptorLoader taskDescriptorLoader;
+	/** The single TargetTaskLoader is used to create appropriate Tasks * */
+	private TargetTaskLoader targetTaskLoader;
 
 	/** the Session this TaskRouter is working for * */
 	private final Session refSession;
@@ -56,8 +56,8 @@ public class SessionTaskRouter extends Thread {
 
 	public SessionTaskRouter(Session refSesssion) {
 		try {
-			taskDescriptorLoader = Singleton
-					.getInstance(TaskDescriptorLoader.class);
+			targetTaskLoader = Singleton
+					.getInstance(TargetTaskLoader.class);
 		} catch (ClassNotFoundException e) {
 
 		}
@@ -73,7 +73,7 @@ public class SessionTaskRouter extends Thread {
 		// create a new Task that matches the intialPDUs
 		Task newTask = null;
 		try {
-			newTask = taskDescriptorLoader.createTask(initialPDU,
+			newTask = targetTaskLoader.createTask(initialPDU,
 					callingConnection);
 		} catch (Exception e) {
 			// here the targetTest should start a Task sending an unsupported method

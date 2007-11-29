@@ -33,7 +33,7 @@ public enum Phase {
 		return currentPhase;
 	}
 
-	public String stringValue() {
+	public String getValue() {
 		switch (currentPhase) {
 		case 0:
 			return "SecurityNegotiationPhase";

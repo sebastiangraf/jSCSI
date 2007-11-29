@@ -1,6 +1,7 @@
 package org.jscsi.target.task.abstracts;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.jscsi.parser.OperationCode;
@@ -131,6 +132,29 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 	 */
 	public Class<? extends AbstractTask> getReferencedTask(){
 		return refTask;
+	}
+	
+	public String getInfo(){
+		StringBuffer result = new StringBuffer();
+		result.append(this.getClass().getName() + ": ");
+		result.append("SupportedOpcode = " + opcode + "; ");
+		result.append("AllowedSessionTypes =");
+		Iterator<SessionType> iterator = allowedSessionTypes.iterator();
+		while(iterator.hasNext()){
+			String sessionType = iterator.next().getValue();
+			result.append(" " + sessionType + ",");
+		}
+		result.deleteCharAt(result.length() - 1);
+		result.append("; ");
+		result.append("AllowedPhases =");
+		Iterator<Phase> iteratorPhase = allowedSessionPhases.iterator();
+		while(iteratorPhase.hasNext()){
+			String sessionPhase = iteratorPhase.next().getValue();
+			result.append(" " + sessionPhase + ",");
+		}
+		result.deleteCharAt(result.length() - 1);
+		result.append(";");
+		return result.toString();
 	}
 	
 	
