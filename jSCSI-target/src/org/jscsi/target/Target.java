@@ -17,8 +17,8 @@ import org.jscsi.target.conf.target.TargetConfiguration;
 import org.jscsi.target.connection.Session;
 import org.jscsi.target.connection.TSIHFactory;
 import org.jscsi.target.connection.TargetSocketRouter;
+import org.jscsi.target.task.TargetTaskLoader;
 import org.jscsi.target.task.TargetTaskRouter;
-import org.jscsi.target.task.TaskDescriptorLoader;
 import org.jscsi.target.util.Singleton;
 
 public class Target {
@@ -47,7 +47,7 @@ public class Target {
 
 	private TSIHFactory targetSessionIdentifyingHandleFactory;
 
-	private TaskDescriptorLoader descriptorLoader;
+	private TargetTaskLoader descriptorLoader;
 
 	public Target() {
 		sessions = new ConcurrentHashMap<Short, Session>();
@@ -186,7 +186,7 @@ public class Target {
 			configuration = Singleton.getInstance(TargetConfiguration.class);
 			operationalTextConfiguration = OperationalTextConfiguration
 					.createGlobalConfig();
-			descriptorLoader = new TaskDescriptorLoader(configuration);
+			descriptorLoader = new TargetTaskLoader(configuration);
 			Singleton.setInstance(descriptorLoader);
 			targetSessionIdentifyingHandleFactory = new TSIHFactory();
 			Singleton.setInstance(targetSessionIdentifyingHandleFactory);

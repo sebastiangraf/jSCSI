@@ -16,27 +16,31 @@ import org.jscsi.target.connection.Connection;
 import org.jscsi.target.task.abstracts.AbstractTaskDescriptor;
 import org.jscsi.target.task.abstracts.Task;
 import org.jscsi.target.task.abstracts.TaskDescriptor;
+import org.jscsi.target.util.FileSystemClassLoader;
 
 /**
- * The TaskDescriptorLoader looks for all TaskDescriptors within a given
+ * The TargetTaskLoader looks for all TaskDescriptors within a given
  * directory. All valid ones will be stored and the linked Tasks can be loaded.
  * if the
  * 
  * @author Marcus Specht
  * 
  */
-public class TaskDescriptorLoader {
+public class TargetTaskLoader {
 
 	/** The Log interface. */
 	private static final Log LOGGER = LogFactory
-			.getLog(TaskDescriptorLoader.class);
+			.getLog(TargetTaskLoader.class);
+	
+	private static FileSystemClassLoader fsClassLoader;
 
 	private Map<Byte, Set<TaskDescriptor>> availableTaskDescriptors;
 
 	private final Set<File> taskDescritptorDirectories;
 
-	public TaskDescriptorLoader(TargetConfiguration config) throws Exception {
+	public TargetTaskLoader(TargetConfiguration config) throws Exception {
 		taskDescritptorDirectories = config.getTaskDescriptorDirectories();
+		fsClassLoader = FileSystemClassLoader.newInstance();
 		load();
 
 	}
@@ -80,7 +84,7 @@ public class TaskDescriptorLoader {
 	public void load() {
 		logTrace("Loading available task descriptor files from "
 				+ taskDescritptorDirectories.size() + " different directories:");
-		logTrace("");
+		availableTaskDescriptors = new ConcurrentHashMap<Byte, Set<TaskDescriptor>>();
 		Map<Byte, Set<TaskDescriptor>> newLoaded = new ConcurrentHashMap<Byte, Set<TaskDescriptor>>();
 		for (File directory : taskDescritptorDirectories) {
 			logTrace("Loading from " + directory.getAbsolutePath());
@@ -110,29 +114,9 @@ public class TaskDescriptorLoader {
 			byte loadedOpcode;
 			// try to load a java Object from the file
 			try {
-				//prepare String
-				classPath = taskDescriptor.getPath();
-				classPath = classPath.substring(0, classPath.lastIndexOf(File.separatorChar ) + 1);
 				
-				className = taskDescriptor.getName().replace(".class", "");
-				//String classPathtest = System.getProperty("java.class.path",".");
-				//logTrace(classPathtest);
-				//classPath.replaceAll(classPathtest, "");
-				logTrace("try load " + classPath + " " + className);
-				//className ="org.jscsi.target.task.standard.login.LoginRequestTaskDescriptor";
-				URL url = new File(classPath).toURI().toURL();
-				URLClassLoader classLoader = new URLClassLoader(
-						new URL[] { url });
-				loadedTaskDescriptor = (TaskDescriptor) Class.forName(className, true, classLoader).newInstance();
-				//Class<?> newClass = Class.forName(className, true, classLoader).newInstance();
-				//Class<?> newClass = classLoader.loadClass(className);
-				
-				logTrace("loaded " + classPath + " " + className);
-				//Class<?> newClass = ClassLoader.getSystemClassLoader().loadClass(className);
-				logTrace("--------------success------------------");
-				
+				loadedTaskDescriptor = fsClassLoader.loadTaskDescriptor(taskDescriptor);	
 			} catch (Exception e) {
-				e.printStackTrace();
 				throw new TaskException(
 						"Loading TaskDescriptor failed, no valid TaskDescriptor.class: "
 								+ e.getMessage());
@@ -188,6 +172,7 @@ public class TaskDescriptorLoader {
 				} catch (Exception e) {
 					continue;
 				}
+				logTrace("Loaded TaskDescriptor: " + newDescriptor.getInfo());
 				if (!loadedTaskDescriptors.containsKey(newDescriptor
 						.getSupportedOpcode())) {
 					Set<TaskDescriptor> newSet = new HashSet<TaskDescriptor>();
@@ -221,7 +206,7 @@ public class TaskDescriptorLoader {
 	}
 
 	/**
-	 * Logs a trace Message specific to this Connection, if trace log is enabled
+	 * Logs a trace Message, if trace log is enabled
 	 * within the logging environment.
 	 * 
 	 * @param logMessage
@@ -233,7 +218,7 @@ public class TaskDescriptorLoader {
 	}
 
 	/**
-	 * Logs a debug Message specific to this Connection, if debug log is enabled
+	 * Logs a debug Message, if debug log is enabled
 	 * within the logging environment.
 	 * 
 	 * @param logMessage

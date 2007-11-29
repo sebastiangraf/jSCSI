@@ -24,4 +24,6 @@ public interface TaskDescriptor {
 	 */
 	public boolean compare(AbstractTaskDescriptor taskDescriptor);
 	
+	public String getInfo();
+	
 }

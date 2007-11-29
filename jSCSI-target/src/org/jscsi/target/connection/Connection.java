@@ -247,8 +247,8 @@ public class Connection {
 	}
 
 	public final void setPhase(Phase phase) {
-		logTrace("Switched Phase from " + this.ConnectionPhase.stringValue() + "to "
-				+ phase.stringValue());
+		logTrace("Switched Phase from " + this.ConnectionPhase.getValue() + "to "
+				+ phase.getValue());
 		this.ConnectionPhase = phase;
 	}
 
