@@ -282,18 +282,6 @@ public class DefaultTaskSet implements TaskSet
       }
    }
 
-   public boolean add(Task task)
-   {
-      if (this.offer(task))
-      {
-         return true;
-      }
-      else
-      {
-         throw new IllegalStateException("task set full");
-      }
-   }
-
    /**
     * Retrieves and removes the task at the head of the queue. Blocks on both an empty set and all
     * blocking boundaries specified in SAM-2.
@@ -532,6 +520,18 @@ public class DefaultTaskSet implements TaskSet
 
    /////////////////////////////////////////////////////////////////////////////
 
+   public boolean add(Task task)
+   {
+      if (this.offer(task))
+      {
+         return true;
+      }
+      else
+      {
+         throw new IllegalStateException("task set full");
+      }
+   }
+   
    public Task take() throws InterruptedException
    {
       Task task = null;
