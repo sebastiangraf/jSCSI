@@ -86,7 +86,7 @@ public class OperationalTextValue {
 
 	private OperationalTextValue(String key) throws OperationalTextException {
 		String value = OperationalTextConfiguration.getGlobalConfig().getKey(
-				key).getValue().getString();
+				key).getValue().getValue();
 		String resultType = OperationalTextConfiguration.getGlobalConfig()
 				.getKey(key).getValue().getResultType();
 		update(value, resultType);
@@ -119,7 +119,7 @@ public class OperationalTextValue {
 	 * 
 	 * @return value as String
 	 */
-	public String getString() {
+	public String getValue() {
 		return value;
 	}
 
@@ -185,7 +185,7 @@ public class OperationalTextValue {
 		OperationalTextValue result = null;
 		if (valueA.getResultType().equals(valueB.getResultType())) {
 			result = new OperationalTextValue(valueA.resultFunction.result(
-					valueA.getString(), valueB.getString()), valueA
+					valueA.getValue(), valueB.getValue()), valueA
 					.getResultType());
 		}
 		return result;
@@ -194,7 +194,7 @@ public class OperationalTextValue {
 	public static boolean isInteger(OperationalTextValue value) {
 		boolean result = false;
 		try {
-			Integer.parseInt(value.getString());
+			Integer.parseInt(value.getValue());
 			result = true;
 		} catch (Exception e) {
 			// nothing necessary here
@@ -220,12 +220,12 @@ public class OperationalTextValue {
 	 * @return true if numerical range, false else.
 	 */
 	public static boolean isRange(OperationalTextValue value) {
-		if (value.getString().split(NUMERIC_RANGE_DELIMITER).length == 2) {
+		if (value.getValue().split(NUMERIC_RANGE_DELIMITER).length == 2) {
 			boolean test = false;
 			try {
-				Integer.parseInt(value.getString().split(
+				Integer.parseInt(value.getValue().split(
 						NUMERIC_RANGE_DELIMITER)[0]);
-				Integer.parseInt(value.getString().split(
+				Integer.parseInt(value.getValue().split(
 						NUMERIC_RANGE_DELIMITER)[1]);
 				test = true;
 			} catch (Exception e) {
@@ -247,7 +247,7 @@ public class OperationalTextValue {
 	 * @return true if value is a list, false else.
 	 */
 	public static boolean isList(OperationalTextValue value) {
-		if (value.getString().split(",").length > 1) {
+		if (value.getValue().split(",").length > 1) {
 			return true;
 		}
 		return false;
@@ -261,8 +261,8 @@ public class OperationalTextValue {
 	 * @return true if boolean, false else.
 	 */
 	public static boolean isBoolean(OperationalTextValue value) {
-		if (value.getString().equals(BOOLEAN_YES)
-				|| value.getString().equals(BOOLEAN_NO)) {
+		if (value.getValue().equals(BOOLEAN_YES)
+				|| value.getValue().equals(BOOLEAN_NO)) {
 			return true;
 		}
 		return false;
