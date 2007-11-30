@@ -22,6 +22,9 @@ import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.conf.operationalText.OperationalTextKey;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.Session;
+import org.jscsi.target.task.TargetTaskLibrary;
+import org.jscsi.target.util.CreativeTaskLoader;
+import org.jscsi.target.util.Singleton;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -122,12 +125,37 @@ public class OperationalTextConfiguration {
 		parentConfiguration = null;
 		localConfig = new HashSet<OperationalTextKey>();
 	}
-
-	public Set<OperationalTextKey> getConfigSet() {
-		return localConfig;
-	}
-
+	
+	/**
+	 * Add a key to the Configuration. Will automatically assign key
+	 * to the correct Configuration, i.e. to this or a following parent
+	 * Configuration if parent is not globalConfig.
+	 * @param key
+	 * @throws OperationalTextException
+	 */
 	public void addKey(OperationalTextKey key) throws OperationalTextException {
+		if(configType.equals(CONFIG_TYPE_CONNECTION)){
+			if(key.getSender().equals(configType)){
+				addLocalKey(key);
+			} else {
+				parentConfiguration.addKey(key);
+			}
+		}
+		if(configType.equals(CONFIG_TYPE_SESSION)){
+			if(key.getSender().equals(configType)){
+				addLocalKey(key);
+			} else {
+				throw new OperationalTextException("Wrong Configuration type, cannot add key to type " + key.getSender());
+			}
+		}
+	}
+	
+	/**
+	 * Adds key to this OperationalTextConfiguration instance. 
+	 * @param key
+	 * @throws OperationalTextException
+	 */
+	private void addLocalKey(OperationalTextKey key) throws OperationalTextException{
 		if (!localConfig.contains(key)) {
 			localConfig.add(key);
 		} else {
@@ -144,7 +172,7 @@ public class OperationalTextConfiguration {
 	 */
 	public OperationalTextKey getKey(String key)
 			throws OperationalTextException {
-		Iterator<OperationalTextKey> keys = getConfigSet().iterator();
+		Iterator<OperationalTextKey> keys = getAllKeys().iterator();
 		while (keys.hasNext()) {
 			OperationalTextKey testedKey = keys.next();
 			if (testedKey.getKey().equals(key)) {
@@ -171,7 +199,7 @@ public class OperationalTextConfiguration {
 	public Set<OperationalTextKey> getSenderKeys(String targetOrInitiator)
 			throws OperationalTextException {
 		Set<OperationalTextKey> result = new HashSet<OperationalTextKey>();
-		Iterator<OperationalTextKey> keys = getConfigSet().iterator();
+		Iterator<OperationalTextKey> keys = getAllKeys().iterator();
 		while (keys.hasNext()) {
 			OperationalTextKey testedKey = keys.next();
 			if (testedKey.getSender().equals(targetOrInitiator)) {
@@ -194,7 +222,7 @@ public class OperationalTextConfiguration {
 	 */
 	private Set<OperationalTextKey> getSenderKeys(String targetOrInitiator,
 			Set<OperationalTextKey> result) throws OperationalTextException {
-		Iterator<OperationalTextKey> keys = getConfigSet().iterator();
+		Iterator<OperationalTextKey> keys = getAllKeys().iterator();
 		while (keys.hasNext()) {
 			OperationalTextKey testedKey = keys.next();
 			if (testedKey.getSender().equals(targetOrInitiator)) {
@@ -210,13 +238,15 @@ public class OperationalTextConfiguration {
 	}
 
 	/**
-	 * 
+	 * Resets all contained key value pairs within this configuration,
+	 * if configuration is not global configuration. To reset global configuration,
+	 * use the parseGlobalConfig methods. 
 	 */
 	public void reset() {
 		if (!configType.equals(OperationalTextConfiguration.CONFIG_TYPE_GLOBAL)) {
 			localConfig.clear();
 			Iterator<OperationalTextKey> globalKeys = globalConfig
-					.getConfigSet().iterator();
+					.getAllKeys().iterator();
 			while (globalKeys.hasNext()) {
 				OperationalTextKey newKey = globalKeys.next();
 				if (configType
@@ -247,8 +277,8 @@ public class OperationalTextConfiguration {
 		if (config == null) {
 			return false;
 		}
-		if (this.getConfigSet().containsAll(config.getConfigSet())
-				&& (this.getConfigSet().size() == config.getConfigSet().size())) {
+		if (this.getAllKeys().containsAll(config.getAllKeys())
+				&& (this.getAllKeys().size() == config.getAllKeys().size())) {
 			return true;
 		}
 		return false;
@@ -280,20 +310,6 @@ public class OperationalTextConfiguration {
 		return result;
 	}
 
-	public static OperationalTextConfiguration createGlobalConfig()
-			throws OperationalTextException {
-		createEmptyGlobalConfig();
-		try {
-			globalConfig = parseGlobalConfig();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new OperationalTextException(
-					"Error occured parsing global Config: " + e.getMessage());
-		}
-		return globalConfig;
-
-	}
-
 	private static OperationalTextConfiguration createEmptyGlobalConfig() {
 		return new OperationalTextConfiguration();
 	}
@@ -303,10 +319,26 @@ public class OperationalTextConfiguration {
 	}
 
 	public static OperationalTextConfiguration parseGlobalConfig()
-			throws SAXException, ParserConfigurationException, IOException {
-		OperationalTextConfiguration newGlobal = globalParser.parse();
-		
+			throws OperationalTextException {
+		OperationalTextConfiguration newGlobal = parseGlobalConfig(XML_CONF_FILE_ADRESS,
+				XSD_VALIDATE_FILE_ADRESS);
 		return newGlobal;
+	}
+	
+	public static OperationalTextConfiguration parseGlobalConfig(String xmlFileAdress, String xsdFileAdress) throws OperationalTextException{
+		//ensure a globalParser instance
+		if(globalParser == null){
+			createEmptyGlobalConfig();
+		}
+		try {
+			globalParser.setConfigSource(xmlFileAdress, xsdFileAdress);
+			globalConfig = globalParser.parse();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new OperationalTextException(
+					"Error occured parsing global Config: " + e.getMessage());
+		}
+		return globalConfig;
 	}
 
 	public static String toString(String key, String value) {
@@ -330,7 +362,7 @@ public class OperationalTextConfiguration {
 	}
 
 	public static String toString(OperationalTextConfiguration config) {
-		return toString(config.getConfigSet());
+		return toString(config.getAllKeys());
 	}
 
 	private class GlobalConfigParser {
@@ -347,10 +379,19 @@ public class OperationalTextConfiguration {
 		/** The name of the XML attribute of the sender of this key. */
 		private static final String ATTRIBUTE_SENDER = "sender";
 
-		private final String XML_FILE_ADRESS;
-		private final String XSD_FILE_ADRESS;
+		private String XML_FILE_ADRESS;
+		private String XSD_FILE_ADRESS;
 
 		public GlobalConfigParser(String xmlFileAdress, String xsdFileAdress) {
+			XML_FILE_ADRESS = xmlFileAdress;
+			XSD_FILE_ADRESS = xsdFileAdress;
+		}
+		
+		public GlobalConfigParser() {
+			// TODO Auto-generated constructor stub
+		}
+
+		public synchronized void setConfigSource(String xmlFileAdress, String xsdFileAdress){
 			XML_FILE_ADRESS = xmlFileAdress;
 			XSD_FILE_ADRESS = xsdFileAdress;
 		}
@@ -481,7 +522,7 @@ public class OperationalTextConfiguration {
 
 						synchronized (newGlobalConfig) {
 							try {
-								newGlobalConfig.addKey(key);
+								newGlobalConfig.addLocalKey(key);
 							} catch (OperationalTextException e) {
 								if (LOGGER.isDebugEnabled()) {
 									// this will never happen, but an empty

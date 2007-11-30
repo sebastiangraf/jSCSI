@@ -185,7 +185,7 @@ public class Target {
 			logTrace("Initializing Target environment");
 			configuration = Singleton.getInstance(TargetConfiguration.class);
 			operationalTextConfiguration = OperationalTextConfiguration
-					.createGlobalConfig();
+					.parseGlobalConfig();
 			descriptorLoader = new TargetTaskLoader(configuration);
 			Singleton.setInstance(descriptorLoader);
 			targetSessionIdentifyingHandleFactory = new TSIHFactory();
