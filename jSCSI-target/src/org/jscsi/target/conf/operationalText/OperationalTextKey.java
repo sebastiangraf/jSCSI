@@ -655,6 +655,11 @@ public class OperationalTextKey {
 	 * one valid value for an attribute describing the parameter's scope.
 	 */
 	public static final String SCOPE_CONNECTION_WIDE = "Connection";
+	
+	/**
+	 * one valid value for an attribute describing the parameter's scope.
+	 */
+	public static final String SCOPE_None = "None";
 
 	private static final int MAX_KEY_LENGTH = 63;
 	/** the key's String representation */
