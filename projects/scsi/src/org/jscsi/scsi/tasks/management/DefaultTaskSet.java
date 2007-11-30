@@ -15,7 +15,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.sense.exceptions.OverlappedCommandsAttemptedException;
@@ -35,19 +34,6 @@ public class DefaultTaskSet implements TaskSet
 {
    private static Logger _logger = Logger.getLogger(DefaultTaskSet.class);
 
-   // Treated as a decrementing counter
-   private int capacity;
-
-   private final Lock lock = new ReentrantLock();
-   private final Condition notEmpty = lock.newCondition();
-   private final Condition notFull = lock.newCondition();
-   private final Condition unblocked = lock.newCondition();
-
-   // Task set members
-   private final Map<Long, TaskContainer> tasks; // Tag-to-Task map with 'null' key as the untagged task
-   private final List<TaskContainer> enabled; // Enabled tasks
-   private final List<TaskContainer> dormant; // Dormant task queue
-
    /*
     * The "tasks" map contains a map of task tags to currently live tasks. The map contains all
     * enabled and dormant tasks.
@@ -65,37 +51,19 @@ public class DefaultTaskSet implements TaskSet
     * nexus, indicating an I_T_L Nexus instead of an I_T_L_Q nexus. Untagged tasks are always
     * treated as SIMPLE tasks.
     */
+   
+   // Treated as a decrementing counter
+   private int capacity;
 
-   /**
-    * Constructs a task set capable of enqueuing the indicated number of tasks.
-    */
-   public DefaultTaskSet(int capacity)
-   {
-      this.capacity = capacity;
-      this.tasks = new HashMap<Long, TaskContainer>(capacity);
-      this.enabled = new LinkedList<TaskContainer>();
-      this.dormant = new LinkedList<TaskContainer>();
-   }
+   private final Lock lock = new ReentrantLock();
+   private final Condition notEmpty = lock.newCondition();
+   private final Condition notFull = lock.newCondition();
+   private final Condition unblocked = lock.newCondition();
 
-   /**
-    * Called by {@link TaskContainer#run()} when execution of the task is complete.
-    */
-   private void finished(Long taskTag)
-   {
-      lock.lock(); // task execution thread is finished now, so we don't check interrupts
-      try
-      {
-         Task task = this.tasks.remove(taskTag); // 'null' task tag is the untagged task
-         this.enabled.remove(task);
-         this.capacity++;
-         this.notFull.signalAll();
-         this.unblocked.signalAll();
-      }
-      finally
-      {
-         lock.unlock();
-      }
-   }
+   // Task set members
+   private final Map<Long, TaskContainer> tasks; // Tag-to-Task map with 'null' key as the untagged task
+   private final List<TaskContainer> enabled; // Enabled tasks
+   private final List<TaskContainer> dormant; // Dormant task queue
 
    /**
     * Used to encapsulate tasks. Notifies the task set when task execution is complete.
@@ -134,15 +102,15 @@ public class DefaultTaskSet implements TaskSet
       {
          if (_logger.isTraceEnabled())
             _logger.trace("Command now running: " + this.task.getCommand());
-         
+
          this.task.run();
-         
+
          if (_logger.isTraceEnabled())
             _logger.trace("Task finished: " + this.task);
-         
+
          long taskTag = this.task.getCommand().getNexus().getTaskTag();
          finished(taskTag > -1 ? taskTag : null); // untagged tasks have a Q value of -1 (invalid)
-         
+
          if (_logger.isTraceEnabled())
             _logger.trace("Marked task as finished in task set: " + this.task);
       }
@@ -158,108 +126,44 @@ public class DefaultTaskSet implements TaskSet
          return "TaskContainer(" + this.task.toString() + ")";
       }
    }
-
-   /////////////////////////////////////////////////////////////////////////////////////////////////
-   //
-
-   /*
-    * @see TaskSet#remove(Nexus)
+   
+   /////////////////////////////////////////////////////////////////////////////
+   
+   /**
+    * Constructs a task set capable of enqueuing the indicated number of tasks.
     */
-   public boolean remove(Nexus nexus) throws NoSuchElementException, InterruptedException,
-         IllegalArgumentException
+   public DefaultTaskSet(int capacity)
    {
-      if (nexus.getTaskTag() == -1) // invalid Q
-         throw new IllegalArgumentException("must provide an I_T_L_Q nexus for abort");
+      this.capacity = capacity;
+      this.tasks = new HashMap<Long, TaskContainer>(capacity);
+      this.enabled = new LinkedList<TaskContainer>();
+      this.dormant = new LinkedList<TaskContainer>();
+   }
+   
+   /////////////////////////////////////////////////////////////////////////////
 
-      lock.lockInterruptibly();
+   /**
+    * Called by {@link TaskContainer#run()} when execution of the task is complete.
+    */
+   private void finished(Long taskTag)
+   {
+      lock.lock(); // task execution thread is finished now, so we don't check interrupts
       try
       {
-         TaskContainer task = this.tasks.remove(nexus.getTaskTag());
-         if (task == null)
-            throw new NoSuchElementException("Task with tag " + nexus.getTaskTag()
-                  + " not in task set");
-
-         this.enabled.remove(task); // removes the task from the enabled queue if present
-         this.dormant.remove(task); // removes the task from the dormant queue if present
+         Task task = this.tasks.remove(taskTag); // 'null' task tag is the untagged task
+         this.enabled.remove(task);
          this.capacity++;
          this.notFull.signalAll();
          this.unblocked.signalAll();
-
-         return task.abort();
       }
       finally
       {
          lock.unlock();
       }
-   }
-
-   public void clear()
-   {
-      try
-      {
-         lock.lockInterruptibly();
-      }
-      catch (InterruptedException e)
-      {
-         // thread is shutting down, no reason to actually clear the task set.
-         // TODO: Is the above statement okay?
-         return;
-      }
-
-      try
-      {
-         for (TaskContainer task : this.tasks.values())
-         {
-            task.abort();
-         }
-         this.capacity += this.tasks.size();
-         this.tasks.clear();
-         this.enabled.clear();
-         this.dormant.clear();
-         this.notFull.signalAll();
-         this.unblocked.signalAll();
-      }
-      finally
-      {
-         lock.unlock();
-      }
-   }
-
-   /*
-    * @see org.jscsi.scsi.tasks.management.TaskSet#clear(org.jscsi.scsi.transport.Nexus)
-    */
-   public void clear(Nexus nexus) throws InterruptedException, IllegalArgumentException
-   {
-      // We don't check for I_T_L nexus because it makes no difference to this implementation
-
-      lock.lockInterruptibly();
-      try
-      {
-         for (TaskContainer task : this.tasks.values())
-         {
-            task.abort();
-         }
-         this.capacity += this.tasks.size();
-         this.tasks.clear();
-         this.enabled.clear();
-         this.dormant.clear();
-         this.notFull.signalAll();
-         this.unblocked.signalAll();
-      }
-      finally
-      {
-         lock.unlock();
-      }
-   }
-
-   public void abort(Nexus nexus) throws InterruptedException, IllegalArgumentException
-   {
-      // NOTE: This implementation does not properly implement the ABORT TASK SET function.
-      this.clear(nexus);
    }
 
    /////////////////////////////////////////////////////////////////////////////////////////////////
-   //
+
 
    /**
     * Attempts to insert the given task into the set. When an insertion failure is indicated the
@@ -293,7 +197,7 @@ public class DefaultTaskSet implements TaskSet
          throw new NullPointerException("task set does not take null objects");
 
       lock.lockInterruptibly();
-      
+
       if (_logger.isTraceEnabled())
       {
          _logger.trace("Task set BEFORE offer(): " + this.dormant);
@@ -365,7 +269,7 @@ public class DefaultTaskSet implements TaskSet
          this.capacity--;
          this.notEmpty.signalAll();
          this.unblocked.signalAll();
-         
+
          if (_logger.isTraceEnabled())
             _logger.trace("offered successfully command: " + task.getCommand());
          return true;
@@ -520,17 +424,116 @@ public class DefaultTaskSet implements TaskSet
          if (_logger.isDebugEnabled())
          {
             _logger.debug("Enabling command: " + container.getCommand());
-            _logger.debug("Dormant task set: " + this.dormant);  
+            _logger.debug("Dormant task set: " + this.dormant);
          }
 
          return container;
-
       }
       finally
       {
          lock.unlock();
       }
    }
+   
+   /////////////////////////////////////////////////////////////////////////////
+
+   /*
+    * @see TaskSet#remove(Nexus)
+    */
+   public boolean remove(Nexus nexus) throws NoSuchElementException, InterruptedException,
+         IllegalArgumentException
+   {
+      if (nexus.getTaskTag() == -1) // invalid Q
+         throw new IllegalArgumentException("must provide an I_T_L_Q nexus for abort");
+
+      lock.lockInterruptibly();
+      try
+      {
+         TaskContainer task = this.tasks.remove(nexus.getTaskTag());
+         if (task == null)
+            throw new NoSuchElementException("Task with tag " + nexus.getTaskTag()
+                  + " not in task set");
+
+         this.enabled.remove(task); // removes the task from the enabled queue if present
+         this.dormant.remove(task); // removes the task from the dormant queue if present
+         this.capacity++;
+         this.notFull.signalAll();
+         this.unblocked.signalAll();
+
+         return task.abort();
+      }
+      finally
+      {
+         lock.unlock();
+      }
+   }
+
+   public void clear()
+   {
+      try
+      {
+         lock.lockInterruptibly();
+      }
+      catch (InterruptedException e)
+      {
+         // thread is shutting down, no reason to actually clear the task set.
+         // TODO: Is the above statement okay?
+         return;
+      }
+
+      try
+      {
+         for (TaskContainer task : this.tasks.values())
+         {
+            task.abort();
+         }
+         this.capacity += this.tasks.size();
+         this.tasks.clear();
+         this.enabled.clear();
+         this.dormant.clear();
+         this.notFull.signalAll();
+         this.unblocked.signalAll();
+      }
+      finally
+      {
+         lock.unlock();
+      }
+   }
+
+   /*
+    * @see org.jscsi.scsi.tasks.management.TaskSet#clear(org.jscsi.scsi.transport.Nexus)
+    */
+   public void clear(Nexus nexus) throws InterruptedException, IllegalArgumentException
+   {
+      // We don't check for I_T_L nexus because it makes no difference to this implementation
+
+      lock.lockInterruptibly();
+      try
+      {
+         for (TaskContainer task : this.tasks.values())
+         {
+            task.abort();
+         }
+         this.capacity += this.tasks.size();
+         this.tasks.clear();
+         this.enabled.clear();
+         this.dormant.clear();
+         this.notFull.signalAll();
+         this.unblocked.signalAll();
+      }
+      finally
+      {
+         lock.unlock();
+      }
+   }
+
+   public void abort(Nexus nexus) throws InterruptedException, IllegalArgumentException
+   {
+      // NOTE: This implementation does not properly implement the ABORT TASK SET function.
+      this.clear(nexus);
+   }
+   
+   /////////////////////////////////////////////////////////////////////////////
 
    public Task take() throws InterruptedException
    {
@@ -541,8 +544,8 @@ public class DefaultTaskSet implements TaskSet
             _logger.trace("Polling for next task; timeout in 30 seconds");
          task = this.poll(30, TimeUnit.SECONDS);
          if (_logger.isTraceEnabled())
-            _logger.trace("returning command for execution: " + 
-               (task == null ? "null" : task.getCommand()));
+            _logger.trace("returning command for execution: "
+                  + (task == null ? "null" : task.getCommand()));
       }
       return task;
    }

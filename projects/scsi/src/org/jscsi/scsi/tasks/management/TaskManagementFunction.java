@@ -1,11 +1,10 @@
+
 package org.jscsi.scsi.tasks.management;
 
 /**
  * This enumerations defines all valid task management functions, which 
  * are defined in the iSCSI Standard (RFC 3720) and the SCSI Architecture
  * Model 2 [SAM2].
- * 
- * @author Jason Resch
  */
 public enum TaskManagementFunction
 {
