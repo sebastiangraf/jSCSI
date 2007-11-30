@@ -51,7 +51,7 @@ public class DefaultTaskSet implements TaskSet
     * nexus, indicating an I_T_L Nexus instead of an I_T_L_Q nexus. Untagged tasks are always
     * treated as SIMPLE tasks.
     */
-   
+
    // Treated as a decrementing counter
    private int capacity;
 
@@ -126,9 +126,9 @@ public class DefaultTaskSet implements TaskSet
          return "TaskContainer(" + this.task.toString() + ")";
       }
    }
-   
+
    /////////////////////////////////////////////////////////////////////////////
-   
+
    /**
     * Constructs a task set capable of enqueuing the indicated number of tasks.
     */
@@ -139,31 +139,8 @@ public class DefaultTaskSet implements TaskSet
       this.enabled = new LinkedList<TaskContainer>();
       this.dormant = new LinkedList<TaskContainer>();
    }
-   
-   /////////////////////////////////////////////////////////////////////////////
-
-   /**
-    * Called by {@link TaskContainer#run()} when execution of the task is complete.
-    */
-   private void finished(Long taskTag)
-   {
-      lock.lock(); // task execution thread is finished now, so we don't check interrupts
-      try
-      {
-         Task task = this.tasks.remove(taskTag); // 'null' task tag is the untagged task
-         this.enabled.remove(task);
-         this.capacity++;
-         this.notFull.signalAll();
-         this.unblocked.signalAll();
-      }
-      finally
-      {
-         lock.unlock();
-      }
-   }
 
    /////////////////////////////////////////////////////////////////////////////////////////////////
-
 
    /**
     * Attempts to insert the given task into the set. When an insertion failure is indicated the
@@ -318,61 +295,6 @@ public class DefaultTaskSet implements TaskSet
    }
 
    /**
-    * Adds the specified element to this queue. This method deviates from the interface
-    * specification in that it does not wait if the task set is full. This is because such waiting
-    * would not be ideal.
-    * <p>
-    * Normally insertion failures can happen for a variety of reasons (see
-    * {@link #offer(Task, long, TimeUnit)}). This method will not communicate a failure with the
-    * caller. However, this is not always bad because the error will be written to the target
-    * transport port in any case.
-    */
-   public void put(Task task) throws InterruptedException
-   {
-      this.offer(task);
-   }
-
-   /*
-    * Checks if the given task is currently blocked.
-    */
-   private boolean blocked(Task task) throws InterruptedException
-   {
-      lock.lockInterruptibly();
-
-      try
-      {
-         TaskAttribute executing =
-               enabled.size() > 0
-                     ? enabled.get(enabled.size() - 1).getCommand().getTaskAttribute()
-                     : null;
-         {
-            switch (task.getCommand().getTaskAttribute())
-            {
-               case SIMPLE :
-                  if (executing == null || executing == TaskAttribute.SIMPLE)
-                     return false;
-                  else
-                     return true;
-               case HEAD_OF_QUEUE :
-                  return false;
-               case ORDERED :
-                  if (executing == null)
-                     return false;
-                  else
-                     return true;
-               default :
-                  throw new RuntimeException("Unsupported task tag: "
-                        + task.getCommand().getTaskAttribute().name());
-            }
-         }
-      }
-      finally
-      {
-         lock.unlock();
-      }
-   }
-
-   /**
     * Retrieves and removes the task at the head of the queue. Blocks on both an empty set and all
     * blocking boundaries specified in SAM-2.
     * <p>
@@ -434,14 +356,89 @@ public class DefaultTaskSet implements TaskSet
          lock.unlock();
       }
    }
-   
+
+   /**
+    * Adds the specified element to this queue. This method deviates from the interface
+    * specification in that it does not wait if the task set is full. This is because such waiting
+    * would not be ideal.
+    * <p>
+    * Normally insertion failures can happen for a variety of reasons (see
+    * {@link #offer(Task, long, TimeUnit)}). This method will not communicate a failure with the
+    * caller. However, this is not always bad because the error will be written to the target
+    * transport port in any case.
+    */
+   public void put(Task task) throws InterruptedException
+   {
+      this.offer(task);
+   }
+
+   /**
+    * Called by {@link TaskContainer#run()} when execution of the task is complete.
+    */
+   private void finished(Long taskTag)
+   {
+      lock.lock(); // task execution thread is finished now, so we don't check interrupts
+      try
+      {
+         Task task = this.tasks.remove(taskTag); // 'null' task tag is the untagged task
+         this.enabled.remove(task);
+         this.capacity++;
+         this.notFull.signalAll();
+         this.unblocked.signalAll();
+      }
+      finally
+      {
+         lock.unlock();
+      }
+   }
+
+   /*
+    * Checks if the given task is currently blocked.
+    */
+   private boolean blocked(Task task) throws InterruptedException
+   {
+      lock.lockInterruptibly();
+
+      try
+      {
+         TaskAttribute executing =
+            enabled.size() > 0
+            ? enabled.get(enabled.size() - 1).getCommand().getTaskAttribute()
+                  : null;
+            {
+               switch (task.getCommand().getTaskAttribute())
+               {
+                  case SIMPLE :
+                     if (executing == null || executing == TaskAttribute.SIMPLE)
+                        return false;
+                     else
+                        return true;
+                  case HEAD_OF_QUEUE :
+                     return false;
+                  case ORDERED :
+                     if (executing == null)
+                        return false;
+                     else
+                        return true;
+                  default :
+                     throw new RuntimeException("Unsupported task tag: "
+                           + task.getCommand().getTaskAttribute().name());
+               }
+            }
+      }
+      finally
+      {
+         lock.unlock();
+      }
+   }
+
    /////////////////////////////////////////////////////////////////////////////
 
    /*
     * @see TaskSet#remove(Nexus)
     */
    public boolean remove(Nexus nexus) throws NoSuchElementException, InterruptedException,
-         IllegalArgumentException
+   IllegalArgumentException
    {
       if (nexus.getTaskTag() == -1) // invalid Q
          throw new IllegalArgumentException("must provide an I_T_L_Q nexus for abort");
@@ -532,7 +529,7 @@ public class DefaultTaskSet implements TaskSet
       // NOTE: This implementation does not properly implement the ABORT TASK SET function.
       this.clear(nexus);
    }
-   
+
    /////////////////////////////////////////////////////////////////////////////
 
    public Task take() throws InterruptedException
