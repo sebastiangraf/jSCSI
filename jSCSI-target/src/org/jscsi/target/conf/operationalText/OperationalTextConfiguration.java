@@ -22,9 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.conf.operationalText.OperationalTextKey;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.Session;
-import org.jscsi.target.task.TargetTaskLibrary;
-import org.jscsi.target.util.CreativeTaskLoader;
-import org.jscsi.target.util.Singleton;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -220,6 +217,7 @@ public class OperationalTextConfiguration {
 		if (!parentConfiguration.configType.equals(CONFIG_TYPE_GLOBAL)) {
 			return getSenderKeys(senderType, result);
 		}
+		return result;
 	}
 
 	/**
@@ -244,6 +242,7 @@ public class OperationalTextConfiguration {
 		if (!parentConfiguration.configType.equals(CONFIG_TYPE_GLOBAL)) {
 			return getSenderKeys(senderType, result);
 		}
+		return result;
 	}
 
 	/**
@@ -295,7 +294,7 @@ public class OperationalTextConfiguration {
 
 	/**
 	 * Creates an OperationalTextConfiguration for an iSCSI Session Object.
-	 * Configuration will be created holding all parameters with "scope=sessio".
+	 * Configuration will be created holding all parameters with "scope=Session".
 	 * 
 	 * @param session
 	 *            The Configurations Session
@@ -310,6 +309,13 @@ public class OperationalTextConfiguration {
 		return result;
 	}
 
+	/**
+	 * Creates an OperationalTextConfiguration for an iSCSI Connection Object.
+	 * Configuration will be created holding all parameters with "scope=Connection".
+	 * @param connection
+	 * @return
+	 * @throws OperationalTextException
+	 */
 	public static OperationalTextConfiguration create(Connection connection)
 			throws OperationalTextException {
 		OperationalTextConfiguration result = new OperationalTextConfiguration(
@@ -318,7 +324,15 @@ public class OperationalTextConfiguration {
 		result.reset();
 		return result;
 	}
-
+	
+	
+	/**
+	 * Creates an empty OperationalTextConfiguration, that can be used
+	 * as global configuration, or you can use this method to ensure
+	 * every needed Object instance is created to make every method work,
+	 * especially static methods.
+	 * @return
+	 */
 	private static OperationalTextConfiguration createEmptyGlobalConfig() {
 		return new OperationalTextConfiguration();
 	}
@@ -351,7 +365,13 @@ public class OperationalTextConfiguration {
 		}
 		return globalConfig;
 	}
-
+	
+	/**
+	 * Get the String Representation of a key value pair.
+	 * @param key
+	 * @param value
+	 * @return 
+	 */
 	public static String toString(String key, String value) {
 		StringBuffer result = new StringBuffer();
 		result.append(key.toString());
@@ -359,19 +379,31 @@ public class OperationalTextConfiguration {
 		result.append(value.toString());
 		return result.toString();
 	}
-
+	
+	/**
+	 * Get the String representation of a set of key value pairs.
+	 * iSCSI standard limiters and characters are used.
+	 * @param keySet
+	 * @return
+	 */
 	public static String toString(Set<OperationalTextKey> keySet) {
 		StringBuffer result = new StringBuffer();
 		Iterator<OperationalTextKey> keys = keySet.iterator();
 		while (keys.hasNext()) {
 			result.append(toString(keys.next().getKey(), keys.next().getValue()
-					.getString()));
+					.getValue()));
 			result.append(PAIR_DELIMITER);
 		}
-		// result.deleteCharAt(result.length() - 1);
+		result.deleteCharAt(result.length() - 1);
 		return result.toString();
 	}
-
+	
+	/**
+	 * Get the String representation of all keys contained in one configuration.
+	 * iSCSI standard limiters and characters are used.
+	 * @param config
+	 * @return
+	 */
 	public static String toString(OperationalTextConfiguration config) {
 		return toString(config.getAllKeys());
 	}
@@ -419,7 +451,7 @@ public class OperationalTextConfiguration {
 			for (OperationalTextKey loadedKey : result.getAllKeys()) {
 				logTrace("Loaded parameter: "
 						+ OperationalTextConfiguration.toString(loadedKey
-								.getKey(), loadedKey.getValue().getString()));
+								.getKey(), loadedKey.getValue().getValue()));
 			}
 			logTrace("Succesfully parsed global configuration parameter from "
 					+ XML_FILE_ADRESS);

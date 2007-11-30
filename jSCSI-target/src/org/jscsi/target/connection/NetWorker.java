@@ -274,10 +274,10 @@ public class NetWorker {
 				try {
 					headerDigest = refConnection.getConfiguration().getKey(
 							OperationalTextKey.HEADER_DIGEST).getValue()
-							.getString();
+							.getValue();
 					dataDigest = refConnection.getConfiguration().getKey(
 							OperationalTextKey.DATA_DIGEST).getValue()
-							.getString();
+							.getValue();
 				} catch (OperationalTextException e1) {
 					logDebug("Configuration has no valid Digest Keys: HeaderDigest="
 							+ headerDigest + " DataDigest=" + dataDigest);

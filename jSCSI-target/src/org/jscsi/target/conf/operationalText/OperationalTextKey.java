@@ -662,6 +662,10 @@ public class OperationalTextKey {
 	public static final String SCOPE_None = "None";
 
 	private static final int MAX_KEY_LENGTH = 63;
+	
+	/** iSCSI's key value delimiter */
+	public static final String KEY_VALUE_DELIMITER = "=";
+	
 	/** the key's String representation */
 	private String key;
 
@@ -713,7 +717,7 @@ public class OperationalTextKey {
 			copy = OperationalTextKey.create(key.getKey(), key.getScope(), key
 					.getSender());
 			OperationalTextValue copiedValue = OperationalTextValue.create(key
-					.getValue().getString(), key.getValue().getResultType());
+					.getValue().getValue(), key.getValue().getResultType());
 			copy.setValue(copiedValue);
 		} catch (OperationalTextException e) {
 			// can be ignored, because key already exists, i.e. a validation
@@ -730,6 +734,24 @@ public class OperationalTextKey {
 	public static OperationalTextKey create(String key, String scope,
 			String sender) throws OperationalTextException {
 		return new OperationalTextKey(key, scope, sender);
+	}
+	
+	/**
+	 * Get the String Representation of a key value pair.
+	 * @param key
+	 * @param value
+	 * @return 
+	 */
+	public String toString() {
+		StringBuffer result = new StringBuffer();
+		if(value != null){
+			result.append(key);
+			result.append(KEY_VALUE_DELIMITER);
+			result.append(value.getValue());
+		} else{
+			result.append(key);
+		}
+		return result.toString();
 	}
 
 	public static Set<OperationalTextKey> fromString(String textParameters)

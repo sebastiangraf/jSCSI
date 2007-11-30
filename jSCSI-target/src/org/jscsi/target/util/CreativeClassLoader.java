@@ -4,13 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.task.TargetTaskLibrary;
-import org.jscsi.target.task.TargetTaskLoader;
 
 public class CreativeClassLoader extends ClassLoader {
 
@@ -197,6 +192,7 @@ public class CreativeClassLoader extends ClassLoader {
 //		}
 //	}
 
+	@Override
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
 		return super.loadClass(name);
 	}

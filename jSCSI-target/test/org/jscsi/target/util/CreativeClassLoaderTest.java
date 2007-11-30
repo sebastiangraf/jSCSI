@@ -2,13 +2,11 @@ package org.jscsi.target.util;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jscsi.target.Target;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +46,7 @@ public class CreativeClassLoaderTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		for(URL url : loader.getSystemClassPaths()){
+		for(URL url : CreativeClassLoader.getSystemClassPaths()){
 			System.out.println(url);
 		}
 		System.out.println(location.isDirectory());
