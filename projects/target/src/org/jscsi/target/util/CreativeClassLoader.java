@@ -23,8 +23,6 @@ public class CreativeClassLoader extends ClassLoader {
 
 	private static final Map<String, Class<?>> additionalLoadedClasses = new ConcurrentHashMap<String, Class<?>>();
 
-	private static final Set<URL> additionalClassPaths = new HashSet<URL>();
-
 	private CreativeClassLoader() {
 		this(Thread.currentThread().getContextClassLoader());
 	}
@@ -33,17 +31,7 @@ public class CreativeClassLoader extends ClassLoader {
 		super(parent);
 	}
 
-	public final void addSource(File directory) {
-		try {
-			additionalClassPaths.add(directory.toURI().toURL());
-		} catch (MalformedURLException e) {
-			logDebug("Couldn't parse file to url");
-		}
-	}
-
-	public final void addSource(URL directory) {
-		additionalClassPaths.add(directory);
-	}
+	
 
 	/**
 	 * Checks if location b is sub-directory of location a. a is directory and b
@@ -72,11 +60,16 @@ public class CreativeClassLoader extends ClassLoader {
 	 * 
 	 * @return all URLs from java.class.path
 	 */
-	public static Set<URL> getSystemClassPaths() {
+	private static Set<URL> getSystemClassPaths() {
 		Set<URL> classPaths = new HashSet<URL>();
-		System.out.println(System.getProperty("java.class.path"));
-		for (String path : System.getProperty("java.class.path", ".")
-				.split(";")) {
+		String splitter = null;
+		if(isWindows()){
+			splitter = ";";
+		} else{
+			splitter = ":";
+		}
+		for (String path : System.getProperty("java.class.path")
+				.split(splitter)) {
 			try {
 				classPaths.add(new File(path).toURI().toURL());
 			} catch (MalformedURLException e) {
@@ -100,7 +93,6 @@ public class CreativeClassLoader extends ClassLoader {
 		// take every system and loaded additional clathpath to check
 		Set<URL> classPaths = new HashSet<URL>();
 		classPaths.addAll(getSystemClassPaths());
-		classPaths.addAll(additionalClassPaths);
 		Iterator<URL> pathIterator = classPaths.iterator();
 		URL testedFile = null;
 		String result = null;
@@ -117,8 +109,6 @@ public class CreativeClassLoader extends ClassLoader {
 		}
 		return result;
 	}
-	
-	
 
 	/**
 	 * coverts a absolte class name to the classes simple name.
@@ -154,6 +144,32 @@ public class CreativeClassLoader extends ClassLoader {
 		return false;
 	}
 
+	private static boolean isWindows(){
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.indexOf("windows 9") > -1) {
+			return true;
+		}
+		if (os.indexOf("nt") > -1) {
+			return true;
+		}
+		if (os.indexOf("2000") > -1) {
+			return true;
+		}
+		if (os.indexOf("xp") > -1) {
+			return true;
+		}
+		if (os.indexOf("linux") > -1) {
+			return false;
+		}
+		if (os.indexOf("unix") > -1) {
+			return false;
+		}
+		if (os.indexOf("sunos") > -1) {
+			return false;
+		}
+		return false;
+	}
+
 	public Class<?> loadClass(URL url) throws MalformedURLException,
 			CreativeClassLoaderException {
 		InputStream fileInput = null;
@@ -177,49 +193,92 @@ public class CreativeClassLoader extends ClassLoader {
 			resolveClass(loadedClass);
 			loadedClass = loadClass(loadedClass.getName());
 		} catch (ClassNotFoundException e) {
-			throw new CreativeClassLoaderException("Couldn't load class: "  + e.getMessage());
+			throw new CreativeClassLoaderException("Couldn't load class: "
+					+ e.getMessage());
 		}
 		logTrace("Defined and loaded new class: " + loadedClass.getName());
 		return loadedClass;
 	}
 
-//	public Class<?> loadClassUsingEverythingYouHave(String name) {
-//		Class<?> loadedClass = null;
-//		try {
-//			loadedClass = loadClass(name);
-//		} catch (ClassNotFoundException e) {
-//			for(URL url : additionalClassPaths){
-//				//loadAllClasses(null, , recursive)
-//			}
-//		}
-//	}
+	//	public Class<?> loadClassUsingEverythingYouHave(String name) {
+	//		Class<?> loadedClass = null;
+	//		try {
+	//			loadedClass = loadClass(name);
+	//		} catch (ClassNotFoundException e) {
+	//			for(URL url : additionalClassPaths){
+	//				//loadAllClasses(null, , recursive)
+	//			}
+	//		}
+	//	}
 
 	@Override
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
 		return super.loadClass(name);
 	}
+	
 
-	public Set<Class<?>> loadAllClasses(Set<Class<?>> loadedClasses, File file,
+	public Class<?> loadClass(File file){
+		if (file.isFile()) {
+			if (isAbsoluteClassName(file.getName())) {
+				try {
+					return loadClass(file.toURI().toURL());
+				} catch (Exception e) {
+					logTrace(e.getMessage());
+				}
+			}
+		}
+		return null;
+	}
+	
+	public Set<Class<?>> loadAllClasses(Set<Class<?>> loadedClasses, File directory,
 			boolean recursive) {
+		return loadAllClasses(loadedClasses, directory, recursive, null);
+	}
+	
+	public Set<Class<?>> loadAllClasses(Set<Class<?>> loadedClasses, File file,
+			boolean recursive, Class<?> mustHaveInterface) {
 		if (loadedClasses == null) {
 			loadedClasses = new HashSet<Class<?>>();
 		}
+		
 		for (File listedFile : file.listFiles()) {
-			if (listedFile.isFile()) {
-				if(isAbsoluteClassName(listedFile.getName())){
-					try {
-						loadedClasses.add(loadClass(listedFile.toURI().toURL()));
-					} catch (Exception e) {
-						logTrace(e.getMessage());
+			if (listedFile.isFile()) {		
+				try {
+					Class<?> loadedClass = loadClass(listedFile.toURI().toURL());
+					if (mustHaveInterface != null) {
+						if (hasInterface(loadedClass, mustHaveInterface, true)) {
+							loadedClasses.add(loadedClass);
+						}
+					} else {
+						loadedClasses.add(loadedClass);
 					}
+
+				} catch (Exception e) {
+					logTrace(e.getMessage());
 				}
 			}
 			if (listedFile.isDirectory() && recursive) {
+				logTrace("loading " + listedFile.getName());
 				loadAllClasses(loadedClasses, listedFile, true);
 			}
 
 		}
 		return loadedClasses;
+
+	}
+
+	private static boolean hasInterface(Class<?> checkedClass,
+			Class<?> checkedInterface, boolean superClasses) {
+		for (Class<?> implInterface : checkedClass.getInterfaces()) {
+			if (implInterface.getName().equals(checkedInterface.getName())) {
+				return true;
+			}
+		}
+		if (superClasses && (checkedClass.getSuperclass() != null)) {
+			return hasInterface(checkedClass.getSuperclass(), checkedInterface,
+					superClasses);
+		}
+		return false;
 	}
 
 	@Override
@@ -272,7 +331,5 @@ public class CreativeClassLoader extends ClassLoader {
 
 		}
 	}
-	
-	
 
 }

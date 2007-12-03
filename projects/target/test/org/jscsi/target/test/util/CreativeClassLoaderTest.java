@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jscsi.target.task.abstracts.TaskDescriptor;
 import org.jscsi.target.util.CreativeClassLoader;
 import org.junit.After;
 import org.junit.Before;
@@ -47,22 +48,10 @@ public class CreativeClassLoaderTest {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		for(URL url : CreativeClassLoader.getSystemClassPaths()){
-			System.out.println(url);
-		}
-		System.out.println(location.isDirectory());
-		System.out.println(location.toString());
-		loader.loadAllClasses(loadedClasses, location, true);
+		loader.loadAllClasses(loadedClasses, location, false, TaskDescriptor.class);
+		System.out.println("yeeha");
 		for(Class<?> loadedClass : loadedClasses){
 			System.out.println("loaded" + loadedClass.getName());
-			try {
-				loadedClass.newInstance();
-			} catch (InstantiationException e) {
-				System.out.println(e.getMessage());
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 
 	}
