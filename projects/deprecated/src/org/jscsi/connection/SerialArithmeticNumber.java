@@ -116,7 +116,7 @@ public final class SerialArithmeticNumber implements Comparable<Integer> {
    * @return The current value of this <code>SerialArithmeticNumber</code>
    *         instance.
    */
-  final synchronized int getValue() {
+  public final synchronized int getValue() {
 
     return (int) serialNumber;
   }
