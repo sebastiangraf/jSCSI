@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="conf"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jscsi-common"/>
+	<classpathentry kind="lib" path="/jscsi_trunk/externals/commons-logging__V1.1.jar"/>
+	<classpathentry kind="lib" path="/jscsi_trunk/externals/commons-pool__V1.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jscsi-initiator-deprecated"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
