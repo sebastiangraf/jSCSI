@@ -19,26 +19,6 @@ import org.jscsi.scsi.target.Target;
  */
 public interface TargetTransportPort
 {
-
-   /**
-    * Registers a SCSI Target. The target name is used by the transport services to advertise the
-    * target. Incoming commands are enqueued onto the target's Task Router.
-    * 
-    * @param target
-    *           The target to register.
-    */
-   void registerTarget(Target target);
-
-   /**
-    * Removes a SCSI Target. After removal no further commands will be sent to the target.
-    * 
-    * @param targetName
-    *           The name of the target to remove.
-    * @throws Exception
-    *            If a target with the given name has not be registered.
-    */
-   void removeTarget(String targetName) throws Exception;
-
    /**
     * Performs Receive Data-Out operation. If successful all expected data will have been read to
     * the output buffer. If it failed a partial transfer may have occurred.
