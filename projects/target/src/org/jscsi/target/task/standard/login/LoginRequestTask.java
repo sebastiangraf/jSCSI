@@ -8,6 +8,11 @@ public class LoginRequestTask extends AbstractTask{
 
 
 	
+	public LoginRequestTask() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public LoginRequestTask(Connection refConnection,
 			ProtocolDataUnit initialPDU) {
 		super(refConnection, initialPDU);

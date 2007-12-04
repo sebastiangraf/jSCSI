@@ -10,7 +10,11 @@ public abstract class AbstractState extends AbstractOperation implements State, 
 	
 	
 	/** the State's referenced Task */
-	private final Task refTask;
+	private Task refTask;
+	
+	public AbstractState(){
+		refTask = null;
+	}
 	
 	/** Constructor with referenced Task */
 	public AbstractState(Task refTask){

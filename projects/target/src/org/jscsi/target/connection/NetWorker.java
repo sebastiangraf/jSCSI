@@ -298,11 +298,16 @@ public class NetWorker {
 					successfulRead = false;
 				} catch (IOException e) {
 					successfulRead = false;
+				} catch (NullPointerException e){
+					successfulRead = false;
 				}
+				//
 				// targetTest can ignore error transmissions, because he's signaling
 				// these with responses containing ExpCmdSN
 				if (successfulRead) {
 					addReceivedPDU(pdu);
+				} else{
+					logDebug("Couldn't parse incoming bytes to PDU, should destroy Connection");
 				}
 			}
 		}

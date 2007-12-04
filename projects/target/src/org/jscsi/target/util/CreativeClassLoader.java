@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -22,6 +23,8 @@ public class CreativeClassLoader extends ClassLoader {
 			.getLog(FileSystemClassLoader.class);
 
 	private static final Map<String, Class<?>> additionalLoadedClasses = new ConcurrentHashMap<String, Class<?>>();
+	
+	private static Map<Integer, String> linkedClassBytes = new ConcurrentHashMap<Integer, String>();
 
 	private CreativeClassLoader() {
 		this(Thread.currentThread().getContextClassLoader());
@@ -181,21 +184,27 @@ public class CreativeClassLoader extends ClassLoader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		logTrace("Loaded bytes from: " + url);
 		return defineAndLoadClass(code);
 	}
 
 	public final Class<?> defineAndLoadClass(byte[] code)
 			throws CreativeClassLoaderException {
+		
+		if(linkedClassBytes.containsKey(Arrays.hashCode(code))){
+			return additionalLoadedClasses.get(linkedClassBytes.get(Arrays.hashCode(code)));
+		}
 		Class<?> loadedClass = null;
 		try {
 			loadedClass = defineClass(null, code, 0, code.length);
+			
 			resolveClass(loadedClass);
 			loadedClass = loadClass(loadedClass.getName());
 		} catch (ClassNotFoundException e) {
 			throw new CreativeClassLoaderException("Couldn't load class: "
 					+ e.getMessage());
 		}
+		additionalLoadedClasses.put(loadedClass.getName(), loadedClass);
+		linkedClassBytes.put(Arrays.hashCode(code), loadedClass.getName());
 		logTrace("Defined and loaded new class: " + loadedClass.getName());
 		return loadedClass;
 	}
@@ -213,7 +222,11 @@ public class CreativeClassLoader extends ClassLoader {
 
 	@Override
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
-		return super.loadClass(name);
+		Class<?> result = null;
+		if((result = super.loadClass(name)) != null){
+			return result;
+		}
+		return additionalLoadedClasses.get(name);
 	}
 	
 
@@ -258,7 +271,6 @@ public class CreativeClassLoader extends ClassLoader {
 				}
 			}
 			if (listedFile.isDirectory() && recursive) {
-				logTrace("loading " + listedFile.getName());
 				loadAllClasses(loadedClasses, listedFile, true);
 			}
 
