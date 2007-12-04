@@ -185,10 +185,15 @@ public class OperationalTextConfiguration {
 			}
 		}
 		// if not in local configuration, check in parent configuration if not
-		// global
+		// global, or if null, which means has not yet parent
+		if(parentConfiguration == null){
+			return globalConfig.getKey(key);
+		}
 		if (!parentConfiguration.configType.equals(CONFIG_TYPE_GLOBAL)) {
 			return parentConfiguration.getKey(key);
 		}
+		
+		
 		throw new OperationalTextException(
 				"Configuration doesn't contain Key: " + key);
 	}
@@ -318,14 +323,19 @@ public class OperationalTextConfiguration {
 	 */
 	public static OperationalTextConfiguration create(Connection connection)
 			throws OperationalTextException {
-		OperationalTextConfiguration result = new OperationalTextConfiguration(
-				OperationalTextConfiguration.CONFIG_TYPE_CONNECTION, connection
-						.getReferencedSession().getConfiguration());
+		OperationalTextConfiguration result = null;
+		if (connection.getReferencedSession() != null) {
+			result = new OperationalTextConfiguration(
+					OperationalTextConfiguration.CONFIG_TYPE_CONNECTION,
+					connection.getReferencedSession().getConfiguration());
+		} else {
+			result = new OperationalTextConfiguration(
+					OperationalTextConfiguration.CONFIG_TYPE_CONNECTION, null);
+		}
 		result.reset();
 		return result;
 	}
-	
-	
+
 	/**
 	 * Creates an empty OperationalTextConfiguration, that can be used
 	 * as global configuration, or you can use this method to ensure
@@ -365,7 +375,7 @@ public class OperationalTextConfiguration {
 		}
 		return globalConfig;
 	}
-	
+
 	/**
 	 * Get the String Representation of a key value pair.
 	 * @param key
@@ -379,7 +389,7 @@ public class OperationalTextConfiguration {
 		result.append(value.toString());
 		return result.toString();
 	}
-	
+
 	/**
 	 * Get the String representation of a set of key value pairs.
 	 * iSCSI standard limiters and characters are used.
@@ -397,7 +407,7 @@ public class OperationalTextConfiguration {
 		result.deleteCharAt(result.length() - 1);
 		return result.toString();
 	}
-	
+
 	/**
 	 * Get the String representation of all keys contained in one configuration.
 	 * iSCSI standard limiters and characters are used.

@@ -177,7 +177,8 @@ public final class TargetSocketRouter implements ISocketHandler {
 		}
 
 		public void run() {
-			try {
+			try { 
+				
 				newConnection = new Connection(newSocket.getChannel());
 			} catch (OperationalTextException e) {
 				// TODO Auto-generated catch block

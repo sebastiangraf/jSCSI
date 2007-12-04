@@ -51,7 +51,14 @@ public abstract class AbstractTask extends AbstractOperation implements
 
 	/** condition signals the arrival of new PDUs */
 	private final Condition receivedPDU = dequeLock.newCondition();
-
+	
+	public AbstractTask(){
+		receivedPDUs = null;
+		this.refConnection = null;
+		initiatorTaskTag = null;
+		signaledPDUs = 0;;
+	}
+	
 	/**
 	 * Creating a new task within a targetTest environment, the task needs to have
 	 * a Connection allegiance and an initialPDU.

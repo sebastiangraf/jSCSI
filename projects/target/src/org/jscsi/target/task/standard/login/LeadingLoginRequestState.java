@@ -10,6 +10,11 @@ public class LeadingLoginRequestState extends AbstractState{
 		// TODO Auto-generated constructor stub
 	}
 
+	public LeadingLoginRequestState() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public void run() {
 		
 		

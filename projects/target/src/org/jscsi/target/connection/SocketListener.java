@@ -1,8 +1,10 @@
 package org.jscsi.target.connection;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.channels.ServerSocketChannel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,6 +21,8 @@ public class SocketListener extends Thread {
 	private final ISocketHandler socketHandler;
 
 	private ServerSocket listeningSocket;
+	
+	private ServerSocketChannel serverSocketChannel;
 
 	/**
 	 * Listens to the specified port and assign every accepted Socket to the
@@ -34,7 +38,10 @@ public class SocketListener extends Thread {
 		socketHandler = handler;
 
 		try {
-			listeningSocket = new ServerSocket(listeningPort);
+			serverSocketChannel = ServerSocketChannel.open();
+			serverSocketChannel.configureBlocking(true);
+			listeningSocket = serverSocketChannel.socket();
+			listeningSocket.bind(new InetSocketAddress(listeningPort));
 		} catch (IOException e) {
 
 			logTrace("Couldn't create ServerSocket on port " + listeningPort

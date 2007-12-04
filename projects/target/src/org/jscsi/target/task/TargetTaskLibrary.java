@@ -13,6 +13,7 @@ import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.target.conf.target.TargetConfiguration;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.parameter.pdu.Opcode;
+import org.jscsi.target.task.abstracts.AbstractTaskDescriptor;
 import org.jscsi.target.task.abstracts.State;
 import org.jscsi.target.task.abstracts.Task;
 import org.jscsi.target.task.abstracts.TaskDescriptor;
@@ -22,10 +23,9 @@ import org.jscsi.target.util.Singleton;
 public class TargetTaskLibrary {
 
 	/** The Log interface. */
-	private static final Log LOGGER = LogFactory
-			.getLog(TargetTaskLoader.class);
-	
-	private static final Map<String, TaskDescriptor> loadedTaskDescriptors = new ConcurrentHashMap<String, TaskDescriptor>();
+	private static final Log LOGGER = LogFactory.getLog(TargetTaskLoader.class);
+
+	private static final Map<Byte, Set<TaskDescriptor>> loadedTaskDescriptors = new ConcurrentHashMap<Byte, Set<TaskDescriptor>>();
 
 	private static final Map<String, Task> loadedTasks = new ConcurrentHashMap<String, Task>();
 
@@ -37,24 +37,9 @@ public class TargetTaskLibrary {
 	private TargetTaskLibrary() {
 
 	}
-	
-	private TargetTaskLibrary(TargetConfiguration conf){
-		
-	}
-	
-	public final TaskDescriptor getTaskDescriptor(String name) {
-		return loadedTaskDescriptors.get(name);
 
-	}
-	
-	public final Set<TaskDescriptor> getTaskDescriptors(byte opcode){
-		Set<TaskDescriptor> result = new HashSet<TaskDescriptor>();
-		for(TaskDescriptor taskD : loadedTaskDescriptors.values()){
-			if(taskD.getSupportedOpcode().equals(opcode)){
-				result.add(taskD);
-			}
-		}
-		return result;
+	private TargetTaskLibrary(TargetConfiguration conf) {
+		loadFrom(conf);
 	}
 	
 	/**
@@ -80,6 +65,24 @@ public class TargetTaskLibrary {
 
 	}
 
+	public final TaskDescriptor getTaskDescriptor(String name) {
+		for (Set<TaskDescriptor> oneSet : loadedTaskDescriptors.values()) {
+			for (TaskDescriptor taskD : oneSet) {
+				if (taskD.getClass().getName().equals(name)) {
+					return taskD;
+				}
+			}
+		}
+		logTrace("Couldn't find TaskDescriptor: " + name);
+		return null;
+	}
+
+	public final Set<TaskDescriptor> getTaskDescriptors(byte opcode) {
+		return loadedTaskDescriptors.get(opcode);
+	}
+
+	
+
 	public final Task getTask(String name) {
 		return loadedTasks.get(name);
 
@@ -90,18 +93,115 @@ public class TargetTaskLibrary {
 
 	}
 
+	public int getNumberOfSupportedOpcodes(){
+		return loadedTaskDescriptors.keySet().size();
+	}
 	
-
-	public void putAll(Map<? extends String, ? extends State> m) {
-		loadedStates.putAll(m);
+	public int getNumberOfAvailableTasks(){
+		return loadedTasks.keySet().size();
+	}
+	
+	public int getNumberOfAvailableTaskDescriptors(){
+		return loadedTaskDescriptors.keySet().size();
+	}
+	
+	public int getNumberOfAvailableStates(){
+		return loadedStates.keySet().size();
+	}
+	
+	public String getInfo(){
+		StringBuffer result = new StringBuffer();
+		result.append("TaskLibrary is supporting ");
+		result.append(getNumberOfSupportedOpcodes());
+		result.append(" different Opcodes (");
+		for(Byte opcode : loadedTaskDescriptors.keySet()){
+			result.append(opcode + ", ");
+		}
+		result.delete(result.length() - 2, result.length());
+		result.append(") ");
+		result.append("and loaded: ");
+		result.append(getNumberOfAvailableTaskDescriptors() + " TaskDescriptors;");
+		result.append(getNumberOfAvailableTasks() + " Tasks;");
+		result.append(getNumberOfAvailableStates() + " States;");
+		return result.toString();
 	}
 
-	public TaskDescriptor put(String key, TaskDescriptor value) {
-		return loadedTaskDescriptors.put(key, value);
+
+	public void addTaskDescriptor(TaskDescriptor descriptor)
+			throws ConflictedTaskException {
+		byte opcode = descriptor.getSupportedOpcode().value();
+		// check if a descriptor yet exists, that has identical parameter
+		if (loadedTaskDescriptors.containsKey(opcode)) {
+			for (TaskDescriptor equalOpcode : loadedTaskDescriptors.get(opcode)) {
+				if (equalOpcode.compare((AbstractTaskDescriptor) descriptor)) {
+					throw new ConflictedTaskException(
+							"Tried to load a TaskDescriptor that would conflict with an already existing one: "
+									+ descriptor.getClass().getName()
+									+ " and "
+									+ equalOpcode.getClass().getName());
+				}
+			}
+		}
+		// no collision, add TaskDescriptor to library
+		if (loadedTaskDescriptors.get(opcode) != null) {
+			loadedTaskDescriptors.get(opcode).add(descriptor);
+		}
+		Set<TaskDescriptor> newSet = new HashSet<TaskDescriptor>();
+		newSet.add(descriptor);
+		loadedTaskDescriptors.put(opcode, newSet);
+		
+	}
+	
+	public TaskDescriptor addTaskDescriptor(Class<?> taskDescriptor){
+		TaskDescriptor result = null;
+		try {
+			result = (TaskDescriptor) taskDescriptor.newInstance();
+			addTaskDescriptor(result);
+			logTrace("Added new TaskDescriptor: " + result.getInfo());
+		} catch (Exception e) {
+			//if Object is no TaskDescriptor, return null;
+		}
+		return result;
+	}
+	
+	public Task addTask(Class<?> task){
+		Task result = null;
+		try {
+			result = (Task) task.newInstance(); 
+			addTask(result);
+			logTrace("Added new Task: " + result);
+		} catch (Exception e) {
+			//if Object is no Task, return null;
+		}
+		return result;
 	}
 
-	public Task put(String key, Task value) {
-		return loadedTasks.put(key, value);
+	public Task addTask(Task value) {
+		if(!loadedTasks.containsKey(value.getClass().getName())){
+			return loadedTasks.put(value.getClass().getName(), value);
+		}
+		logTrace("Tried to add aan already existing Task: " + value.getClass().getName());
+		return null;
+	}
+	
+	public State addState(Class<?> state){
+		State result = null;
+		try {
+			result = (State) state.newInstance();
+			addState(result);
+			logTrace("Added new State: " + result);
+		} catch (Exception e) {
+			//if Object is no State, return null;
+		}
+		return result;
+	}
+	
+	public State addState(State value) {
+		if(!loadedStates.containsKey(value.getClass().getName())){
+			return loadedStates.put(value.getClass().getName(), value);
+		}
+		logTrace("Tried to add aan already existing Task: " + value.getClass().getName());
+		return null;
 	}
 
 	public static TargetTaskLibrary getInstance() {
@@ -117,29 +217,33 @@ public class TargetTaskLibrary {
 		}
 		return instance;
 	}
-	
-	public void loadFrom(TargetConfiguration conf){
+
+	public void loadFrom(TargetConfiguration conf) {
 		Set<Class<?>> loadedClasses = null;
-		for(File file : conf.getTaskDescriptorDirectories()){
-			classLoader.loadAllClasses(loadedClasses, file, true, TaskDescriptor.class);
-			for(Class<?> loadedDescriptor : loadedClasses){
-				try {
-					loadedTaskDescriptors.put(loadedDescriptor.getName(), (TaskDescriptor) loadedDescriptor.newInstance());
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		for (File file : conf.getTaskDescriptorDirectories()) {
+			loadedClasses = classLoader.loadAllClasses(null, file, true,
+					TaskDescriptor.class);
+			for (Class<?> loadedDescriptor : loadedClasses) {
+				addTaskDescriptor(loadedDescriptor);
 			}
-			
+			loadedClasses = classLoader.loadAllClasses(null, file, true,
+					Task.class);
+			for (Class<?> loadedTask : loadedClasses) {
+				addTask(loadedTask);
+			}
+			loadedClasses = classLoader.loadAllClasses(null, file, true,
+					State.class);
+			for (Class<?> loadedState : loadedClasses) {
+				addState(loadedState);
+			}
 		}
+		logTrace(getInfo());
 	}
 	
+
 	/**
-	 * Logs a trace Message, if trace log is enabled
-	 * within the logging environment.
+	 * Logs a trace Message, if trace log is enabled within the logging
+	 * environment.
 	 * 
 	 * @param logMessage
 	 */
@@ -150,8 +254,8 @@ public class TargetTaskLibrary {
 	}
 
 	/**
-	 * Logs a debug Message, if debug log is enabled
-	 * within the logging environment.
+	 * Logs a debug Message, if debug log is enabled within the logging
+	 * environment.
 	 * 
 	 * @param logMessage
 	 */
