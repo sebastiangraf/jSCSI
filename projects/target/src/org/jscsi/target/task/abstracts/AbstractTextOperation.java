@@ -22,6 +22,8 @@ public abstract class AbstractTextOperation extends AbstractOperation implements
 	/** the referenced State*/
 	private final State refState;
 	
+	
+	
 	/** set of supported Keys */
 	private final Set<String> supportedKeys;
 	
@@ -80,6 +82,7 @@ public abstract class AbstractTextOperation extends AbstractOperation implements
 	public void assignParameter(OperationalTextKey key) throws OperationException {
 		if(supportsKey(key)){
 			incomingTextParameters.add(key);
+			receivedTextParameter.signal();
 		} else{
 			throw new OperationException("The assigned TextParameter isn't supported: " + key.getKey());
 		}

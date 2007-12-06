@@ -16,7 +16,7 @@ public interface Task{
 	 * to process it.
 	 * @param pdu
 	 */
-	public void assignAndSignalReceivedPDU(ProtocolDataUnit pdu);
+	public void processPDU(ProtocolDataUnit pdu);
 	
 	/**
 	 * Returns the Task's Initiator Transfer Tag.

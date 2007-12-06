@@ -23,7 +23,7 @@ public class CreativeClassLoader extends ClassLoader {
 			.getLog(FileSystemClassLoader.class);
 
 	private static final Map<String, Class<?>> additionalLoadedClasses = new ConcurrentHashMap<String, Class<?>>();
-	
+
 	private static Map<Integer, String> linkedClassBytes = new ConcurrentHashMap<Integer, String>();
 
 	private CreativeClassLoader() {
@@ -33,8 +33,6 @@ public class CreativeClassLoader extends ClassLoader {
 	private CreativeClassLoader(ClassLoader parent) {
 		super(parent);
 	}
-
-	
 
 	/**
 	 * Checks if location b is sub-directory of location a. a is directory and b
@@ -66,9 +64,9 @@ public class CreativeClassLoader extends ClassLoader {
 	private static Set<URL> getSystemClassPaths() {
 		Set<URL> classPaths = new HashSet<URL>();
 		String splitter = null;
-		if(isWindows()){
+		if (isWindows()) {
 			splitter = ";";
-		} else{
+		} else {
 			splitter = ":";
 		}
 		for (String path : System.getProperty("java.class.path")
@@ -114,9 +112,10 @@ public class CreativeClassLoader extends ClassLoader {
 	}
 
 	/**
-	 * coverts a absolte class name to the classes simple name.
-	 * I.e. "org.package.name.class" will return "class.name".
-	 * Will return null if no conversion is possible.
+	 * coverts a absolte class name to the classes simple name. I.e.
+	 * "org.package.name.class" will return "class.name". Will return null if no
+	 * conversion is possible.
+	 * 
 	 * @param packageName
 	 * @return
 	 */
@@ -147,7 +146,7 @@ public class CreativeClassLoader extends ClassLoader {
 		return false;
 	}
 
-	private static boolean isWindows(){
+	private static boolean isWindows() {
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.indexOf("windows 9") > -1) {
 			return true;
@@ -189,14 +188,15 @@ public class CreativeClassLoader extends ClassLoader {
 
 	public final Class<?> defineAndLoadClass(byte[] code)
 			throws CreativeClassLoaderException {
-		
-		if(linkedClassBytes.containsKey(Arrays.hashCode(code))){
-			return additionalLoadedClasses.get(linkedClassBytes.get(Arrays.hashCode(code)));
+
+		if (linkedClassBytes.containsKey(Arrays.hashCode(code))) {
+			return additionalLoadedClasses.get(linkedClassBytes.get(Arrays
+					.hashCode(code)));
 		}
 		Class<?> loadedClass = null;
 		try {
 			loadedClass = defineClass(null, code, 0, code.length);
-			
+
 			resolveClass(loadedClass);
 			loadedClass = loadClass(loadedClass.getName());
 		} catch (ClassNotFoundException e) {
@@ -209,28 +209,16 @@ public class CreativeClassLoader extends ClassLoader {
 		return loadedClass;
 	}
 
-	//	public Class<?> loadClassUsingEverythingYouHave(String name) {
-	//		Class<?> loadedClass = null;
-	//		try {
-	//			loadedClass = loadClass(name);
-	//		} catch (ClassNotFoundException e) {
-	//			for(URL url : additionalClassPaths){
-	//				//loadAllClasses(null, , recursive)
-	//			}
-	//		}
-	//	}
-
 	@Override
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
 		Class<?> result = null;
-		if((result = super.loadClass(name)) != null){
+		if ((result = super.loadClass(name)) != null) {
 			return result;
 		}
 		return additionalLoadedClasses.get(name);
 	}
-	
 
-	public Class<?> loadClass(File file){
+	public Class<?> loadClass(File file) {
 		if (file.isFile()) {
 			if (isAbsoluteClassName(file.getName())) {
 				try {
@@ -242,20 +230,19 @@ public class CreativeClassLoader extends ClassLoader {
 		}
 		return null;
 	}
-	
-	public Set<Class<?>> loadAllClasses(Set<Class<?>> loadedClasses, File directory,
-			boolean recursive) {
+
+	public Set<Class<?>> loadAllClasses(Set<Class<?>> loadedClasses,
+			File directory, boolean recursive) {
 		return loadAllClasses(loadedClasses, directory, recursive, null);
 	}
-	
+
 	public Set<Class<?>> loadAllClasses(Set<Class<?>> loadedClasses, File file,
 			boolean recursive, Class<?> mustHaveInterface) {
 		if (loadedClasses == null) {
 			loadedClasses = new HashSet<Class<?>>();
 		}
-		
 		for (File listedFile : file.listFiles()) {
-			if (listedFile.isFile()) {		
+			if (listedFile.isFile()) {
 				try {
 					Class<?> loadedClass = loadClass(listedFile.toURI().toURL());
 					if (mustHaveInterface != null) {
@@ -278,19 +265,65 @@ public class CreativeClassLoader extends ClassLoader {
 		return loadedClasses;
 
 	}
+	
+	public <T> Set<Class<? extends T>> loadAllClassesHavingSuperclass(Set<Class<? extends T>> loadedClasses, File file,
+			boolean recursive, Class<T> mustHaveSuperClass) {
+		if (loadedClasses == null) {
+			loadedClasses = new HashSet<Class<? extends T>>();
+		}
+		for (File listedFile : file.listFiles()) {
+			if (listedFile.isFile()) {
+				try {
+					Class<?> loadedClass = loadClass(listedFile.toURI().toURL());
+					if (mustHaveSuperClass != null) {
+						if (hasSuperclass(loadedClass, mustHaveSuperClass)) {
+							loadedClasses.add((Class<? extends T>) loadedClass);
+						}
+					} else {
+						loadedClasses.add((Class<? extends T>) loadedClass);
+					}
+
+				} catch (Exception e) {
+					logTrace(e.getMessage());
+				}
+			}
+			if (listedFile.isDirectory() && recursive) {
+				loadAllClassesHavingSuperclass(loadedClasses, listedFile, true, mustHaveSuperClass);
+			}
+
+		}
+		return loadedClasses;
+
+	}
+	
 
 	private static boolean hasInterface(Class<?> checkedClass,
 			Class<?> checkedInterface, boolean superClasses) {
+		if(checkedClass == null){
+			return false;
+		}
 		for (Class<?> implInterface : checkedClass.getInterfaces()) {
 			if (implInterface.getName().equals(checkedInterface.getName())) {
 				return true;
 			}
 		}
-		if (superClasses && (checkedClass.getSuperclass() != null)) {
+		if (superClasses) {
 			return hasInterface(checkedClass.getSuperclass(), checkedInterface,
 					superClasses);
 		}
 		return false;
+	}
+
+	private static boolean hasSuperclass(Class<?> checkedClass,
+			Class<?> checkedSuperclass) {
+		if (checkedClass == null) {
+			return false;
+		}
+		if (checkedClass.getName().equals(checkedSuperclass.getName())) {
+			return true;
+		}
+		return hasSuperclass(checkedClass.getSuperclass(), checkedSuperclass);
+
 	}
 
 	@Override
