@@ -11,6 +11,8 @@ import org.apache.commons.logging.LogFactory;
 import org.jscsi.connection.SerialArithmeticNumber;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.target.connection.Connection;
+import org.jscsi.target.task.TargetTaskLibrary;
+import org.jscsi.target.util.Singleton;
 
 /**
  * A Task represents the command processing entity started by an initial
@@ -26,7 +28,7 @@ public abstract class AbstractTask extends AbstractOperation implements
 	private static final Log LOGGER = LogFactory.getLog(AbstractTask.class);
 
 	/** The Task's referenced Connection */
-	private final Connection refConnection;
+	private Connection refConnection;
 
 	/** The Task's initiator task tag */
 	private SerialArithmeticNumber initiatorTaskTag;
@@ -36,9 +38,13 @@ public abstract class AbstractTask extends AbstractOperation implements
 
 	/** The Task's current processing State */
 	private State currentState;
+	
+	private boolean defined;
+	
+	private final TargetTaskLibrary library;
 
 	/** The Task's PDU receiving Queue */
-	private final Queue<ProtocolDataUnit> receivedPDUs;
+	private Queue<ProtocolDataUnit> receivedPDUs;
 	
 	/** the number of signaled/unprocessed PDUs **/
 	private int signaledPDUs;
@@ -52,11 +58,17 @@ public abstract class AbstractTask extends AbstractOperation implements
 	/** condition signals the arrival of new PDUs */
 	private final Condition receivedPDU = dequeLock.newCondition();
 	
-	public AbstractTask(){
+	public AbstractTask() throws OperationException{
 		receivedPDUs = null;
 		this.refConnection = null;
 		initiatorTaskTag = null;
-		signaledPDUs = 0;;
+		defined = false;
+		signaledPDUs = 0;
+		try {
+			library = Singleton.getInstance(TargetTaskLibrary.class);
+		} catch (ClassNotFoundException e) {
+			throw new OperationException("Couldn't load TargetTaskLibrary!");
+		}
 	}
 	
 	/**
@@ -64,7 +76,7 @@ public abstract class AbstractTask extends AbstractOperation implements
 	 * a Connection allegiance and an initialPDU.
 	 * @param refConnection
 	 * @param initialPDU
-	 */
+	 *//*
 	public AbstractTask(Connection refConnection, ProtocolDataUnit initialPDU) {
 		receivedPDUs = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 		receivedPDUs.add(initialPDU);
@@ -76,6 +88,26 @@ public abstract class AbstractTask extends AbstractOperation implements
 			LOGGER.trace("Started new Task: ITT = "
 					+ initialPDU.getBasicHeaderSegment().getInitiatorTaskTag());
 		}
+	}*/
+	
+	public final void define(Connection refConnection, ProtocolDataUnit initialPDU) throws OperationException{
+		if(!defined){
+			receivedPDUs = new ConcurrentLinkedQueue<ProtocolDataUnit>();
+			receivedPDUs.add(initialPDU);
+			this.refConnection = refConnection;
+			initiatorTaskTag = new SerialArithmeticNumber(initialPDU
+					.getBasicHeaderSegment().getInitiatorTaskTag());
+			signaledPDUs = 0;
+			if (LOGGER.isTraceEnabled()) {
+				LOGGER.trace("Started new Task: ITT = "
+						+ initialPDU.getBasicHeaderSegment().getInitiatorTaskTag());
+			}
+			defined = true;
+		}else{
+			throw new OperationException("Task is already defined!");
+			
+		}
+		
 	}
 
 	/**
@@ -140,9 +172,25 @@ public abstract class AbstractTask extends AbstractOperation implements
 	 *            State
 	 */
 	public void setState(State state) {
+		
 		currentState = state;
 
 	}
+	
+	public final void setState(String stateClassName){
+		if(currentState != null){
+			currentState.abort();
+			while(!currentState.finished()){
+				Thread.currentThread().yield();
+			}
+		}
+		State newCurrentState = library.createState(stateClassName);
+		if(newCurrentState != null){
+			setState(newCurrentState);
+		}
+		
+	}
+	
 
 	/**
 	 * If the Task and State processing needs a location to store an identifying
@@ -169,7 +217,7 @@ public abstract class AbstractTask extends AbstractOperation implements
 	 * to process it.
 	 * @param pdu
 	 */
-	public void assignAndSignalReceivedPDU(ProtocolDataUnit pdu){
+	public void processPDU(ProtocolDataUnit pdu){
 		enqueueLock.lock();
 		assignPDU(pdu);
 		signalReceivedPDU();

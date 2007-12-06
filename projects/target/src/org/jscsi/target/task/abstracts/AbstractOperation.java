@@ -57,8 +57,8 @@ public abstract class AbstractOperation implements Operation {
 	}
 
 	/**
-	 * Tags the working AbstractOperation as suspended.
-	 * Suspension cannot be guaranteed, must be checked
+	 * Tags the working AbstractOperation as aborted.
+	 * Abortion cannot be guaranteed, must be checked
 	 * by the running operation.
 	 */
 	public void abort() {

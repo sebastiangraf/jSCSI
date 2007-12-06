@@ -23,19 +23,27 @@ import org.jscsi.target.parameter.connection.SessionType;
 public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 	
 	
+	
 	/** the described task */
-	private final Class<? extends AbstractTask> refTask;
+	private Class<? extends AbstractTask> refTask;
 	
 	/** the valid OperationCode */
-	private final OperationCode opcode;
+	private OperationCode opcode;
 	
 	/** all allowed SessionTypes */
-	private final Set<SessionType> allowedSessionTypes;
+	private Set<SessionType> allowedSessionTypes;
 	
 	/** all allowed SessionPhases */
-	private final Set<Phase> allowedSessionPhases;
+	private Set<Phase> allowedSessionPhases;
 	
-	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, Phase phase, Class<? extends AbstractTask> refTask) throws OperationException{
+	private boolean defined;
+	
+	public AbstractTaskDescriptor(){
+		defined = false;
+	}
+	
+	
+	/*public AbstractTaskDescriptor(OperationCode opcode, SessionType type, Phase phase, Class<? extends AbstractTask> refTask) throws OperationException{
 		this.opcode = opcode;
 		allowedSessionTypes = new HashSet<SessionType>();
 		allowedSessionPhases = new HashSet<Phase>();
@@ -86,6 +94,44 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 		} catch (ClassNotFoundException e) {
 			throw new OperationException("Couldn't find the referenced Task: " + refTask.getName());
 		}
+	}*/
+	
+	protected final void define(OperationCode opcode, SessionType type, Phase phase, Class<? extends AbstractTask> refTask) throws OperationException{
+		Set<SessionType> types = new HashSet<SessionType>();
+		types.add(type);
+		Set<Phase> phases = new HashSet<Phase>();
+		phases.add(phase);
+		define(opcode, types, phases, refTask);
+	}
+	
+	protected final void define(OperationCode opcode, Set<SessionType> types, Phase phase, Class<? extends AbstractTask> refTask) throws OperationException{
+		Set<Phase> phases = new HashSet<Phase>();
+		phases.add(phase);
+		define(opcode, types, phases, refTask);
+	}
+	
+	protected final void define(OperationCode opcode, SessionType type, Set<Phase> phases, Class<? extends AbstractTask> refTask) throws OperationException{
+		Set<SessionType> types = new HashSet<SessionType>();
+		types.add(type);
+		define(opcode, types, phases, refTask);
+	}
+	
+	protected final void define(OperationCode opcode, Set<SessionType> types, Set<Phase> phases, Class<? extends AbstractTask> refTask) throws OperationException{
+		if(!defined){
+			this.opcode = opcode;
+			this.allowedSessionTypes = types;
+			this.allowedSessionPhases = phases;
+			this.refTask = refTask;
+			try {
+				Class.forName(refTask.getName());
+			} catch (ClassNotFoundException e) {
+				throw new OperationException("Couldn't find the referenced Task: " + refTask.getName());
+			}
+			defined = true;
+		} else{
+			throw new OperationException("TaskDescriptor is already defined!");
+		}
+		
 	}
 	
 	/**
@@ -205,7 +251,7 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 		result = prime * result + ((opcode == null) ? 0 : opcode.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

@@ -2,6 +2,7 @@ package org.jscsi.target.task;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -13,10 +14,18 @@ import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.target.conf.target.TargetConfiguration;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.parameter.pdu.Opcode;
+import org.jscsi.target.task.abstracts.AbstractState;
+import org.jscsi.target.task.abstracts.AbstractTask;
 import org.jscsi.target.task.abstracts.AbstractTaskDescriptor;
+import org.jscsi.target.task.abstracts.AbstractTextOperation;
+import org.jscsi.target.task.abstracts.AbstractTextOperationDescriptor;
+import org.jscsi.target.task.abstracts.AbstractTextOperationState;
 import org.jscsi.target.task.abstracts.State;
 import org.jscsi.target.task.abstracts.Task;
 import org.jscsi.target.task.abstracts.TaskDescriptor;
+import org.jscsi.target.task.abstracts.TextOperation;
+import org.jscsi.target.task.abstracts.TextOperationDescriptor;
+import org.jscsi.target.task.abstracts.TextOperationState;
 import org.jscsi.target.util.CreativeClassLoader;
 import org.jscsi.target.util.Singleton;
 
@@ -24,12 +33,19 @@ public class TargetTaskLibrary {
 
 	/** The Log interface. */
 	private static final Log LOGGER = LogFactory.getLog(TargetTaskLoader.class);
+	
+	/** A Set of TaskDescriptors mapped by their opcodes **/
+	private static final Map<String, Class<? extends AbstractTaskDescriptor>> loadedTaskDescriptors = new ConcurrentHashMap<String, Class<? extends AbstractTaskDescriptor>>();
+	
+	private static final Map<String, Class<? extends AbstractTextOperationDescriptor>> loadedTextOperationDescriptors = new ConcurrentHashMap<String, Class<? extends AbstractTextOperationDescriptor>>();
 
-	private static final Map<Byte, Set<TaskDescriptor>> loadedTaskDescriptors = new ConcurrentHashMap<Byte, Set<TaskDescriptor>>();
+	private static final Map<String, Class<? extends AbstractTextOperation>> loadedTextOperations = new ConcurrentHashMap<String, Class<? extends AbstractTextOperation>>();
+	
+	private static final Map<String, Class<? extends AbstractTextOperationState>> loadedTextOperationState = new ConcurrentHashMap<String, Class<? extends AbstractTextOperationState>>();
+	
+	private static final Map<String, Class<? extends AbstractTask>> loadedTasks = new ConcurrentHashMap<String, Class<? extends AbstractTask>>();
 
-	private static final Map<String, Task> loadedTasks = new ConcurrentHashMap<String, Task>();
-
-	private static final Map<String, State> loadedStates = new ConcurrentHashMap<String, State>();
+	private static final Map<String, Class<? extends AbstractState>> loadedStates = new ConcurrentHashMap<String, Class<? extends AbstractState>>();
 
 	private static final CreativeClassLoader classLoader = CreativeClassLoader
 			.getInstance();
@@ -49,7 +65,7 @@ public class TargetTaskLibrary {
 	 * @param callingConnection
 	 * @return
 	 * @throws Exception
-	 */
+	 *//*
 	public Task createTask(ProtocolDataUnit initialPDU,
 			Connection callingConnection) throws Exception {
 		byte opcode = initialPDU.getBasicHeaderSegment().getOpCode().value();
@@ -79,16 +95,40 @@ public class TargetTaskLibrary {
 
 	public final Set<TaskDescriptor> getTaskDescriptors(byte opcode) {
 		return loadedTaskDescriptors.get(opcode);
+	}*/
+	
+	public final Task createTask(String name){
+		Task newTask = null;
+		try {
+			newTask = getTask(name).newInstance();
+		} catch (Exception e){
+			
+		}
+		return newTask;
 	}
-
+	
+	public final State createState(String name){
+		State newState = null;
+		try {
+			newState = getState(name).newInstance();
+		} catch (Exception e){
+			
+		}
+		return newState;
+	}
 	
 
-	public final Task getTask(String name) {
+	public final Class<? extends TaskDescriptor> getTaskDescriptor(String name) {
+		return loadedTaskDescriptors.get(name);
+
+	}
+
+	public final Class<? extends AbstractTask> getTask(String name) {
 		return loadedTasks.get(name);
 
 	}
 
-	public final State getState(String name) {
+	public final Class<? extends AbstractState> getState(String name) {
 		return loadedStates.get(name);
 
 	}
@@ -114,9 +154,9 @@ public class TargetTaskLibrary {
 		result.append("TaskLibrary is supporting ");
 		result.append(getNumberOfSupportedOpcodes());
 		result.append(" different Opcodes (");
-		for(Byte opcode : loadedTaskDescriptors.keySet()){
+		/*for(Byte opcode : loadedTaskDescriptors.keySet()){
 			result.append(opcode + ", ");
-		}
+		}*/
 		result.delete(result.length() - 2, result.length());
 		result.append(") ");
 		result.append("and loaded: ");
@@ -127,7 +167,7 @@ public class TargetTaskLibrary {
 	}
 
 
-	public void addTaskDescriptor(TaskDescriptor descriptor)
+	/*public void addTaskDescriptor(TaskDescriptor descriptor)
 			throws ConflictedTaskException {
 		byte opcode = descriptor.getSupportedOpcode().value();
 		// check if a descriptor yet exists, that has identical parameter
@@ -150,58 +190,40 @@ public class TargetTaskLibrary {
 		newSet.add(descriptor);
 		loadedTaskDescriptors.put(opcode, newSet);
 		
+	}*/
+	
+	public Class<? extends AbstractTaskDescriptor> addTaskDescriptor(Class<? extends AbstractTaskDescriptor> newTaskDescriptor){
+		return addObject(newTaskDescriptor, loadedTaskDescriptors, AbstractTaskDescriptor.class);
 	}
 	
-	public TaskDescriptor addTaskDescriptor(Class<?> taskDescriptor){
-		TaskDescriptor result = null;
-		try {
-			result = (TaskDescriptor) taskDescriptor.newInstance();
-			addTaskDescriptor(result);
-			logTrace("Added new TaskDescriptor: " + result.getInfo());
-		} catch (Exception e) {
-			//if Object is no TaskDescriptor, return null;
-		}
-		return result;
-	}
-	
-	public Task addTask(Class<?> task){
-		Task result = null;
-		try {
-			result = (Task) task.newInstance(); 
-			addTask(result);
-			logTrace("Added new Task: " + result);
-		} catch (Exception e) {
-			//if Object is no Task, return null;
-		}
-		return result;
-	}
 
-	public Task addTask(Task value) {
-		if(!loadedTasks.containsKey(value.getClass().getName())){
-			return loadedTasks.put(value.getClass().getName(), value);
+	public Class<? extends AbstractTask> addTask(Class<? extends AbstractTask> newTaskClass) {
+		return addObject(newTaskClass, loadedTasks, AbstractTask.class);
+	}
+	
+	public static <T> Class<T> addObject(Class<? extends T> object, Map<String, Class<? extends T>> map, Class<T> type){
+		boolean valid = true;
+		//already added Task ? 
+		if(!map.containsKey(object.getClass().getName())){
+			try {
+				// can create instance ?
+				object.newInstance();
+			} catch (Exception e){
+				valid = false;
+			}
+			
+		} else {
+			valid = false;
+			logTrace("Tried to add an already existing entity: " + object.getName());
+		}if(valid){
+			logTrace("Added new entity: " + object.getName());
+			return (Class<T>) map.put(object.getName(), object);
 		}
-		logTrace("Tried to add aan already existing Task: " + value.getClass().getName());
 		return null;
 	}
 	
-	public State addState(Class<?> state){
-		State result = null;
-		try {
-			result = (State) state.newInstance();
-			addState(result);
-			logTrace("Added new State: " + result);
-		} catch (Exception e) {
-			//if Object is no State, return null;
-		}
-		return result;
-	}
-	
-	public State addState(State value) {
-		if(!loadedStates.containsKey(value.getClass().getName())){
-			return loadedStates.put(value.getClass().getName(), value);
-		}
-		logTrace("Tried to add aan already existing Task: " + value.getClass().getName());
-		return null;
+	public Class<? extends AbstractState> addState(Class<? extends AbstractState> newState){
+		return addObject(newState, loadedStates, AbstractState.class);
 	}
 
 	public static TargetTaskLibrary getInstance() {
@@ -219,21 +241,20 @@ public class TargetTaskLibrary {
 	}
 
 	public void loadFrom(TargetConfiguration conf) {
-		Set<Class<?>> loadedClasses = null;
 		for (File file : conf.getTaskDescriptorDirectories()) {
-			loadedClasses = classLoader.loadAllClasses(null, file, true,
-					TaskDescriptor.class);
-			for (Class<?> loadedDescriptor : loadedClasses) {
+			Set<Class<? extends AbstractTaskDescriptor>>  loadedTaskDescriptor = classLoader.loadAllClassesHavingSuperclass(null, file, true,
+					AbstractTaskDescriptor.class);
+			for (Class<? extends AbstractTaskDescriptor> loadedDescriptor : loadedTaskDescriptor) {
 				addTaskDescriptor(loadedDescriptor);
 			}
-			loadedClasses = classLoader.loadAllClasses(null, file, true,
-					Task.class);
-			for (Class<?> loadedTask : loadedClasses) {
+			Set<Class<? extends AbstractTask>> loadedClasses = classLoader.loadAllClassesHavingSuperclass(null, file, true,
+					AbstractTask.class);
+			for (Class<? extends AbstractTask> loadedTask : loadedClasses) {
 				addTask(loadedTask);
 			}
-			loadedClasses = classLoader.loadAllClasses(null, file, true,
-					State.class);
-			for (Class<?> loadedState : loadedClasses) {
+			Set<Class<? extends AbstractState>> loadedStates = classLoader.loadAllClassesHavingSuperclass(null, file, true,
+					AbstractState.class);
+			for (Class<? extends AbstractState> loadedState : loadedStates) {
 				addState(loadedState);
 			}
 		}
