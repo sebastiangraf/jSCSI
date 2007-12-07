@@ -55,20 +55,15 @@ public class DefaultTaskSet implements TaskSet
    // Treated as a decrementing counter
    private int capacity;
 
-   private final ReentrantLock lock = new ReentrantLock();
-   // This can almost certainly be safely removed
-   //  private final Condition notEmpty = lock.newCondition();
+   private final Lock lock = new ReentrantLock();
+   private final Condition notEmpty = lock.newCondition();
    private final Condition notFull = lock.newCondition();
-   private final Condition maybeUnblocked = lock.newCondition();
+   private final Condition unblocked = lock.newCondition();
 
    // Task set members
-   
-   // TODO: insure that this map is needed; this is probably a hold-over from
-   //       a previous impl.  Investigate needs with remove(), we can probably
-   //       simply iterate a list
-   private final Map<Long, TaskWrapper> tasks; // Tag-to-Task map with 'null' key as the untagged task
-   private final List<TaskWrapper> enabled; // Enabled tasks
-   private final List<TaskWrapper> dormant; // Dormant task queue
+   private final Map<Long, TaskContainer> tasks; // Tag-to-Task map with 'null' key as the untagged task
+   private final List<TaskContainer> enabled; // Enabled tasks
+   private final List<TaskContainer> dormant; // Dormant task queue
 
    /**
     * Used to encapsulate tasks. Notifies the task set when task execution is complete.
@@ -77,7 +72,7 @@ public class DefaultTaskSet implements TaskSet
     * constructor will examine the task set's tasks map and remember which tasks must be cleared
     * before this task can execute.
     */
-   private class TaskWrapper implements Task
+   private class TaskContainer implements Task
    {
       private Task task;
 
@@ -88,7 +83,7 @@ public class DefaultTaskSet implements TaskSet
        * @param task
        *           The task this container will encapsulate.
        */
-      public TaskWrapper(Task task) throws InterruptedException
+      public TaskContainer(Task task) throws InterruptedException
       {
          this.task = task;
       }
@@ -140,9 +135,9 @@ public class DefaultTaskSet implements TaskSet
    public DefaultTaskSet(int capacity)
    {
       this.capacity = capacity;
-      this.tasks = new HashMap<Long, TaskWrapper>(capacity);
-      this.enabled = new LinkedList<TaskWrapper>();
-      this.dormant = new LinkedList<TaskWrapper>();
+      this.tasks = new HashMap<Long, TaskContainer>(capacity);
+      this.enabled = new LinkedList<TaskContainer>();
+      this.dormant = new LinkedList<TaskContainer>();
    }
 
    /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,8 +181,6 @@ public class DefaultTaskSet implements TaskSet
          _logger.trace("offering to taskset command: " + task.getCommand());
       }
 
-      // TODO: it may be the case that we set a response within the following block
-      //       and check the status of that, writeResponse() accordingly in a finally
       try
       {
          // check capacity
@@ -205,7 +198,6 @@ public class DefaultTaskSet implements TaskSet
                Command command = task.getCommand();
                task.getTargetTransportPort().writeResponse(command.getNexus(),
                      command.getCommandReferenceNumber(), Status.TASK_SET_FULL, null);
-               //TODO: re-acquire lock to remove predicate in finally block?  perhaps nested try with finally lock
                _logger.warn("task set is full, rejecting task: " + task);
                return false;
             }
@@ -215,7 +207,6 @@ public class DefaultTaskSet implements TaskSet
          long taskTag = task.getCommand().getNexus().getTaskTag();
          if (taskTag < 0 && task.getCommand().getTaskAttribute() != TaskAttribute.SIMPLE)
          {
-            // TODO: this should likely be an assert()
             throw new RuntimeException("Transport layer should have set untagged task as SIMPLE");
          }
 
@@ -229,14 +220,13 @@ public class DefaultTaskSet implements TaskSet
             task.getTargetTransportPort().writeResponse(command.getNexus(),
                   command.getCommandReferenceNumber(), Status.CHECK_CONDITION,
                   ByteBuffer.wrap((new OverlappedCommandsAttemptedException(true)).encode()));
-            //TODO: re-acquire lock to remove predicate in finally block? perhaps nested try with finally lock
             if (_logger.isDebugEnabled())
                _logger.warn("command not accepted due to preexisting untagged task: " + task);
             return false;
          }
 
          // wrap task in a task container
-         TaskWrapper container = new TaskWrapper(task);
+         TaskContainer container = new TaskContainer(task);
 
          // add task to the queue and map
          this.tasks.put(taskTag < 0 ? null : taskTag, container); // -1 Q value is 'untagged'
@@ -254,10 +244,8 @@ public class DefaultTaskSet implements TaskSet
             _logger.trace("Task set: " + this.dormant);
 
          this.capacity--;
-         
-         // This can almost certainly be safely removed
-         //this.notEmpty.signalAll();
-         this.maybeUnblocked.signalAll();
+         this.notEmpty.signalAll();
+         this.unblocked.signalAll();
 
          if (_logger.isTraceEnabled())
             _logger.trace("offered successfully command: " + task.getCommand());
@@ -266,7 +254,7 @@ public class DefaultTaskSet implements TaskSet
       }
       finally
       {
-         if (lock.isHeldByCurrentThread())
+         if (((ReentrantLock) lock).isHeldByCurrentThread())
             lock.unlock();
       }
    }
@@ -309,9 +297,22 @@ public class DefaultTaskSet implements TaskSet
       {
          // wait for the set to be not empty
          timeout = unit.toNanos(timeout);
+         while (this.dormant.size() == 0)
+         {
+            _logger.trace("Task set empty; waiting for new task to be added");
+            if (timeout > 0)
+            {
+               // "notEmpty" is notified whenever a task is added to the set
+               timeout = notEmpty.awaitNanos(timeout);
+            }
+            else
+            {
+               return null;
+            }
+         }
 
          // wait until the next task is not blocked
-         while (this.dormant.size() == 0 && this.isBlocked(this.dormant.get(0)))
+         while (this.blocked(this.dormant.get(0)))
          {
             _logger.trace("Next task blocked; waiting for other tasks to finish");
             if (timeout > 0)
@@ -319,10 +320,7 @@ public class DefaultTaskSet implements TaskSet
                // "unblocked" is notified whenever a task is finished or a new task is
                // added to the set. We wait on that before checking if this task is still
                // blocked.
-               
-               // TODO: since this doesn't necessarily indicate a unblocked scenario, it
-               //       should probably be the case that member 'unblocked' be renamed to something else
-               timeout = maybeUnblocked.awaitNanos(timeout);
+               timeout = unblocked.awaitNanos(timeout);
             }
             else
             {
@@ -330,7 +328,7 @@ public class DefaultTaskSet implements TaskSet
             }
          }
 
-         TaskWrapper container = this.dormant.remove(0);
+         TaskContainer container = this.dormant.remove(0);
          this.enabled.add(container);
 
          if (_logger.isDebugEnabled())
@@ -363,7 +361,7 @@ public class DefaultTaskSet implements TaskSet
    }
 
    /**
-    * Called by {@link TaskWrapper#run()} when execution of the task is complete.
+    * Called by {@link TaskContainer#run()} when execution of the task is complete.
     */
    private void finished(Long taskTag)
    {
@@ -374,7 +372,7 @@ public class DefaultTaskSet implements TaskSet
          this.enabled.remove(task);
          this.capacity++;
          this.notFull.signalAll();
-         this.maybeUnblocked.signalAll();
+         this.unblocked.signalAll();
       }
       finally
       {
@@ -385,7 +383,7 @@ public class DefaultTaskSet implements TaskSet
    /*
     * Checks if the given task is currently blocked.
     */
-   private boolean isBlocked(Task task) throws InterruptedException
+   private boolean blocked(Task task) throws InterruptedException
    {
       lock.lockInterruptibly();
 
@@ -436,7 +434,7 @@ public class DefaultTaskSet implements TaskSet
       lock.lockInterruptibly();
       try
       {
-         TaskWrapper task = this.tasks.remove(nexus.getTaskTag());
+         TaskContainer task = this.tasks.remove(nexus.getTaskTag());
          if (task == null)
             throw new NoSuchElementException("Task with tag " + nexus.getTaskTag()
                   + " not in task set");
@@ -445,7 +443,7 @@ public class DefaultTaskSet implements TaskSet
          this.dormant.remove(task); // removes the task from the dormant queue if present
          this.capacity++;
          this.notFull.signalAll();
-         this.maybeUnblocked.signalAll();
+         this.unblocked.signalAll();
 
          return task.abort();
       }
@@ -470,7 +468,7 @@ public class DefaultTaskSet implements TaskSet
 
       try
       {
-         for (TaskWrapper task : this.tasks.values())
+         for (TaskContainer task : this.tasks.values())
          {
             task.abort();
          }
@@ -479,7 +477,7 @@ public class DefaultTaskSet implements TaskSet
          this.enabled.clear();
          this.dormant.clear();
          this.notFull.signalAll();
-         this.maybeUnblocked.signalAll();
+         this.unblocked.signalAll();
       }
       finally
       {
@@ -497,7 +495,7 @@ public class DefaultTaskSet implements TaskSet
       lock.lockInterruptibly();
       try
       {
-         for (TaskWrapper task : this.tasks.values())
+         for (TaskContainer task : this.tasks.values())
          {
             task.abort();
          }
@@ -506,7 +504,7 @@ public class DefaultTaskSet implements TaskSet
          this.enabled.clear();
          this.dormant.clear();
          this.notFull.signalAll();
-         this.maybeUnblocked.signalAll();
+         this.unblocked.signalAll();
       }
       finally
       {
@@ -726,7 +724,7 @@ public class DefaultTaskSet implements TaskSet
    {
       return new Iterator<Task>()
       {
-         private Iterator<TaskWrapper> it = dormant.iterator();
+         private Iterator<TaskContainer> it = dormant.iterator();
 
          public boolean hasNext()
          {
