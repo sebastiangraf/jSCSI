@@ -1,19 +1,13 @@
 package org.jscsi.target.task;
 
 import java.io.File;
-import java.net.URL;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.target.conf.target.TargetConfiguration;
-import org.jscsi.target.connection.Connection;
-import org.jscsi.target.parameter.pdu.Opcode;
 import org.jscsi.target.task.abstracts.AbstractState;
 import org.jscsi.target.task.abstracts.AbstractTask;
 import org.jscsi.target.task.abstracts.AbstractTaskDescriptor;
@@ -23,9 +17,6 @@ import org.jscsi.target.task.abstracts.AbstractTextOperationState;
 import org.jscsi.target.task.abstracts.State;
 import org.jscsi.target.task.abstracts.Task;
 import org.jscsi.target.task.abstracts.TaskDescriptor;
-import org.jscsi.target.task.abstracts.TextOperation;
-import org.jscsi.target.task.abstracts.TextOperationDescriptor;
-import org.jscsi.target.task.abstracts.TextOperationState;
 import org.jscsi.target.util.CreativeClassLoader;
 import org.jscsi.target.util.Singleton;
 
