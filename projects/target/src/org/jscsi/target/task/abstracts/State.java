@@ -4,6 +4,6 @@ public interface State extends Operation {
 	
 	public Task getReferencedTask();
 	
-	public void define(Task refTask) throws OperationException;
+	public void define(MutableTask refTask) throws OperationException;
 
 }

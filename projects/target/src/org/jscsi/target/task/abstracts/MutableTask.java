@@ -9,8 +9,16 @@ public interface MutableTask extends Task {
 	/**
 	 * Sets the current processing State.
 	 * @param state current State
+	 * @throws OperationException 
 	 */
-	public void setState(State state);
+	public void setState(State state) throws OperationException;
+	
+	/**
+	 * Loads the State and and sets instance as current processing State
+	 * @param state current State
+	 * @throws OperationException 
+	 */
+	public void setState(String stateClassName) throws OperationException;
 	
 	/**
 	 * Returns the current processing State

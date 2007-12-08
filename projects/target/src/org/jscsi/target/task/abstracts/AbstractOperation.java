@@ -21,8 +21,8 @@ public abstract class AbstractOperation implements Operation {
 	private static final Log LOGGER = LogFactory.getLog(AbstractOperation.class);
 	
 	/** tag to signal the operation should suspend */
-	private boolean suspended = false;;
-
+	private boolean suspended = false;
+	
 	/** tag to signal the operation should restart */
 	private boolean restarted = false;
 
@@ -63,6 +63,7 @@ public abstract class AbstractOperation implements Operation {
 	 */
 	public void abort() {
 		aborted = true;
+		suspended = true;
 	}
 	
 	/**
@@ -122,7 +123,7 @@ public abstract class AbstractOperation implements Operation {
 		return restarted;
 	}
 
-	public void tagFinished(){
+	public void finish(){
 		finished = true;
 	}
 	

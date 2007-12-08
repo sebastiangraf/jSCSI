@@ -1,8 +1,5 @@
 package org.jscsi.target.task.abstracts;
 
-import org.jscsi.target.task.TargetTaskLibrary;
-import org.jscsi.target.util.Singleton;
-
 /**
  * A State represents one processing instruction set,
  * that will end the initiator's command request successfully or not,
@@ -13,7 +10,7 @@ public abstract class AbstractState extends AbstractOperation implements State, 
 	
 	
 	/** the State's referenced Task */
-	private Task refTask;
+	private MutableTask refTask;
 	
 	private boolean defined;
 	
@@ -21,7 +18,7 @@ public abstract class AbstractState extends AbstractOperation implements State, 
 		defined = false;
 	}
 	
-	public void define(Task refTask) throws OperationException{
+	public void define(MutableTask refTask) throws OperationException{
 		if(!defined){
 			this.refTask = refTask;
 			defined = true;
@@ -44,18 +41,31 @@ public abstract class AbstractState extends AbstractOperation implements State, 
 		}
 	}*/
 	
-	/** Constructor with referenced Task */
+	/** Constructor with referenced Task *//*
 	public AbstractState(Task refTask){
 		this.refTask = refTask;
-	}
+	}*/
 	
 	/**
 	 * Returns the referenced Task
 	 * @return referenced Task
 	 */
-	public Task getReferencedTask() {
+	public MutableTask getReferencedTask() {
 		return refTask;
 	}
+
+	@Override
+	public void finish() {
+		this.refTask = null;
+		super.finish();
+	}
+
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 
 
 

@@ -109,6 +109,37 @@ public abstract class AbstractTask extends AbstractOperation implements
 		}
 		
 	}
+	
+	
+	
+	@Override
+	public void abort() {
+		currentState.abort();
+		super.abort();
+	}
+
+	@Override
+	public void finish() {
+		currentState.finish();
+		super.finish();
+	}
+
+	@Override
+	public void restart() throws OperationException {
+		currentState.restart();
+		super.restart();
+	}
+
+	@Override
+	public void supend() {
+		currentState.supend();
+		super.supend();
+	}
+
+	public void execute() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	/**
 	 * Returns the referenced Connection.
@@ -166,23 +197,23 @@ public abstract class AbstractTask extends AbstractOperation implements
 	}
 
 	/**
-	 * Sets the current processing State
+	 * Sets the current processing State.
+	 * Creates Thread and starts.
 	 * 
 	 * @param current
 	 *            State
+	 * @throws OperationException 
 	 */
-	public void setState(State state) {
-		
+	public void setState(State state) throws OperationException {
+		state.define(this);
 		currentState = state;
-
+		Thread newThread = new Thread((Runnable) state);
+		newThread.start();
 	}
 	
-	public final void setState(String stateClassName){
+	public final void setState(String stateClassName) throws OperationException{
 		if(currentState != null){
 			currentState.abort();
-			while(!currentState.finished()){
-				Thread.currentThread().yield();
-			}
 		}
 		State newCurrentState = library.createState(stateClassName);
 		if(newCurrentState != null){
