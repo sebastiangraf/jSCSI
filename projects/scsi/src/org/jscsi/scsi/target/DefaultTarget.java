@@ -60,6 +60,4 @@ public class DefaultTarget extends AbstractTarget
       _logger.debug("Stopping task router for target " + this.getTargetName());
       this.taskRouter.stop();
    }
-   
-   
 }

@@ -5,6 +5,7 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.ReportLuns;
@@ -15,6 +16,8 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 
 public class ReportLunsTask extends TargetTask
 {
+   private static Logger _logger = Logger.getLogger(ReportLunsTask.class);
+   
    public ReportLunsTask()
    {
       super("ReportLunsTask");
@@ -33,6 +36,8 @@ public class ReportLunsTask extends TargetTask
    @Override
    protected void execute() throws InterruptedException, SenseException
    {
+      _logger.debug("executing ReportLuns task");
+
       ReportLuns cdb = (ReportLuns) getCommand().getCommandDescriptorBlock();
       ByteBuffer data = ByteBuffer.allocate((int) cdb.getAllocationLength());
 
@@ -73,6 +78,8 @@ public class ReportLunsTask extends TargetTask
       this.writeData(data);
       this.writeResponse(Status.GOOD, null);
 
+      _logger.debug("completed ReportLuns task");
+      
       // TODO Auto-generated method stub
 
    }
