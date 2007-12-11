@@ -7,14 +7,17 @@ public class LoginRequestTask extends AbstractTask{
 
 	public LoginRequestTask() throws OperationException {
 		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public void execute() {
-		// TODO Auto-generated method stub
+		define("org.jscsi.target.task.standard.login.LeadingLoginRequestState");
 		
 	}
+
+	
+
+	
+	
+	
+
+
 
 	
 

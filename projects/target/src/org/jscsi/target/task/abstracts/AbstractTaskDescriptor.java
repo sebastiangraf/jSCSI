@@ -9,6 +9,8 @@ import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.parameter.connection.Phase;
 import org.jscsi.target.parameter.connection.SessionType;
+import org.jscsi.target.task.TargetTaskLibrary;
+import org.jscsi.target.util.Singleton;
 
 /**
  * A task descriptor is used by an iSCSI targetTest environment to
@@ -36,102 +38,51 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 	/** all allowed SessionPhases */
 	private Set<Phase> allowedSessionPhases;
 	
+	private TargetTaskLibrary library;
+	
 	private boolean defined;
 	
-	public AbstractTaskDescriptor(){
+	public AbstractTaskDescriptor() throws OperationException{
 		defined = false;
-	}
-	
-	
-	/*public AbstractTaskDescriptor(OperationCode opcode, SessionType type, Phase phase, Class<? extends AbstractTask> refTask) throws OperationException{
-		this.opcode = opcode;
-		allowedSessionTypes = new HashSet<SessionType>();
-		allowedSessionPhases = new HashSet<Phase>();
-		allowedSessionTypes.add(type);
-		allowedSessionPhases.add(phase);
-		this.refTask = refTask;
 		try {
-			Class.forName(refTask.getName());
+			library = Singleton.getInstance(TargetTaskLibrary.class);
 		} catch (ClassNotFoundException e) {
-			throw new OperationException("Couldn't find the referenced Task: " + refTask.getName());
-		}
-		
-	}
-	
-	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, Phase phase, Class<? extends AbstractTask> refTask) throws OperationException{
-		this.opcode = opcode;
-		allowedSessionPhases = new HashSet<Phase>();
-		allowedSessionTypes = types;
-		allowedSessionPhases.add(phase);
-		this.refTask = refTask;
-		try {
-			Class.forName(refTask.getName());
-		} catch (ClassNotFoundException e) {
-			throw new OperationException("Couldn't find the referenced Task: " + refTask.getName());
+			throw new OperationException("Couldn't find TargetTaskLibrary");
 		}
 	}
 	
-	public AbstractTaskDescriptor(OperationCode opcode, SessionType type, Set<Phase> phases, Class<? extends AbstractTask> refTask) throws OperationException{
-		this.opcode = opcode;
-		allowedSessionTypes = new HashSet<SessionType>();
-		allowedSessionPhases = phases;
-		allowedSessionTypes.add(type);
-		this.refTask = refTask;
-		try {
-			Class.forName(refTask.getName());
-		} catch (ClassNotFoundException e) {
-			throw new OperationException("Couldn't find the referenced Task: " + refTask.getName());
-		}
-	}
-	
-	public AbstractTaskDescriptor(OperationCode opcode, Set<SessionType> types, Set<Phase> phases, Class<? extends AbstractTask> refTask) throws OperationException{
-		this.opcode = opcode;
-		this.allowedSessionTypes = types;
-		this.allowedSessionPhases = phases;
-		this.refTask = refTask;
-		try {
-			Class.forName(refTask.getName());
-		} catch (ClassNotFoundException e) {
-			throw new OperationException("Couldn't find the referenced Task: " + refTask.getName());
-		}
-	}*/
-	
-	protected final void define(OperationCode opcode, SessionType type, Phase phase, Class<? extends AbstractTask> refTask) throws OperationException{
+	protected final void define(OperationCode opcode, SessionType type, Phase phase, String taskClassName) throws OperationException{
 		Set<SessionType> types = new HashSet<SessionType>();
 		types.add(type);
 		Set<Phase> phases = new HashSet<Phase>();
 		phases.add(phase);
-		define(opcode, types, phases, refTask);
+		define(opcode, types, phases, taskClassName);
 	}
 	
-	protected final void define(OperationCode opcode, Set<SessionType> types, Phase phase, Class<? extends AbstractTask> refTask) throws OperationException{
+	protected final void define(OperationCode opcode, Set<SessionType> types, Phase phase, String taskClassName) throws OperationException{
 		Set<Phase> phases = new HashSet<Phase>();
 		phases.add(phase);
-		define(opcode, types, phases, refTask);
+		define(opcode, types, phases, taskClassName);
 	}
 	
-	protected final void define(OperationCode opcode, SessionType type, Set<Phase> phases, Class<? extends AbstractTask> refTask) throws OperationException{
+	protected final void define(OperationCode opcode, SessionType type, Set<Phase> phases, String taskClassName) throws OperationException{
 		Set<SessionType> types = new HashSet<SessionType>();
 		types.add(type);
-		define(opcode, types, phases, refTask);
+		define(opcode, types, phases, taskClassName);
 	}
 	
-	protected final void define(OperationCode opcode, Set<SessionType> types, Set<Phase> phases, Class<? extends AbstractTask> refTask) throws OperationException{
-		if(!defined){
-			this.opcode = opcode;
-			this.allowedSessionTypes = types;
-			this.allowedSessionPhases = phases;
-			this.refTask = refTask;
-			try {
-				Class.forName(refTask.getName());
-			} catch (ClassNotFoundException e) {
-				throw new OperationException("Couldn't find the referenced Task: " + refTask.getName());
+	protected final void define(OperationCode opcode, Set<SessionType> types, Set<Phase> phases, String taskClassName) throws OperationException{
+		synchronized(this){
+			if(!defined){
+				this.opcode = opcode;
+				this.allowedSessionTypes = types;
+				this.allowedSessionPhases = phases;
+				refTask = library.getTask(taskClassName); 
+				defined = true;
+			} else{
+				throw new OperationException("TaskDescriptor is already defined!");
 			}
-			defined = true;
-		} else{
-			throw new OperationException("TaskDescriptor is already defined!");
 		}
-		
 	}
 	
 	/**
@@ -162,10 +113,10 @@ public abstract class AbstractTaskDescriptor implements TaskDescriptor{
 	 * @throws OperationException 
 	 */
 	public Task createTask() throws OperationException {
-		String className = refTask.getName();
-		Task task = null;
+		MutableTask task = null;
 		try {
-			task = (Task) Class.forName(className).newInstance();
+			task = getReferencedTask().newInstance();
+			
 		} catch (Exception e) {
 			throw new OperationException("Couldn't find referenced Task Operation: " + refTask.getName());
 		}
