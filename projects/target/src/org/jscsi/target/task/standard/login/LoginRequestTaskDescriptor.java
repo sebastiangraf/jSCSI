@@ -7,13 +7,12 @@ import org.jscsi.target.task.abstracts.AbstractTaskDescriptor;
 import org.jscsi.target.task.abstracts.OperationException;
 
 public class LoginRequestTaskDescriptor extends AbstractTaskDescriptor {
-	
-	public LoginRequestTaskDescriptor() throws OperationException{
-		super();
-		define(OperationCode.LOGIN_REQUEST,SessionType.NormalOperationalSession, Phase.LoginOpertionalPhase, LoginRequestTask.class);
-	}
-	
 
-	
-	
+	public LoginRequestTaskDescriptor() throws OperationException {
+		super();
+		define(OperationCode.LOGIN_REQUEST,
+				SessionType.NormalOperationalSession,
+				Phase.LoginOpertionalPhase,
+				"org.jscsi.target.task.standard.login.LoginRequestTask");
+	}
 }

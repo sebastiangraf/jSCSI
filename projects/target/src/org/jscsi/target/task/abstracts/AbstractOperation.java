@@ -122,8 +122,13 @@ public abstract class AbstractOperation implements Operation {
 		lock.unlock();
 		return restarted;
 	}
-
-	public void finish(){
+	
+	/**
+	 * Called if Operation finished, i.e. that
+	 * the Operation stopped itself successful or not. 
+	 *  
+	 */
+	protected void finish(){
 		finished = true;
 	}
 	

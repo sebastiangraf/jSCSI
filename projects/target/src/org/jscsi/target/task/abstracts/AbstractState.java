@@ -19,12 +19,15 @@ public abstract class AbstractState extends AbstractOperation implements State, 
 	}
 	
 	public void define(MutableTask refTask) throws OperationException{
-		if(!defined){
-			this.refTask = refTask;
-			defined = true;
-		}else{
-			throw new OperationException("State is already defined!");
+		synchronized(refTask){
+			if(!defined){
+				this.refTask = refTask;
+				defined = true;
+			}else{
+				throw new OperationException("State is already defined!");
+			}
 		}
+		
 	}
 	
 	/*public void define(String refTaskClassName) throws OperationException{

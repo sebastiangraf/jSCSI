@@ -2,7 +2,7 @@ package org.jscsi.target.task.abstracts;
 
 /**
  * An Operation builds the basis for all working task processors
- * within a targetTest environment. It provides several methods that can
+ * within a target environment. It provides several methods that can
  * be especially used for task management functions.
  * @author Marcus Specht
  *
@@ -12,7 +12,7 @@ public interface Operation {
 	/**
 	 * Tags the working AbstractOperation as suspended.
 	 * Suspension cannot be guaranteed, must be checked
-	 * by the running operation. 
+	 * and processed by the running operation. 
 	 */
 	public void supend();
 
@@ -25,7 +25,7 @@ public interface Operation {
 	/**
 	 * Tags the working AbstractOperation as aborted.
 	 * Abortion cannot be guaranteed, must be checked
-	 * by the running operation.
+	 * and processed by the running operation.
 	 */
 	public void abort();
 	
@@ -56,12 +56,6 @@ public interface Operation {
 	 * @return true if restarted, false else.
 	 */
 	public boolean awaitRestart(long nanosTimeout);
-	
-	/**
-	 * Finish the Operation.
-	 * @return
-	 */
-	public void finish();
 	
 	/**
 	 * Checks whether the Operation finished or not.
