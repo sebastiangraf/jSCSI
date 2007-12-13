@@ -9,29 +9,6 @@ public class LoginRequestTask extends AbstractTask{
 		super();
 		define("org.jscsi.target.task.standard.login.LeadingLoginRequestState");
 		
-	}
-
-	
-
-	
-	
-	
-
-
-
-	
-
-	
-
-
-
-	
-	
-
-	
-
-
-	
-	
+	}	
 
 }

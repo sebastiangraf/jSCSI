@@ -9,25 +9,15 @@ package org.jscsi.target.task.abstracts;
  */
 public interface Operation {
 	
-	/**
-	 * Tags the working AbstractOperation as suspended.
-	 * Suspension cannot be guaranteed, must be checked
-	 * and processed by the running operation. 
-	 */
-	public void supend();
-
-	/**
-	 * Checks whether the AbstractOperation was suspended or not.
-	 * @return true if suspended, false else.
-	 */
-	public boolean suspended();
+	
 
 	/**
 	 * Tags the working AbstractOperation as aborted.
 	 * Abortion cannot be guaranteed, must be checked
 	 * and processed by the running operation.
+	 * @throws OperationException 
 	 */
-	public void abort();
+	public void abort() throws OperationException;
 	
 	/**
 	 * Checks whether the operation was aborted or not.
@@ -36,26 +26,13 @@ public interface Operation {
 	public boolean aborted();
 	
 	/**
-	 * Tags the operation as restarted.
-	 * Restarting cannot be guaranteed, must be checked
-	 * by the running operation.
-	 * @throws OperationException
-	 */
-	public void restart() throws OperationException;
-	
-	/**
 	 * Checks whether the operation was restarted or not.
 	 * @return true if restarted, false else.
 	 */
-	public boolean restarted();
-
-	/**
-	 * Waits specified nanoSeconds for a restart.
-	 * O is equal to infinity.
-	 * @param nanosTimeout waiting time, 0 is equal infinity
-	 * @return true if restarted, false else.
-	 */
-	public boolean awaitRestart(long nanosTimeout);
+	public boolean executed();
+	
+	
+	public void execute() throws OperationException;
 	
 	/**
 	 * Checks whether the Operation finished or not.

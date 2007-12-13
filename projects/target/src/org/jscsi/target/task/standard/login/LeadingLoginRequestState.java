@@ -9,17 +9,9 @@ public class LeadingLoginRequestState extends AbstractState {
 		super();
 	}
 
-	@Override
 	public void run() {
-		while (!suspended()) {
-			ProtocolDataUnit newPDU = getReferencedTask().receivePDU(0);
-			//process PDU
-
-		}
-
-		while (suspended()) {
-			awaitRestart(0);
-		}
+		// TODO Auto-generated method stub
+		
 	}
 
 }
