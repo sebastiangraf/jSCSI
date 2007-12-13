@@ -153,7 +153,10 @@ public abstract class AbstractTask implements Task
          SynchronousDataTransferErrorException
    {
       if (Thread.interrupted())
+      {
+         _logger.debug("calling writeData on the TransportPort was interrupted during Task execution");
          throw new InterruptedException();
+      }
 
       return this.targetTransportPort.writeData(this.command.getNexus(),
             this.command.getCommandReferenceNumber(), input);
