@@ -64,6 +64,7 @@ public class ReportLunsTask extends TargetTask
       }
       catch (BufferOverflowException e)
       {
+         _logger.warn("BufferOverflowException when writing out to transportport");
          /*
           * The client's allocation length was not enough for return information. SBC-2 specifies
           * that no indication of this event shall be returned to the client.
@@ -75,6 +76,7 @@ public class ReportLunsTask extends TargetTask
           */
       }
 
+      _logger.debug("calling writeData from ReportLunsTask");
       this.writeData(data);
       this.writeResponse(Status.GOOD, null);
 
