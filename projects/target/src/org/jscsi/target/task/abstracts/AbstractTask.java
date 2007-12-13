@@ -87,9 +87,9 @@ public abstract class AbstractTask extends AbstractSuspendableOperation implemen
 	 * initialPDU.getBasicHeaderSegment().getInitiatorTaskTag()); } }
 	 */
 
-	public final void define(String stateClassName) throws OperationException {
+	public final void define(String initialStateClassName) throws OperationException {
 		if (!defined) {
-			setState(stateClassName);
+			setState(initialStateClassName);
 			defined = true;
 		} else {
 			throw new OperationException("Task is already defined!");
