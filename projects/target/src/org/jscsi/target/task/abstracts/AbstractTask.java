@@ -21,7 +21,7 @@ import org.jscsi.target.util.Singleton;
  * @author Marcus Specht
  * 
  */
-public abstract class AbstractTask extends AbstractOperation implements
+public abstract class AbstractTask extends AbstractSuspendableOperation implements
 		MutableTask {
 
 	/** The logger interface. */
@@ -98,36 +98,14 @@ public abstract class AbstractTask extends AbstractOperation implements
 
 	}
 
-	@Override
-	public void abort() {
-		currentState.abort();
-		super.abort();
-	}
-
-	@Override
-	public void finish() {
-		((AbstractOperation) currentState).finish();
-		super.finish();
-	}
-
-	@Override
-	public void restart() throws OperationException {
-		currentState.restart();
-		super.restart();
-	}
-
-	@Override
-	public void supend() {
-		currentState.supend();
-		super.supend();
-	}
 
 	public void execute() throws OperationException {
 		if (defined && (refConnection != null) && (receivedPDUs != null)) {
+			super.execute();
 			currentStateThread.start();
 		} else {
 			throw new OperationException(
-					"Task is not defined or referenced to an existing connection, cannot be executed");
+					"Cannot execute Task: not referenced to an existing Connection");
 		}
 	}
 

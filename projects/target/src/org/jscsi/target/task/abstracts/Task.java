@@ -3,7 +3,7 @@ package org.jscsi.target.task.abstracts;
 import org.jscsi.connection.SerialArithmeticNumber;
 import org.jscsi.parser.ProtocolDataUnit;
 
-public interface Task {
+public interface Task extends SuspendableOperation{
 
 	/**
 	 * Assigns an appropriate PDU to this Task.

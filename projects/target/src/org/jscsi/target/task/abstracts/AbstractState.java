@@ -57,16 +57,8 @@ public abstract class AbstractState extends AbstractOperation implements State, 
 		return refTask;
 	}
 
-	@Override
-	public void finish() {
-		this.refTask = null;
-		super.finish();
-	}
 
-	public void run() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	
 	
 
