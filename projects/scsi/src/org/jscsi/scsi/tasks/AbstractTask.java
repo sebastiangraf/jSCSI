@@ -137,6 +137,11 @@ public abstract class AbstractTask implements Task
          _logger.info("Task " + name + " was aborted.");
          // Task was aborted, don't do anything
       }
+      catch (Exception e)
+      {
+         _logger.info("Task " + name + " encountered an exception while executing: " + e);
+         _logger.debug("stack trace of exception: " + e.getStackTrace());
+      }
    }
 
    protected final boolean readData(ByteBuffer output) throws InterruptedException,
