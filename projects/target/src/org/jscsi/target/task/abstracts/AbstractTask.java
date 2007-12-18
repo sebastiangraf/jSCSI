@@ -14,6 +14,8 @@ import org.jscsi.target.connection.Connection;
 import org.jscsi.target.task.TargetTaskLibrary;
 import org.jscsi.target.util.Singleton;
 
+import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
+
 /**
  * A Task represents the command processing entity started by an initial
  * request, i.e. an initial Protocol Data Unit.
@@ -170,6 +172,35 @@ public abstract class AbstractTask extends AbstractSuspendableOperation implemen
 		dequeLock.unlock();
 		return result;
 	}
+	
+	/**
+	 * Suspends the task, i.e. stops forwarding received PDUs
+	 * until the Task  is restarted. 
+	 */
+	@Override
+	public void suspend() throws OperationException {
+		// TODO Auto-generated method stub
+		super.suspend();
+	}
+	
+	/**
+	 * Aborts the Task, i.e. destroys the active State and
+	 * finishes the Task. 
+	 */
+	@Override
+	public void abort() throws OperationException {
+		// TODO Auto-generated method stub
+		super.abort();
+	}
+	
+	/**
+	 * Finishes the Task.
+	 */
+	@Override
+	protected void finish() throws OperationException {
+		// TODO Auto-generated method stub
+		super.finish();
+	}
 
 	/**
 	 * Sets the Tasks ITT, is only allowed once because an ITT never changes
@@ -282,6 +313,14 @@ public abstract class AbstractTask extends AbstractSuspendableOperation implemen
 	 */
 	public State getState() {
 		return currentState;
+	}
+	
+	/**
+	 * Returns the Thread Object of the current Thread.
+	 * @return
+	 */
+	public Thread getStateThread(){
+		return currentStateThread;
 	}
 
 	/**
