@@ -49,9 +49,11 @@ public class ReportLunsTask extends TargetTask
             // Report only well known logical units. Because this implementation does not
             // support well known logical units, zero LUs are returned.
             data.putLong(0); // 4-byte LUN LIST LENGTH = 0, 4-byte reserved field
+            _logger.warn("unsupported request to report well known logical units");
          }
          else
          {
+            _logger.debug("request to report logical units");
             // SELECT REPORT 0x00 or 0x02
             data.putInt(this.getLogicalUnits().size() * 8); // LUN LIST LENGTH (each entry is 8 bytes)
             data.putInt(0); // 4-byte reserved field

@@ -212,6 +212,7 @@ public abstract class AbstractTask implements Task
       {
          // If abort is true the task has been aborted and no data shall be written to
          // the target transport port. Abort remains set as true.
+         _logger.debug("task was aborted, no response to be written: " + this);
          return;
       }
    }
