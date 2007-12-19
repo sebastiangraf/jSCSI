@@ -139,8 +139,7 @@ public abstract class AbstractTask implements Task
       }
       catch (Exception e)
       {
-         _logger.info("Task " + name + " encountered an exception while executing: " + e);
-         _logger.debug("stack trace of exception: " + e.getStackTrace());
+         _logger.error("Task " + name + " encountered an exception while executing", e);
       }
    }
 
