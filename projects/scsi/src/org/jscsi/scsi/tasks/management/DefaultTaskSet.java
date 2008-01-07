@@ -198,7 +198,7 @@ public class DefaultTaskSet implements TaskSet
                Command command = task.getCommand();
                task.getTargetTransportPort().writeResponse(command.getNexus(),
                      command.getCommandReferenceNumber(), Status.TASK_SET_FULL, null);
-               _logger.warn("task set is full, rejecting task: " + task);
+               _logger.debug("task set is full, rejecting task: " + task);
                return false;
             }
          }
@@ -221,7 +221,7 @@ public class DefaultTaskSet implements TaskSet
                   command.getCommandReferenceNumber(), Status.CHECK_CONDITION,
                   ByteBuffer.wrap((new OverlappedCommandsAttemptedException(true)).encode()));
             if (_logger.isDebugEnabled())
-               _logger.warn("command not accepted due to preexisting untagged task: " + task);
+               _logger.debug("command not accepted due to preexisting untagged task: " + task);
             return false;
          }
 
