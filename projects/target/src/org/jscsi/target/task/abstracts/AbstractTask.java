@@ -15,6 +15,7 @@ import org.jscsi.target.task.TargetTaskLibrary;
 import org.jscsi.target.util.Singleton;
 
 import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
+import com.sun.tools.javac.comp.Todo;
 
 /**
  * A Task represents the command processing entity started by an initial
@@ -23,8 +24,8 @@ import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
  * @author Marcus Specht
  * 
  */
-public abstract class AbstractTask extends AbstractSuspendableOperation implements
-		MutableTask {
+public abstract class AbstractTask extends AbstractSuspendableOperation
+		implements MutableTask {
 
 	/** The logger interface. */
 	private static final Log LOGGER = LogFactory.getLog(AbstractTask.class);
@@ -41,10 +42,13 @@ public abstract class AbstractTask extends AbstractSuspendableOperation implemen
 	/** The Task's current processing State */
 	private State currentState;
 
+	/** Current State's Thread Object Representation */
 	private Thread currentStateThread;
 
+	/** Tags the Task as defined, i.e. can be executed */
 	private boolean defined;
 
+	/** The TaskLibrary this Task is using to load States */
 	private final TargetTaskLibrary library;
 
 	/** The Task's PDU receiving Queue */
@@ -89,7 +93,8 @@ public abstract class AbstractTask extends AbstractSuspendableOperation implemen
 	 * initialPDU.getBasicHeaderSegment().getInitiatorTaskTag()); } }
 	 */
 
-	public final void define(String initialStateClassName) throws OperationException {
+	public final void define(String initialStateClassName)
+			throws OperationException {
 		if (!defined) {
 			setState(initialStateClassName);
 			defined = true;
@@ -100,7 +105,9 @@ public abstract class AbstractTask extends AbstractSuspendableOperation implemen
 
 	}
 
-
+	/**
+	 * 
+	 */
 	public void execute() throws OperationException {
 		if (defined && (refConnection != null) && (receivedPDUs != null)) {
 			super.execute();
@@ -110,18 +117,35 @@ public abstract class AbstractTask extends AbstractSuspendableOperation implemen
 					"Cannot execute Task: not referenced to an existing Connection");
 		}
 	}
-
-	public void execute(Connection refConnection, ProtocolDataUnit initialPDU)
-			throws OperationException {
+	
+	/**
+	 * Executes the Task, if the Task was defined earlier.
+	 * @param refConnection The Connection this Task will work with
+	 * @param initialPDU The initial PDU that starts this Task
+	 * @param processInitialPDU if true, processes the initial PDU immediately after execution, else will wait for first signal
+	 * @throws OperationException
+	 */
+	public void execute(Connection refConnection, ProtocolDataUnit initialPDU,
+			boolean processInitialPDU) throws OperationException {
 		if (defined) {
+			// build PDU receiving queue
 			receivedPDUs = new ConcurrentLinkedQueue<ProtocolDataUnit>();
 			receivedPDUs.add(initialPDU);
+			// link Task to a Connection
 			this.refConnection = refConnection;
+			// read InitiatorTaskTag from initial PDU
 			initiatorTaskTag = new SerialArithmeticNumber(initialPDU
 					.getBasicHeaderSegment().getInitiatorTaskTag());
 			// FIXME TargetTransferTag could be set for any use-case,
 			// e.g as unique task identifier within the target
-			signaledPDUs = 0;
+			// ------------------------------------------------
+			// Set signaled PDUs
+			if (processInitialPDU) {
+				signaledPDUs = 1;
+			} else {
+				signaledPDUs = 0;
+			}
+			execute();
 			if (LOGGER.isTraceEnabled()) {
 				LOGGER.trace("Started new Task: ITT = "
 						+ initialPDU.getBasicHeaderSegment()
@@ -172,27 +196,26 @@ public abstract class AbstractTask extends AbstractSuspendableOperation implemen
 		dequeLock.unlock();
 		return result;
 	}
-	
+
 	/**
-	 * Suspends the task, i.e. stops forwarding received PDUs
-	 * until the Task  is restarted. 
+	 * Suspends the task, i.e. stops forwarding received PDUs until the Task is
+	 * restarted.
 	 */
 	@Override
 	public void suspend() throws OperationException {
 		// TODO Auto-generated method stub
 		super.suspend();
 	}
-	
+
 	/**
-	 * Aborts the Task, i.e. destroys the active State and
-	 * finishes the Task. 
+	 * Aborts the Task, i.e. destroys the active State and finishes the Task.
 	 */
 	@Override
 	public void abort() throws OperationException {
 		// TODO Auto-generated method stub
 		super.abort();
 	}
-	
+
 	/**
 	 * Finishes the Task.
 	 */
@@ -228,9 +251,7 @@ public abstract class AbstractTask extends AbstractSuspendableOperation implemen
 	 */
 	public void setState(State state) throws OperationException {
 		synchronized (currentState) {
-			if (currentState != null) {
-				currentState.abort();
-			}
+			// define new State
 			try {
 				state.define(this);
 			} catch (OperationException e) {
@@ -238,6 +259,16 @@ public abstract class AbstractTask extends AbstractSuspendableOperation implemen
 					throw new OperationException(e.getMessage());
 				}
 			}
+			// abort old State
+			if (currentState != null) {
+				currentState.abort();
+			}
+			// TODO await that old state stops, activate below
+			/*
+			 * while(!currentState.finished()){
+			 * Thread.currentThread().interrupt();
+			 */
+
 			currentState = state;
 			currentStateThread = new Thread((Runnable) state);
 		}
@@ -314,12 +345,13 @@ public abstract class AbstractTask extends AbstractSuspendableOperation implemen
 	public State getState() {
 		return currentState;
 	}
-	
+
 	/**
 	 * Returns the Thread Object of the current Thread.
+	 * 
 	 * @return
 	 */
-	public Thread getStateThread(){
+	public Thread getStateThread() {
 		return currentStateThread;
 	}
 
