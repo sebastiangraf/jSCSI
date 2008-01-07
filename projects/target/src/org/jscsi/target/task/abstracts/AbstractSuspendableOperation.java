@@ -81,9 +81,9 @@ public class AbstractSuspendableOperation extends AbstractOperation implements S
 		if (!executed() && suspended) {
 			try {
 				if (nanosTimeout <= 0) {
-					restart.awaitNanos(nanosTimeout);
-				} else {
 					restart.await();
+				} else {
+					restart.awaitNanos(nanosTimeout);
 				}
 			} catch (InterruptedException e) {
 				if (LOGGER.isDebugEnabled()) {

@@ -105,7 +105,7 @@ public abstract class AbstractOperation implements Operation {
 	 * 
 	 */
 	protected void finish() throws OperationException {
-		if (executed) {
+		if (executed()) {
 			finished = true;
 			return;
 		}
