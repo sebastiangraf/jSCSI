@@ -178,7 +178,7 @@ public class DefaultTaskRouter implements TaskRouter
       this.targetTaskSet.clear();
    }
 
-   public synchronized void registerLogicalUnit(long id, LogicalUnit lu) throws Exception
+   public synchronized void registerLogicalUnit(long id, LogicalUnit lu)
    {
       if ( this.running )
       {
@@ -195,7 +195,7 @@ public class DefaultTaskRouter implements TaskRouter
          _logger.debug("registering logical unit: " + lu + " (id: " + id + ")");
    }
 
-   public synchronized LogicalUnit removeLogicalUnit(long id) throws Exception
+   public synchronized LogicalUnit removeLogicalUnit(long id)
    {
       LogicalUnit discardedLU = logicalUnitMap.remove(id);
       discardedLU.stop();

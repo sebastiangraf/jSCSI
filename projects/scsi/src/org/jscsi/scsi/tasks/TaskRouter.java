@@ -37,7 +37,7 @@ public interface TaskRouter
     * @param lu The Logical Unit.
     * @throws Exception If the LUN is already assigned.
     */
-   void registerLogicalUnit( long lun, LogicalUnit lu ) throws Exception;
+   void registerLogicalUnit( long lun, LogicalUnit lu );
    
    /**
     * Remove a Logical Unit from the task router. After removal no further commands will be
@@ -47,7 +47,7 @@ public interface TaskRouter
     * @returns The Logical Unit.
     * @throws Exception If the LUN is not valid.
     */
-   LogicalUnit removeLogicalUnit( long lun ) throws Exception;
+   LogicalUnit removeLogicalUnit( long lun );
    
    
    /**

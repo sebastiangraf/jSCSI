@@ -17,7 +17,7 @@ public class DefaultTarget extends AbstractTarget
    
    private TaskRouter taskRouter;
 
-   public DefaultTarget(String targetName) throws Exception
+   public DefaultTarget(String targetName)
    {
       this.setTargetName(targetName);
       this.taskRouter = new DefaultTaskRouter();
@@ -39,12 +39,12 @@ public class DefaultTarget extends AbstractTarget
       this.taskRouter.nexusLost();
    }
 
-   public void registerLogicalUnit(long lun, LogicalUnit lu) throws Exception
+   public void registerLogicalUnit(long lun, LogicalUnit lu)
    {
       this.taskRouter.registerLogicalUnit(lun, lu);
    }
 
-   public LogicalUnit removeLogicalUnit(long lun) throws Exception
+   public LogicalUnit removeLogicalUnit(long lun)
    {
       return this.taskRouter.removeLogicalUnit(lun);
    }
