@@ -110,4 +110,10 @@ public interface Target
     * @throws Exception If the LUN is not valid.
     */
    LogicalUnit removeLogicalUnit( long lun );
+   
+   /**
+    * Indicates whether this target device has been start()ed.
+    * @return Device status
+    */
+   boolean isRunning();
 }
