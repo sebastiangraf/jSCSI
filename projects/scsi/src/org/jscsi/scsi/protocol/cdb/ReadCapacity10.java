@@ -100,5 +100,8 @@ public class ReadCapacity10 extends AbstractParameterCDB
       this.logicalBlockAddress = logicalBlockAddress;
    }
    
-   
+   public String toString()
+   {
+      return "<ReadCapacity10>";
+   }
 }
