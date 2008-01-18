@@ -127,6 +127,7 @@ public abstract class AbstractTask implements Task
       }
       catch (SenseException e)
       {
+         _logger.debug("sense exception caught handling command: " + command);
          // Write response with a CHECK CONDITION status.
          this.targetTransportPort.writeResponse(this.command.getNexus(),
                this.command.getCommandReferenceNumber(), Status.CHECK_CONDITION,

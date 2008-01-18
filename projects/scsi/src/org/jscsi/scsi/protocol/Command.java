@@ -103,8 +103,8 @@ public class Command
    @Override
    public String toString()
    {
-      return "<Command CDB: " + this.commandDescriptorBlock + " nexus: " + this.nexus
-            + " TaskAttribute: " + this.taskAttribute + " cmdRef: " + this.commandReferenceNumber
-            + ">";
+      return String.format("<Command: %s, nexus: %s, TaskAttribute: %s, CmdRef: %d>",
+            this.commandDescriptorBlock, this.nexus, this.taskAttribute,
+            this.commandReferenceNumber);
    }
 }

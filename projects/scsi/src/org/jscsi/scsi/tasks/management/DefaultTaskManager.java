@@ -57,6 +57,11 @@ public class DefaultTaskManager implements TaskManager
             _logger.debug("Task manager thread interrupted.");
             this.running.set(false);
          }
+         catch (Exception e)
+         {
+            _logger.debug("Task manager experienced an unhandled exception, shutting down");
+            this.running.set(false);
+         }
       }
       _logger.info("Shutting down task manager.");
 

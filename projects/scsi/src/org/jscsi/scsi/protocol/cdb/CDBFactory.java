@@ -65,6 +65,11 @@ public class CDBFactory implements Serializer
 
       int operationCode = in.readUnsignedByte();
 
+      if (!_cdbs.containsKey(operationCode))
+      {
+         throw new IOException(String.format("Could not create new cdb with unsupported operation code: %x", operationCode));
+      }
+      
       try
       {
          CDB cdb = _cdbs.get(operationCode).newInstance();
