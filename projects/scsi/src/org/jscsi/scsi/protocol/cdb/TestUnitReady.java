@@ -61,4 +61,9 @@ public class TestUnitReady extends AbstractCDB
    {
       return 6;
    }
+
+   public String toString()
+   {
+      return "<TestUnitReady>";
+   }
 }
