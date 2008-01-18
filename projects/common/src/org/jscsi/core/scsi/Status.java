@@ -243,21 +243,21 @@ public enum Status {
   @Override
   public String toString()
   {
-     String output = "<Status:";
+     String output = "<Status: flag: ' ";
      
      switch(Status.valueOf(value))
      {
-        case GOOD:                       output += " good"; break;
-        case CHECK_CONDITION:            output += " check condition"; break;
-        case CONDITION_MET:              output += " condition met"; break;
-        case BUSY:                       output += " busy"; break;
-        case INTERMEDIATE:               output += " intermediate"; break;
-        case INTERMEDIATE_CONDITION_MET: output += " intermediate condition met"; break;
-        case RESERVATION_CONFLICT:       output += " reservation conflict"; break;
-        case TASK_SET_FULL:              output += " task set full"; break;
-        case ACA_ACTIVE:                 output += " aca active"; break;
-        case TASK_ABORTED:               output += " task aborted"; break;
+        case GOOD:                       output += "GOOD"; break;
+        case CHECK_CONDITION:            output += "CHECK CONDITION"; break;
+        case CONDITION_MET:              output += "CONDITION MET"; break;
+        case BUSY:                       output += "BUSY"; break;
+        case INTERMEDIATE:               output += "INTERMEDIATE"; break;
+        case INTERMEDIATE_CONDITION_MET: output += "INTERMEDIATE CONDITION MET"; break;
+        case RESERVATION_CONFLICT:       output += "RESERVATION CONFLICT"; break;
+        case TASK_SET_FULL:              output += "TASK SET FULL"; break;
+        case ACA_ACTIVE:                 output += "ACA ACTIVE"; break;
+        case TASK_ABORTED:               output += "TASK ABORTED"; break;
      }
-     return output + ">";
+     return output + "'>";
   }
 }
