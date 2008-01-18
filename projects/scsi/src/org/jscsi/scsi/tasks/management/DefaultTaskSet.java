@@ -100,8 +100,8 @@ public class DefaultTaskSet implements TaskSet
 
       public void run()
       {
-         if (_logger.isTraceEnabled())
-            _logger.trace("Command now running: " + this.task.getCommand());
+         if (_logger.isDebugEnabled())
+            _logger.debug("Command now being run: " + this.task.getCommand());
 
          this.task.run();
 
@@ -531,7 +531,7 @@ public class DefaultTaskSet implements TaskSet
          throw new IllegalStateException("task set full");
       }
    }
-   
+
    public Task take() throws InterruptedException
    {
       Task task = null;
