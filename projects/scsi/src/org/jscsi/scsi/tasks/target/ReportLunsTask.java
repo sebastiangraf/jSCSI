@@ -87,4 +87,9 @@ public class ReportLunsTask extends TargetTask
       // TODO Auto-generated method stub
 
    }
+   
+   public String toString()
+   {
+      return "<ReportLuns>";
+   }
 }

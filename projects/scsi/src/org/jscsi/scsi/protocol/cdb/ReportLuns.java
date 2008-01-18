@@ -93,4 +93,9 @@ public class ReportLuns extends AbstractParameterCDB
    {
       this.selectReport = selectReport;
    }
+   
+   public String toString()
+   {
+      return "<ReportLuns>";
+   }
 }

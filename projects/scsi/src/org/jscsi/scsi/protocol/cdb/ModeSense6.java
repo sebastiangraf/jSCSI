@@ -152,4 +152,9 @@ public class ModeSense6 extends AbstractParameterCDB
    {
       this.subPageCode = subPageCode;
    }
+   
+   public String toString()
+   {
+      return "<ModeSense6>";
+   }
 }

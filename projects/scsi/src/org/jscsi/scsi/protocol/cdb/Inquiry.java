@@ -100,4 +100,9 @@ public class Inquiry extends AbstractParameterCDB
    {
       this.pageCode = pageCode;
    }
+   
+   public String toString()
+   {
+      return "<Inquiry>";
+   }
 }

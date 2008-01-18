@@ -3,6 +3,7 @@ package org.jscsi.scsi.tasks.lu;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.jscsi.core.scsi.Status;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.cdb.CDB;
@@ -14,14 +15,16 @@ import org.jscsi.scsi.protocol.sense.exceptions.InvalidFieldInCDBException;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException;
 import org.jscsi.scsi.transport.TargetTransportPort;
 
-// TODO: Describe class or interface
+//TODO: Describe class or interface
 public class InquiryTask extends LUTask
 {
+   private static Logger _logger = Logger.getLogger(InquiryTask.class);
+
    public InquiryTask()
    {
       super("InquiryTask");
    }
-   
+
    public InquiryTask(
          TargetTransportPort targetPort,
          Command command,
@@ -50,12 +53,14 @@ public class InquiryTask extends LUTask
             }
             catch (IOException e)
             {
+               _logger.debug("cound not encode vpd page in task: " + this);
                throw new RuntimeException("Could not encode VPD page", e);
             }
          }
          else
          {
             // Invalid page code
+            _logger.debug("invalid page code in task: " + this);
             throw new InvalidFieldInCDBException(true, 2);
          }
       }
@@ -68,10 +73,16 @@ public class InquiryTask extends LUTask
          else
          {
             // Invalid page code
+            _logger.debug("invalid page code in task: " + this);
             throw new InvalidFieldInCDBException(true, 2);
          }
       }
 
       this.writeResponse(Status.GOOD, null);
+   }
+
+   public String toString()
+   {
+      return "<InquiryTask>";
    }
 }
