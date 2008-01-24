@@ -92,7 +92,7 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
       }
       catch (InterruptedException e)
       {
-         _logger.debug("Interrupted while waiting for LU task manager to finish");
+         _logger.warn("Interrupted while waiting for LU task manager to finish");
       }
    }
 
@@ -113,6 +113,8 @@ public abstract class AbstractLogicalUnit implements LogicalUnit
       }
    }
    
+   // TODO: nomenclature of this is strange, this is aborting a task, abortTask() above
+   //       is simply attempting to remove a task from the scheduler
    public TaskServiceResponse abortTaskSet(Nexus nexus)
    {
       try
