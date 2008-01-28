@@ -1,3 +1,37 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
+
+
 package org.jscsi.scsi.tasks;
 
 import org.jscsi.scsi.lu.LogicalUnit;
@@ -29,7 +63,7 @@ import org.jscsi.scsi.transport.TargetTransportPort;
  */
 public interface TaskRouter
 {
-   
+
    /**
     * Register a Logical Unit with the given LUN.
     * 
@@ -37,8 +71,8 @@ public interface TaskRouter
     * @param lu The Logical Unit.
     * @throws Exception If the LUN is already assigned.
     */
-   void registerLogicalUnit( long lun, LogicalUnit lu );
-   
+   void registerLogicalUnit(long lun, LogicalUnit lu);
+
    /**
     * Remove a Logical Unit from the task router. After removal no further commands will be
     * sent to the LU.
@@ -47,9 +81,8 @@ public interface TaskRouter
     * @returns The Logical Unit.
     * @throws Exception If the LUN is not valid.
     */
-   LogicalUnit removeLogicalUnit( long lun );
-   
-   
+   LogicalUnit removeLogicalUnit(long lun);
+
    /**
     * Used by the Target Transport Port to enqueue incoming commands to the task router. The
     * router is then responsible for forwarding those commands to Logical Units or returning
@@ -61,8 +94,8 @@ public interface TaskRouter
     * @param output Any incoming data; <code>null</code> if the command did not require an incoming
     *    data transfer.
     */
-   void enqueue( TargetTransportPort port, Command command );
-   
+   void enqueue(TargetTransportPort port, Command command);
+
    /**
     * Executes a task management function.
     * 
@@ -71,7 +104,6 @@ public interface TaskRouter
     * @return The result of the task management function.
     */
    TaskServiceResponse execute(Nexus nexus, TaskManagementFunction function);
-   
 
    /**
     * Starts this task router. Called by a starting target.
@@ -82,11 +114,10 @@ public interface TaskRouter
     * Stops this task router. Called by a stopping target.
     */
    void stop();
-   
-   
+
    /**
     * Used by the Target Transport Port to indicate an I_T nexus loss event.
     */
    void nexusLost();
-   
+
 }

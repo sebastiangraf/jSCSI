@@ -1,3 +1,35 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
 
 package org.jscsi.scsi.tasks.lu;
 
@@ -25,7 +57,7 @@ public class LUTaskFactory implements TaskFactory
    private static Logger _logger = Logger.getLogger(LUTaskFactory.class);
 
    private static Map<Class<? extends CDB>, Class<? extends LUTask>> tasks =
-      new HashMap<Class<? extends CDB>, Class<? extends LUTask>>();
+         new HashMap<Class<? extends CDB>, Class<? extends LUTask>>();
 
    private ModePageRegistry modePageRegistry;
    private InquiryDataRegistry inquiryDataRegistry;
@@ -39,40 +71,36 @@ public class LUTaskFactory implements TaskFactory
       LUTaskFactory.tasks.put(TestUnitReady.class, TestUnitReadyTask.class);
    }
 
-   public LUTaskFactory(
-         ModePageRegistry modePageRegistry,
-         InquiryDataRegistry inquiryDataRegistry)
+   public LUTaskFactory(ModePageRegistry modePageRegistry, InquiryDataRegistry inquiryDataRegistry)
    {
       this.modePageRegistry = modePageRegistry;
       this.inquiryDataRegistry = inquiryDataRegistry;
    }
 
    public Task getInstance(TargetTransportPort port, Command command)
-   throws IllegalRequestException
+         throws IllegalRequestException
    {
-      Class<? extends LUTask> taskClass =
-         tasks.get(command.getCommandDescriptorBlock().getClass());
+      Class<? extends LUTask> taskClass = tasks.get(command.getCommandDescriptorBlock().getClass());
 
       if (taskClass != null)
       {
          try
          {
-            return taskClass.newInstance().loadTask(port, command, modePageRegistry, inquiryDataRegistry);
+            return taskClass.newInstance().loadTask(port, command, modePageRegistry,
+                  inquiryDataRegistry);
          }
          catch (InstantiationException e)
          {
-            _logger.error(
-                  "Initiator attempted to execute unsupported command: (" +
-                  command.getCommandDescriptorBlock().getOperationCode() + ") " +
-                  command.getCommandDescriptorBlock().getClass().getName());
+            _logger.error("Initiator attempted to execute unsupported command: ("
+                  + command.getCommandDescriptorBlock().getOperationCode() + ") "
+                  + command.getCommandDescriptorBlock().getClass().getName());
             throw new InvalidCommandOperationCodeException();
          }
          catch (IllegalAccessException e)
          {
-            _logger.error(
-                  "Initiator attempted to execute unsupported command: (" +
-                  command.getCommandDescriptorBlock().getOperationCode() + ") " +
-                  command.getCommandDescriptorBlock().getClass().getName());
+            _logger.error("Initiator attempted to execute unsupported command: ("
+                  + command.getCommandDescriptorBlock().getOperationCode() + ") "
+                  + command.getCommandDescriptorBlock().getClass().getName());
             throw new InvalidCommandOperationCodeException();
          }
       }

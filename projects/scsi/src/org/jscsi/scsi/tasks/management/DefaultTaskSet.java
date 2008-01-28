@@ -1,3 +1,35 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
 
 package org.jscsi.scsi.tasks.management;
 
@@ -390,29 +422,29 @@ public class DefaultTaskSet implements TaskSet
       try
       {
          TaskAttribute executing =
-            enabled.size() > 0
-            ? enabled.get(enabled.size() - 1).getCommand().getTaskAttribute()
-                  : null;
+               enabled.size() > 0
+                     ? enabled.get(enabled.size() - 1).getCommand().getTaskAttribute()
+                     : null;
+         {
+            switch (task.getCommand().getTaskAttribute())
             {
-               switch (task.getCommand().getTaskAttribute())
-               {
-                  case SIMPLE :
-                     if (executing == null || executing == TaskAttribute.SIMPLE)
-                        return false;
-                     else
-                        return true;
-                  case HEAD_OF_QUEUE :
+               case SIMPLE :
+                  if (executing == null || executing == TaskAttribute.SIMPLE)
                      return false;
-                  case ORDERED :
-                     if (executing == null)
-                        return false;
-                     else
-                        return true;
-                  default :
-                     throw new RuntimeException("Unsupported task tag: "
-                           + task.getCommand().getTaskAttribute().name());
-               }
+                  else
+                     return true;
+               case HEAD_OF_QUEUE :
+                  return false;
+               case ORDERED :
+                  if (executing == null)
+                     return false;
+                  else
+                     return true;
+               default :
+                  throw new RuntimeException("Unsupported task tag: "
+                        + task.getCommand().getTaskAttribute().name());
             }
+         }
       }
       finally
       {
@@ -426,7 +458,7 @@ public class DefaultTaskSet implements TaskSet
     * @see TaskSet#remove(Nexus)
     */
    public boolean remove(Nexus nexus) throws NoSuchElementException, InterruptedException,
-   IllegalArgumentException
+         IllegalArgumentException
    {
       if (nexus.getTaskTag() == -1) // invalid Q
          throw new IllegalArgumentException("must provide an I_T_L_Q nexus for abort");

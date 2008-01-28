@@ -1,3 +1,36 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
+
 package org.jscsi.scsi.transport;
 
 /**
@@ -11,10 +44,10 @@ public class Nexus
 {
    private String initiatorPortIdentifier;
    private String targetPortIdentifier;
-   
+
    private long logicalUnitNumber;
    private long taskTag;
-   
+
    /**
     * Contruct an I_T Nexus identification. L and Q are set to invalid (negative) values.
     * @param initiatorPortIdentifier The initiator port identifier.
@@ -28,7 +61,7 @@ public class Nexus
       this.logicalUnitNumber = -1;
       this.taskTag = -1;
    }
-   
+
    /**
     * Construct an I_T_L Nexus identification. Q is set to an invalid (negative) value.
     * 
@@ -65,7 +98,7 @@ public class Nexus
       this.logicalUnitNumber = logicalUnitNumber;
       this.taskTag = taskTag;
    }
-   
+
    /**
     * Construct an I_T_L_Q Nexus identification from an I_T_L Nexus identification and a task tag.
     * A convenience constructor for use with a sequence of commands using shifting task tags on
@@ -74,7 +107,7 @@ public class Nexus
     * @param nexus An I_T_L Nexus identification.
     * @param taskTag The task tag.
     */
-   public Nexus(Nexus nexus, long taskTag )
+   public Nexus(Nexus nexus, long taskTag)
    {
       assert nexus.logicalUnitNumber > 0 : "I_T_L_Q Nexus should be constructed from I_T_L Nexus";
       this.initiatorPortIdentifier = nexus.initiatorPortIdentifier;
@@ -82,7 +115,7 @@ public class Nexus
       this.logicalUnitNumber = nexus.logicalUnitNumber;
       this.taskTag = taskTag;
    }
-   
+
    /**
     * The Initiator Port Identifier.
     */
@@ -90,7 +123,7 @@ public class Nexus
    {
       return initiatorPortIdentifier;
    }
-   
+
    /**
     * The Target Port Identifier.
     */
@@ -98,7 +131,7 @@ public class Nexus
    {
       return targetPortIdentifier;
    }
-   
+
    /**
     * The Logical Unit Number. Negative for I_T Nexus identifiers.
     */
@@ -106,7 +139,7 @@ public class Nexus
    {
       return logicalUnitNumber;
    }
-   
+
    /**
     * The Task Tag. Negative for I_T and I_T_L Nexus identifiers.
     */
@@ -160,27 +193,29 @@ public class Nexus
          return false;
       return true;
    }
-   
+
    @Override
    public String toString()
    {
       String output = new String();
       if (this.logicalUnitNumber == -1 || this.taskTag == -1)
       {
-         output += "<I_T nexus initiatorPort: " + this.initiatorPortIdentifier
-            + " targetPort: " + this.targetPortIdentifier;
+         output +=
+               "<I_T nexus initiatorPort: " + this.initiatorPortIdentifier + " targetPort: "
+                     + this.targetPortIdentifier;
       }
       else if (this.taskTag == -1)
       {
-         output += "<I_T_L nexus initiatorPort: " + this.initiatorPortIdentifier
-               + " targetPort: " + this.targetPortIdentifier + " LUN: "
-               + this.logicalUnitNumber;
+         output +=
+               "<I_T_L nexus initiatorPort: " + this.initiatorPortIdentifier + " targetPort: "
+                     + this.targetPortIdentifier + " LUN: " + this.logicalUnitNumber;
       }
       else
       {
-         output += "<I_T_L_Q nexus initiatorPort: " + this.initiatorPortIdentifier
-               + " targetPort: " + this.targetPortIdentifier + " LUN: "
-               + this.logicalUnitNumber + " taskTag: " + this.taskTag;
+         output +=
+               "<I_T_L_Q nexus initiatorPort: " + this.initiatorPortIdentifier + " targetPort: "
+                     + this.targetPortIdentifier + " LUN: " + this.logicalUnitNumber + " taskTag: "
+                     + this.taskTag;
       }
       output += ">";
       return output;

@@ -1,3 +1,35 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
 
 package org.jscsi.scsi.protocol.cdb;
 
@@ -14,7 +46,7 @@ import org.jscsi.scsi.protocol.Serializer;
 public class CDBFactory implements Serializer
 {
    private static Map<Integer, Class<? extends CDB>> _cdbs =
-         new HashMap<Integer, Class<? extends CDB>>();
+      new HashMap<Integer, Class<? extends CDB>>();
 
    static
    {
@@ -29,8 +61,7 @@ public class CDBFactory implements Serializer
       CDBFactory.register(Read16.OPERATION_CODE, Read16.class);
       CDBFactory.register(ReadCapacity10.OPERATION_CODE, ReadCapacity10.class);
       CDBFactory.register(ReadCapacity16.OPERATION_CODE, ReadCapacity16.class);
-      CDBFactory.register(ReceiveDiagnosticResults.OPERATION_CODE,
-            ReceiveDiagnosticResults.class);
+      CDBFactory.register(ReceiveDiagnosticResults.OPERATION_CODE, ReceiveDiagnosticResults.class);
       CDBFactory.register(ReportLuns.OPERATION_CODE, ReportLuns.class);
       CDBFactory.register(ReportSupportedTaskManagementFunctions.OPERATION_CODE,
             ReportSupportedTaskManagementFunctions.class);
@@ -67,9 +98,10 @@ public class CDBFactory implements Serializer
 
       if (!_cdbs.containsKey(operationCode))
       {
-         throw new IOException(String.format("Could not create new cdb with unsupported operation code: %x", operationCode));
+         throw new IOException(String.format(
+               "Could not create new cdb with unsupported operation code: %x", operationCode));
       }
-      
+
       try
       {
          CDB cdb = _cdbs.get(operationCode).newInstance();

@@ -1,3 +1,36 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
+
 package org.jscsi.scsi.lu;
 
 import java.nio.ByteBuffer;
@@ -41,7 +74,7 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit
    private static Logger _logger = Logger.getLogger(DefaultLogicalUnitTest.class);
 
    private static final int NUM_BLOCKS_TRANSFER = 16;
-   
+
    private static final int TASK_SET_QUEUE_DEPTH = 16;
    private static final int TASK_MGR_NUM_THREADS = 2;
    private static final int STORE_BLOCK_SIZE = 4096;
@@ -57,10 +90,11 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit
    private static InquiryDataRegistry inquiryRegistry;
    private static TaskFactory taskFactory;
    private static ByteBuffer store;
-   
+
    private long cmdRef = 0;
 
-   private TestTargetTransportPort transport = new TestTargetTransportPort(STORE_CAPACITY, STORE_BLOCK_SIZE);
+   private TestTargetTransportPort transport =
+         new TestTargetTransportPort(STORE_CAPACITY, STORE_BLOCK_SIZE);
 
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
@@ -77,7 +111,7 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit
 
       lu = new DefaultLogicalUnitTest(taskSet, taskManager, taskFactory);
       _logger.debug("created logical unit: " + lu);
-      
+
       lu.start();
       _logger.debug("logical unit successfully started");
    }
@@ -106,43 +140,61 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit
    public void TestReadWriteCompare6()
    {
       CDB cdb1 = new Write6(false, true, 10, NUM_BLOCKS_TRANSFER);
-      Command cmd1 = new Command(this.transport.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED, this.cmdRef, 0);
+      Command cmd1 =
+            new Command(this.transport.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED,
+                  this.cmdRef, 0);
       this.transport.createReadData(NUM_BLOCKS_TRANSFER * STORE_BLOCK_SIZE, this.cmdRef);
       lu.enqueue(this.transport, cmd1);
       this.cmdRef++;
-      
-      
+
       CDB cdb2 = new Read6(false, true, 10, NUM_BLOCKS_TRANSFER);
-      Command cmd2 = new Command(this.transport.createNexus(this.cmdRef), cdb2, TaskAttribute.ORDERED, this.cmdRef, 0);
+      Command cmd2 =
+            new Command(this.transport.createNexus(this.cmdRef), cdb2, TaskAttribute.ORDERED,
+                  this.cmdRef, 0);
       lu.enqueue(this.transport, cmd2);
-      
-      try {Thread.sleep(500);} catch (InterruptedException e){}
-            
-      byte[] readBuf = this.transport.getReadDataMap().get(cmdRef-1).array();
+
+      try
+      {
+         Thread.sleep(500);
+      }
+      catch (InterruptedException e)
+      {
+      }
+
+      byte[] readBuf = this.transport.getReadDataMap().get(cmdRef - 1).array();
       byte[] writeBuf = this.transport.getWriteDataMap().get(cmdRef).array();
-      
+
       Assert.assertTrue("inconsistent read/write comparison", Arrays.equals(readBuf, writeBuf));
    }
-   
+
    @Test
    public void TestReadWriteCompare10()
    {
       CDB cdb1 = new Write10(0, false, false, false, false, false, 10, NUM_BLOCKS_TRANSFER);
-      Command cmd1 = new Command(this.transport.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED, this.cmdRef, 0);
+      Command cmd1 =
+            new Command(this.transport.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED,
+                  this.cmdRef, 0);
       this.transport.createReadData(NUM_BLOCKS_TRANSFER * STORE_BLOCK_SIZE, this.cmdRef);
       lu.enqueue(this.transport, cmd1);
       this.cmdRef++;
-      
-      
+
       CDB cdb2 = new Read10(0, false, false, false, false, false, 10, NUM_BLOCKS_TRANSFER);
-      Command cmd2 = new Command(this.transport.createNexus(this.cmdRef), cdb2, TaskAttribute.ORDERED, this.cmdRef, 0);
+      Command cmd2 =
+            new Command(this.transport.createNexus(this.cmdRef), cdb2, TaskAttribute.ORDERED,
+                  this.cmdRef, 0);
       lu.enqueue(this.transport, cmd2);
-      
-      try {Thread.sleep(500);} catch (InterruptedException e){}
-            
-      byte[] readBuf = this.transport.getReadDataMap().get(cmdRef-1).array();
+
+      try
+      {
+         Thread.sleep(500);
+      }
+      catch (InterruptedException e)
+      {
+      }
+
+      byte[] readBuf = this.transport.getReadDataMap().get(cmdRef - 1).array();
       byte[] writeBuf = this.transport.getWriteDataMap().get(cmdRef).array();
-      
+
       Assert.assertTrue("inconsistent read/write comparison", Arrays.equals(readBuf, writeBuf));
    }
 
@@ -150,48 +202,64 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit
    public void TestReadWriteCompare12()
    {
       CDB cdb1 = new Write12(0, false, false, false, false, false, 10, NUM_BLOCKS_TRANSFER);
-      Command cmd1 = new Command(this.transport.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED, this.cmdRef, 0);
+      Command cmd1 =
+            new Command(this.transport.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED,
+                  this.cmdRef, 0);
       this.transport.createReadData(NUM_BLOCKS_TRANSFER * STORE_BLOCK_SIZE, this.cmdRef);
       lu.enqueue(this.transport, cmd1);
       this.cmdRef++;
-      
-      
+
       CDB cdb2 = new Read12(0, false, false, false, false, false, 10, NUM_BLOCKS_TRANSFER);
-      Command cmd2 = new Command(this.transport.createNexus(this.cmdRef), cdb2, TaskAttribute.ORDERED, this.cmdRef, 0);
+      Command cmd2 =
+            new Command(this.transport.createNexus(this.cmdRef), cdb2, TaskAttribute.ORDERED,
+                  this.cmdRef, 0);
       lu.enqueue(this.transport, cmd2);
-      
-      try {Thread.sleep(500);} catch (InterruptedException e){}
-            
-      byte[] readBuf = this.transport.getReadDataMap().get(cmdRef-1).array();
+
+      try
+      {
+         Thread.sleep(500);
+      }
+      catch (InterruptedException e)
+      {
+      }
+
+      byte[] readBuf = this.transport.getReadDataMap().get(cmdRef - 1).array();
       byte[] writeBuf = this.transport.getWriteDataMap().get(cmdRef).array();
-      
+
       Assert.assertTrue("inconsistent read/write comparison", Arrays.equals(readBuf, writeBuf));
    }
-   
+
    @Test
    public void TestReadWriteCompare16()
    {
       CDB cdb1 = new Write16(0, false, false, false, false, false, 10, NUM_BLOCKS_TRANSFER);
-      Command cmd1 = new Command(this.transport.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED, this.cmdRef, 0);
+      Command cmd1 =
+            new Command(this.transport.createNexus(this.cmdRef), cdb1, TaskAttribute.ORDERED,
+                  this.cmdRef, 0);
       this.transport.createReadData(NUM_BLOCKS_TRANSFER * STORE_BLOCK_SIZE, this.cmdRef);
       lu.enqueue(this.transport, cmd1);
       this.cmdRef++;
-      
-      
+
       CDB cdb2 = new Read16(0, false, false, false, false, false, 10, NUM_BLOCKS_TRANSFER);
-      Command cmd2 = new Command(this.transport.createNexus(this.cmdRef), cdb2, TaskAttribute.ORDERED, this.cmdRef, 0);
+      Command cmd2 =
+            new Command(this.transport.createNexus(this.cmdRef), cdb2, TaskAttribute.ORDERED,
+                  this.cmdRef, 0);
       lu.enqueue(this.transport, cmd2);
-      
-      try {Thread.sleep(500);} catch (InterruptedException e){}
-            
-      byte[] readBuf = this.transport.getReadDataMap().get(cmdRef-1).array();
+
+      try
+      {
+         Thread.sleep(500);
+      }
+      catch (InterruptedException e)
+      {
+      }
+
+      byte[] readBuf = this.transport.getReadDataMap().get(cmdRef - 1).array();
       byte[] writeBuf = this.transport.getWriteDataMap().get(cmdRef).array();
-      
+
       Assert.assertTrue("inconsistent read/write comparison", Arrays.equals(readBuf, writeBuf));
    }
-   
- 
-   
+
    /////////////////////////////////////////////////////////////////////////////
    // constructor(s)
 
@@ -200,17 +268,8 @@ public class DefaultLogicalUnitTest extends AbstractLogicalUnit
 
    }
 
-   public DefaultLogicalUnitTest(
-         TaskSet taskSet,
-         TaskManager taskManager,
-         TaskFactory taskFactory)
+   public DefaultLogicalUnitTest(TaskSet taskSet, TaskManager taskManager, TaskFactory taskFactory)
    {
       super(taskSet, taskManager, taskFactory);
    }
-
-
-   /////////////////////////////////////////////////////////////////////////////
-   // utilities
-   
-
 }
