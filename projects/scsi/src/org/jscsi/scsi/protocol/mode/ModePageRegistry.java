@@ -1,3 +1,36 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
+
 package org.jscsi.scsi.protocol.mode;
 
 import java.io.DataInputStream;
@@ -18,10 +51,9 @@ import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 public abstract class ModePageRegistry implements Serializer
 {
    private static Logger _logger = Logger.getLogger(ModePageRegistry.class);
-   
-   // Long to ModePage map
-   private SortedMap<Byte, SortedMap<Integer,ModePage>> pages = null;
 
+   // Long to ModePage map
+   private SortedMap<Byte, SortedMap<Integer, ModePage>> pages = null;
 
    // Factory registration methods
    protected void register(byte pageCode, ModePage page)
@@ -31,28 +63,26 @@ public abstract class ModePageRegistry implements Serializer
 
    protected void register(byte pageCode, int subPageCode, ModePage page)
    {
-      if ( this.pages == null )
-         this.pages = new TreeMap<Byte, SortedMap<Integer,ModePage>>();
-      if ( ! this.pages.containsKey(pageCode) )
-         this.pages.put(pageCode, new TreeMap<Integer,ModePage>());
+      if (this.pages == null)
+         this.pages = new TreeMap<Byte, SortedMap<Integer, ModePage>>();
+      if (!this.pages.containsKey(pageCode))
+         this.pages.put(pageCode, new TreeMap<Integer, ModePage>());
       this.pages.get(pageCode).put(subPageCode, page);
    }
-   
-   
+
    public boolean contains(byte pageCode)
    {
       return this.pages.containsKey(pageCode);
    }
-   
+
    public boolean contains(byte pageCode, int subPageCode)
    {
-      if ( ! this.pages.containsKey(pageCode) )
+      if (!this.pages.containsKey(pageCode))
          return false;
       else
          return this.pages.get(pageCode).containsKey(subPageCode);
    }
-   
-   
+
    /**
     * Returns all mode pages.
     * 
@@ -62,15 +92,15 @@ public abstract class ModePageRegistry implements Serializer
    public Collection<ModePage> get(boolean subPages)
    {
       List<ModePage> value = new LinkedList<ModePage>();
-      for ( Map<Integer,ModePage> pagelist : pages.values() )
+      for (Map<Integer, ModePage> pagelist : pages.values())
       {
-         for ( ModePage page : pagelist.values() )
+         for (ModePage page : pagelist.values())
          {
-            if ( page.getSubPageCode() == 0x00 )
+            if (page.getSubPageCode() == 0x00)
             {
                value.add(page);
             }
-            else if ( subPages )
+            else if (subPages)
             {
                value.add(page);
             }
@@ -78,19 +108,18 @@ public abstract class ModePageRegistry implements Serializer
       }
       return value;
    }
-   
-   
+
    /**
     * Returns all mode pages with the given page code.
     */
    public Collection<ModePage> get(byte pageCode)
    {
-      if ( this.contains(pageCode) )
+      if (this.contains(pageCode))
          return this.pages.get(pageCode).values();
       else
          return null;
    }
-   
+
    public ModePage get(byte pageCode, int subPageCode)
    {
       if (this.contains(pageCode, subPageCode))
@@ -108,14 +137,12 @@ public abstract class ModePageRegistry implements Serializer
    protected InformationalExceptionsControl informationalExceptionsControl = null;
    protected PowerCondition powerCondition = null;
    protected ReadWriteErrorRecovery readWriteErrorRecovery = null;
-   
+
    protected boolean WP = false; // WP field for DEVICE-SPECIFIC PARAMETER field in mode page header
    protected boolean DPOFUA = false; // DPOFUA field for DEVICE-SPECIFIC PARAMETER field
-   
-   
 
    public ModePageRegistry()
-   {  
+   {
       backgroundControl = new BackgroundControl();
       caching = new Caching();
       control = new Control();
@@ -140,7 +167,7 @@ public abstract class ModePageRegistry implements Serializer
    public ModePage decode(ByteBuffer buffer) throws IOException
    {
       _logger.trace("Decoding mode page at buffer position: " + buffer.position());
-      
+
       DataInputStream dataIn = new DataInputStream(new ByteBufferInputStream(buffer));
 
       boolean subPageFormat;
@@ -171,8 +198,8 @@ public abstract class ModePageRegistry implements Serializer
       }
 
       ModePage page = get(pageCode, subPageCode);
-      
-      if(page != null)
+
+      if (page != null)
       {
          _logger.trace("Decoding mode page: " + page);
          page.decode(header, buffer);
@@ -194,9 +221,6 @@ public abstract class ModePageRegistry implements Serializer
          decode(pages);
       }
    }
-   
-   
-   
 
    public void setBackgroundControl(BackgroundControl backgroundControl)
    {
@@ -278,7 +302,6 @@ public abstract class ModePageRegistry implements Serializer
    {
       return readWriteErrorRecovery;
    }
-   
 
    public boolean isWP()
    {
@@ -299,7 +322,5 @@ public abstract class ModePageRegistry implements Serializer
    {
       DPOFUA = dpofua;
    }
-
-
 
 }

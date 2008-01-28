@@ -1,9 +1,42 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
+
 package org.jscsi.scsi.protocol.mode;
 
 @SuppressWarnings("unchecked")
 public class StaticModePageRegistry extends ModePageRegistry
 {
-   
+
    public StaticModePageRegistry()
    {
       super();
@@ -17,7 +50,7 @@ public class StaticModePageRegistry extends ModePageRegistry
       this.populateControlExtension();
       this.populateInformationalExceptionsControl();
       this.populateReadWriteErrorRecovery();
-      
+
       //register(BackgroundControl.PAGE_CODE, BackgroundControl.SUBPAGE_CODE, backgroundControl);
       register(Caching.PAGE_CODE, caching);
       register(Control.PAGE_CODE, control);
@@ -27,13 +60,13 @@ public class StaticModePageRegistry extends ModePageRegistry
       //register(PowerCondition.PAGE_CODE, powerCondition);
       register(ReadWriteErrorRecovery.PAGE_CODE, readWriteErrorRecovery);
    }
-   
+
    protected void populateCaching()
    {
       Caching page = new Caching();
-      
-      page.setIC(false);   // Device using server-specific caching algorithm
-      page.setABPF(true);  // Aborts pre-fetch on receipt of new command (DRA = 0)
+
+      page.setIC(false); // Device using server-specific caching algorithm
+      page.setABPF(true); // Aborts pre-fetch on receipt of new command (DRA = 0)
       page.setCAP(false); // Caching analysis not permitted
       page.setDISC(true); // Pre-fetch accross time discontinuities permitted
       page.setSIZE(false); // The NUMBER OF CACHE SEGMENTS field would be used 
@@ -52,15 +85,14 @@ public class StaticModePageRegistry extends ModePageRegistry
       page.setNV_DIS(false); // non-volatile cache not enabled
       page.setNumberOfCacheSegments(0);
       page.setCacheSegmentSize(0);
-      
+
       this.setCaching(caching);
    }
-   
-   
+
    protected void populateControl()
    {
       Control page = new Control();
-      
+
       page.setTST(0x0); // LU maintains one task set for all I_T nexuses
       page.setTMF_ONLY(false); // Arbitrary value; ACA not supported
       page.setD_SENSE(false); // Fixed format sense data is returned with autosense
@@ -76,15 +108,14 @@ public class StaticModePageRegistry extends ModePageRegistry
       page.setAutoloadMode(0x00); // Field is reserved
       page.setBusyTimeoutPeriod(0xFFFF); // Client shall allow BUSY status for unlimited period
       page.setExtendedSelfTestCompletionTime(587); // Arbitrary value; self test not supported
-      
+
       this.setControl(page);
    }
-   
-   
+
    protected void populateInformationalExceptionsControl()
    {
       InformationalExceptionsControl page = new InformationalExceptionsControl();
-      
+
       page.setPERF(true); // Informational exception operations will not cause delays
       page.setEBF(true); // Background functions are enabled
       page.setEWASC(false); // Warnings are not enabled
@@ -94,16 +125,14 @@ public class StaticModePageRegistry extends ModePageRegistry
       page.setMRIE(0x00); // No reporting of informational exception condition
       page.setIntervalTimer(0);
       page.setReportCount(0);
-      
-      
+
       this.setInformationalExceptionsControl(page);
    }
-   
-   
+
    protected void populateReadWriteErrorRecovery()
    {
       ReadWriteErrorRecovery page = new ReadWriteErrorRecovery();
-      
+
       page.setAWRE(true); // Automatic write reallocation enabled
       page.setARRE(false); // Automatic read reallocation disabled
       page.setTB(false); // Partially recovered blocks not transfered before CHECK CONDITION
@@ -115,21 +144,20 @@ public class StaticModePageRegistry extends ModePageRegistry
       page.setReadRetryCount(0);
       page.setWriteRetryCount(0);
       page.setRecoveryTimeLimit(0);
-      
+
       this.setReadWriteErrorRecovery(page);
    }
-   
-   
+
    protected void populateControlExtension()
    {
       ControlExtension page = new ControlExtension();
-      
+
       page.setTCMOS(false);
       page.setSCSIP(false);
       page.setIALUAE(false);
       page.setInitialPriority(0);
-      
+
       this.setControlExtension(page);
    }
-   
+
 }

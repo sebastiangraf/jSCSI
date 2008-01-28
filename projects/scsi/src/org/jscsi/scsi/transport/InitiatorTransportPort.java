@@ -1,5 +1,38 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
 
 package org.jscsi.scsi.transport;
+
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.Command;
@@ -13,7 +46,7 @@ import org.jscsi.scsi.protocol.Command;
  */
 public interface InitiatorTransportPort
 {
-   
+
    /**
     * Sends a command to a Target device. Most commands must have a valid I_T_L_x nexus specified.
     * Commands directed at the target device as a whole (such as REPORT LUNS) must have a valid
@@ -43,8 +76,8 @@ public interface InitiatorTransportPort
     *    A new buffer will be allocated to store any incoming sense data to. The handler should
     *    be capable of parsing the sense data returned by the specific command.
     */
-   void send( Command command, ByteBuffer input, ByteBuffer output, ConfirmationHandler handler );
-   
+   void send(Command command, ByteBuffer input, ByteBuffer output, ConfirmationHandler handler);
+
    /**
     * Cancel a task specified by an I_T_L_Q nexus. The cancellation will not be
     * processed if the nexus object does not specify a task tag.
@@ -52,12 +85,6 @@ public interface InitiatorTransportPort
     * @param nexus An I_T_L_Q Nexus.
     */
    // TODO: Should this be blocking, or keep the confirmation handler?
-   void cancel( Nexus nexus, ConfirmationHandler handler );
-   
-   
-   
-   
-   
+   void cancel(Nexus nexus, ConfirmationHandler handler);
+
 }
-
-

@@ -1,3 +1,36 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
+
 package org.jscsi.scsi.tasks.management;
 
 import java.nio.ByteBuffer;
@@ -20,10 +53,9 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 public class DefaultTaskRouter implements TaskRouter
 {
    private static Logger _logger = Logger.getLogger(DefaultTaskRouter.class);
-   
+
    private static int DEFAULT_TARGET_THREAD_COUNT = 1;
    private static int DEFAULT_TARGET_QUEUE_LENGTH = 32;
-   
 
    ////////////////////////////////////////////////////////////////////////////
    // data members
@@ -34,14 +66,12 @@ public class DefaultTaskRouter implements TaskRouter
    private TaskFactory taskFactory;
 
    private Thread manager;
-   
-   private boolean running;
 
+   private boolean running;
 
    ////////////////////////////////////////////////////////////////////////////
    // constructor(s)
-   
-   
+
    public DefaultTaskRouter()
    {
       this.logicalUnitMap = new ConcurrentHashMap<Long, LogicalUnit>();
@@ -49,7 +79,7 @@ public class DefaultTaskRouter implements TaskRouter
       this.targetTaskSet = new DefaultTaskSet(DEFAULT_TARGET_QUEUE_LENGTH);
       this.targetTaskManager = new DefaultTaskManager(DEFAULT_TARGET_THREAD_COUNT, targetTaskSet);
    }
-   
+
    public DefaultTaskRouter(int targetQueueLength, int targetThreadCount)
    {
       this.logicalUnitMap = new ConcurrentHashMap<Long, LogicalUnit>();
@@ -57,7 +87,7 @@ public class DefaultTaskRouter implements TaskRouter
       this.targetTaskSet = new DefaultTaskSet(targetQueueLength);
       this.targetTaskManager = new DefaultTaskManager(targetThreadCount, targetTaskSet);
    }
-   
+
    public DefaultTaskRouter(
          TaskFactory targetTaskFactory,
          TaskSet targetTaskSet,
@@ -69,10 +99,9 @@ public class DefaultTaskRouter implements TaskRouter
       this.targetTaskSet = targetTaskSet;
    }
 
-
    ////////////////////////////////////////////////////////////////////////////
    // TaskRouter implementation
-   
+
    public void enqueue(TargetTransportPort port, Command command)
    {
       long lun = command.getNexus().getLogicalUnitNumber();
@@ -90,80 +119,74 @@ public class DefaultTaskRouter implements TaskRouter
          catch (IllegalRequestException e)
          {
             _logger.error("error when parsing command: " + e);
-            port.writeResponse(
-                  command.getNexus(),
-                  command.getCommandReferenceNumber(),
-                  Status.CHECK_CONDITION,
-                  ByteBuffer.wrap(e.encode()) );
+            port.writeResponse(command.getNexus(), command.getCommandReferenceNumber(),
+                  Status.CHECK_CONDITION, ByteBuffer.wrap(e.encode()));
          }
       }
-      else if ( logicalUnitMap.containsKey(lun) )
+      else if (logicalUnitMap.containsKey(lun))
       {
          logicalUnitMap.get(lun).enqueue(port, command);
          if (_logger.isDebugEnabled())
-            _logger.debug("successfully enqueued command to logical unit with TaskRouter: " + command);
+            _logger.debug("successfully enqueued command to logical unit with TaskRouter: "
+                  + command);
       }
       else
       {
-         port.writeResponse(
-               command.getNexus(),
-               command.getCommandReferenceNumber(),
+         port.writeResponse(command.getNexus(), command.getCommandReferenceNumber(),
                Status.CHECK_CONDITION,
                ByteBuffer.wrap((new LogicalUnitNotSupportedException()).encode()));
       }
    }
 
-   
-   
    public TaskServiceResponse execute(Nexus nexus, TaskManagementFunction function)
    {
       long lun = nexus.getLogicalUnitNumber();
       switch (function)
       {
-         case ABORT_TASK:
+         case ABORT_TASK :
             // Need an I_T_L_Q nexus with a valid LUN
-            if ( lun < 0 || nexus.getTaskTag() < 0 || ! this.logicalUnitMap.containsKey(lun) )
+            if (lun < 0 || nexus.getTaskTag() < 0 || !this.logicalUnitMap.containsKey(lun))
                return TaskServiceResponse.FUNCTION_REJECTED;
             else
                return this.logicalUnitMap.get(lun).abortTask(nexus);
-            
-         case ABORT_TASK_SET:
+
+         case ABORT_TASK_SET :
             // Need an I_T_L nexus with a valid LUN
-            if (lun < 0 || ! this.logicalUnitMap.containsKey(lun))
+            if (lun < 0 || !this.logicalUnitMap.containsKey(lun))
                return TaskServiceResponse.FUNCTION_REJECTED;
             else
                return this.logicalUnitMap.get(lun).abortTaskSet(nexus);
-         
-         case CLEAR_TASK_SET:
+
+         case CLEAR_TASK_SET :
             // Need an I_T_L nexus with a valid LUN
-            if (lun < 0 || ! this.logicalUnitMap.containsKey(lun))
+            if (lun < 0 || !this.logicalUnitMap.containsKey(lun))
                return TaskServiceResponse.FUNCTION_REJECTED;
             else
                return this.logicalUnitMap.get(lun).clearTaskSet(nexus);
-            
-         case LOGICAL_UNIT_RESET:
+
+         case LOGICAL_UNIT_RESET :
             // Need an I_T_L nexus with a valid LUN
-            if (lun < 0 || ! this.logicalUnitMap.containsKey(lun))
+            if (lun < 0 || !this.logicalUnitMap.containsKey(lun))
                return TaskServiceResponse.FUNCTION_REJECTED;
             else
                return this.logicalUnitMap.get(lun).reset();
-            
-         case TARGET_RESET:
+
+         case TARGET_RESET :
             // reset all logical units and abort target task set
-            for ( LogicalUnit lu : this.logicalUnitMap.values() )
+            for (LogicalUnit lu : this.logicalUnitMap.values())
             {
                lu.reset();
             }
             this.targetTaskSet.clear();
             return TaskServiceResponse.FUNCTION_COMPLETE;
-            
-         case CLEAR_ACA:
+
+         case CLEAR_ACA :
             return TaskServiceResponse.FUNCTION_REJECTED;
-            
-         case WAKEUP:
+
+         case WAKEUP :
             return TaskServiceResponse.FUNCTION_REJECTED;
-            
-         default:
+
+         default :
             return TaskServiceResponse.FUNCTION_REJECTED;
       }
    }
@@ -171,7 +194,7 @@ public class DefaultTaskRouter implements TaskRouter
    public void nexusLost()
    {
       // reset all logical units and abort target task set
-      for ( LogicalUnit lu : this.logicalUnitMap.values() )
+      for (LogicalUnit lu : this.logicalUnitMap.values())
       {
          lu.reset();
       }
@@ -180,7 +203,7 @@ public class DefaultTaskRouter implements TaskRouter
 
    public synchronized void registerLogicalUnit(long id, LogicalUnit lu)
    {
-      if ( this.running )
+      if (this.running)
       {
          lu.start();
          _logger.debug("logical unit started: " + lu);
@@ -189,7 +212,7 @@ public class DefaultTaskRouter implements TaskRouter
       {
          _logger.warn("not starting logical unit since router not running: " + lu);
       }
-      
+
       logicalUnitMap.put(id, lu);
       if (_logger.isDebugEnabled())
          _logger.debug("registering logical unit: " + lu + " (id: " + id + ")");
@@ -206,33 +229,33 @@ public class DefaultTaskRouter implements TaskRouter
 
    public synchronized void start()
    {
-      if ( this.running )
+      if (this.running)
          return;
-      
-      for ( Map.Entry<Long, LogicalUnit> lu : this.logicalUnitMap.entrySet() )
+
+      for (Map.Entry<Long, LogicalUnit> lu : this.logicalUnitMap.entrySet())
       {
          _logger.debug("Starting Logical Unit " + lu.getKey());
          lu.getValue().start();
       }
-      
+
       this.manager = new Thread(this.targetTaskManager, "TargetTaskManager");
       this.manager.start();
-      
+
       this.running = true;
    }
 
    public synchronized void stop()
    {
-      if ( ! this.running )
+      if (!this.running)
          return;
-      
-      for ( Map.Entry<Long, LogicalUnit> lu : this.logicalUnitMap.entrySet() )
+
+      for (Map.Entry<Long, LogicalUnit> lu : this.logicalUnitMap.entrySet())
       {
          _logger.debug("Stopping Logical Unit " + lu.getKey());
          lu.getValue().stop();
          _logger.debug("Logical Unit " + lu.getKey() + " finished");
       }
-      
+
       _logger.debug("Signalling router task manager to stop");
       this.manager.interrupt();
       try
@@ -245,10 +268,8 @@ public class DefaultTaskRouter implements TaskRouter
       {
          _logger.debug("Interrupted while waiting for router task manager to finish");
       }
-      
+
       this.running = false;
    }
-   
-   
-   
+
 }

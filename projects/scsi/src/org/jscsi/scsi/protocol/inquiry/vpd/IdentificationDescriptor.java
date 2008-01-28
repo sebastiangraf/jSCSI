@@ -1,3 +1,35 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
 
 package org.jscsi.scsi.protocol.inquiry.vpd;
 
@@ -47,20 +79,20 @@ public class IdentificationDescriptor
       try
       {
          // byte 0
-         out.writeByte((this.getProtocolIdentifier() << 4)|this.getCodeSet());
-         
+         out.writeByte((this.getProtocolIdentifier() << 4) | this.getCodeSet());
+
          // byte 1
-         int b1 = (this.isPIV()? 1 : 0) << 7;
+         int b1 = (this.isPIV() ? 1 : 0) << 7;
          b1 |= this.getAssociation() << 4;
          b1 |= this.getIdentifierType().value();
          out.writeByte(b1);
-         
+
          // byte 2
          out.writeByte(0);
-         
+
          // byte 3
          out.writeByte(this.identifier.length);
-         
+
          // identifier
          out.write(this.identifier);
 
@@ -72,7 +104,6 @@ public class IdentificationDescriptor
       }
    }
 
-   
    /////////////////////////////////////////////////////////////////////////////
    // getters/setters
 
@@ -135,7 +166,7 @@ public class IdentificationDescriptor
    {
       this.identifier = identifier;
    }
-   
+
    public int getIdentifierLength()
    {
       return this.identifier.length;

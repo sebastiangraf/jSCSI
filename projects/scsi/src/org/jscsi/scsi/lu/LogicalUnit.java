@@ -1,3 +1,36 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
+
 package org.jscsi.scsi.lu;
 
 import org.jscsi.scsi.protocol.Command;
@@ -34,7 +67,7 @@ public interface LogicalUnit
     */
 
    void enqueue(TargetTransportPort port, Command command);
-   
+
    /**
     * Aborts the tagged task specified by the given I_T_L_Q nexus.
     * The tagged task will be immediately aborted. Abortion of untagged tasks is not possible.
@@ -44,7 +77,7 @@ public interface LogicalUnit
     *    {@value TaskServiceResponse#FUNCTION_REJECTED} when not aborted.
     */
    TaskServiceResponse abortTask(Nexus nexus);
-   
+
    /**
     * Aborts all tasks that were created by the SCSI initiator port and routed through the SCSI
     * target port indicated by the given I_T_L nexus.
@@ -54,7 +87,7 @@ public interface LogicalUnit
     *    {@value TaskServiceResponse#FUNCTION_REJECTED} when not aborted.
     */
    TaskServiceResponse abortTaskSet(Nexus nexus);
-   
+
    /**
     * Aborts all tasks in the appropriate task set as defined by the <code>TST</code> field
     * in the Control mode page (see SPC-2).
@@ -64,14 +97,13 @@ public interface LogicalUnit
     *    {@value TaskServiceResponse#FUNCTION_REJECTED} when not cleared.
     */
    TaskServiceResponse clearTaskSet(Nexus nexus);
-   
+
    /**
     * Resets this Logical Unit as required by the SAM-2 <code>LOGICAL UNIT RESET</code> function.
     * @returns {@value TaskServiceResponse#FUNCTION_COMPLETE} when reset successfully or
     *    {@value TaskServiceResponse#FUNCTION_REJECTED} when not reset.
     */
    TaskServiceResponse reset();
-   
 
    /**
     * Starts this logical unit. Called by a running target when the logical unit is registered.

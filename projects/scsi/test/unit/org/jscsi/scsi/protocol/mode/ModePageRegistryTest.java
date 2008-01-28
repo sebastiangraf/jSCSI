@@ -1,38 +1,38 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
 //
-// Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
 //
-// Cleversafe Dispersed Storage(TM) is software for secure, private and
-// reliable storage of the world's data using information dispersal.
+//Copyright (C) 2005-2007 Cleversafe, Inc.
 //
-// Copyright (C) 2005-2007 Cleversafe, Inc.
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
 //
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or (at your option) any later version.
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
 //
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
 //
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
-// USA.
-//
-// Contact Information: Cleversafe, 10 W. 35th Street, 16th Floor #84,
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
 // Chicago IL 60616
-// email licensing@cleversafe.org
+// email: licensing@cleversafe.org
 //
-// END-OF-HEADER
+//END-OF-HEADER
 //-----------------------
-// Author: wleggette
-//
-// Date: Nov 15, 2007
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
 //---------------------
 
 package org.jscsi.scsi.protocol.mode;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -49,11 +49,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-// TODO: Describe class or interface
+//TODO: Describe class or interface
 public class ModePageRegistryTest
 {
    private static Logger _logger = Logger.getLogger(ModePageRegistryTest.class);
-   
+
    private static class TestModePage extends ModePage
    {
 
@@ -102,15 +102,9 @@ public class ModePageRegistryTest
       {
          return "<TestModePage (" + this.getPageCode() + "," + this.getSubPageCode() + ")>";
       }
-      
-      
-      
-      
-      
-      
-      
+
    }
-   
+
    private static class TestModePageRegistry extends ModePageRegistry
    {
       @Override
@@ -118,10 +112,9 @@ public class ModePageRegistryTest
       {
          // does nothing
       }
-      
+
    }
-   
-   
+
    @BeforeClass
    public static void setUpBeforeClass() throws Exception
    {
@@ -141,35 +134,35 @@ public class ModePageRegistryTest
    public void tearDown() throws Exception
    {
    }
-   
-   private static void register( ModePageRegistry registry, byte pageCode, int subPageCode )
+
+   private static void register(ModePageRegistry registry, byte pageCode, int subPageCode)
    {
       registry.register(pageCode, subPageCode, new TestModePage(pageCode, subPageCode, 0));
    }
-   
-   private static void register( ModePageRegistry registry, byte pageCode )
+
+   private static void register(ModePageRegistry registry, byte pageCode)
    {
       registry.register(pageCode, new TestModePage(pageCode, 0));
    }
-   
-   private static void register( ModePageRegistry registry, byte[] pageCodes )
+
+   private static void register(ModePageRegistry registry, byte[] pageCodes)
    {
-      for ( byte pageCode : pageCodes )
+      for (byte pageCode : pageCodes)
       {
          register(registry, pageCode);
       }
    }
-   
+
    private static void check(Collection<ModePage> pages, byte pageCode, int subPageCode)
    {
-      if ( ! pages.contains(new TestModePage(pageCode, subPageCode, 0)) )
+      if (!pages.contains(new TestModePage(pageCode, subPageCode, 0)))
       {
-         fail("Returned mode page list did not contain page: (" 
-               + pageCode + "," + subPageCode + ")");
+         fail("Returned mode page list did not contain page: (" + pageCode + "," + subPageCode
+               + ")");
       }
-      
+
    }
-   
+
    private static ModePageRegistry getFixedRegistry()
    {
       /*
@@ -187,16 +180,16 @@ public class ModePageRegistryTest
        * 
        */
       ModePageRegistry registry = new TestModePageRegistry();
-      
-      register(registry, (byte)0x00, 0x00);
-      register(registry, (byte)0x01, 0x00);
-      register(registry, (byte)0x01, 0x01);
-      register(registry, (byte)0x02, 0x02);
-      register(registry, (byte)0x03, 0x00);
-      register(registry, (byte)0x04, 0x00);
-      register(registry, (byte)0x04, 0x01);
-      register(registry, (byte)0x05, 0x00);
-      
+
+      register(registry, (byte) 0x00, 0x00);
+      register(registry, (byte) 0x01, 0x00);
+      register(registry, (byte) 0x01, 0x01);
+      register(registry, (byte) 0x02, 0x02);
+      register(registry, (byte) 0x03, 0x00);
+      register(registry, (byte) 0x04, 0x00);
+      register(registry, (byte) 0x04, 0x01);
+      register(registry, (byte) 0x05, 0x00);
+
       return registry;
    }
 
@@ -220,20 +213,20 @@ public class ModePageRegistryTest
        * 
        */
       ModePageRegistry registry = getFixedRegistry();
-      
-      assertEquals("Content query failed", true, registry.contains((byte)0x00));
-      assertEquals("Content query failed", true, registry.contains((byte)0x01));
-      assertEquals("Content query failed", true, registry.contains((byte)0x02));
-      assertEquals("Content query failed", true, registry.contains((byte)0x03));
-      assertEquals("Content query failed", true, registry.contains((byte)0x04));
-      assertEquals("Content query failed", true, registry.contains((byte)0x05));
-      assertEquals("Content query failed", false, registry.contains((byte)0x06));
-      assertEquals("Content query failed", false, registry.contains((byte)0x07));
+
+      assertEquals("Content query failed", true, registry.contains((byte) 0x00));
+      assertEquals("Content query failed", true, registry.contains((byte) 0x01));
+      assertEquals("Content query failed", true, registry.contains((byte) 0x02));
+      assertEquals("Content query failed", true, registry.contains((byte) 0x03));
+      assertEquals("Content query failed", true, registry.contains((byte) 0x04));
+      assertEquals("Content query failed", true, registry.contains((byte) 0x05));
+      assertEquals("Content query failed", false, registry.contains((byte) 0x06));
+      assertEquals("Content query failed", false, registry.contains((byte) 0x07));
    }
 
    @Test
    public void testContainsByteInt()
-   {      
+   {
       /*
        * Test with fixed test registry.
        * 
@@ -254,21 +247,21 @@ public class ModePageRegistryTest
        * 0x06, 0x01        false
        */
       ModePageRegistry registry = getFixedRegistry();
-      
-      assertEquals("Content query failed", true, registry.contains((byte)0x00, 0x00));
-      assertEquals("Content query failed", false, registry.contains((byte)0x00, 0x01));
-      assertEquals("Content query failed", true, registry.contains((byte)0x01, 0x00));
-      assertEquals("Content query failed", true, registry.contains((byte)0x01, 0x01));
-      assertEquals("Content query failed", false, registry.contains((byte)0x01, 0x02));
-      assertEquals("Content query failed", false, registry.contains((byte)0x02, 0x00));
-      assertEquals("Content query failed", true, registry.contains((byte)0x02, 0x02));
-      assertEquals("Content query failed", true, registry.contains((byte)0x03, 0x00));
-      assertEquals("Content query failed", true, registry.contains((byte)0x04, 0x00));
-      assertEquals("Content query failed", true, registry.contains((byte)0x04, 0x01));
-      assertEquals("Content query failed", true, registry.contains((byte)0x05, 0x00));
-      assertEquals("Content query failed", false, registry.contains((byte)0x06, 0x00));
-      assertEquals("Content query failed", false, registry.contains((byte)0x06, 0x01));
-      
+
+      assertEquals("Content query failed", true, registry.contains((byte) 0x00, 0x00));
+      assertEquals("Content query failed", false, registry.contains((byte) 0x00, 0x01));
+      assertEquals("Content query failed", true, registry.contains((byte) 0x01, 0x00));
+      assertEquals("Content query failed", true, registry.contains((byte) 0x01, 0x01));
+      assertEquals("Content query failed", false, registry.contains((byte) 0x01, 0x02));
+      assertEquals("Content query failed", false, registry.contains((byte) 0x02, 0x00));
+      assertEquals("Content query failed", true, registry.contains((byte) 0x02, 0x02));
+      assertEquals("Content query failed", true, registry.contains((byte) 0x03, 0x00));
+      assertEquals("Content query failed", true, registry.contains((byte) 0x04, 0x00));
+      assertEquals("Content query failed", true, registry.contains((byte) 0x04, 0x01));
+      assertEquals("Content query failed", true, registry.contains((byte) 0x05, 0x00));
+      assertEquals("Content query failed", false, registry.contains((byte) 0x06, 0x00));
+      assertEquals("Content query failed", false, registry.contains((byte) 0x06, 0x01));
+
    }
 
    @Test
@@ -283,27 +276,26 @@ public class ModePageRegistryTest
        * false             [(0,0), (1,0), (3,0), (4,0), (5,0)]
        */
       ModePageRegistry registry = getFixedRegistry();
-      
-      
+
       Collection<ModePage> pages = registry.get(true);
       System.out.println(pages);
       assertEquals("Too many returned pages", 8, pages.size());
-      check(pages, (byte)0, 0);
-      check(pages, (byte)1, 0);
-      check(pages, (byte)1, 1);
-      check(pages, (byte)2, 2);
-      check(pages, (byte)3, 0);
-      check(pages, (byte)4, 0);
-      check(pages, (byte)4, 1);
-      check(pages, (byte)5, 0);
-      
+      check(pages, (byte) 0, 0);
+      check(pages, (byte) 1, 0);
+      check(pages, (byte) 1, 1);
+      check(pages, (byte) 2, 2);
+      check(pages, (byte) 3, 0);
+      check(pages, (byte) 4, 0);
+      check(pages, (byte) 4, 1);
+      check(pages, (byte) 5, 0);
+
       pages = registry.get(false);
       assertEquals("Too many returned pages", 5, pages.size());
-      check(pages, (byte)0, 0);
-      check(pages, (byte)1, 0);
-      check(pages, (byte)3, 0);
-      check(pages, (byte)4, 0);
-      check(pages, (byte)5, 0);
+      check(pages, (byte) 0, 0);
+      check(pages, (byte) 1, 0);
+      check(pages, (byte) 3, 0);
+      check(pages, (byte) 4, 0);
+      check(pages, (byte) 5, 0);
    }
 
    @Test
@@ -323,46 +315,45 @@ public class ModePageRegistryTest
        * 0x06              []
        */
       ModePageRegistry registry = getFixedRegistry();
-      
-      
-      Collection<ModePage> pages = registry.get((byte)0x00);
+
+      Collection<ModePage> pages = registry.get((byte) 0x00);
       assertEquals("Too many returned pages", 1, pages.size());
-      check(pages, (byte)0, 0);
-      
-      pages = registry.get((byte)0x01);
+      check(pages, (byte) 0, 0);
+
+      pages = registry.get((byte) 0x01);
       assertEquals("Too many returned pages", 2, pages.size());
-      check(pages, (byte)1, 0);
-      check(pages, (byte)1, 1);
-      
-      pages = registry.get((byte)0x02);
+      check(pages, (byte) 1, 0);
+      check(pages, (byte) 1, 1);
+
+      pages = registry.get((byte) 0x02);
       assertEquals("Too many returned pages", 1, pages.size());
-      check(pages, (byte)2, 2);
-      
-      pages = registry.get((byte)0x03);
+      check(pages, (byte) 2, 2);
+
+      pages = registry.get((byte) 0x03);
       assertEquals("Too many returned pages", 1, pages.size());
-      check(pages, (byte)3, 0);
-      
-      pages = registry.get((byte)0x04);
+      check(pages, (byte) 3, 0);
+
+      pages = registry.get((byte) 0x04);
       assertEquals("Too many returned pages", 2, pages.size());
-      check(pages, (byte)4, 0);
-      check(pages, (byte)4, 1);
-      
-      pages = registry.get((byte)0x01);
+      check(pages, (byte) 4, 0);
+      check(pages, (byte) 4, 1);
+
+      pages = registry.get((byte) 0x01);
       assertEquals("Too many returned pages", 2, pages.size());
-      check(pages, (byte)1, 0);
-      check(pages, (byte)1, 1);
-      
-      pages = registry.get((byte)0x05);
+      check(pages, (byte) 1, 0);
+      check(pages, (byte) 1, 1);
+
+      pages = registry.get((byte) 0x05);
       assertEquals("Too many returned pages", 1, pages.size());
-      check(pages, (byte)5, 0);
-      
-      pages = registry.get((byte)0x06);
+      check(pages, (byte) 5, 0);
+
+      pages = registry.get((byte) 0x06);
       assertEquals("Too many returned pages", null, pages);
    }
 
    @Test
    public void testGetByteInt()
-   {      
+   {
       /*
        * Test with fixed test registry.
        * 
@@ -383,22 +374,20 @@ public class ModePageRegistryTest
        * 0x06, 0x01        null
        */
       ModePageRegistry registry = getFixedRegistry();
-      
-      assertTrue("Returned invalid mode page", registry.get((byte)0x00, 0x00) != null);
-      assertTrue("Returned invalid mode page", registry.get((byte)0x00, 0x01) == null);
-      assertTrue("Returned invalid mode page", registry.get((byte)0x01, 0x00) != null);
-      assertTrue("Returned invalid mode page", registry.get((byte)0x01, 0x01) != null);
-      assertTrue("Returned invalid mode page", registry.get((byte)0x01, 0x02) == null);
-      assertTrue("Returned invalid mode page", registry.get((byte)0x02, 0x00) == null);
-      assertTrue("Returned invalid mode page", registry.get((byte)0x02, 0x02) != null);
-      assertTrue("Returned invalid mode page", registry.get((byte)0x03, 0x00) != null);
-      assertTrue("Returned invalid mode page", registry.get((byte)0x04, 0x00) != null);
-      assertTrue("Returned invalid mode page", registry.get((byte)0x04, 0x01) != null);
-      assertTrue("Returned invalid mode page", registry.get((byte)0x05, 0x00) != null);
-      assertTrue("Returned invalid mode page", registry.get((byte)0x06, 0x00) == null);
-      assertTrue("Returned invalid mode page", registry.get((byte)0x06, 0x01) == null);
+
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x00, 0x00) != null);
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x00, 0x01) == null);
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x01, 0x00) != null);
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x01, 0x01) != null);
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x01, 0x02) == null);
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x02, 0x00) == null);
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x02, 0x02) != null);
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x03, 0x00) != null);
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x04, 0x00) != null);
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x04, 0x01) != null);
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x05, 0x00) != null);
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x06, 0x00) == null);
+      assertTrue("Returned invalid mode page", registry.get((byte) 0x06, 0x01) == null);
    }
 
 }
-
-

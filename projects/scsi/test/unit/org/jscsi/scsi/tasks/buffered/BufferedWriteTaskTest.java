@@ -1,3 +1,36 @@
+//Cleversafe open-source code header - Version 1.1 - December 1, 2006
+//
+//Cleversafe Dispersed Storage(TM) is software for secure, private and
+//reliable storage of the world's data using information dispersal.
+//
+//Copyright (C) 2005-2007 Cleversafe, Inc.
+//
+//This program is free software; you can redistribute it and/or
+//modify it under the terms of the GNU General Public License
+//as published by the Free Software Foundation; either version 2
+//of the License, or (at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program; if not, write to the Free Software
+//Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+//USA.
+//
+//Contact Information: 
+// Cleversafe, 10 W. 35th Street, 16th Floor #84,
+// Chicago IL 60616
+// email: licensing@cleversafe.org
+//
+//END-OF-HEADER
+//-----------------------
+//@author: John Quigley <jquigley@cleversafe.com>
+//@date: January 1, 2008
+//---------------------
+
 package org.jscsi.scsi.tasks.buffered;
 
 import static org.junit.Assert.assertEquals;
@@ -17,15 +50,15 @@ import org.junit.Test;
 public class BufferedWriteTaskTest extends BufferTestTask
 {
    private static Logger _logger = Logger.getLogger(BufferedWriteTaskTest.class);
-   
+
    private static final int WRITE_BLOCKS = 10;
-   
+
    private static int cmdRef = 0;
-   
+
    private Random rnd = new Random();
 
    /////////////////////////////////////////////////////////////////////////////
-   
+
    @Test
    public void testWrite6inMemory()
    {
@@ -39,7 +72,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
       this.purgeDeviceData();
       cmdRef++;
    }
-   
+
    @Test
    public void testWrite6inFile()
    {
@@ -53,7 +86,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
       this.purgeDeviceData();
       cmdRef++;
    }
-   
+
    @Test
    public void testWrite10inMemory()
    {
@@ -67,7 +100,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
       this.purgeDeviceData();
       cmdRef++;
    }
-   
+
    @Test
    public void testWrite10inFile()
    {
@@ -81,7 +114,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
       this.purgeDeviceData();
       cmdRef++;
    }
-   
+
    @Test
    public void testWrite12InMemory()
    {
@@ -95,7 +128,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
       this.purgeDeviceData();
       cmdRef++;
    }
-   
+
    @Test
    public void testWrite12InFile()
    {
@@ -109,7 +142,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
       this.purgeDeviceData();
       cmdRef++;
    }
-   
+
    @Test
    public void testWrite16inMemory()
    {
@@ -123,7 +156,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
       this.purgeDeviceData();
       cmdRef++;
    }
-   
+
    @Test
    public void testWrite16inFile()
    {
@@ -137,7 +170,6 @@ public class BufferedWriteTaskTest extends BufferTestTask
       this.purgeDeviceData();
       cmdRef++;
    }
-   
 
    /**
     * Verify that the data was properly placed into the device's buffer
@@ -147,18 +179,17 @@ public class BufferedWriteTaskTest extends BufferTestTask
    private void verifyDeviceBuffer(ByteBuffer writtenData, ByteBuffer deviceData, int lba)
    {
       final int bytesWritten = WRITE_BLOCKS * STORE_BLOCK_SIZE;
-      
+
       assertNotNull(deviceData);
       assertNotNull(writtenData);
-      
+
       deviceData.rewind();
       writtenData.rewind();
-      
-      
-      for (int i=0; i<STORE_CAPACITY; i++)
+
+      for (int i = 0; i < STORE_CAPACITY; i++)
       {
          byte d = deviceData.get();
-         
+
          if (i < (lba * STORE_BLOCK_SIZE))
          {
             assertEquals(0, d);
@@ -174,7 +205,7 @@ public class BufferedWriteTaskTest extends BufferTestTask
          }
       }
    }
-   
+
    private int generateRandomLBA()
    {
       return Math.abs(rnd.nextInt()) % ((STORE_CAPACITY / STORE_BLOCK_SIZE) - WRITE_BLOCKS);
