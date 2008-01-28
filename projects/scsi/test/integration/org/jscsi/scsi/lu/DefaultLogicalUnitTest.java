@@ -35,7 +35,6 @@ package org.jscsi.scsi.lu;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Command;
@@ -59,8 +58,6 @@ import org.jscsi.scsi.tasks.management.DefaultTaskManager;
 import org.jscsi.scsi.tasks.management.DefaultTaskSet;
 import org.jscsi.scsi.tasks.management.TaskManager;
 import org.jscsi.scsi.tasks.management.TaskSet;
-import org.jscsi.scsi.transport.Nexus;
-import org.jscsi.scsi.transport.TargetTransportPort;
 import org.jscsi.scsi.transport.TestTargetTransportPort;
 import org.junit.After;
 import org.junit.AfterClass;

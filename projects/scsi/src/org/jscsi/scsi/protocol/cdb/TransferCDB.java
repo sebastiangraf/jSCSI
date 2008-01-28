@@ -33,8 +33,6 @@
 
 package org.jscsi.scsi.protocol.cdb;
 
-import org.apache.log4j.Logger;
-
 /**
  * A SCSI command descriptor block (CDB) for a command which performs data transfer.
  */

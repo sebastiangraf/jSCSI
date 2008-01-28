@@ -39,7 +39,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -49,7 +48,6 @@ import org.junit.Test;
 //TODO: Describe class or interface
 public class BitFieldValueTest
 {
-   private static Logger _logger = Logger.getLogger(BitFieldValueTest.class);
 
    @BeforeClass
    public static void setUpBeforeClass() throws Exception

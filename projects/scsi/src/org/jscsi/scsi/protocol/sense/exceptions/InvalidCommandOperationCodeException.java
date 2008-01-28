@@ -39,6 +39,7 @@ import org.jscsi.scsi.protocol.sense.additional.FieldPointer;
 //TODO: Describe class or interface
 public class InvalidCommandOperationCodeException extends IllegalRequestException
 {
+   private static final long serialVersionUID = -8517939119703217907L;
 
    public InvalidCommandOperationCodeException()
    {

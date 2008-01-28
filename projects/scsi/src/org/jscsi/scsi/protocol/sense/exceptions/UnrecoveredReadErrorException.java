@@ -44,6 +44,7 @@ import org.jscsi.scsi.protocol.sense.additional.SenseKeySpecificField;
 //TODO: Describe class or interface
 public class UnrecoveredReadErrorException extends MediumErrorException
 {
+   private static final long serialVersionUID = -8718835109759881152L;
 
    private long LBA;
    private byte[] logicalBlockAddress;

@@ -39,6 +39,7 @@ import org.jscsi.scsi.protocol.sense.additional.SenseKeySpecificField;
 //TODO: Describe class or interface
 public class LogicalUnitNotSupportedAbortedException extends SenseException
 {
+   private static final long serialVersionUID = 8420193520804925613L;
 
    public LogicalUnitNotSupportedAbortedException()
    {

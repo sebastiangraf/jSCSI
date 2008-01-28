@@ -40,6 +40,8 @@ import org.jscsi.scsi.protocol.sense.additional.SenseKeySpecificField;
 public class SynchronousDataTransferErrorException extends SenseException
 {
 
+   private static final long serialVersionUID = -4873197262150807908L;
+
    public SynchronousDataTransferErrorException()
    {
       super(KCQ.SYNCHRONOUS_DATA_TRANSFER_ERROR, true);

@@ -39,6 +39,7 @@ import org.jscsi.scsi.protocol.sense.additional.FieldPointer;
 //TODO: Describe class or interface
 public class LogicalUnitNotSupportedException extends IllegalRequestException
 {
+   private static final long serialVersionUID = 2168812902720645413L;
 
    public LogicalUnitNotSupportedException()
    {

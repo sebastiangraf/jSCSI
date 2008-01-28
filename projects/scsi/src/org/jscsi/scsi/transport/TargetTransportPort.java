@@ -33,10 +33,10 @@
 
 package org.jscsi.scsi.transport;
 
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.core.scsi.Status;
-import org.jscsi.scsi.target.Target;
 
 /**
  * The SCSI Target Transport Port provides an interface to the Service Delivery Subsystem services

@@ -34,11 +34,8 @@
 package org.jscsi.scsi.protocol.sense.exceptions;
 
 import java.io.IOException;
-import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.jscsi.scsi.protocol.sense.FixedSenseData;
 import org.jscsi.scsi.protocol.sense.KCQ;
@@ -120,9 +117,6 @@ public abstract class SenseException extends Exception
          }
       }
    }
-
-   private static Map<KCQ, Class<? extends SenseException>> _exceptions =
-         new HashMap<KCQ, Class<? extends SenseException>>();
 
    static
    {

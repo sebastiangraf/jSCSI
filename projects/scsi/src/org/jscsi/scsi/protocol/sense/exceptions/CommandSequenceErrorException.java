@@ -33,16 +33,13 @@
 
 package org.jscsi.scsi.protocol.sense.exceptions;
 
-import java.io.IOException;
-import java.nio.BufferOverflowException;
-import java.nio.ByteBuffer;
-
 import org.jscsi.scsi.protocol.sense.KCQ;
 import org.jscsi.scsi.protocol.sense.additional.FieldPointer;
 
 //TODO: Describe class or interface
 public class CommandSequenceErrorException extends IllegalRequestException
 {
+   private static final long serialVersionUID = 8285535356444371423L;
 
    public CommandSequenceErrorException()
    {

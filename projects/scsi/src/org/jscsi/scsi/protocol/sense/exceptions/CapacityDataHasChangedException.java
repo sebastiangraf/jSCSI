@@ -38,6 +38,7 @@ import org.jscsi.scsi.protocol.sense.KCQ;
 //TODO: Describe class or interface
 public class CapacityDataHasChangedException extends ParametersChangedException
 {
+   private static final long serialVersionUID = -4994497004250340252L;
 
    public CapacityDataHasChangedException()
    {

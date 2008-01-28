@@ -133,7 +133,7 @@ public enum SenseKey
       {
          SenseKey.mapping = new HashMap<Integer, SenseKey>();
       }
-      Map<Integer, SenseKey> map = SenseKey.mapping;
+
       SenseKey.mapping.put(value, this);
       this.value = value;
    }

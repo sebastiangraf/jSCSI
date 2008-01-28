@@ -36,6 +36,7 @@ package org.jscsi.scsi.protocol.sense.exceptions;
 //TODO: Describe class or interface
 public class ParameterNotSupportedException extends InvalidFieldInParameterListException
 {
+   private static final long serialVersionUID = 8400695630399232397L;
 
    public ParameterNotSupportedException(boolean current, byte bitPointer, int fieldPointer)
    {

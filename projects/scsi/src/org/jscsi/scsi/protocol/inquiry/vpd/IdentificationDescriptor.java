@@ -37,12 +37,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
-
 public class IdentificationDescriptor
 {
-   private static Logger _logger = Logger.getLogger(IdentificationDescriptor.class);
-
    private IdentifierType identifierType;
 
    private int protocolIdentifier;

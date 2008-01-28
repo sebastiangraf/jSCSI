@@ -35,11 +35,12 @@ package org.jscsi.scsi.protocol.sense.exceptions;
 
 import org.jscsi.scsi.protocol.sense.KCQ;
 import org.jscsi.scsi.protocol.sense.additional.FieldPointer;
-import org.jscsi.scsi.protocol.sense.additional.SenseKeySpecificField;
 
 //TODO: Describe class or interface
 public class LogicalBlockAddressOutOfRangeException extends IllegalRequestException
 {
+   private static final long serialVersionUID = -6208018053285032168L;
+
    private FieldPointer fieldPointer;
 
    /**
