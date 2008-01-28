@@ -191,7 +191,7 @@ public class Target {
 					.parseGlobalConfig();
 			//descriptorLoader = new TargetTaskLoader(configuration);
 			taskLibrary = TargetTaskLibrary.getInstance();
-			taskLibrary.loadFrom(configuration);
+			taskLibrary.loadFromConfiguration(configuration);
 			// Singleton.setInstance(descriptorLoader);
 			targetSessionIdentifyingHandleFactory = new TSIHFactory();
 			Singleton.setInstance(targetSessionIdentifyingHandleFactory);

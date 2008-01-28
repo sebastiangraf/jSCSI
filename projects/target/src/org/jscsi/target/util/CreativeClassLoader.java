@@ -16,12 +16,31 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jscsi.target.task.TargetTaskLibrary;
 
+/**
+ * <b>Experimental Stage</b>
+ * <br><p>
+ * The <code>CreativeClassLoader</code> is an extended Class loader,
+ * that offers more functionality.
+ * </p><br>
+ * Especially the CreaitveClassLoader will have functionality to solve the following Problems.
+ * <br> 
+ * <ul>
+ * <li>Loading a class from a give byte code</li>
+ * <li>Loading a class who's byte code is stored in a file locally or remotely.
+ * Thus using standard java location descriptors like: URL, file</li>
+ * <li>Loading locations recursively, from a root directory.</li>
+ * <li>Loading classes only if they implement or extend a special type</li>
+ * </ul>
+ * @author specht
+ *
+ */
 public class CreativeClassLoader extends ClassLoader {
 
 	/** The Log interface. */
 	private static final Log LOGGER = LogFactory
 			.getLog(FileSystemClassLoader.class);
 
+	/**This map will contain every loaded  **/
 	private static final Map<String, Class<?>> additionalLoadedClasses = new ConcurrentHashMap<String, Class<?>>();
 
 	private static Map<Integer, String> linkedClassBytes = new ConcurrentHashMap<Integer, String>();
@@ -188,7 +207,6 @@ public class CreativeClassLoader extends ClassLoader {
 
 	public final Class<?> defineAndLoadClass(byte[] code)
 			throws CreativeClassLoaderException {
-
 		if (linkedClassBytes.containsKey(Arrays.hashCode(code))) {
 			return additionalLoadedClasses.get(linkedClassBytes.get(Arrays
 					.hashCode(code)));
@@ -196,7 +214,6 @@ public class CreativeClassLoader extends ClassLoader {
 		Class<?> loadedClass = null;
 		try {
 			loadedClass = defineClass(null, code, 0, code.length);
-
 			resolveClass(loadedClass);
 			loadedClass = loadClass(loadedClass.getName());
 		} catch (ClassNotFoundException e) {

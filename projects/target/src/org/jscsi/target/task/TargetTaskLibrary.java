@@ -1,6 +1,7 @@
 package org.jscsi.target.task;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,24 +21,37 @@ import org.jscsi.target.task.abstracts.TaskDescriptor;
 import org.jscsi.target.util.CreativeClassLoader;
 import org.jscsi.target.util.Singleton;
 
+/**
+ * The Target Task Library contains and offers every Task, State and Descriptors that were loaded before.
+ * 
+ * @author marcus specht
+ *
+ */
 public class TargetTaskLibrary {
 
 	/** The Log interface. */
 	private static final Log LOGGER = LogFactory.getLog(TargetTaskLoader.class);
 
-	/** A Set of TaskDescriptors mapped by their opcodes * */
+	/** A Set of TaskDescriptors mapped by their full class names **/
 	private static final Map<String, Class<? extends AbstractTaskDescriptor>> loadedTaskDescriptors = new ConcurrentHashMap<String, Class<? extends AbstractTaskDescriptor>>();
-
+	
+	/** A Set of TextOperationDescriptors mapped by their full class names **/
 	private static final Map<String, Class<? extends AbstractTextOperationDescriptor>> loadedTextOperationDescriptors = new ConcurrentHashMap<String, Class<? extends AbstractTextOperationDescriptor>>();
-
+	
+	/** A Set of TextOperations mapped by their full class names **/
 	private static final Map<String, Class<? extends AbstractTextOperation>> loadedTextOperations = new ConcurrentHashMap<String, Class<? extends AbstractTextOperation>>();
 
-	private static final Map<String, Class<? extends AbstractTextOperationState>> loadedTextOperationState = new ConcurrentHashMap<String, Class<? extends AbstractTextOperationState>>();
+	/** A Set of TextOperationStates mapped by their full class names **/
+	private static final Map<String, Class<? extends AbstractTextOperationState>> loadedTextOperationStates = new ConcurrentHashMap<String, Class<? extends AbstractTextOperationState>>();
 
+	/** A Set of Tasks mapped by their full class names **/
 	private static final Map<String, Class<? extends AbstractTask>> loadedTasks = new ConcurrentHashMap<String, Class<? extends AbstractTask>>();
-
+	
+	/** A Set of States mapped by their full class names **/
 	private static final Map<String, Class<? extends AbstractState>> loadedStates = new ConcurrentHashMap<String, Class<? extends AbstractState>>();
-
+	
+	
+	
 	private static final CreativeClassLoader classLoader = CreativeClassLoader
 			.getInstance();
 
@@ -46,7 +60,7 @@ public class TargetTaskLibrary {
 	}
 
 	private TargetTaskLibrary(TargetConfiguration conf) {
-		loadFrom(conf);
+		loadFromConfiguration(conf);
 	}
 
 	/**
@@ -112,22 +126,85 @@ public class TargetTaskLibrary {
 
 	}
 
+	/**
+	 * Returns the number of supported Opcodes that are stored within the library.
+	 * @return number of states
+	 */
 	public int getNumberOfSupportedOpcodes() {
-		return loadedTaskDescriptors.keySet().size();
+		//every supported opcode will be added, .size() will be the result 
+		Set<Byte> supportedOpcodes = new HashSet<Byte>();
+		for(Class<? extends AbstractTaskDescriptor> descClass : loadedTaskDescriptors.values()){
+			boolean error = false;
+			TaskDescriptor current = null;
+			// create new Instance of every stored Descriptor 
+			try {
+				current = descClass.newInstance();
+			} catch (InstantiationException e) {
+				error = true;
+			} catch (IllegalAccessException e) {
+				error = true;
+			}
+			// if no instance error occurred, add Opcode to counting set
+			if(!error){
+				supportedOpcodes.add(current.getSupportedOpcode().value());
+			}
+		}
+		return supportedOpcodes.size();
 	}
-
+	
+	
+	/**
+	 * Returns the number of Tasks that are stored within the library
+	 * @return number of Tasks
+	 */
 	public int getNumberOfAvailableTasks() {
 		return loadedTasks.keySet().size();
 	}
-
+	
+	/**
+	 * Returns the number of TaskDescriptors that are stored within the library
+	 * @return number of TaskDescriptors
+	 */
 	public int getNumberOfAvailableTaskDescriptors() {
 		return loadedTaskDescriptors.keySet().size();
 	}
-
+	
+	/**
+	 * Returns the number of states that are stored within the library
+	 * @return number of states
+	 */
 	public int getNumberOfAvailableStates() {
 		return loadedStates.keySet().size();
 	}
-
+	
+	/**
+	 * Returns the number of TextOperations that are stored within the library
+	 * @return number of TextOperations
+	 */
+	public int getNumberOfAvailableTextOperations() {
+		return loadedTasks.keySet().size();
+	}
+	
+	/**
+	 * Returns the number of TextOperationStates that are stored within the library
+	 * @return number of TextOperationStates
+	 */
+	public int getNumberOfAvailableTextOperationStates() {
+		return loadedTaskDescriptors.keySet().size();
+	}
+	
+	/**
+	 * Returns the number of TextOperationDescriptors that are stored within the library
+	 * @return number of TextOperationDescriptors
+	 */
+	public int getNumberOfAvailableTextOperationDescriptors() {
+		return loadedStates.keySet().size();
+	}
+	
+	/**
+	 * Returns a String containing info about the current state of the TargetTaskLibrary
+	 * @return info String
+	 */
 	public String getInfo() {
 		StringBuffer result = new StringBuffer();
 		result.append("TaskLibrary is supporting ");
@@ -157,33 +234,67 @@ public class TargetTaskLibrary {
 		return result.toString();
 	}
 
-	/*
-	 * public void addTaskDescriptor(TaskDescriptor descriptor) throws
-	 * ConflictedTaskException { byte opcode =
-	 * descriptor.getSupportedOpcode().value(); // check if a descriptor yet
-	 * exists, that has identical parameter if
-	 * (loadedTaskDescriptors.containsKey(opcode)) { for (TaskDescriptor
-	 * equalOpcode : loadedTaskDescriptors.get(opcode)) { if
-	 * (equalOpcode.compare((AbstractTaskDescriptor) descriptor)) { throw new
-	 * ConflictedTaskException( "Tried to load a TaskDescriptor that would
-	 * conflict with an already existing one: " +
-	 * descriptor.getClass().getName() + " and " +
-	 * equalOpcode.getClass().getName()); } } } // no collision, add
-	 * TaskDescriptor to library if (loadedTaskDescriptors.get(opcode) != null) {
-	 * loadedTaskDescriptors.get(opcode).add(descriptor); } Set<TaskDescriptor>
-	 * newSet = new HashSet<TaskDescriptor>(); newSet.add(descriptor);
-	 * loadedTaskDescriptors.put(opcode, newSet); }
-	 */
 
+	/**
+	 * Adds a TaskDescriptorClass to the library
+	 * @param newTaskDescriptor
+	 * @return the added class
+	 */
 	public Class<? extends AbstractTaskDescriptor> addTaskDescriptor(
 			Class<? extends AbstractTaskDescriptor> newTaskDescriptor) {
 		return addObject(newTaskDescriptor, loadedTaskDescriptors,
 				AbstractTaskDescriptor.class);
 	}
 
+	/**
+	 * Adds a TaskClass to the library
+	 * @param newTaskClass
+	 * @return the added class
+	 */
 	public Class<? extends AbstractTask> addTask(
 			Class<? extends AbstractTask> newTaskClass) {
 		return addObject(newTaskClass, loadedTasks, AbstractTask.class);
+	}
+	
+	/**
+	 * Adds a StateClass to the library
+	 * @param newState
+	 * @return the added class
+	 */
+	public Class<? extends AbstractState> addState(
+			Class<? extends AbstractState> newState) {
+		return addObject(newState, loadedStates, AbstractState.class);
+	}
+	
+	/**
+	 * Adds a TextOperationDescriptorClass to the library
+	 * @param newTextOperation
+	 * @return the added class
+	 */
+	public Class<? extends AbstractTextOperationDescriptor> addTextOperationDescriptor(
+			Class<? extends AbstractTextOperationDescriptor> newTaskDescriptor) {
+		return addObject(newTaskDescriptor, loadedTextOperationDescriptors,
+				AbstractTextOperationDescriptor.class);
+	}
+
+	/**
+	 * Adds a TextOperationClass to the library
+	 * @param newTextOperation
+	 * @return the added class
+	 */
+	public Class<? extends AbstractTextOperation> addTextOperation(
+			Class<? extends AbstractTextOperation> newTextOperation) {
+		return addObject(newTextOperation, loadedTextOperations, AbstractTextOperation.class);
+	}
+	
+	/**
+	 * Adds a TextOperationStateClass to the library
+	 * @param newTextOperationState
+	 * @return the added class
+	 */
+	public Class<? extends AbstractTextOperationState> addTextOperationState(
+			Class<? extends AbstractTextOperationState> newTextOperationState) {
+		return addObject(newTextOperationState, loadedTextOperationStates, AbstractTextOperationState.class);
 	}
 
 	/**
@@ -257,11 +368,8 @@ public class TargetTaskLibrary {
 		logDebug(error);
 		return null;
 	}
-
-	public Class<? extends AbstractState> addState(
-			Class<? extends AbstractState> newState) {
-		return addObject(newState, loadedStates, AbstractState.class);
-	}
+	
+	
 
 	public static TargetTaskLibrary getInstance() {
 		if (!Singleton.hasInstance(TargetTaskLibrary.class)) {
@@ -276,8 +384,13 @@ public class TargetTaskLibrary {
 		}
 		return instance;
 	}
-
-	public void loadFrom(TargetConfiguration conf) {
+	
+	/**
+	 * Loads every Descriptor, Task and State that is stored within the configuration or 
+	 * a stored valid source. 
+	 * @param conf the used TargetConfiguration
+	 */
+	public void loadFromConfiguration(TargetConfiguration conf) {
 		for (File file : conf.getTaskDescriptorDirectories()) {
 			Set<Class<? extends AbstractTaskDescriptor>> loadedTaskDescriptor = classLoader
 					.loadAllClassesHavingSuperclass(null, file, true,
