@@ -42,17 +42,14 @@ import java.io.DataOutputStream;
 import java.nio.BufferUnderflowException;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-//TODO: Describe class or interface
 public class ModePageRegistryTest
 {
-   private static Logger _logger = Logger.getLogger(ModePageRegistryTest.class);
 
    private static class TestModePage extends ModePage
    {
@@ -105,6 +102,7 @@ public class ModePageRegistryTest
 
    }
 
+   @SuppressWarnings("unchecked")
    private static class TestModePageRegistry extends ModePageRegistry
    {
       @Override
@@ -138,19 +136,6 @@ public class ModePageRegistryTest
    private static void register(ModePageRegistry registry, byte pageCode, int subPageCode)
    {
       registry.register(pageCode, subPageCode, new TestModePage(pageCode, subPageCode, 0));
-   }
-
-   private static void register(ModePageRegistry registry, byte pageCode)
-   {
-      registry.register(pageCode, new TestModePage(pageCode, 0));
-   }
-
-   private static void register(ModePageRegistry registry, byte[] pageCodes)
-   {
-      for (byte pageCode : pageCodes)
-      {
-         register(registry, pageCode);
-      }
    }
 
    private static void check(Collection<ModePage> pages, byte pageCode, int subPageCode)

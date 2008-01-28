@@ -44,6 +44,8 @@ import org.jscsi.scsi.protocol.sense.additional.SenseKeySpecificField;
 //TODO: Describe class or interface
 public class WriteErrorException extends MediumErrorException
 {
+   private static final long serialVersionUID = 8618668064348731367L;
+
    private long LBA;
    private byte[] logicalBlockAddress;
    private ActualRetryCount actualRetryCount;

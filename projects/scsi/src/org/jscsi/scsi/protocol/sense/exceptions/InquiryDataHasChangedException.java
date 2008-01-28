@@ -34,11 +34,12 @@
 package org.jscsi.scsi.protocol.sense.exceptions;
 
 import org.jscsi.scsi.protocol.sense.KCQ;
-import org.jscsi.scsi.protocol.sense.additional.SenseKeySpecificField;
 
 //TODO: Describe class or interface
 public class InquiryDataHasChangedException extends UnitAttentionException
 {
+   private static final long serialVersionUID = 304964452783314599L;
+
    public InquiryDataHasChangedException()
    {
       super(KCQ.INQUIRY_DATA_HAS_CHANGED);

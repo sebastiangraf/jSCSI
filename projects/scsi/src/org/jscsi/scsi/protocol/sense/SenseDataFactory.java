@@ -37,7 +37,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Serializer;
 import org.jscsi.scsi.protocol.sense.exceptions.SenseException.ResponseCode;
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
@@ -45,8 +44,7 @@ import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 //TODO: Describe class or interface
 public class SenseDataFactory implements Serializer
 {
-   private static Logger _logger = Logger.getLogger(SenseDataFactory.class);
-
+   @SuppressWarnings("unchecked")
    public SenseData decode(ByteBuffer buffer) throws IOException
    {
       DataInputStream in = new DataInputStream(new ByteBufferInputStream(buffer));
@@ -73,7 +71,7 @@ public class SenseDataFactory implements Serializer
       }
 
       sense.decode(new byte[]{
-            (byte) b1
+         (byte) b1
       }, buffer);
       return sense;
    }

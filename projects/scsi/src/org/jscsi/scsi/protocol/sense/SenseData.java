@@ -33,14 +33,10 @@
 
 package org.jscsi.scsi.protocol.sense;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.scsi.protocol.Encodable;
-import org.jscsi.scsi.protocol.Serializer;
 import org.jscsi.scsi.protocol.sense.additional.ActualRetryCount;
 import org.jscsi.scsi.protocol.sense.additional.FieldPointer;
 import org.jscsi.scsi.protocol.sense.additional.NoSenseKeySpecific;
@@ -85,22 +81,6 @@ public abstract class SenseData implements Encodable
    public byte getResponseCode()
    {
       return this.responseCode.code();
-   }
-
-   private boolean isFixed()
-   {
-      switch (this.responseCode)
-      {
-         case CURRENT_FIXED :
-            return true;
-         case DEFERRED_FIXED :
-            return true;
-         case CURRENT_DESCRIPTOR :
-            return false;
-         case DEFERRED_DESCRIPTOR :
-            return false;
-      }
-      return false;
    }
 
    public boolean isValid()

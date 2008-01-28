@@ -50,7 +50,6 @@ public class FixedSenseData extends SenseData
 {
 
    private static final int FIXED_SENSE_DATA_LENGTH = 18;
-   private static final int PRE_SIZE_LENGTH = 7; // 8 bytes - 1 pre-parsed byte
 
    private byte[] senseKeySpecificBuffer = null;
 

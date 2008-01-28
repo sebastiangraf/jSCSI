@@ -39,6 +39,7 @@ import org.jscsi.scsi.protocol.sense.additional.FieldPointer;
 //TODO: Describe class or interface
 public class InvalidFieldInCDBException extends IllegalRequestException
 {
+   private static final long serialVersionUID = -4485052960010123494L;
 
    FieldPointer fieldPointer;
 

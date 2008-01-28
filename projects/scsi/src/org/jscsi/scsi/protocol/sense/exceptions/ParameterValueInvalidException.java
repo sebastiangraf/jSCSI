@@ -37,6 +37,8 @@ package org.jscsi.scsi.protocol.sense.exceptions;
 public class ParameterValueInvalidException extends InvalidFieldInParameterListException
 {
 
+   private static final long serialVersionUID = 5936758692518328010L;
+
    public ParameterValueInvalidException(boolean current, byte bitPointer, int fieldPointer)
    {
       super(current, bitPointer, fieldPointer);

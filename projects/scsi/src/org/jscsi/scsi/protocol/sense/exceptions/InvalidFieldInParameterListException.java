@@ -39,6 +39,7 @@ import org.jscsi.scsi.protocol.sense.additional.FieldPointer;
 //TODO: Describe class or interface
 public class InvalidFieldInParameterListException extends IllegalRequestException
 {
+   private static final long serialVersionUID = 4850839451574409639L;
 
    FieldPointer fieldPointer;
 

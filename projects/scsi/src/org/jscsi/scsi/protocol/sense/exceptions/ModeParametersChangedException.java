@@ -38,6 +38,7 @@ import org.jscsi.scsi.protocol.sense.KCQ;
 //TODO: Describe class or interface
 public class ModeParametersChangedException extends ParametersChangedException
 {
+   private static final long serialVersionUID = 2118075287277658832L;
 
    public ModeParametersChangedException()
    {

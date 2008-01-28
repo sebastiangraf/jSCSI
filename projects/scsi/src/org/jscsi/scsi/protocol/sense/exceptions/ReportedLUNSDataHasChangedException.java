@@ -39,6 +39,8 @@ import org.jscsi.scsi.protocol.sense.KCQ;
 public class ReportedLUNSDataHasChangedException extends UnitAttentionException
 {
 
+   private static final long serialVersionUID = 2465726684184596937L;
+
    public ReportedLUNSDataHasChangedException()
    {
       super(KCQ.REPORTED_LUNS_DATA_HAS_CHANGED);

@@ -38,6 +38,7 @@ import org.jscsi.scsi.protocol.sense.KCQ;
 //TODO: Describe class or interface
 public class OverlappedCommandsAttemptedException extends AbortedCommandException
 {
+   private static final long serialVersionUID = 6598709119191757588L;
 
    public OverlappedCommandsAttemptedException(boolean current)
    {

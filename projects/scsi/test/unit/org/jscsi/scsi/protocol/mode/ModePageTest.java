@@ -35,7 +35,6 @@ package org.jscsi.scsi.protocol.mode;
 
 import static org.junit.Assert.fail;
 
-import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Serializer;
 import org.jscsi.scsi.protocol.SerializerTest;
 import org.junit.After;
@@ -47,7 +46,6 @@ import org.junit.Test;
 //TODO: Describe class or interface
 public class ModePageTest
 {
-   private static Logger _logger = Logger.getLogger(ModePageTest.class);
 
    private static final String DEFAULT_PACKAGE = "org.jscsi.scsi.protocol.mode";
 

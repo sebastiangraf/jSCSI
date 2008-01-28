@@ -74,6 +74,8 @@ public class ModeSenseTaskTest
 
    public static class ModeSenseException extends Exception
    {
+      private static final long serialVersionUID = -7600550897640999759L;
+
       private static Logger _logger = Logger.getLogger(ModeSenseException.class);
 
       private Status status;

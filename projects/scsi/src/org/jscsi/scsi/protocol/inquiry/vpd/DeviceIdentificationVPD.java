@@ -41,18 +41,15 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.util.ByteBufferInputStream;
 
 public class DeviceIdentificationVPD extends VPDPage
 {
-   private static Logger _logger = Logger.getLogger(DeviceIdentificationVPD.class);
-
    public static final int PAGE_CODE = 0x83;
 
    private int pageLength = 0;
    private List<IdentificationDescriptor> descriptorList =
-      new LinkedList<IdentificationDescriptor>();
+         new LinkedList<IdentificationDescriptor>();
 
    public DeviceIdentificationVPD(
          int peripheralQualifier,
@@ -135,7 +132,7 @@ public class DeviceIdentificationVPD extends VPDPage
    // utility
 
    private List<IdentificationDescriptor> parseDescriptorList(DataInputStream in)
-   throws IOException
+         throws IOException
    {
       List<IdentificationDescriptor> descriptorList = new LinkedList<IdentificationDescriptor>();
 

@@ -110,7 +110,7 @@ public class SerializerTest
 
    private class EncodableSpec
    {
-      private Class cls;
+      private Class<?> cls;
       private List<TagValue> tagList = new ArrayList<TagValue>();
 
       private List<EncodableSpec> instanceList = null;
@@ -141,7 +141,7 @@ public class SerializerTest
          dataBytes = null;
       }
 
-      public EncodableSpec(Class cls)
+      public EncodableSpec(Class<?> cls)
       {
          this.cls = cls;
          this.size = 0;
@@ -192,7 +192,8 @@ public class SerializerTest
          return this.cls.getName();
       }
 
-      public Class<Encodable> getClassObject()
+      @SuppressWarnings("unchecked")
+      public Class<?> getClassObject()
       {
          return this.cls;
       }
@@ -528,11 +529,6 @@ public class SerializerTest
       {
          throw exception;
       }
-   }
-
-   private List<EncodableSpec> getParsedSpecLines()
-   {
-      return parsedSpecLines;
    }
 
    private void parseOneSpec(String defaultPackage, String line)

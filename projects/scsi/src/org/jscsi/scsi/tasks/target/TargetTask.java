@@ -35,7 +35,6 @@ package org.jscsi.scsi.tasks.target;
 
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.jscsi.scsi.protocol.Command;
 import org.jscsi.scsi.protocol.inquiry.InquiryDataRegistry;
 import org.jscsi.scsi.protocol.mode.ModePageRegistry;
@@ -46,8 +45,6 @@ import org.jscsi.scsi.transport.TargetTransportPort;
 
 public abstract class TargetTask extends AbstractTask
 {
-   private static Logger _logger = Logger.getLogger(TargetTask.class);
-
    private Set<Long> logicalUnits;
 
    protected TargetTask(String name)

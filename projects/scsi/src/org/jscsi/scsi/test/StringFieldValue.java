@@ -38,12 +38,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 //TODO: Describe class or interface
 public class StringFieldValue implements FieldValue
 {
-   private static Logger _logger = Logger.getLogger(StringFieldValue.class);
    private String value;
 
    public int getBitLength()

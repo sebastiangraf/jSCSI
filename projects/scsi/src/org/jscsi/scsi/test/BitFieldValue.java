@@ -38,13 +38,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 //TODO: Describe class or interface
 public class BitFieldValue implements FieldValue
 {
-   private static Logger _logger = Logger.getLogger(BitFieldValue.class);
-
    public static final String LIST_HEAD = "[";
    public static final String LIST_TAIL = "]";
    public static final String HEX_HEAD = "0x";
