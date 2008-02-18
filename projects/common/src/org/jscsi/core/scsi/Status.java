@@ -277,6 +277,7 @@ public enum Status
       return Status.mapping.get(value);
    }
 
+   // TODO: talk to Manish about removing the switch statement below
    @Override
    public String toString()
    {
