@@ -54,8 +54,13 @@ import org.jscsi.scsi.protocol.Encodable;
  * Commands which do not require data transfer such as TEST UNIT READY will implement only this
  * interface.
  */
+
+
 public interface CDB extends Encodable
 {
+   
+   // TODO: make all methods here public
+
    /**
     * Returns the operation code associated with this CDB.
     */
