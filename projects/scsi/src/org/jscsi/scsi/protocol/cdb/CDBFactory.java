@@ -68,6 +68,7 @@ public class CDBFactory implements Serializer
       CDBFactory.register(RequestSense.OPERATION_CODE, RequestSense.class);
       CDBFactory.register(SendDiagnostic.OPERATION_CODE, SendDiagnostic.class);
       CDBFactory.register(TestUnitReady.OPERATION_CODE, TestUnitReady.class);
+      CDBFactory.register(Verify10.OPERATION_CODE, Verify10.class);
       CDBFactory.register(Write6.OPERATION_CODE, Write6.class);
       CDBFactory.register(Write10.OPERATION_CODE, Write10.class);
       CDBFactory.register(Write12.OPERATION_CODE, Write12.class);
