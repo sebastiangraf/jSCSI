@@ -1,0 +1,42 @@
+<project name="jscsi-scsi" default="dist">
+
+    <!-- Properties -->
+    <property name="lib.dir" value="lib" />
+    <property name="src.dir" value="src" />
+    <property name="test.unit.dir" value="test/unit" />
+    <property name="test.int.dir" value="test/integration" />
+    <property name="classes.dir" value="classes" />
+    <property name="jar.dir" value="jar" />
+
+    <tstamp>
+        <format property="version" pattern="yyyyMMddHHmmss"/>
+    </tstamp>
+
+    <!-- Libraries -->
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar" />
+    </path>
+
+    <!-- Compile -->
+    <target name="compile">
+        <mkdir dir="${classes.dir}" />
+        <javac srcdir="${src.dir}:${test.int.dir}" destdir="${classes.dir}" classpathref="classpath" debug="true" />
+    </target>
+
+    <!-- Jar -->
+    <target name="jar" depends="compile" >
+        <property file="${version}" />
+        <mkdir dir="${jar.dir}" />
+        <jar basedir="${classes.dir}" destfile="${jar.dir}/${ant.project.name}-${version}.jar" />
+    </target>
+
+    <!-- Clean -->
+    <target name="clean">
+        <delete dir="${classes.dir}" />
+        <delete dir="${jar.dir}" />
+    </target>
+
+    <!-- Dist -->
+    <target name="dist" depends="jar" />
+
+</project>
