@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration xmlns="http://www.jscsi.org/2006-09" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://www.jscsi.org/2006-09 jscsi.xsd">
+
+	<global>
+		<AuthMethod />
+		<DataDigest />
+		<DataPDUInOrder />
+		<DataSequenceInOrder />
+		<DefaultTime2Retain />
+		<DefaultTime2Wait />
+		<ErrorRecoveryLevel />
+		<FirstBurstLength />
+		<HeaderDigest />
+		<IFMarker />
+		<IFMarkInt />
+		<ImmediateData />
+		<InitialR2T>No</InitialR2T>
+		<MaxBurstLength />
+		<MaxConnections />
+		<MaxOutstandingR2T />
+		<MaxRecvDataSegmentLength>16384</MaxRecvDataSegmentLength>
+		<OFMarker />
+		<OFMarkInt />
+	</global>
+
+	<target id="disk1" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk1</TargetName>
+	</target>
+	
+	<target id="disk2" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk2</TargetName>
+	</target>
+	
+	<target id="disk3" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk3</TargetName>
+	</target>
+	
+	<target id="disk4" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk4</TargetName>
+	</target>
+	
+	<target id="disk5" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk5</TargetName>
+	</target>
+	
+	<target id="disk6" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk6</TargetName>
+	</target>
+	
+	<target id="disk7" address="134.34.165.154" port="3260">
+		<ImmediateData>Yes</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk7</TargetName>
+	</target>
+	
+	<target id="disk8" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk8</TargetName>
+	</target>
+	
+	<target id="disk9" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk9</TargetName>
+	</target>
+	
+	<target id="disk10" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk10</TargetName>
+	</target>
+	
+	<target id="disk11" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk11</TargetName>
+	</target>
+	
+	<target id="disk12" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk12</TargetName>
+	</target>
+	
+	<target id="disk13" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk13</TargetName>
+	</target>
+	
+	<target id="disk14" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk14</TargetName>
+	</target>
+	
+	<target id="disk15" address="134.34.165.154" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2006-10.de.uni-konstanz.inf.disy.idefix:storage.testdisk15</TargetName>
+	</target>
+	
+	<target id="titan04" address="134.34.57.84" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2007-03.de.uni-konstanz.inf.titan04:storage.disydisk</TargetName>
+	</target>
+
+	<target id="titan05" address="134.34.57.106" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2007-03.de.uni-konstanz.inf.titan05:storage.disydisk</TargetName>
+	</target>
+
+	<target id="titan06" address="134.34.57.120" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2007-03.de.uni-konstanz.inf.titan06:storage.disydisk</TargetName>
+	</target>
+
+	<target id="titan07" address="134.34.57.121" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2007-03.de.uni-konstanz.inf.titan07:storage.disydisk</TargetName>
+	</target>
+
+	<target id="titan08" address="134.34.57.122" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2007-03.de.uni-konstanz.inf.titan08:storage.disydisk</TargetName>
+	</target>
+
+	<target id="titan09" address="134.34.57.123" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2007-03.de.uni-konstanz.inf.titan09:storage.disydisk</TargetName>
+	</target>
+
+	<target id="titan10" address="134.34.57.124" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2007-03.de.uni-konstanz.inf.titan10:storage.disydisk</TargetName>
+	</target>
+
+	<target id="titan11" address="134.34.57.125" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2007-03.de.uni-konstanz.inf.titan11:storage.disydisk</TargetName>
+	</target>
+
+	<target id="titan12" address="134.34.57.126" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2007-03.de.uni-konstanz.inf.titan12:storage.disydisk</TargetName>
+	</target>
+
+	<target id="titan13" address="134.34.57.127" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2007-03.de.uni-konstanz.inf.titan13:storage.disydisk</TargetName>
+	</target>
+
+</configuration>
