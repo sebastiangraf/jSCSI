@@ -31,7 +31,8 @@ import org.junit.Test;
 
 public class WriteBufferDeviceTest {
 
-  private static final String TARGET_NAME = "disk6";
+  /** previous Target_Name -  "disk6" */
+  private static final String TARGET_NAME = "testing-xen2-disk1";
 
   private static WriteBufferDevice device;
 

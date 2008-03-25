@@ -37,9 +37,9 @@ public final class InitiatorTest {
 
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
-
+  /**previous Target_Name - "disk6" */
   /** Name of the device name on the iSCSI Target. */
-  private static final String TARGET_DRIVE_NAME = "disk6";
+  private static final String TARGET_DRIVE_NAME = "testing-xen2-disk1";
 
   /** The size (in bytes) of the buffer to use for reads and writes. */
   private static final int BUFFER_SIZE = 46 * 1024;
