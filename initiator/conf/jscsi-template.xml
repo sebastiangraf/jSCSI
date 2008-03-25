@@ -38,9 +38,7 @@
 		port="3260">
 		<ImmediateData>No</ImmediateData>
 		<InitiatorName>IdefixInitiator</InitiatorName>
-		<TargetName>
-			iqn.2007-10.de.uni-konstanz.inf.disy.xen2:disk1
-		</TargetName>
+		<TargetName>iqn.2007-10.de.uni-konstanz.inf.disy.xen2:disk1</TargetName>
 	</target>
 
 	<!-- "xen2.disy.inf.uni-konstanz.de" (134.34.165.133) is a vmlinux running an iSCSI Enterprise Target with 2 disks (files)-->
@@ -50,9 +48,7 @@
 		port="3260">
 		<ImmediateData>No</ImmediateData>
 		<InitiatorName>IdefixInitiator</InitiatorName>
-		<TargetName>
-			iqn.2007-10.de.uni-konstanz.inf.disy.xen2:disk2
-		</TargetName>
+		<TargetName>iqn.2007-10.de.uni-konstanz.inf.disy.xen2:disk2</TargetName>
 	</target>
 
 </configuration>

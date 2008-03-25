@@ -78,6 +78,7 @@ public final class InitiatorTest {
     randomGenerator.nextBytes(writeBuffer.array());
 
     initiator.createSession(TARGET_DRIVE_NAME);
+    System.out.println("created Session succesfull");
   }
   
   @AfterClass
@@ -98,7 +99,7 @@ public final class InitiatorTest {
   @Test
   public final void testReadCapacity() throws Exception {
 
-    assertEquals((long) 1975931, initiator.getCapacity(TARGET_DRIVE_NAME));
+    assertEquals((long) 2097151, initiator.getCapacity(TARGET_DRIVE_NAME));
     assertEquals((long) 512, initiator.getBlockSize(TARGET_DRIVE_NAME));
   }
 
