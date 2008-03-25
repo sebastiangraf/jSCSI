@@ -613,12 +613,13 @@ public final class Configuration {
             sc.addSessionSetting(OperationalTextKey.valueOfEx(parameter
                 .getNodeName()), parameter.getTextContent());
           }
-
-          synchronized (sessionConfigs) {
+          
+        }
+        
+        synchronized (sessionConfigs) {
             sessionConfigs.put(target.getAttributes()
                 .getNamedItem(ATTRIBUTE_ID).getNodeValue(), sc);
-          }
-        }
+         }
       }
     } catch (UnknownHostException e) {
       if (LOGGER.isErrorEnabled()) {
