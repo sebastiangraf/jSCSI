@@ -30,8 +30,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class PrefetchDeviceTest {
-
-  private static final String TARGET_NAME = "disk6";
+	
+  /**previous Target_Name - "disk6" */	
+  private static final String TARGET_NAME = "testing-xen2-disk1";
 
   private static PrefetchDevice device;
 

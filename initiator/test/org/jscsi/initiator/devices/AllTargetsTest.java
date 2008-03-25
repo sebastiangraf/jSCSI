@@ -33,50 +33,46 @@ import org.junit.Test;
  * @author Bastian Lemke
  */
 public class AllTargetsTest {
-  private static final String[] TARGET_NAMES =
-      {
-          "titan04",
-          "titan05",
-          "titan06",
-          "titan07",
-          "titan08",
-          "titan09",
-          "titan10",
-          "titan11",
-          "titan12",
-          "titan13",};
+	private static final String[] TARGET_NAMES = { "testing-xen2-disk1",
+			"testing-xen2-disk2", };
 
-  /** Number of Blocks to write */
-  private static final int TEST_DATA_SIZE = 1;
+	/** Number of Blocks to write */
+	private static final int TEST_DATA_SIZE = 1;
 
-  private static byte[] testData;
+	private static byte[] testData;
 
-  private static long address;
+	private static long address;
 
-  private static Device device;
+	private static Device device;
 
-  private static Random randomGenerator;
+	private static Random randomGenerator;
 
-  @Test
-  public final void test() {
+	@Test
+	public final void test() {
 
-    for (String target : TARGET_NAMES) {
-      System.out.print(target);
-      try {
-        device = new JSCSIDevice(target);
-        device.open();
-        System.out.println(" (" + device.getName() + ") --- OK");
-        randomGenerator = new Random(System.currentTimeMillis());
-        testData = new byte[TEST_DATA_SIZE * device.getBlockSize()];
-        randomGenerator.nextBytes(testData);
-      } catch (NoSuchSessionException nsse) {
-        System.out.println(" --- FAILED");
-      } catch (ConnectException ce) {
-        System.out.println(" --- FAILED");
-      } catch (Exception e) {
+		for (String target : TARGET_NAMES) {
+			System.out.print(target);
+			try {
+				device = new JSCSIDevice(target);
+				device.open();
+				System.out.println(" (" + device.getName() + ") --- OK");
+				randomGenerator = new Random(System.currentTimeMillis());
+				testData = new byte[TEST_DATA_SIZE * device.getBlockSize()];
+				randomGenerator.nextBytes(testData);
+			} catch (NoSuchSessionException nsse) {
+				System.out.println(" --- FAILED");
+			} catch (ConnectException ce) {
+				System.out.println(" --- FAILED");
+			} catch (Exception e) {
 
-        e.printStackTrace();
-      }
-    }
-  }
+				e.printStackTrace();
+			}
+			try {
+				device.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }

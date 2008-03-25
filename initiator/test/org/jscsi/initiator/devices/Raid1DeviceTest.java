@@ -31,8 +31,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class Raid1DeviceTest {
-
-  private static final String[] targetNames = { "disk5", "disk6" };
+	 
+  /** previous targetNames -  "disk5", "disk6" */
+  private static final String[] targetNames = { "testing-xen2-disk1", "testing-xen2-disk2" };
 
   private static final Device[] jSCSIDevices = new Device[targetNames.length];
 
