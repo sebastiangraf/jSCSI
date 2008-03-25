@@ -1,0 +1,58 @@
+<!-- This is a template configuration that can be used especially for jSCSI initiator testing -->
+<!-- global configuration matches the iSCSI parameter standard, i.e. all values are iSCSI default or fixed values -->
+<!-- target section includes 2 targets that can be used for testing -->
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:p="htt//www.jscsi.org/2006-09"
+	xmlns:xsi="htt//www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="htt//www.jscsi.org/2006-09 jscsi.xsd ">
+
+	<global>
+		<AuthMethod>None</AuthMethod>
+		<DataDigest>None</DataDigest>
+		<DataPDUInOrder>Yes</DataPDUInOrder>
+		<DataSequenceInOrder>Yes</DataSequenceInOrder>
+		<DefaultTime2Retain>20</DefaultTime2Retain>
+		<DefaultTime2Wait>2</DefaultTime2Wait>
+		<ErrorRecoveryLevel>0</ErrorRecoveryLevel>
+		<FirstBurstLength>65536</FirstBurstLength>
+		<HeaderDigest>None</HeaderDigest>
+		<IFMarker>No</IFMarker>
+		<IFMarkInt>2048</IFMarkInt>
+		<ImmediateData>Yes</ImmediateData>
+		<InitialR2T>Yes</InitialR2T>
+		<InitiatorAlias>InitiatorAlias</InitiatorAlias>
+		<InitiatorName>InitiatorName</InitiatorName>
+		<MaxBurstLength>262144</MaxBurstLength>
+		<MaxConnections>1</MaxConnections>
+		<MaxOutstandingR2T>1</MaxOutstandingR2T>
+		<MaxRecvDataSegmentLength>8192</MaxRecvDataSegmentLength>
+		<OFMarker>No</OFMarker>
+		<OFMarkInt>2048</OFMarkInt>
+		<SessionType>Normal</SessionType>
+	</global>
+
+	<!-- "xen2.disy.inf.uni-konstanz.de" (134.34.165.133) is a vmlinux running an iSCSI Enterprise Target with 2 disks (files)-->
+	<!-- only purpose is testing the jSCSI initiator project, should be available 24/7 -->
+	<!-- multiple user tests at the same time can be possible, so don't wonder if data on disks changes from time to time -->
+	<target id="testing-xen2-disk1" address="134.34.165.133"
+		port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>
+			iqn.2007-10.de.uni-konstanz.inf.disy.xen2:disk1
+		</TargetName>
+	</target>
+
+	<!-- "xen2.disy.inf.uni-konstanz.de" (134.34.165.133) is a vmlinux running an iSCSI Enterprise Target with 2 disks (files)-->
+	<!-- only purpose is testing the jSCSI initiator project, should be available 24/7 -->
+	<!-- multiple user tests at the same time can be possible, so don't wonder if data on disks changes from time to time-->
+	<target id="testing-xen2-disk2" address="134.34.165.133"
+		port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>
+			iqn.2007-10.de.uni-konstanz.inf.disy.xen2:disk2
+		</TargetName>
+	</target>
+
+</configuration>

@@ -410,7 +410,7 @@
 						<xs:element name="TargetPortalGroupTag" type="TargetPortalGroupTagType" minOccurs="0" />
 					</xs:all>
 				
-					<xs:attribute name="id" type="xs:ID" use="required" />
+					<xs:attribute name="id" type="xs:string" use="required" />
 					<xs:attribute name="address" type="xs:string" use="required" />
 					<xs:attribute name="port" default="3260">
 						<xs:simpleType>
