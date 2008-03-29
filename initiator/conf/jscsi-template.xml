@@ -2,7 +2,7 @@
 <!-- global configuration matches the iSCSI parameter standard, i.e. all values are iSCSI default or fixed values -->
 <!-- target section includes 2 targets that can be used for testing -->
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration xmlns:p="htt//www.jscsi.org/2006-09"
+<configuration xmlns="htt//www.jscsi.org/2006-09"
 	xmlns:xsi="htt//www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="htt//www.jscsi.org/2006-09 jscsi.xsd ">
 
