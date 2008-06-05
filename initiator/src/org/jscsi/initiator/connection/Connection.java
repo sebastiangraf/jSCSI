@@ -48,360 +48,344 @@ import org.jscsi.parser.login.LoginStage;
  */
 public final class Connection {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The logger interface. */
-  private static final Log LOGGER = LogFactory.getLog(Connection.class);
+    /** The logger interface. */
+    private static final Log LOGGER = LogFactory.getLog(Connection.class);
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * The <code>Session</code> instance, which contains this
-   * <code>Connection</code> instance.
-   */
-  private final Session referenceSession;
+    /**
+     * The <code>Session</code> instance, which contains this
+     * <code>Connection</code> instance.
+     */
+    private final Session referenceSession;
 
-  /** The <code>Configuration</code> instance for this connection. */
-  private final Configuration configuration;
+    /** The <code>Configuration</code> instance for this connection. */
+    private final Configuration configuration;
 
-  /** The current state of this connection. */
-  private IState state;
+    /** The current state of this connection. */
+    private IState state;
 
-  /**
-   * The ID of this connection. This must be unique within a
-   * <code>Session</code>.
-   */
-  private final short connectionID;
+    /**
+     * The ID of this connection. This must be unique within a
+     * <code>Session</code>.
+     */
+    private final short connectionID;
 
-  /**
-   * The Expected Status Sequence Number, which is expected to received from the
-   * target within this connection.
-   */
-  private final SerialArithmeticNumber expectedStatusSequenceNumber;
+    /**
+     * The Expected Status Sequence Number, which is expected to received from
+     * the target within this connection.
+     */
+    private final SerialArithmeticNumber expectedStatusSequenceNumber;
 
-  /**
-   * The sending queue for the <code>ProtocolDataUnit</code>s, which have to
-   * be sent.
-   */
-  private final Queue<ProtocolDataUnit> sendingQueue;
+    /**
+     * The sending queue for the <code>ProtocolDataUnit</code>s, which have
+     * to be sent.
+     */
+    private final Queue<ProtocolDataUnit> sendingQueue;
 
-  /**
-   * The receiving queue of the <code>ProtocolDataUnit</code>s, which are
-   * received.
-   */
-  private final Queue<ProtocolDataUnit> receivingQueue;
+    /**
+     * The receiving queue of the <code>ProtocolDataUnit</code>s, which are
+     * received.
+     */
+    private final Queue<ProtocolDataUnit> receivingQueue;
 
-  /**
-   * The worker caller, which handles the transmission of the packages over the
-   * network.
-   */
-  private final SenderWorker workerThread;
+    /**
+     * The worker caller, which handles the transmission of the packages over
+     * the network.
+     */
+    private final SenderWorker workerThread;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a new, empty Connection with the given ID.
-   * 
-   * @param session
-   *          Reference to the <code>Session</code> object, which contains
-   *          this connection.
-   * @param initConfiguration
-   *          The configuration to use within this connection.
-   * @param inetAddress
-   *          The <code>InetAddress</code> to which this connection should
-   *          established.
-   * @param port
-   *          The TCP port of the listening <code>Socket</code>.
-   * @param initConnectionID
-   *          The ID of this connection.
-   * @throws Exception
-   *           if any error occurs.
-   */
-  public Connection(final Session session,
-      final Configuration initConfiguration, final InetAddress inetAddress,
-      final int port, final short initConnectionID) throws Exception {
+    /**
+     * Constructor to create a new, empty Connection with the given ID.
+     * 
+     * @param session
+     *            Reference to the <code>Session</code> object, which contains
+     *            this connection.
+     * @param initConfiguration
+     *            The configuration to use within this connection.
+     * @param inetAddress
+     *            The <code>InetAddress</code> to which this connection should
+     *            established.
+     * @param port
+     *            The TCP port of the listening <code>Socket</code>.
+     * @param initConnectionID
+     *            The ID of this connection.
+     * @throws Exception
+     *             if any error occurs.
+     */
+    public Connection(final Session session, final Configuration initConfiguration, final InetAddress inetAddress, final int port, final short initConnectionID)
+            throws Exception {
 
-    configuration = initConfiguration;
-    connectionID = initConnectionID;
+        configuration = initConfiguration;
+        connectionID = initConnectionID;
 
-    referenceSession = session;
+        referenceSession = session;
 
-    sendingQueue = new LinkedList<ProtocolDataUnit>();
-    receivingQueue = new LinkedList<ProtocolDataUnit>();
-    expectedStatusSequenceNumber = new SerialArithmeticNumber();
+        sendingQueue = new LinkedList<ProtocolDataUnit>();
+        receivingQueue = new LinkedList<ProtocolDataUnit>();
+        expectedStatusSequenceNumber = new SerialArithmeticNumber();
 
-    state = new LoginRequestState(this, LoginStage.FULL_FEATURE_PHASE);
+        state = new LoginRequestState(this, LoginStage.FULL_FEATURE_PHASE);
 
-    workerThread = new SenderWorker(this, inetAddress, port, sendingQueue,
-        receivingQueue);
-  }
-
-  /**
-   * Updates all entries of the given response key-values with the stored
-   * settings of this instance.
-   * 
-   * @param response
-   *          The settings of the response.
-   * @throws NoSuchSessionException
-   *           if a session with this target name is not open.
-   */
-  public final void update(final SettingsMap response)
-      throws NoSuchSessionException {
-
-    configuration.update(referenceSession.getTargetName(), connectionID,
-        response);
-  }
-
-  /**
-   * Returns the value of the given parameter, which is parsed to an
-   * <code>boolean</code>.
-   * 
-   * @param textKey
-   *          The name of the parameter.
-   * @return The <code>boolean</code> value of this parameter. So if the value
-   *         is equal to <code>Yes</code>, then <code>true</code> will be
-   *         returned. Else <code>false</code> is returned.
-   * @throws OperationalTextKeyException
-   *           If the given parameter cannot be found.
-   */
-  public final boolean getSettingAsBoolean(final OperationalTextKey textKey)
-      throws OperationalTextKeyException {
-
-    return getSetting(textKey).compareTo("Yes") == 0;
-  }
-
-  /**
-   * Returns the value of the given parameter, which is parsed to an
-   * <code>integer</code>.
-   * 
-   * @param textKey
-   *          The name of the parameter.
-   * @return The <code>integer</code> value of this parameter.
-   * @throws OperationalTextKeyException
-   *           If the given parameter cannot be found.
-   */
-  public final int getSettingAsInt(final OperationalTextKey textKey)
-      throws OperationalTextKeyException {
-
-    return Integer.parseInt(getSetting(textKey));
-  }
-
-  /**
-   * Returns the value of the given parameter as <code>String</code>.
-   * 
-   * @param textKey
-   *          The name of the parameter.
-   * @return The value of this parameter.
-   * @throws OperationalTextKeyException
-   *           If the given parameter cannot be found.
-   */
-  public final String getSetting(final OperationalTextKey textKey)
-      throws OperationalTextKeyException {
-
-    return configuration.getSetting(referenceSession.getTargetName(),
-        connectionID, textKey);
-  }
-
-  /**
-   * Returns the settings of the given session and connection.
-   * 
-   * @return The settings of this specific connection.
-   */
-  public final SettingsMap getSettings() {
-
-    return configuration.getSettings(referenceSession.getTargetName(),
-        connectionID);
-  }
-
-  /**
-   * Repeat the invocation of the <code>IState.execute()</code>.
-   * 
-   * @throws InternetSCSIException
-   *           if any violation of the iSCSI Standard (RFC3720) has emerged.
-   */
-  public final void execute() throws InternetSCSIException {
-
-    while (state.execute()) {
-      // repeat until the final state is reached
-    }
-  }
-
-  /**
-   * This method does all the necessary steps, which are needed when a
-   * connection should be closed.
-   * 
-   * @throws IOException
-   *           if an I/O error occurs.
-   */
-  public final void close() throws IOException {
-
-    synchronized (workerThread) {
-      workerThread.close();
+        workerThread = new SenderWorker(this, inetAddress, port, sendingQueue, receivingQueue);
     }
 
-    synchronized (sendingQueue) {
-      sendingQueue.clear();
+    /**
+     * Updates all entries of the given response key-values with the stored
+     * settings of this instance.
+     * 
+     * @param response
+     *            The settings of the response.
+     * @throws NoSuchSessionException
+     *             if a session with this target name is not open.
+     */
+    public final void update(final SettingsMap response) throws NoSuchSessionException {
+
+        configuration.update(referenceSession.getTargetName(), connectionID, response);
     }
 
-    synchronized (receivingQueue) {
-      receivingQueue.clear();
+    /**
+     * Returns the value of the given parameter, which is parsed to an
+     * <code>boolean</code>.
+     * 
+     * @param textKey
+     *            The name of the parameter.
+     * @return The <code>boolean</code> value of this parameter. So if the
+     *         value is equal to <code>Yes</code>, then <code>true</code>
+     *         will be returned. Else <code>false</code> is returned.
+     * @throws OperationalTextKeyException
+     *             If the given parameter cannot be found.
+     */
+    public final boolean getSettingAsBoolean(final OperationalTextKey textKey) throws OperationalTextKeyException {
+
+        return getSetting(textKey).compareTo("Yes") == 0;
     }
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Connection with ID " + connectionID + " closed.");
+    /**
+     * Returns the value of the given parameter, which is parsed to an
+     * <code>integer</code>.
+     * 
+     * @param textKey
+     *            The name of the parameter.
+     * @return The <code>integer</code> value of this parameter.
+     * @throws OperationalTextKeyException
+     *             If the given parameter cannot be found.
+     */
+    public final int getSettingAsInt(final OperationalTextKey textKey) throws OperationalTextKeyException {
+
+        return Integer.parseInt(getSetting(textKey));
     }
-  }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /**
+     * Returns the value of the given parameter as <code>String</code>.
+     * 
+     * @param textKey
+     *            The name of the parameter.
+     * @return The value of this parameter.
+     * @throws OperationalTextKeyException
+     *             If the given parameter cannot be found.
+     */
+    public final String getSetting(final OperationalTextKey textKey) throws OperationalTextKeyException {
 
-  /**
-   * Reads one <code>ProtocolDataUnit</code> instance from the
-   * <code>receivingQueue</code>.
-   * 
-   * @return An instance of a <code>ProtocolDataUnit</code>.
-   */
-  public final ProtocolDataUnit receive() {
+        return configuration.getSetting(referenceSession.getTargetName(), connectionID, textKey);
+    }
 
-    while (true) {
-      synchronized (receivingQueue) {
-        if (!receivingQueue.isEmpty()) {
-          return receivingQueue.poll();
+    /**
+     * Returns the settings of the given session and connection.
+     * 
+     * @return The settings of this specific connection.
+     */
+    public final SettingsMap getSettings() {
+
+        return configuration.getSettings(referenceSession.getTargetName(), connectionID);
+    }
+
+    /**
+     * Repeat the invocation of the <code>IState.execute()</code>.
+     * 
+     * @throws InternetSCSIException
+     *             if any violation of the iSCSI Standard (RFC3720) has emerged.
+     */
+    public final void execute() throws InternetSCSIException {
+
+        while (state.execute()) {
+            // repeat until the final state is reached
         }
-      }
-
-      Thread.yield();
-    }
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /**
-   * Increments the Expected Status Sequence Number as defined in RFC1982 where
-   * <code>SERIAL_BITS = 32</code>.
-   */
-  final void incrementExpectedStatusSequenceNumber() {
-
-    expectedStatusSequenceNumber.increment();
-  }
-
-  /**
-   * Returns the Expected Status Sequence Number of this <code>Connection</code>
-   * object.
-   * 
-   * @return The current Expected Status Sequence Number.
-   */
-  final SerialArithmeticNumber getExpectedStatusSequenceNumber() {
-
-    return expectedStatusSequenceNumber;
-  }
-
-  /**
-   * Sets the expected Status Sequence Number to the given one from the leading
-   * Login Response.
-   * 
-   * @param newExpectedStatusSequenceNumber
-   *          The new value.
-   */
-  final void setExpectedStatusSequenceNumber(
-      final int newExpectedStatusSequenceNumber) {
-
-    expectedStatusSequenceNumber.setValue(newExpectedStatusSequenceNumber);
-
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Set ExpStatSN to " + expectedStatusSequenceNumber);
-    }
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /**
-   * Enqueue this protocol data unit to the end of the sending queue.
-   * 
-   * @param protocolDataUnit
-   *          The protocol data unit to add.
-   */
-  final void enqueue(final ProtocolDataUnit protocolDataUnit) {
-
-    if (protocolDataUnit == null) {
-      return;
     }
 
-    synchronized (sendingQueue) {
-      sendingQueue.add(protocolDataUnit);
-    }
-  }
+    /**
+     * This method does all the necessary steps, which are needed when a
+     * connection should be closed.
+     * 
+     * @throws IOException
+     *             if an I/O error occurs.
+     */
+    public final void close() throws IOException {
 
-  /**
-   * Enqueue all protocol data units to the end of the sending queue.
-   * 
-   * @param protocolDataUnits
-   *          The list with all protocol data units to add.
-   */
-  final void enqueue(final List<ProtocolDataUnit> protocolDataUnits) {
+        synchronized (workerThread) {
+            workerThread.close();
+        }
 
-    for (ProtocolDataUnit protocolDataUnit : protocolDataUnits) {
-      enqueue(protocolDataUnit);
-    }
-  }
+        synchronized (sendingQueue) {
+            sendingQueue.clear();
+        }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+        synchronized (receivingQueue) {
+            receivingQueue.clear();
+        }
 
-  /**
-   * Switch to the new state.
-   * 
-   * @param newState
-   *          The new state.
-   */
-  final void setState(final IState newState) {
-
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("Switching to state " + newState.getClass().getSimpleName());
+        LOGGER.debug("Connection with ID " + connectionID + " closed.");
     }
 
-    state = newState;
-  }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Returns the current state of this connection.
-   * 
-   * @return The current <code>IState</code> instance of this
-   *         <code>Connection</code> instance.
-   */
-  final IState getState() {
+    /**
+     * Reads one <code>ProtocolDataUnit</code> instance from the
+     * <code>receivingQueue</code>.
+     * 
+     * @return An instance of a <code>ProtocolDataUnit</code>.
+     */
+    public final ProtocolDataUnit receive() {
 
-    return state;
-  }
+        while (true) {
+            synchronized (receivingQueue) {
+                if (!receivingQueue.isEmpty()) {
+                    return receivingQueue.poll();
+                }
+            }
 
-  /**
-   * Returns the session, which contains this connection instance.
-   * 
-   * @return The parent session instance.
-   */
-  final Session getSession() {
+            Thread.yield();
+        }
+    }
 
-    return referenceSession;
-  }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Returns the ID of this <code>Connection</code> object.
-   * 
-   * @return The connection ID.
-   */
-  final short getConnectionID() {
+    /**
+     * Increments the Expected Status Sequence Number as defined in RFC1982
+     * where <code>SERIAL_BITS = 32</code>.
+     */
+    final void incrementExpectedStatusSequenceNumber() {
 
-    return connectionID;
-  }
+        expectedStatusSequenceNumber.increment();
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /**
+     * Returns the Expected Status Sequence Number of this
+     * <code>Connection</code> object.
+     * 
+     * @return The current Expected Status Sequence Number.
+     */
+    final SerialArithmeticNumber getExpectedStatusSequenceNumber() {
+
+        return expectedStatusSequenceNumber;
+    }
+
+    /**
+     * Sets the expected Status Sequence Number to the given one from the
+     * leading Login Response.
+     * 
+     * @param newExpectedStatusSequenceNumber
+     *            The new value.
+     */
+    final void setExpectedStatusSequenceNumber(final int newExpectedStatusSequenceNumber) {
+
+        expectedStatusSequenceNumber.setValue(newExpectedStatusSequenceNumber);
+
+        LOGGER.trace("Set ExpStatSN to " + expectedStatusSequenceNumber);
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /**
+     * Enqueue this protocol data unit to the end of the sending queue.
+     * 
+     * @param protocolDataUnit
+     *            The protocol data unit to add.
+     */
+    final void enqueue(final ProtocolDataUnit protocolDataUnit) {
+
+        if (protocolDataUnit == null) {
+            return;
+        }
+
+        synchronized (sendingQueue) {
+            sendingQueue.add(protocolDataUnit);
+        }
+    }
+
+    /**
+     * Enqueue all protocol data units to the end of the sending queue.
+     * 
+     * @param protocolDataUnits
+     *            The list with all protocol data units to add.
+     */
+    final void enqueue(final List<ProtocolDataUnit> protocolDataUnits) {
+
+        for (ProtocolDataUnit protocolDataUnit : protocolDataUnits) {
+            enqueue(protocolDataUnit);
+        }
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /**
+     * Switch to the new state.
+     * 
+     * @param newState
+     *            The new state.
+     */
+    final void setState(final IState newState) {
+
+        LOGGER.trace("Switching to state " + newState.getClass().getSimpleName());
+
+        state = newState;
+    }
+
+    /**
+     * Returns the current state of this connection.
+     * 
+     * @return The current <code>IState</code> instance of this
+     *         <code>Connection</code> instance.
+     */
+    final IState getState() {
+
+        return state;
+    }
+
+    /**
+     * Returns the session, which contains this connection instance.
+     * 
+     * @return The parent session instance.
+     */
+    final Session getSession() {
+
+        return referenceSession;
+    }
+
+    /**
+     * Returns the ID of this <code>Connection</code> object.
+     * 
+     * @return The connection ID.
+     */
+    final short getConnectionID() {
+
+        return connectionID;
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

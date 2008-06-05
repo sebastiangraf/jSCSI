@@ -47,324 +47,292 @@ import org.jscsi.parser.exception.InternetSCSIException;
  */
 final class SenderWorker implements Runnable {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The logger interface. */
-  private static final Log LOGGER = LogFactory.getLog(SenderWorker.class);
+    /** The logger interface. */
+    private static final Log LOGGER = LogFactory.getLog(SenderWorker.class);
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The <code>Connection</code> instance of this worker caller. */
-  private final Connection connection;
+    /** The <code>Connection</code> instance of this worker caller. */
+    private final Connection connection;
 
-  /**
-   * The sending queue for the <code>ProtocolDataUnit</code>s, which have to
-   * be sent.
-   */
-  private final Queue<ProtocolDataUnit> sendingQueue;
+    /**
+     * The sending queue for the <code>ProtocolDataUnit</code>s, which have
+     * to be sent.
+     */
+    private final Queue<ProtocolDataUnit> sendingQueue;
 
-  /**
-   * Contains all the <code>ProtocolDataUnit</code>s of a sequence, which are
-   * not acknowledged by the iSCSI Target up to now.
-   */
-  private final Queue<ProtocolDataUnit> waitForAcknowledgementQueue;
+    /**
+     * Contains all the <code>ProtocolDataUnit</code>s of a sequence, which
+     * are not acknowledged by the iSCSI Target up to now.
+     */
+    private final Queue<ProtocolDataUnit> waitForAcknowledgementQueue;
 
-  /**
-   * The receiving queue of the <code>ProtocolDataUnit</code>s, which are
-   * received.
-   */
-  private final Queue<ProtocolDataUnit> receivingQueue;
+    /**
+     * The receiving queue of the <code>ProtocolDataUnit</code>s, which are
+     * received.
+     */
+    private final Queue<ProtocolDataUnit> receivingQueue;
 
-  /**
-   * Non-blocking socket connection to use for the data transfer.
-   */
-  private final SocketChannel socketChannel;
+    /**
+     * Non-blocking socket connection to use for the data transfer.
+     */
+    private final SocketChannel socketChannel;
 
-  /**
-   * Factory class for creating the several <code>ProtocolDataUnit</code>
-   * instances.
-   */
-  private final ProtocolDataUnitFactory protocolDataUnitFactory;
+    /**
+     * Factory class for creating the several <code>ProtocolDataUnit</code>
+     * instances.
+     */
+    private final ProtocolDataUnitFactory protocolDataUnitFactory;
 
-  /** Do we expecting a response from the iSCSI Target. */
-  private boolean responseExpected;
+    /** Do we expecting a response from the iSCSI Target. */
+    private boolean responseExpected;
 
-  /** Should this caller to be stopped? */
-  private boolean stop;
+    /** Should this caller to be stopped? */
+    private boolean stop;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Creates a new, empty <code>SenderWorker</code> instance.
-   * 
-   * @param initConnection
-   *          The reference connection of this worker caller.
-   * @param inetAddress
-   *          The Internet Address of the Target.
-   * @param port
-   *          The used iSCSI port of this connection.
-   * @param initSendingQueue
-   *          A reference to the sending queue.
-   * @param initReceivingQueue
-   *          A reference to the receiving queue.
-   * 
-   * @throws IOException
-   *           if any IO error occurs.
-   */
-  SenderWorker(final Connection initConnection, final InetAddress inetAddress,
-      final int port, final Queue<ProtocolDataUnit> initSendingQueue,
-      final Queue<ProtocolDataUnit> initReceivingQueue) throws IOException {
+    /**
+     * Creates a new, empty <code>SenderWorker</code> instance.
+     * 
+     * @param initConnection
+     *            The reference connection of this worker caller.
+     * @param inetAddress
+     *            The Internet Address of the Target.
+     * @param port
+     *            The used iSCSI port of this connection.
+     * @param initSendingQueue
+     *            A reference to the sending queue.
+     * @param initReceivingQueue
+     *            A reference to the receiving queue.
+     * 
+     * @throws IOException
+     *             if any IO error occurs.
+     */
+    SenderWorker(final Connection initConnection, final InetAddress inetAddress, final int port, final Queue<ProtocolDataUnit> initSendingQueue,
+            final Queue<ProtocolDataUnit> initReceivingQueue) throws IOException {
 
-    connection = initConnection;
-    socketChannel = SocketChannel
-        .open(new InetSocketAddress(inetAddress, port));
-    socketChannel.socket().setTcpNoDelay(true);
+        connection = initConnection;
+        socketChannel = SocketChannel.open(new InetSocketAddress(inetAddress, port));
+        socketChannel.socket().setTcpNoDelay(true);
 
-    synchronized (initSendingQueue) {
-      sendingQueue = initSendingQueue;
-    }
-
-    waitForAcknowledgementQueue = new LinkedList<ProtocolDataUnit>();
-
-    synchronized (initReceivingQueue) {
-      receivingQueue = initReceivingQueue;
-    }
-
-    protocolDataUnitFactory = new ProtocolDataUnitFactory();
-
-    new Thread(this, getClass().getSimpleName()).start();
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  public final void run() {
-
-    ProtocolDataUnit head;
-    while (!stop) {
-      if (responseExpected) {
-        // reading...
-        try {
-          receiveFromWire();
-        } catch (Exception e) {
-          e.printStackTrace();
-
-          if (LOGGER.isErrorEnabled()) {
-            LOGGER.error("Error during or receiving PDUs: " + e);
-          }
+        synchronized (initSendingQueue) {
+            sendingQueue = initSendingQueue;
         }
-      } else {
-        // sending...
-        try {
-          // do not overwhelm the iSCSI Target
-          if (connection.getSession().hasTargetMoreResources()) {
-            synchronized (sendingQueue) {
-              head = sendingQueue.poll();
+
+        waitForAcknowledgementQueue = new LinkedList<ProtocolDataUnit>();
+
+        synchronized (initReceivingQueue) {
+            receivingQueue = initReceivingQueue;
+        }
+
+        protocolDataUnitFactory = new ProtocolDataUnitFactory();
+
+        new Thread(this, getClass().getSimpleName()).start();
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /** {@inheritDoc} */
+    public final void run() {
+
+        ProtocolDataUnit head;
+        while (!stop) {
+            if (responseExpected) {
+                // reading...
+                try {
+                    receiveFromWire();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    LOGGER.error("Error during or receiving PDUs: " + e);
+                    System.exit(-1);
+                }
+            } else {
+                // sending...
+                try {
+                    // do not overwhelm the iSCSI Target
+                    if (connection.getSession().hasTargetMoreResources()) {
+                        synchronized (sendingQueue) {
+                            head = sendingQueue.poll();
+                        }
+
+                        if (head != null) {
+                            waitForAcknowledgementQueue.add(head);
+                            sendOverWire(head);
+                        }
+                    } else {
+                        LOGGER.info("Target has no more resources to accept more input. (" + connection.getSession().getMaximumCommandSequenceNumber() + ", "
+                                + connection.getSession().getCommandSequenceNumber() + ")");
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("Error during sending PDUs: " + e);
+                }
             }
 
-            if (head != null) {
-              waitForAcknowledgementQueue.add(head);
-              sendOverWire(head);
-            }
-          } else {
-            LOGGER.info("Target has no more resources to accept more input. ("
-                + connection.getSession().getMaximumCommandSequenceNumber()
-                + ", " + connection.getSession().getCommandSequenceNumber()
-                + ")");
-          }
-        } catch (Exception e) {
-          if (LOGGER.isErrorEnabled()) {
-            LOGGER.error("Error during sending PDUs: " + e);
-          }
+            Thread.yield();
         }
-      }
-
-      Thread.yield();
-    }
-  }
-
-  /**
-   * Stops this caller instance.
-   */
-  public final void stop() {
-
-    stop = true;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /**
-   * This method does all the necessary steps, which are needed when a
-   * connection should be closed.
-   * 
-   * @throws IOException
-   *           if an I/O error occurs.
-   */
-  final void close() throws IOException {
-
-    synchronized (socketChannel) {
-      socketChannel.close();
     }
 
-    stop = true;
-  }
+    /**
+     * Stops this caller instance.
+     */
+    public final void stop() {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /**
-   * Receives a <code>ProtocolDataUnit</code> from the socket and appends it
-   * to the end of the receiving queue of this connection.
-   * 
-   * @throws IOException
-   *           if an I/O error occurs.
-   * @throws InternetSCSIException
-   *           if any violation of the iSCSI-Standard emerge.
-   * @throws DigestException
-   *           if a mismatch of the digest exists.
-   */
-  private final void receiveFromWire() throws DigestException,
-      InternetSCSIException, IOException {
-
-    final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory.create(
-        connection.getSetting(OperationalTextKey.HEADER_DIGEST), connection
-            .getSetting(OperationalTextKey.DATA_DIGEST));
-
-    synchronized (socketChannel) {
-      protocolDataUnit.read(socketChannel);
+        stop = true;
     }
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Receiving this PDU: " + protocolDataUnit);
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /**
+     * This method does all the necessary steps, which are needed when a
+     * connection should be closed.
+     * 
+     * @throws IOException
+     *             if an I/O error occurs.
+     */
+    final void close() throws IOException {
+
+        synchronized (socketChannel) {
+            socketChannel.close();
+        }
+
+        stop = true;
     }
 
-    // we have to read more Protocol Data Units from the socket
-    responseExpected = !protocolDataUnit.getBasicHeaderSegment().isFinalFlag();
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    if (connection.getState().isCorrect(protocolDataUnit)) {
-      synchronized (receivingQueue) {
-        receivingQueue.add(protocolDataUnit);
-      }
+    /**
+     * Receives a <code>ProtocolDataUnit</code> from the socket and appends it
+     * to the end of the receiving queue of this connection.
+     * 
+     * @throws IOException
+     *             if an I/O error occurs.
+     * @throws InternetSCSIException
+     *             if any violation of the iSCSI-Standard emerge.
+     * @throws DigestException
+     *             if a mismatch of the digest exists.
+     */
+    private final void receiveFromWire() throws DigestException, InternetSCSIException, IOException {
 
-      if (protocolDataUnit.getBasicHeaderSegment().isFinalFlag()) {
-        waitForAcknowledgementQueue.clear();
-      }
+        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory.create(connection.getSetting(OperationalTextKey.HEADER_DIGEST), connection
+                .getSetting(OperationalTextKey.DATA_DIGEST));
 
-      synchronized (connection) {
-        final TargetMessageParser parser = (TargetMessageParser) protocolDataUnit
-            .getBasicHeaderSegment().getParser();
+        synchronized (socketChannel) {
+            protocolDataUnit.read(socketChannel);
+        }
+
+        LOGGER.debug("Receiving this PDU: " + protocolDataUnit);
+
+        // we have to read more Protocol Data Units from the socket
+        responseExpected = !protocolDataUnit.getBasicHeaderSegment().isFinalFlag();
+
+        if (connection.getState().isCorrect(protocolDataUnit)) {
+            synchronized (receivingQueue) {
+                receivingQueue.add(protocolDataUnit);
+            }
+
+            if (protocolDataUnit.getBasicHeaderSegment().isFinalFlag()) {
+                waitForAcknowledgementQueue.clear();
+            }
+
+            synchronized (connection) {
+                final TargetMessageParser parser = (TargetMessageParser) protocolDataUnit.getBasicHeaderSegment().getParser();
+                final Session session = connection.getSession();
+
+                // the PDU maxCmdSN is greater than the local maxCmdSN, so we
+                // have to
+                // update the local one
+                if (session.getMaximumCommandSequenceNumber().compareTo(parser.getMaximumCommandSequenceNumber()) < 0) {
+                    session.setMaximumCommandSequenceNumber(parser.getMaximumCommandSequenceNumber());
+                }
+
+                // the PDU expCmdSN is greater than the local expCmdSN, so we
+                // have to
+                // update the local one
+                if (parser.incrementSequenceNumber()) {
+                    if (connection.getExpectedStatusSequenceNumber().compareTo(parser.getStatusSequenceNumber()) >= 0) {
+                        connection.incrementExpectedStatusSequenceNumber();
+                    } else {
+                        LOGGER.error("Status Sequence Number Mismatch (received, expected): " + parser.getStatusSequenceNumber() + ", "
+                                + (connection.getExpectedStatusSequenceNumber().getValue() - 1));
+                    }
+                }
+            }
+
+            LOGGER.trace("Head job in Sending Queue is removed.");
+        } else {
+            LOGGER.warn("Received incorrect PDU.");
+
+            if (protocolDataUnit.getBasicHeaderSegment().isFinalFlag()) {
+                synchronized (sendingQueue) {
+                    if (sendingQueue instanceof LinkedList) {
+                        final LinkedList<ProtocolDataUnit> linkedList = (LinkedList<ProtocolDataUnit>) sendingQueue;
+                        final ProtocolDataUnit[] resendItems = (ProtocolDataUnit[]) waitForAcknowledgementQueue.toArray();
+
+                        for (int i = resendItems.length; i > 0; i--) {
+                            linkedList.addFirst(resendItems[i]);
+                        }
+                    } else {
+                        throw new UnsupportedOperationException("This kind of queue subclass is not supported.");
+                    }
+                }
+            }
+        }
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /**
+     * Sends the given <code>ProtocolDataUnit</code> instance over the socket
+     * to the connected iSCSI Target.
+     * 
+     * @param protocolDataUnit
+     *            The <code>ProtocolDataUnit</code> instance to send.
+     * @throws InternetSCSIException
+     *             if any violation of the iSCSI-Standard emerge.
+     * @throws IOException
+     *             if an I/O error occurs.
+     * @throws InterruptedException
+     *             if another caller interrupted the current caller before or
+     *             while the current caller was waiting for a notification. The
+     *             interrupted status of the current caller is cleared when this
+     *             exception is thrown.
+     */
+    private final void sendOverWire(final ProtocolDataUnit protocolDataUnit) throws InternetSCSIException, IOException, InterruptedException {
+
         final Session session = connection.getSession();
+        protocolDataUnit.getBasicHeaderSegment().setInitiatorTaskTag(session.getInitiatorTaskTag());
+        final InitiatorMessageParser parser = (InitiatorMessageParser) protocolDataUnit.getBasicHeaderSegment().getParser();
+        parser.setCommandSequenceNumber(session.getCommandSequenceNumber());
+        parser.setExpectedStatusSequenceNumber(connection.getExpectedStatusSequenceNumber().getValue());
 
-        // the PDU maxCmdSN is greater than the local maxCmdSN, so we have to
-        // update the local one
-        if (session.getMaximumCommandSequenceNumber().compareTo(
-            parser.getMaximumCommandSequenceNumber()) < 0) {
-          session.setMaximumCommandSequenceNumber(parser
-              .getMaximumCommandSequenceNumber());
+        synchronized (socketChannel) {
+            protocolDataUnit.write(socketChannel);
         }
 
-        // the PDU expCmdSN is greater than the local expCmdSN, so we have to
-        // update the local one
+        LOGGER.debug("Sending this PDU: " + protocolDataUnit);
+
+        // increment the Command Sequence Number
         if (parser.incrementSequenceNumber()) {
-          if (connection.getExpectedStatusSequenceNumber().compareTo(
-              parser.getStatusSequenceNumber()) >= 0) {
-            connection.incrementExpectedStatusSequenceNumber();
-          } else {
-            if (LOGGER.isErrorEnabled()) {
-              LOGGER
-                  .error("Status Sequence Number Mismatch (received, expected): "
-                      + parser.getStatusSequenceNumber()
-                      + ", "
-                      + (connection.getExpectedStatusSequenceNumber()
-                          .getValue() - 1));
-            }
-          }
+            connection.getSession().incrementCommandSequenceNumber();
         }
-      }
 
-      if (LOGGER.isTraceEnabled()) {
-        LOGGER.trace("Head job in Sending Queue is removed.");
-      }
-    } else {
-      if (LOGGER.isWarnEnabled()) {
-        LOGGER.warn("Received incorrect PDU.");
-      }
-
-      if (protocolDataUnit.getBasicHeaderSegment().isFinalFlag()) {
-        synchronized (sendingQueue) {
-          if (sendingQueue instanceof LinkedList) {
-            final LinkedList<ProtocolDataUnit> linkedList = (LinkedList<ProtocolDataUnit>) sendingQueue;
-            final ProtocolDataUnit[] resendItems = (ProtocolDataUnit[]) waitForAcknowledgementQueue
-                .toArray();
-
-            for (int i = resendItems.length; i > 0; i--) {
-              linkedList.addFirst(resendItems[i]);
-            }
-          } else {
-            throw new UnsupportedOperationException(
-                "This kind of queue subclass is not supported.");
-          }
-        }
-      }
-    }
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /**
-   * Sends the given <code>ProtocolDataUnit</code> instance over the socket to
-   * the connected iSCSI Target.
-   * 
-   * @param protocolDataUnit
-   *          The <code>ProtocolDataUnit</code> instance to send.
-   * @throws InternetSCSIException
-   *           if any violation of the iSCSI-Standard emerge.
-   * @throws IOException
-   *           if an I/O error occurs.
-   * @throws InterruptedException
-   *           if another caller interrupted the current caller before or while
-   *           the current caller was waiting for a notification. The
-   *           interrupted status of the current caller is cleared when this
-   *           exception is thrown.
-   */
-  private final void sendOverWire(final ProtocolDataUnit protocolDataUnit)
-      throws InternetSCSIException, IOException, InterruptedException {
-
-    final Session session = connection.getSession();
-    protocolDataUnit.getBasicHeaderSegment().setInitiatorTaskTag(
-        session.getInitiatorTaskTag());
-    final InitiatorMessageParser parser = (InitiatorMessageParser) protocolDataUnit
-        .getBasicHeaderSegment().getParser();
-    parser.setCommandSequenceNumber(session.getCommandSequenceNumber());
-    parser.setExpectedStatusSequenceNumber(connection
-        .getExpectedStatusSequenceNumber().getValue());
-
-    synchronized (socketChannel) {
-      protocolDataUnit.write(socketChannel);
+        // are finished with sending?
+        responseExpected = protocolDataUnit.getBasicHeaderSegment().isFinalFlag();
     }
 
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Sending this PDU: " + protocolDataUnit);
-    }
-
-    // increment the Command Sequence Number
-    if (parser.incrementSequenceNumber()) {
-      connection.getSession().incrementCommandSequenceNumber();
-    }
-
-    // are finished with sending?
-    responseExpected = protocolDataUnit.getBasicHeaderSegment().isFinalFlag();
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }
