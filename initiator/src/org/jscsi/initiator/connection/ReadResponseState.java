@@ -38,188 +38,166 @@ import org.jscsi.parser.scsi.SCSIStatus;
  */
 final class ReadResponseState extends AbstractState {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * This is the wrap around divisor (2**32) of the modulo operation used by
-   * incrementing the sequence numbers. See [RFC1982] for details.
-   */
-  private static final int WRAP_AROUND_DIVISOR = (int) Math.pow(2, 32);
+    /**
+     * This is the wrap around divisor (2**32) of the modulo operation used by
+     * incrementing the sequence numbers. See [RFC1982] for details.
+     */
+    private static final int WRAP_AROUND_DIVISOR = (int) Math.pow(2, 32);
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The buffer to used for the message transfer. */
-  private final ByteBuffer buffer;
+    /** The buffer to used for the message transfer. */
+    private final ByteBuffer buffer;
 
-  /** The start offset of the data to send. */
-  private int bufferOffset;
+    /** The start offset of the data to send. */
+    private int bufferOffset;
 
-  /** The expected data sequence number of the next response. */
-  private int expectedDataSequenceNumber;
+    /** The expected data sequence number of the next response. */
+    private int expectedDataSequenceNumber;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a new, empty <code>ReadResponseState</code>.
-   * 
-   * @param initConnection
-   *          This is the connection, which is used for the network
-   *          transmission.
-   * @param initBuffer
-   *          The buffer, where the readed bytes are stored in.
-   * @param initBufferOffset
-   *          The start offset of the data to send.
-   * @param initExpectedDataSequenceNumber
-   *          The Expected Data Sequence Number of the next response message.
-   */
-  public ReadResponseState(final Connection initConnection,
-      final ByteBuffer initBuffer, final int initBufferOffset,
-      final int initExpectedDataSequenceNumber) {
+    /**
+     * Constructor to create a new, empty <code>ReadResponseState</code>.
+     * 
+     * @param initConnection
+     *            This is the connection, which is used for the network
+     *            transmission.
+     * @param initBuffer
+     *            The buffer, where the readed bytes are stored in.
+     * @param initBufferOffset
+     *            The start offset of the data to send.
+     * @param initExpectedDataSequenceNumber
+     *            The Expected Data Sequence Number of the next response
+     *            message.
+     */
+    public ReadResponseState(final Connection initConnection, final ByteBuffer initBuffer, final int initBufferOffset, final int initExpectedDataSequenceNumber) {
 
-    super(initConnection);
-    buffer = initBuffer;
-    bufferOffset = initBufferOffset;
-    expectedDataSequenceNumber = initExpectedDataSequenceNumber;
-  }
+        super(initConnection);
+        buffer = initBuffer;
+        bufferOffset = initBufferOffset;
+        expectedDataSequenceNumber = initExpectedDataSequenceNumber;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  public final boolean execute() throws InternetSCSIException {
+    /** {@inheritDoc} */
+    public final boolean execute() throws InternetSCSIException {
 
-    ProtocolDataUnit protocolDataUnit;
+        ProtocolDataUnit protocolDataUnit;
 
-    do {
-      protocolDataUnit = connection.receive();
+        do {
+            protocolDataUnit = connection.receive();
 
-      if (protocolDataUnit.getBasicHeaderSegment().getParser() instanceof DataInParser) {
-        final DataInParser parser = (DataInParser) protocolDataUnit
-            .getBasicHeaderSegment().getParser();
+            if (protocolDataUnit.getBasicHeaderSegment().getParser() instanceof DataInParser) {
+                final DataInParser parser = (DataInParser) protocolDataUnit.getBasicHeaderSegment().getParser();
 
-        if (LOGGER.isDebugEnabled()) {
-          LOGGER
-              .debug("Remaining, DataSegmentLength: "
-                  + buffer.remaining()
-                  + ", "
-                  + protocolDataUnit.getBasicHeaderSegment()
-                      .getDataSegmentLength());
-        }
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER
+                            .debug("Remaining, DataSegmentLength: " + buffer.remaining() + ", "
+                                    + protocolDataUnit.getBasicHeaderSegment().getDataSegmentLength());
+                }
 
-        final ByteBuffer dataSegment = protocolDataUnit.getDataSegment();
-        while (buffer.hasRemaining() && dataSegment.hasRemaining()) {
-          buffer.put(dataSegment.get());
-        }
+                final ByteBuffer dataSegment = protocolDataUnit.getDataSegment();
+                while (buffer.hasRemaining() && dataSegment.hasRemaining()) {
+                    buffer.put(dataSegment.get());
+                }
 
-        // last message with the status flag set
-        if (parser.isStatusFlag() && parser.getStatus() == SCSIStatus.GOOD) {
-          return false;
-        } else if (connection
-            .getSettingAsInt(OperationalTextKey.ERROR_RECOVERY_LEVEL) > 0
-            && parser.isAcknowledgeFlag()) {
-          // TODO: Test this case
-          // send a DataAck
-          connection.setState(new SNACKRequestState(connection, this, parser
-              .getTargetTaskTag()));
-          return true;
-        }
-      } else if (protocolDataUnit.getBasicHeaderSegment().getParser() instanceof SCSIResponseParser) {
-        final SCSIResponseParser parser = (SCSIResponseParser) protocolDataUnit
-            .getBasicHeaderSegment().getParser();
+                // last message with the status flag set
+                if (parser.isStatusFlag() && parser.getStatus() == SCSIStatus.GOOD) {
+                    return false;
+                } else if (connection.getSettingAsInt(OperationalTextKey.ERROR_RECOVERY_LEVEL) > 0 && parser.isAcknowledgeFlag()) {
+                    // TODO: Test this case
+                    // send a DataAck
+                    connection.setState(new SNACKRequestState(connection, this, parser.getTargetTaskTag()));
+                    return true;
+                }
+            } else if (protocolDataUnit.getBasicHeaderSegment().getParser() instanceof SCSIResponseParser) {
+                final SCSIResponseParser parser = (SCSIResponseParser) protocolDataUnit.getBasicHeaderSegment().getParser();
 
-        final ByteBuffer dataSegment = protocolDataUnit.getDataSegment();
-        while (buffer.hasRemaining() && dataSegment.hasRemaining()) {
-          buffer.put(dataSegment.get());
-        }
+                final ByteBuffer dataSegment = protocolDataUnit.getDataSegment();
+                while (buffer.hasRemaining() && dataSegment.hasRemaining()) {
+                    buffer.put(dataSegment.get());
+                }
 
-        if (parser.getStatus() == SCSIStatus.GOOD) {
-          return false;
-        } else {
-          throw new RuntimeException();
-        }
-      }
+                if (parser.getStatus() == SCSIStatus.GOOD) {
+                    return false;
+                } else {
+                    throw new RuntimeException();
+                }
+            }
 
-    } while (!protocolDataUnit.getBasicHeaderSegment().isFinalFlag());
+        } while (!protocolDataUnit.getBasicHeaderSegment().isFinalFlag());
 
-    return false;
-  }
+        return false;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  @Override
-  public boolean isCorrect(final ProtocolDataUnit protocolDataUnit)
-      throws InternetSCSIException {
+    /** {@inheritDoc} */
+    @Override
+    public boolean isCorrect(final ProtocolDataUnit protocolDataUnit) throws InternetSCSIException {
 
-    do {
-      if (!(protocolDataUnit.getBasicHeaderSegment().getParser() instanceof DataInParser)) {
-        break;
-      }
-      final DataInParser parser = (DataInParser) protocolDataUnit
-          .getBasicHeaderSegment().getParser();
+        do {
+            if (!(protocolDataUnit.getBasicHeaderSegment().getParser() instanceof DataInParser)) {
+                break;
+            }
+            final DataInParser parser = (DataInParser) protocolDataUnit.getBasicHeaderSegment().getParser();
 
-      if (connection.getSettingAsBoolean(OperationalTextKey.DATA_PDU_IN_ORDER)
-          && connection
-              .getSettingAsBoolean(OperationalTextKey.DATA_SEQUENCE_IN_ORDER)) {
-        if (parser.getBufferOffset() < bufferOffset) {
-          if (LOGGER.isErrorEnabled()) {
-            LOGGER
-                .error("This buffer offsets must be in increasing order and overlays are forbidden.");
-          }
+            if (connection.getSettingAsBoolean(OperationalTextKey.DATA_PDU_IN_ORDER)
+                    && connection.getSettingAsBoolean(OperationalTextKey.DATA_SEQUENCE_IN_ORDER)) {
+                if (parser.getBufferOffset() < bufferOffset) {
+                    LOGGER.error("This buffer offsets must be in increasing order and overlays are forbidden.");
 
-          break;
-        }
-        bufferOffset = parser.getBufferOffset();
-      }
+                    break;
+                }
+                bufferOffset = parser.getBufferOffset();
+            }
 
-      if (parser.getDataSequenceNumber() != expectedDataSequenceNumber) {
-        if (LOGGER.isErrorEnabled()) {
-          LOGGER.error("Data Sequence Number Mismatch (received, expected): "
-              + parser.getDataSequenceNumber() + ", "
-              + expectedDataSequenceNumber);
-        }
-        break;
-      }
+            if (parser.getDataSequenceNumber() != expectedDataSequenceNumber) {
+                LOGGER.error("Data Sequence Number Mismatch (received, expected): " + parser.getDataSequenceNumber() + ", " + expectedDataSequenceNumber);
+                break;
+            }
 
-      incrementExpectedDataSequenceNumber();
+            incrementExpectedDataSequenceNumber();
 
-      if (parser.isStatusFlag()) {
-        incrementExpectedDataSequenceNumber();
-        return super.isCorrect(protocolDataUnit);
-      } else if (parser.getStatusSequenceNumber() != 0) {
-        if (LOGGER.isErrorEnabled()) {
-          LOGGER.error("Status Sequence Number must be zero.");
-        }
+            if (parser.isStatusFlag()) {
+                incrementExpectedDataSequenceNumber();
+                return super.isCorrect(protocolDataUnit);
+            } else if (parser.getStatusSequenceNumber() != 0) {
+                LOGGER.error("Status Sequence Number must be zero.");
 
-        break;
-      }
+                break;
+            }
 
-      return true;
+            return true;
 
-    } while (false);
+        } while (false);
 
-    return false;
-  }
+        return false;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Increments the Expected Data Sequence Number counter.
-   */
-  private void incrementExpectedDataSequenceNumber() {
+    /**
+     * Increments the Expected Data Sequence Number counter.
+     */
+    private void incrementExpectedDataSequenceNumber() {
 
-    expectedDataSequenceNumber = (expectedDataSequenceNumber + 1)
-        % WRAP_AROUND_DIVISOR;
-  }
+        expectedDataSequenceNumber = (expectedDataSequenceNumber + 1) % WRAP_AROUND_DIVISOR;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }
