@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: ISID.java 2500 2007-03-05 13:29:08Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id: ISID.java 2500
+ * 2007-03-05 13:29:08Z lemke $
  */
 
 package org.jscsi.parser.login;
@@ -36,11 +29,8 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * <p>
  * <table border="1">
  * <tr>
- * <th>Byte</th>
- * <th colspan="8">0</th>
- * <th colspan="8">1</th>
- * <th colspan="8">2</th>
- * <th colspan="8">3</th>
+ * <th>Byte</th> <th colspan="8">0</th> <th colspan="8">1</th> <th
+ * colspan="8">2</th> <th colspan="8">3</th>
  * </tr>
  * <tr>
  * <th>Bits</th>
@@ -87,7 +77,8 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * <tr>
  * <td>12</td>
  * <td colspan="16"><center>D</center></td>
- * <td colspan="16"/></tr>
+ * <td colspan="16"/>
+ * </tr>
  * </table>
  * <p>
  * The T field identifies the format and usage of A, B, C, and D as indicated
@@ -99,39 +90,39 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * <th>Description</th>
  * </tr>
  * <tr>
- * <td> 00b</td>
- * <td> OUI-Format<br/> A&B are a <code>22</code> bit OUI (the I/G & U/L bits
- * are omitted)<br/> C&D 24 bit qualifier</td>
+ * <td>00b</td>
+ * <td>OUI-Format<br/> A&B are a <code>22</code> bit OUI (the I/G & U/L bits are
+ * omitted)<br/> C&D 24 bit qualifier</td>
  * </tr>
  * <tr>
  * <td>01b</td>
- * <td> EN - Format (IANA Enterprise Number)<br/> A - Reserved<br/> B&C EN
- * (IANA Enterprise Number)<br/> D - Qualifier </td>
+ * <td>EN - Format (IANA Enterprise Number)<br/> A - Reserved<br/> B&C EN (IANA
+ * Enterprise Number)<br/> D - Qualifier</td>
  * </tr>
  * <tr>
- * <td>10b </td>
- * <td> "Random"<br/>A - Reserved<br/>B&C Random<br/>D - Qualifier</td>
+ * <td>10b</td>
+ * <td>"Random"<br/>A - Reserved<br/>B&C Random<br/>D - Qualifier</td>
  * </tr>
  * <tr>
- * <td>11b </td>
- * <td> A,B,C&D Reserved</td>
+ * <td>11b</td>
+ * <td>A,B,C&D Reserved</td>
  * </tr>
  * </table>
  * <p>
- * For the <code>T</code> field values <code>00b</code> and <code>01b</code>,
- * a combination of <code>A</code> and <code>B</code> (for <code>00b</code>)
- * or <code>B</code> and <code>C</code> (for <code>01b</code>) identifies
- * the vendor or organization whose component (software or hardware) generates
- * this ISID. A vendor or organization with one or more OUIs, or one or more
+ * For the <code>T</code> field values <code>00b</code> and <code>01b</code>, a
+ * combination of <code>A</code> and <code>B</code> (for <code>00b</code>) or
+ * <code>B</code> and <code>C</code> (for <code>01b</code>) identifies the
+ * vendor or organization whose component (software or hardware) generates this
+ * ISID. A vendor or organization with one or more OUIs, or one or more
  * Enterprise Numbers, MUST use at least one of these numbers and select the
  * appropriate value for the <code>T</code> field when its components generate
  * ISIDs. An <code>OUI</code> or <code>EN</code> MUST be set in the
  * corresponding fields in network byte order (byte big-endian).
  * <p>
  * If the <code>T</code> field is <code>10b</code>, <code>B</code> and
- * <code>C</code> are set to a random <code>24</code>-bit unsigned integer
- * value in network byte order (byte big-endian). See [RFC3721] for how this
- * affects the principle of "conservative reuse".
+ * <code>C</code> are set to a random <code>24</code>-bit unsigned integer value
+ * in network byte order (byte big-endian). See [RFC3721] for how this affects
+ * the principle of "conservative reuse".
  * <p>
  * The Qualifier field is a <code>16</code> or <code>24</code>-bit unsigned
  * integer value that provides a range of possible values for the ISID within
@@ -146,9 +137,8 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * a value assigned according to the SCSI port behavior desired by the system in
  * which it is installed (see Section 9.1.1 Conservative Reuse of ISIDs and
  * Section 9.1.2 iSCSI Name, ISID, and TPGT Use). The resultant ISID MUST also
- * be persistent over power cycles, reboot, card swap, etc.
- * 
- * For details have a look in the [RFC3721].
+ * be persistent over power cycles, reboot, card swap, etc. For details have a
+ * look in the [RFC3721].
  * 
  * @author Volker Wildi
  */
@@ -174,13 +164,15 @@ public final class ISID {
 
     private static Map<Byte, Format> mapping;
 
+    static {
+      Format.mapping = new HashMap<Byte, Format>();
+      for (Format s : values()) {
+        Format.mapping.put(s.value, s);
+      }
+    }
+
     private Format(final byte newValue) {
 
-      if (Format.mapping == null) {
-        Format.mapping = new HashMap<Byte, Format>();
-      }
-
-      Format.mapping.put(newValue, this);
       value = newValue;
     }
 
@@ -368,8 +360,8 @@ public final class ISID {
    * 
    * @param isid
    *          The given ISID object to check.
-   * @return <code>True</code>, if the values of the two ISID objects are
-   *         equal. Else <code>false</code>.
+   * @return <code>True</code>, if the values of the two ISID objects are equal.
+   *         Else <code>false</code>.
    */
   public final boolean equals(final ISID isid) {
 

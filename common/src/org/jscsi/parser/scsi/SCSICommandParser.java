@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: SCSICommandParser.java 2500 2007-03-05 13:29:08Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id:
+ * SCSICommandParser.java 2500 2007-03-05 13:29:08Z lemke $
  */
 
 package org.jscsi.parser.scsi;
@@ -36,20 +29,20 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * This class parses a SCSI Command message defined in the iSCSI Standard
  * (RFC3720).
  * <p>
- * <h4>CmdSN - Command Sequence Number</h4>
- * Enables ordered delivery across multiple connections in a single session.
+ * <h4>CmdSN - Command Sequence Number</h4> Enables ordered delivery across
+ * multiple connections in a single session.
  * <p>
- * <h4>ExpStatSN</h4>
- * Command responses up to <code>ExpStatSN - 1 (mod 2**32)</code> have been
- * received (acknowledges status) on the connection.
+ * <h4>ExpStatSN</h4> Command responses up to
+ * <code>ExpStatSN - 1 (mod 2**32)</code> have been received (acknowledges
+ * status) on the connection.
  * <p>
- * <h4>Data Segment - Command Data</h4>
- * Some SCSI commands require additional parameter data to accompany the SCSI
- * command. This data may be placed beyond the boundary of the iSCSI header in a
- * data segment. Alternatively, user data (e.g., from a WRITE operation) can be
- * placed in the data segment (both cases are referred to as immediate data).
- * These data are governed by the rules for solicited vs. unsolicited data
- * outlined in Section 3.2.4.2 Data Transfer Overview.
+ * <h4>Data Segment - Command Data</h4> Some SCSI commands require additional
+ * parameter data to accompany the SCSI command. This data may be placed beyond
+ * the boundary of the iSCSI header in a data segment. Alternatively, user data
+ * (e.g., from a WRITE operation) can be placed in the data segment (both cases
+ * are referred to as immediate data). These data are governed by the rules for
+ * solicited vs. unsolicited data outlined in Section 3.2.4.2 Data Transfer
+ * Overview.
  * 
  * @author Volker Wildi
  */
@@ -128,13 +121,15 @@ public class SCSICommandParser extends InitiatorMessageParser {
 
     private static Map<Byte, TaskAttributes> mapping;
 
+    static {
+      TaskAttributes.mapping = new HashMap<Byte, TaskAttributes>();
+      for (TaskAttributes s : values()) {
+        TaskAttributes.mapping.put(s.value, s);
+      }
+    }
+
     private TaskAttributes(final byte newValue) {
 
-      if (TaskAttributes.mapping == null) {
-        TaskAttributes.mapping = new HashMap<Byte, TaskAttributes>();
-      }
-
-      TaskAttributes.mapping.put(newValue, this);
       value = newValue;
     }
 
@@ -267,8 +262,8 @@ public class SCSICommandParser extends InitiatorMessageParser {
 
   /**
    * There are <code>16</code> bytes in the CDB field to accommodate the
-   * commonly used CDBs. Whenever the CDB is larger than <code>16</code>
-   * bytes, an Extended CDB AHS MUST be used to contain the CDB spillover.
+   * commonly used CDBs. Whenever the CDB is larger than <code>16</code> bytes,
+   * an Extended CDB AHS MUST be used to contain the CDB spillover.
    * 
    * @return A <code>ByteBuffer</code> with the content of the Command
    *         Descriptor Blocks contained in this <code>SCSICommandParser</code>
@@ -282,16 +277,16 @@ public class SCSICommandParser extends InitiatorMessageParser {
   /**
    * For unidirectional operations, the Expected Data Transfer Length field
    * contains the number of bytes of data involved in this SCSI operation. For a
-   * unidirectional write operation (W flag set to <code>1</code> and R flag
-   * set to <code>0</code>), the initiator uses this field to specify the
-   * number of bytes of data it expects to transfer for this operation. For a
-   * unidirectional read operation (W flag set to <code>0</code> and R flag
-   * set to <code>1</code>), the initiator uses this field to specify the
-   * number of bytes of data it expects the target to transfer to the initiator.
-   * It corresponds to the SAM2 byte count.
+   * unidirectional write operation (W flag set to <code>1</code> and R flag set
+   * to <code>0</code>), the initiator uses this field to specify the number of
+   * bytes of data it expects to transfer for this operation. For a
+   * unidirectional read operation (W flag set to <code>0</code> and R flag set
+   * to <code>1</code>), the initiator uses this field to specify the number of
+   * bytes of data it expects the target to transfer to the initiator. It
+   * corresponds to the SAM2 byte count.
    * <p>
-   * For bidirectional operations (both R and W flags are set to <code>1</code>),
-   * this field contains the number of data bytes involved in the write
+   * For bidirectional operations (both R and W flags are set to <code>1</code>
+   * ), this field contains the number of data bytes involved in the write
    * transfer. For bidirectional operations, an additional header segment MUST
    * be present in the header sequence that indicates the Bidirectional Read
    * Expected Data Transfer Length. The Expected Data Transfer Length field and

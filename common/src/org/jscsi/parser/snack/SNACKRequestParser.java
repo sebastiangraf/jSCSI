@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: SNACKRequestParser.java 2500 2007-03-05 13:29:08Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id:
+ * SNACKRequestParser.java 2500 2007-03-05 13:29:08Z lemke $
  */
 
 package org.jscsi.parser.snack;
@@ -48,8 +41,8 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * <p>
  * <ul>
  * <li>When used in RunLength, it means all PDUs starting with the initial.</li>
- * <li> When used in both BegRun and RunLength, it means all unacknowledged
- * PDUs.</li>
+ * <li>When used in both BegRun and RunLength, it means all unacknowledged PDUs.
+ * </li>
  * </ul>
  * The numbered-response(s) or R2T(s), requested by a SNACK, MUST be delivered
  * as exact replicas of the ones that the target transmitted originally except
@@ -66,14 +59,13 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * by the target or was already acknowledged by the initiator, MUST be rejected
  * with a reason code of "Protocol error".
  * <p>
- * <h4>Data Acknowledgement </h4>
- * If an initiator operates at ErrorRecoveryLevel <code>1</code> or higher, it
- * MUST issue a SNACK of type DataACK after receiving a Data-In PDU with the A
- * bit set to <code>1</code>. However, if the initiator has detected holes in
- * the input sequence, it MUST postpone issuing the SNACK of type DataACK until
- * the holes are filled. An initiator MAY ignore the A bit if it deems that the
- * bit is being set aggressively by the target (i.e., before the MaxBurstLength
- * limit is reached).
+ * <h4>Data Acknowledgement</h4> If an initiator operates at ErrorRecoveryLevel
+ * <code>1</code> or higher, it MUST issue a SNACK of type DataACK after
+ * receiving a Data-In PDU with the A bit set to <code>1</code>. However, if the
+ * initiator has detected holes in the input sequence, it MUST postpone issuing
+ * the SNACK of type DataACK until the holes are filled. An initiator MAY ignore
+ * the A bit if it deems that the bit is being set aggressively by the target
+ * (i.e., before the MaxBurstLength limit is reached).
  * <p>
  * The DataACK is used to free resources at the target and not to request or
  * imply data retransmission.
@@ -81,17 +73,16 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * An initiator MUST NOT request retransmission for any data it had already
  * acknowledged.
  * <p>
- * <h4>Resegmentation</h4>
- * If the initiator MaxRecvDataSegmentLength changed between the original
- * transmission and the time the initiator requests retransmission, the
- * initiator MUST issue a R-Data SNACK (see Section 10.16.1 Type). With R-Data
- * SNACK, the initiator indicates that it discards all the unacknowledged data
- * and expects the target to resend it. It also expects resegmentation. In this
- * case, the retransmitted Data-In PDUs MAY be different from the ones
- * originally sent in order to reflect changes in MaxRecvDataSegmentLength.
- * Their DataSN starts with the BegRun of the last DataACK received by the
- * target if any was received; otherwise it starts with 0 and is increased by 1
- * for each resent Data-In PDU.
+ * <h4>Resegmentation</h4> If the initiator MaxRecvDataSegmentLength changed
+ * between the original transmission and the time the initiator requests
+ * retransmission, the initiator MUST issue a R-Data SNACK (see Section 10.16.1
+ * Type). With R-Data SNACK, the initiator indicates that it discards all the
+ * unacknowledged data and expects the target to resend it. It also expects
+ * resegmentation. In this case, the retransmitted Data-In PDUs MAY be different
+ * from the ones originally sent in order to reflect changes in
+ * MaxRecvDataSegmentLength. Their DataSN starts with the BegRun of the last
+ * DataACK received by the target if any was received; otherwise it starts with
+ * 0 and is increased by 1 for each resent Data-In PDU.
  * <p>
  * A target that has received a R-Data SNACK MUST return a SCSI Response that
  * contains a copy of the SNACK Tag field from the R-Data SNACK in the SCSI
@@ -109,11 +100,10 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * a different MaxRecvDataSegmentLength, refer to Section 6.2.2 Allegiance
  * Reassignment.
  * <p>
- * <h4>Initiator Task Tag</h4>
- * For Status SNACK and DataACK, the Initiator Task Tag MUST be set to the
- * reserved value <code>0xffffffff</code>. In all other cases, the Initiator
- * Task Tag field MUST be set to the Initiator Task Tag of the referenced
- * command.
+ * <h4>Initiator Task Tag</h4> For Status SNACK and DataACK, the Initiator Task
+ * Tag MUST be set to the reserved value <code>0xffffffff</code>. In all other
+ * cases, the Initiator Task Tag field MUST be set to the Initiator Task Tag of
+ * the referenced command.
  * <p>
  * 
  * @author Volker Wildi
@@ -132,14 +122,14 @@ public final class SNACKRequestParser extends InitiatorMessageParser {
    * <th>Description</th>
    * </tr>
    * <tr>
-   * <td> 0</td>
+   * <td>0</td>
    * <td>Data/R2T SNACK - requesting retransmission of one or more Data- In or
-   * R2T PDUs. </td>
+   * R2T PDUs.</td>
    * </tr>
    * <tr>
    * <td>1</td>
    * <td>Status SNACK - requesting retransmission of one or more numbered
-   * responses. </td>
+   * responses.</td>
    * </tr>
    * <tr>
    * <td>2</td>
@@ -175,13 +165,15 @@ public final class SNACKRequestParser extends InitiatorMessageParser {
 
     private static Map<Byte, SNACKType> mapping;
 
+    static {
+      SNACKType.mapping = new HashMap<Byte, SNACKType>();
+      for (SNACKType s : values()) {
+        SNACKType.mapping.put(s.value, s);
+      }
+    }
+
     private SNACKType(final byte newValue) {
 
-      if (SNACKType.mapping == null) {
-        SNACKType.mapping = new HashMap<Byte, SNACKType>();
-      }
-
-      SNACKType.mapping.put(newValue, this);
       value = newValue;
     }
 
@@ -251,9 +243,9 @@ public final class SNACKRequestParser extends InitiatorMessageParser {
   // --------------------------------------------------------------------------
 
   /**
-   * The <code>DataSN</code>, <code>R2TSN</code>, or <code>StatSN</code>
-   * of the first PDU whose retransmission is requested (Data/R2T and Status
-   * SNACK), or the next expected DataSN (DataACK SNACK).
+   * The <code>DataSN</code>, <code>R2TSN</code>, or <code>StatSN</code> of the
+   * first PDU whose retransmission is requested (Data/R2T and Status SNACK), or
+   * the next expected DataSN (DataACK SNACK).
    * <p>
    * <code>BegRun</code> <code>0</code> when used in conjunction with
    * <code>RunLength</code> <code>0</code> means resend all unacknowledged
@@ -275,8 +267,8 @@ public final class SNACKRequestParser extends InitiatorMessageParser {
    * Response PDUs carrying the numbers equal to or greater than BegRun have to
    * be resent.
    * <p>
-   * The <code>RunLength</code> MUST also be <code>0</code> for a DataACK
-   * SNACK in addition to R-Data SNACK.
+   * The <code>RunLength</code> MUST also be <code>0</code> for a DataACK SNACK
+   * in addition to R-Data SNACK.
    * 
    * @return The RunLength of this <code>SNACKRequestParser</code> object.
    */

@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: LoginStage.java 2500 2007-03-05 13:29:08Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id: LoginStage.java
+ * 2500 2007-03-05 13:29:08Z lemke $
  */
 
 package org.jscsi.parser.login;
@@ -26,8 +19,8 @@ import java.util.Map;
  * <h1>LoginStage</h1>
  * <p>
  * This enumeration defines all valid constants for the Login Stages used in the
- * fields <em>Current Stage (CSG)</em> and <em>Next Stage(NSG)</em> fields
- * of a Login Request message. This values are defined in the iSCSI Protocol
+ * fields <em>Current Stage (CSG)</em> and <em>Next Stage(NSG)</em> fields of a
+ * Login Request message. This values are defined in the iSCSI Protocol
  * (RFC3720).
  * 
  * @author Volker Wildi
@@ -47,13 +40,15 @@ public enum LoginStage {
 
   private static Map<Byte, LoginStage> mapping;
 
+  static {
+    LoginStage.mapping = new HashMap<Byte, LoginStage>();
+    for (LoginStage s : values()) {
+      LoginStage.mapping.put(s.value, s);
+    }
+  }
+
   private LoginStage(final byte newValue) {
 
-    if (LoginStage.mapping == null) {
-      LoginStage.mapping = new HashMap<Byte, LoginStage>();
-    }
-
-    LoginStage.mapping.put(newValue, this);
     value = newValue;
   }
 

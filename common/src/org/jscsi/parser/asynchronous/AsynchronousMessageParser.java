@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: AsynchronousMessageParser.java 2498 2007-03-05 12:32:43Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id:
+ * AsynchronousMessageParser.java 2498 2007-03-05 12:32:43Z lemke $
  */
 
 package org.jscsi.parser.asynchronous;
@@ -42,41 +35,37 @@ public final class AsynchronousMessageParser extends TargetMessageParser {
   // --------------------------------------------------------------------------
 
   /**
-   * Enumeration of all valid asynchronous message event codes. <table
-   * border="1">
+   * Enumeration of all valid asynchronous message event codes.
+   * <table * border="1">
    * <tr>
-   * <th>Event Code</th>
-   * <th>Description</th>
+   * <th>Event Code</th> <th>Description</th>
    * </tr>
    * <tr>
-   * <td>0</td>
-   * <td>A SCSI Asynchronous Event is reported in the sense data. Sense Data
-   * that accompanies the report, in the data segment, identifies the condition.
-   * The sending of a SCSI Event (Asynchronous Event Reporting in SCSI
-   * terminology) is dependent on the target support for SCSI asynchronous event
-   * reporting (see [SAM2]) as indicated in the standard INQUIRY data (see
+   * <td>0</td> <td>A SCSI Asynchronous Event is reported in the sense data.
+   * Sense Data that accompanies the report, in the data segment, identifies the
+   * condition. The sending of a SCSI Event (Asynchronous Event Reporting in
+   * SCSI terminology) is dependent on the target support for SCSI asynchronous
+   * event reporting (see [SAM2]) as indicated in the standard INQUIRY data (see
    * [SPC3]). Its use may be enabled by parameters in the SCSI Control mode page
    * (see [SPC3]).</td>
    * </tr>
    * <tr>
-   * <td>1</td>
-   * <td>Target requests Logout. This Async Message MUST be sent on the same
-   * connection as the one requesting to be logged out. The initiator MUST honor
-   * this request by issuing a Logout as early as possible, but no later than
-   * Parameter3 seconds. Initiator MUST send a Logout with a reason code of
-   * "Close the connection" OR "Close the session" to close all the connections.
-   * Once this message is received, the initiator SHOULD NOT issue new iSCSI
-   * commands on the connection to be logged out. The target MAY reject any new
-   * I/O requests that it receives after this Message with the reason code
-   * "Waiting for Logout". If the initiator does not Logout in Parameter3
-   * seconds, the target should send an Async PDU with iSCSI event code "Dropped
-   * the connection" if possible, or simply terminate the transport connection.
-   * Parameter1 and Parameter2 are reserved. </td>
+   * <td>1</td> <td>Target requests Logout. This Async Message MUST be sent on
+   * the same connection as the one requesting to be logged out. The initiator
+   * MUST honor this request by issuing a Logout as early as possible, but no
+   * later than Parameter3 seconds. Initiator MUST send a Logout with a reason
+   * code of "Close the connection" OR "Close the session" to close all the
+   * connections. Once this message is received, the initiator SHOULD NOT issue
+   * new iSCSI commands on the connection to be logged out. The target MAY
+   * reject any new I/O requests that it receives after this Message with the
+   * reason code "Waiting for Logout". If the initiator does not Logout in
+   * Parameter3 seconds, the target should send an Async PDU with iSCSI event
+   * code "Dropped the connection" if possible, or simply terminate the
+   * transport connection. Parameter1 and Parameter2 are reserved. </td>
    * </tr>
    * <tr>
-   * <td>2</td>
-   * <td>Target indicates it will drop the connection. The Parameter1 field
-   * indicates the CID of the connection that is going to be dropped. The
+   * <td>2</td> <td>Target indicates it will drop the connection. The Parameter1
+   * field indicates the CID of the connection that is going to be dropped. The
    * Parameter2 field (Time2Wait) indicates, in seconds, the minimum time to
    * wait before attempting to reconnect or reassign. The Parameter3 field
    * (Time2Retain) indicates the maximum time allowed to reassign commands after
@@ -89,35 +78,33 @@ public final class AsynchronousMessageParser extends TargetMessageParser {
    * can be attempted immediately.</td>
    * </tr>
    * <tr>
-   * <td>3</td>
-   * <td>Target indicates it will drop all the connections of this session.
-   * Parameter1 field is reserved. The Parameter2 field (Time2Wait) indicates,
-   * in seconds, the minimum time to wait before attempting to reconnect. The
-   * Parameter3 field (Time2Retain) indicates the maximum time allowed to
-   * reassign commands after the initial wait (in Parameter2). If the initiator
-   * does not attempt to reconnect and/or reassign the outstanding commands
-   * within the time specified by Parameter3, or if Parameter3 is 0, the session
-   * is terminated. In this case, the target will terminate all outstanding
-   * commands in this session; no other responses should be expected from the
-   * target for the outstanding commands in this session. A value of 0 for
-   * Parameter2 indicates that reconnect can be attempted immediately.</td>
+   * <td>3</td> <td>Target indicates it will drop all the connections of this
+   * session. Parameter1 field is reserved. The Parameter2 field (Time2Wait)
+   * indicates, in seconds, the minimum time to wait before attempting to
+   * reconnect. The Parameter3 field (Time2Retain) indicates the maximum time
+   * allowed to reassign commands after the initial wait (in Parameter2). If the
+   * initiator does not attempt to reconnect and/or reassign the outstanding
+   * commands within the time specified by Parameter3, or if Parameter3 is 0,
+   * the session is terminated. In this case, the target will terminate all
+   * outstanding commands in this session; no other responses should be expected
+   * from the target for the outstanding commands in this session. A value of 0
+   * for Parameter2 indicates that reconnect can be attempted immediately.</td>
    * </tr>
    * <tr>
-   * <td>4</td>
-   * <td>Target requests parameter negotiation on this connection. The
-   * initiator MUST honor this request by issuing a Text Request (that can be
-   * empty) on the same connection as early as possible, but no later than
+   * <td>4</td> <td>Target requests parameter negotiation on this connection.
+   * The initiator MUST honor this request by issuing a Text Request (that can
+   * be empty) on the same connection as early as possible, but no later than
    * Parameter3 seconds, unless a Text Request is already pending on the
    * connection, or by issuing a Logout Request. If the initiator does not issue
    * a Text Request the target may reissue the Asynchronous Message requesting
    * parameter negotiation. </td>
    * </tr>
    * <tr>
-   * <td>255</td>
-   * <td>Vendor specific iSCSI Event. The AsyncVCode details the vendor code,
-   * and data MAY accompany the report.</td>
+   * <td>255</td> <td>Vendor specific iSCSI Event. The AsyncVCode details the
+   * vendor code, and data MAY accompany the report.</td>
    * </tr>
-   * </table> <br/> All other event codes are reserved.
+   * </table>
+   * <br/> All other event codes are reserved.
    */
   public static enum AsyncEventCodes {
     /** A SCSI Asynchronous Event is reported in the sense data. */
@@ -142,13 +129,15 @@ public final class AsynchronousMessageParser extends TargetMessageParser {
 
     private static Map<Byte, AsyncEventCodes> mapping;
 
+    static {
+      AsyncEventCodes.mapping = new HashMap<Byte, AsyncEventCodes>();
+      for (AsyncEventCodes s : values()) {
+        AsyncEventCodes.mapping.put(s.value, s);
+      }
+    }
+
     private AsyncEventCodes(final byte newValue) {
 
-      if (AsyncEventCodes.mapping == null) {
-        AsyncEventCodes.mapping = new HashMap<Byte, AsyncEventCodes>();
-      }
-
-      AsyncEventCodes.mapping.put(newValue, this);
       value = newValue;
     }
 
@@ -259,9 +248,9 @@ public final class AsynchronousMessageParser extends TargetMessageParser {
   /**
    * Returns the code of the iSCSI Asynchronous message.
    * <p>
-   * <code>AsyncVCode</code> is a vendor specific detail code that is only
-   * valid if the <code>AsyncEvent</code> field indicates a vendor specific
-   * event. Otherwise, it is reserved.
+   * <code>AsyncVCode</code> is a vendor specific detail code that is only valid
+   * if the <code>AsyncEvent</code> field indicates a vendor specific event.
+   * Otherwise, it is reserved.
    * 
    * @return The Asynchronous vendor code.
    * @see AsyncEventCodes

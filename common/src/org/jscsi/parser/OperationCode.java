@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: OperationCode.java 2498 2007-03-05 12:32:43Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id:
+ * OperationCode.java 2498 2007-03-05 12:32:43Z lemke $
  */
 
 package org.jscsi.parser;
@@ -28,7 +21,6 @@ import java.util.Map;
  * This enumeration defines all valid operation codes, which are conform to
  * iSCSI Protocol (RFC 3720).
  * <p>
- * 
  * <table border="1">
  * <tr>
  * <td>0x00</td>
@@ -64,9 +56,8 @@ import java.util.Map;
  * </tr>
  * <tr>
  * <td>0x1c-0x1e</td>
- * <td> Vendor specific codes</td>
+ * <td>Vendor specific codes</td>
  * </tr>
- * 
  * <tr>
  * <td>0x20</td>
  * <td>NOP-In</td>
@@ -108,15 +99,14 @@ import java.util.Map;
  * </tr>
  * <tr>
  * <td>0x3c-0x3e</td>
- * <td> Vendor specific codes</td>
+ * <td>Vendor specific codes</td>
  * </tr>
  * <tr>
  * <td>0x3f</td>
- * <td> Reject</td>
+ * <td>Reject</td>
  * </tr>
  * </table>
  * <p>
- * 
  * Not Supported: 0x1c-0x1e Vendor specific codes
  * 
  * @author Volker Wildi
@@ -148,11 +138,11 @@ public enum OperationCode {
    * I_T_L nexus is derived by the initiator and target from the LUN field in
    * the request and the I_T nexus is implicit in the session identification. In
    * addition, the SCSI-command PDU carries information required for the proper
-   * operation of the iSCSI protocol - the command sequence number (<code>CmdSN</code>)
-   * for the session and the expected status number (<code>ExpStatSN</code>)
-   * for the connection. All or part of the SCSI output (write) data associated
-   * with the SCSI command may be sent as part of the SCSI-Command PDU as a data
-   * segment.
+   * operation of the iSCSI protocol - the command sequence number (
+   * <code>CmdSN</code>) for the session and the expected status number (
+   * <code>ExpStatSN</code>) for the connection. All or part of the SCSI output
+   * (write) data associated with the SCSI command may be sent as part of the
+   * SCSI-Command PDU as a data segment.
    */
   SCSI_COMMAND((byte) 0x01),
 
@@ -166,12 +156,12 @@ public enum OperationCode {
    * referenced tag identifies an individual task if the function refers to an
    * individual task. The I_T_L nexus identifies task sets. In iSCSI the I_T_L
    * nexus is identified by the LUN and the session identification (the session
-   * identifies an I_T nexus). For task sets, the <code>CmdSN</code> of the
-   * Task Management function request helps identify the tasks upon which to
-   * act, namely all tasks associated with a LUN and having a CmdSN preceding
-   * the Task Management function request <code>CmdSN</code>. For a Task
-   * Management function, the coordination between responses to the tasks
-   * affected and the Task Management function response is done by the target.
+   * identifies an I_T nexus). For task sets, the <code>CmdSN</code> of the Task
+   * Management function request helps identify the tasks upon which to act,
+   * namely all tasks associated with a LUN and having a CmdSN preceding the
+   * Task Management function request <code>CmdSN</code>. For a Task Management
+   * function, the coordination between responses to the tasks affected and the
+   * Task Management function response is done by the target.
    */
   SCSI_TM_REQUEST((byte) 0x02),
 
@@ -180,23 +170,23 @@ public enum OperationCode {
    * each connection to set up the session and connection parameters. (The Login
    * Phase consists of a sequence of login requests and responses carrying the
    * same Initiator Task Tag.) A connection is identified by an arbitrarily
-   * selected connection-ID (<code>CID</code>) that is unique within a
-   * session. Similar to the Text Requests and Responses, Login
-   * Requests/Responses carry key=value text information with a simple syntax in
-   * the data segment. The Login Phase proceeds through several stages (security
-   * negotiation, operational parameter negotiation) that are selected with two
-   * binary coded fields in the header -- the "current stage" (<code>CSG</code>)
-   * and the "next stage" (<code>NSG</code>) with the appearance of the
-   * latter being signaled by the "transit" flag (<code>T</code>). The first
-   * Login Phase of a session plays a special role, called the leading login,
-   * which determines some header fields (e.g., the version number, the maximum
-   * number of connections, and the session identification). The CmdSN initial
-   * value is also set by the leading login. StatSN for each connection is
-   * initiated by the connection login. A login request may indicate an implied
-   * logout (cleanup) of the connection to be logged in (a connection restart)
-   * by using the same Connection ID (CID) as an existing connection, as well as
-   * the same session identifying elements of the session to which the old
-   * connection was associated.
+   * selected connection-ID (<code>CID</code>) that is unique within a session.
+   * Similar to the Text Requests and Responses, Login Requests/Responses carry
+   * key=value text information with a simple syntax in the data segment. The
+   * Login Phase proceeds through several stages (security negotiation,
+   * operational parameter negotiation) that are selected with two binary coded
+   * fields in the header -- the "current stage" (<code>CSG</code>) and the
+   * "next stage" (<code>NSG</code> ) with the appearance of the latter being
+   * signaled by the "transit" flag (<code>T</code>). The first Login Phase of a
+   * session plays a special role, called the leading login, which determines
+   * some header fields (e.g., the version number, the maximum number of
+   * connections, and the session identification). The CmdSN initial value is
+   * also set by the leading login. StatSN for each connection is initiated by
+   * the connection login. A login request may indicate an implied logout
+   * (cleanup) of the connection to be logged in (a connection restart) by using
+   * the same Connection ID (CID) as an existing connection, as well as the same
+   * session identifying elements of the session to which the old connection was
+   * associated.
    */
   LOGIN_REQUEST((byte) 0x03),
 
@@ -301,12 +291,10 @@ public enum OperationCode {
    * operation of the iSCSI protocol:
    * <ul>
    * <li>The number of Data-In PDUs that a target has sent (to enable the
-   * initiator to check that all have arrived).</li>
-   * <li>StatSN - the Status Sequence Number on this connection</li>
-   * <li> ExpCmdSN - the next Expected Command Sequence Number at the target.
-   * </li>
-   * <li>MaxCmdSN - the maximum CmdSN acceptable at the target from this
-   * initiator.</li>
+   * initiator to check that all have arrived).</li> <li>StatSN - the Status
+   * Sequence Number on this connection</li> <li> ExpCmdSN - the next Expected
+   * Command Sequence Number at the target. </li> <li>MaxCmdSN - the maximum
+   * CmdSN acceptable at the target from this initiator.</li>
    * </ul>
    */
   SCSI_RESPONSE((byte) 0x21),
@@ -326,23 +314,23 @@ public enum OperationCode {
    * each connection to set up the session and connection parameters. (The Login
    * Phase consists of a sequence of login requests and responses carrying the
    * same Initiator Task Tag.) A connection is identified by an arbitrarily
-   * selected connection-ID (<code>CID</code>) that is unique within a
-   * session. Similar to the Text Requests and Responses, Login
-   * Requests/Responses carry key=value text information with a simple syntax in
-   * the data segment. The Login Phase proceeds through several stages (security
-   * negotiation, operational parameter negotiation) that are selected with two
-   * binary coded fields in the header -- the "current stage" (<code>CSG</code>)
-   * and the "next stage" (<code>NSG</code>) with the appearance of the
-   * latter being signaled by the "transit" flag (<code>T</code>). The first
-   * Login Phase of a session plays a special role, called the leading login,
-   * which determines some header fields (e.g., the version number, the maximum
-   * number of connections, and the session identification). The CmdSN initial
-   * value is also set by the leading login. StatSN for each connection is
-   * initiated by the connection login. A login request may indicate an implied
-   * logout (cleanup) of the connection to be logged in (a connection restart)
-   * by using the same Connection ID (<code>CID</code>) as an existing
-   * connection, as well as the same session identifying elements of the session
-   * to which the old connection was associated.
+   * selected connection-ID (<code>CID</code>) that is unique within a session.
+   * Similar to the Text Requests and Responses, Login Requests/Responses carry
+   * key=value text information with a simple syntax in the data segment. The
+   * Login Phase proceeds through several stages (security negotiation,
+   * operational parameter negotiation) that are selected with two binary coded
+   * fields in the header -- the "current stage" (<code>CSG</code>) and the
+   * "next stage" (<code>NSG</code> ) with the appearance of the latter being
+   * signaled by the "transit" flag (<code>T</code>). The first Login Phase of a
+   * session plays a special role, called the leading login, which determines
+   * some header fields (e.g., the version number, the maximum number of
+   * connections, and the session identification). The CmdSN initial value is
+   * also set by the leading login. StatSN for each connection is initiated by
+   * the connection login. A login request may indicate an implied logout
+   * (cleanup) of the connection to be logged in (a connection restart) by using
+   * the same Connection ID (<code>CID</code>) as an existing connection, as
+   * well as the same session identifying elements of the session to which the
+   * old connection was associated.
    */
   LOGIN_RESPONSE((byte) 0x23),
 
@@ -351,21 +339,20 @@ public enum OperationCode {
    * and as a vehicle for future extension. In the data segment, Text
    * Requests/Responses carry text information using a simple "key=value"
    * syntax. Text Request/Responses may form extended sequences using the same
-   * Initiator Task Tag. The initiator uses the <code>F</code> (Final) flag
-   * bit in the text request header to indicate its readiness to terminate a
+   * Initiator Task Tag. The initiator uses the <code>F</code> (Final) flag bit
+   * in the text request header to indicate its readiness to terminate a
    * sequence. The target uses the <code>F</code> (Final) flag bit in the text
    * response header to indicate its consent to sequence termination. Text
    * Request and Responses also use the Target Transfer Tag to indicate
    * continuation of an operation or a new beginning. A target that wishes to
    * continue an operation will set the Target Transfer Tag in a Text Response
-   * to a value different from the default <code>0xffffffff</code>. An
-   * initiator willing to continue will copy this value into the Target Transfer
-   * Tag of the next Text Request. If the initiator wants to restart the current
-   * target negotiation (start fresh) will set the Target Transfer Tag to
-   * <code>0xffffffff</code>. Although a complete exchange is always started
-   * by the initiator, specific parameter negotiations may be initiated by the
+   * to a value different from the default <code>0xffffffff</code>. An initiator
+   * willing to continue will copy this value into the Target Transfer Tag of
+   * the next Text Request. If the initiator wants to restart the current target
+   * negotiation (start fresh) will set the Target Transfer Tag to
+   * <code>0xffffffff</code>. Although a complete exchange is always started by
+   * the initiator, specific parameter negotiations may be initiated by the
    * initiator or target.
-   * 
    */
   TEXT_RESPONSE((byte) 0x24),
 
@@ -417,10 +404,8 @@ public enum OperationCode {
    * target to associate data with an R2T. R2T also carries information required
    * for proper operation of the iSCSI protocol, such as:
    * <ul>
-   * <li>R2TSN (to enable an initiator to detect a missing R2T)</li>
-   * <li>StatSN</li>
-   * <li>ExpCmdSN</li>
-   * <li>MaxCmdSN </li>
+   * <li>R2TSN (to enable an initiator to detect a missing R2T)</li> <li> StatSN
+   * </li> <li>ExpCmdSN</li> <li>MaxCmdSN </li>
    * </ul>
    */
   R2T((byte) 0x31),
@@ -444,13 +429,15 @@ public enum OperationCode {
 
   private static Map<Byte, OperationCode> mapping;
 
+  static {
+    OperationCode.mapping = new HashMap<Byte, OperationCode>();
+    for (OperationCode s : values()) {
+      OperationCode.mapping.put(s.value, s);
+    }
+  }
+
   private OperationCode(final byte newValue) {
 
-    if (OperationCode.mapping == null) {
-      OperationCode.mapping = new HashMap<Byte, OperationCode>();
-    }
-
-    OperationCode.mapping.put(newValue, this);
     value = newValue;
   }
 

@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: RejectParser.java 2500 2007-03-05 13:29:08Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id:
+ * RejectParser.java 2500 2007-03-05 13:29:08Z lemke $
  */
 
 package org.jscsi.parser.reject;
@@ -35,7 +28,6 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * This class parses a Reject message defined in the iSCSI Standard (RFC3720).
  * 
  * @author Volker Wildi
- * 
  */
 public final class RejectParser extends TargetMessageParser {
 
@@ -53,66 +45,66 @@ public final class RejectParser extends TargetMessageParser {
    * <th>Can the original PDU be re-sent?</th>
    * </tr>
    * <tr>
-   * <td> 0x01 </td>
-   * <td> Reserved </td>
-   * <td> no </td>
+   * <td>0x01</td>
+   * <td>Reserved</td>
+   * <td>no</td>
    * </tr>
    * <tr>
-   * <td> 0x02 </td>
-   * <td> Data (payload) Digest Error </td>
-   * <td> yes (Note 1) </td>
+   * <td>0x02</td>
+   * <td>Data (payload) Digest Error</td>
+   * <td>yes (Note 1)</td>
    * </tr>
    * <tr>
-   * <td> 0x03 </td>
-   * <td> SNACK Reject </td>
-   * <td> yes </td>
+   * <td>0x03</td>
+   * <td>SNACK Reject</td>
+   * <td>yes</td>
    * </tr>
    * <tr>
-   * <td> 0x04 </td>
-   * <td> Protocol Error (e.g., SNACK request for a status that was already
+   * <td>0x04</td>
+   * <td>Protocol Error (e.g., SNACK request for a status that was already
    * acknowledged)</td>
-   * <td> no </td>
+   * <td>no</td>
    * </tr>
    * <tr>
-   * <td> 0x05 </td>
-   * <td> Command not supported </td>
-   * <td> no </td>
+   * <td>0x05</td>
+   * <td>Command not supported</td>
+   * <td>no</td>
    * </tr>
    * <tr>
-   * <td> 0x06 </td>
-   * <td> Immediate Command Reject - too many immediate commands </td>
-   * <td> yes </td>
+   * <td>0x06</td>
+   * <td>Immediate Command Reject - too many immediate commands</td>
+   * <td>yes</td>
    * </tr>
    * <tr>
-   * <td> 0x07 </td>
-   * <td> Task in progress </td>
-   * <td> no </td>
+   * <td>0x07</td>
+   * <td>Task in progress</td>
+   * <td>no</td>
    * </tr>
    * <tr>
-   * <td> 0x08 </td>
-   * <td> Invalid Data ACK </td>
-   * <td> no </td>
+   * <td>0x08</td>
+   * <td>Invalid Data ACK</td>
+   * <td>no</td>
    * </tr>
    * <tr>
-   * <td> 0x09 </td>
-   * <td> Invalid PDU field </td>
-   * <td> no (Note 2) </td>
+   * <td>0x09</td>
+   * <td>Invalid PDU field</td>
+   * <td>no (Note 2)</td>
    * </tr>
    * <tr>
-   * <td> 0x0a </td>
-   * <td> Long Operation Reject - Can't generate Target Transfer Tag - out of
+   * <td>0x0a</td>
+   * <td>Long Operation Reject - Can't generate Target Transfer Tag - out of
    * resources</td>
-   * <td> yes </td>
+   * <td>yes</td>
    * </tr>
    * <tr>
-   * <td> 0x0b </td>
-   * <td> Negotiation Reset </td>
-   * <td> no </td>
+   * <td>0x0b</td>
+   * <td>Negotiation Reset</td>
+   * <td>no</td>
    * </tr>
    * <tr>
-   * <td> 0x0c </td>
-   * <td> Waiting for Logout </td>
-   * <td> no </td>
+   * <td>0x0c</td>
+   * <td>Waiting for Logout</td>
+   * <td>no</td>
    * </tr>
    * </table>
    * <p>
@@ -164,13 +156,15 @@ public final class RejectParser extends TargetMessageParser {
 
     private static Map<Byte, ReasonCode> mapping;
 
+    static {
+      ReasonCode.mapping = new HashMap<Byte, ReasonCode>();
+      for (ReasonCode s : values()) {
+        ReasonCode.mapping.put(s.value, s);
+      }
+    }
+
     private ReasonCode(final byte newValue) {
 
-      if (ReasonCode.mapping == null) {
-        ReasonCode.mapping = new HashMap<Byte, ReasonCode>();
-      }
-
-      ReasonCode.mapping.put(newValue, this);
       value = newValue;
     }
 
@@ -212,8 +206,7 @@ public final class RejectParser extends TargetMessageParser {
   // --------------------------------------------------------------------------
 
   /**
-   * Default constructor, creates a new, empty <code>RejectParser</code>
-   * object.
+   * Default constructor, creates a new, empty <code>RejectParser</code> object.
    * 
    * @param initProtocolDataUnit
    *          The reference <code>ProtocolDataUnit</code> instance, which
@@ -233,8 +226,7 @@ public final class RejectParser extends TargetMessageParser {
    * Request). The DataSN/R2TSN is the next Data/R2T sequence number that the
    * target would send for the task, if any.
    * 
-   * @return The data sequence number of this <code>RejectParser</code>
-   *         object.
+   * @return The data sequence number of this <code>RejectParser</code> object.
    */
   public final int getDataSequenceNumber() {
 

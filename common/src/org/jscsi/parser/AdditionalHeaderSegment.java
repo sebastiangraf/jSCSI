@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: AdditionalHeaderSegment.java 2498 2007-03-05 12:32:43Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id:
+ * AdditionalHeaderSegment.java 2498 2007-03-05 12:32:43Z lemke $
  */
 
 package org.jscsi.parser;
@@ -88,13 +81,15 @@ final class AdditionalHeaderSegment {
 
     private static Map<Byte, AdditionalHeaderSegmentType> mapping;
 
+    static {
+      AdditionalHeaderSegmentType.mapping = new HashMap<Byte, AdditionalHeaderSegmentType>();
+      for (AdditionalHeaderSegmentType s : values()) {
+        AdditionalHeaderSegmentType.mapping.put(s.value, s);
+      }
+    }
+
     private AdditionalHeaderSegmentType(final byte newValue) {
 
-      if (AdditionalHeaderSegmentType.mapping == null) {
-        AdditionalHeaderSegmentType.mapping = new HashMap<Byte, AdditionalHeaderSegmentType>();
-      }
-
-      AdditionalHeaderSegmentType.mapping.put(newValue, this);
       value = newValue;
     }
 
@@ -146,16 +141,17 @@ final class AdditionalHeaderSegment {
   private static final int EXPECTED_BIDIRECTIONAL_LENGTH = 0x0005;
 
   /**
-   * Length of the specific field <code>ByteBuffer</code>, which is expected,
-   * if the AHS type is the
-   * <code>AdditionalHeaderSegmentType.EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH</code>.
+   * Length of the specific field <code>ByteBuffer</code>, which is expected, if
+   * the AHS type is the
+   * <code>AdditionalHeaderSegmentType.EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH</code>
+   * .
    */
   private static final int EXPECTED_BIDIRECTIONAL_SPECIFIC_FIELD_LENGTH = 5;
 
   /**
    * This is the size (in bytes) of the <code>AHSLength</code> and the
-   * <code>AHSType</code>, which are also included in the serialized AHS form
-   * of this object.
+   * <code>AHSType</code>, which are also included in the serialized AHS form of
+   * this object.
    */
   private static final int FIX_SIZE_OVERHEAD = 3;
 
@@ -171,20 +167,19 @@ final class AdditionalHeaderSegment {
   private short length;
 
   /**
-   * The type of this AHS. <br/><br/> <table border="1">
+   * The type of this AHS. <br/><br/>
+   * <table border="1">
    * <tr>
-   * <th>Bits</th>
-   * <th>Meaning</th>
+   * <th>Bits</th> <th>Meaning</th>
    * </tr>
    * <tr>
-   * <td>0-1</td>
-   * <td>Reserved</td>
+   * <td>0-1</td> <td>Reserved</td>
    * </tr>
    * <tr>
-   * <td>2-7</td>
-   * <td>AHS code</td>
+   * <td>2-7</td> <td>AHS code</td>
    * </tr>
-   * </table> <br/>
+   * </table>
+   * <br/>
    * 
    * @see AdditionalHeaderSegmentType
    */

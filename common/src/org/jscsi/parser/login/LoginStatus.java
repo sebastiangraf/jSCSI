@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: LoginStatus.java 2500 2007-03-05 13:29:08Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id:
+ * LoginStatus.java 2500 2007-03-05 13:29:08Z lemke $
  */
 
 package org.jscsi.parser.login;
@@ -28,18 +21,17 @@ import java.util.Map;
  * This enumeration contains only all defined Login Stati, which can send in a
  * login response message in the iSCSI Protocol (RFC3720).
  * <p>
- * 
  * <table border="1">
  * <tr>
  * <td>0</td>
  * <td>Success - indicates that the iSCSI target successfully received,
  * understood, and accepted the request. The numbering fields (
- * <code>StatSN</code>, <code>ExpCmdSN</code>, <code>MaxCmdSN</code>)
- * are only valid if Status-Class is <code>0</code>.</td>
+ * <code>StatSN</code>, <code>ExpCmdSN</code>, <code>MaxCmdSN</code>) are only
+ * valid if Status-Class is <code>0</code>.</td>
  * </tr>
  * <tr>
  * <td>1</td>
- * <td> Redirection - indicates that the initiator must take further action to
+ * <td>Redirection - indicates that the initiator must take further action to
  * complete the request. This is usually due to the target moving to a different
  * address. All of the redirection status class responses MUST return one or
  * more text key parameters of the type &quot;TargetAddress&quot;, which
@@ -70,15 +62,14 @@ import java.util.Map;
  * </table>
  * 
  * @author Volker Wildi
- * 
  */
 public enum LoginStatus {
 
   /**
    * Login is proceeding OK.
    * <p>
-   * If the response <code>T</code> bit is <code>1</code> in both the
-   * request and the matching response, and the <code>NSG</code> is
+   * If the response <code>T</code> bit is <code>1</code> in both the request
+   * and the matching response, and the <code>NSG</code> is
    * <code>FullFeaturePhase</code> in both the request and the matching
    * response, the Login Phase is finished and the initiator may proceed to
    * issue SCSI commands.
@@ -99,14 +90,12 @@ public enum LoginStatus {
 
   /**
    * Miscellaneous iSCSI initiator errors.
-   * 
    */
   INITIATOR_ERROR((short) 0x0200),
 
   /**
    * The initiator could not be successfully authenticated or target
    * authentication is not supported.
-   * 
    */
   AUTHENTICATION_FAILURE((short) 0x0201),
 
@@ -179,13 +168,15 @@ public enum LoginStatus {
 
   private static Map<Short, LoginStatus> mapping;
 
+  static {
+    LoginStatus.mapping = new HashMap<Short, LoginStatus>();
+    for (LoginStatus s : values()) {
+      LoginStatus.mapping.put(s.value, s);
+    }
+  }
+
   private LoginStatus(final short newValue) {
 
-    if (LoginStatus.mapping == null) {
-      LoginStatus.mapping = new HashMap<Short, LoginStatus>();
-    }
-
-    LoginStatus.mapping.put(newValue, this);
     value = newValue;
   }
 

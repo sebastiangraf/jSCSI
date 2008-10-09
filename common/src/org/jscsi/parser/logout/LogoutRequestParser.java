@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: LogoutRequestParser.java 2500 2007-03-05 13:29:08Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id:
+ * LogoutRequestParser.java 2500 2007-03-05 13:29:08Z lemke $
  */
 
 package org.jscsi.parser.logout;
@@ -113,20 +106,19 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * </tr>
  * </table>
  * <p>
- * <h4>TotalAHSLength and DataSegmentLength</h4>
- * For this PDU TotalAHSLength and DataSegmentLength MUST be <code>0</code>.
+ * <h4>TotalAHSLength and DataSegmentLength</h4> For this PDU TotalAHSLength and
+ * DataSegmentLength MUST be <code>0</code>.
  * <p>
- * <h4>ExpStatSN</h4>
- * This is the last ExpStatSN value for the connection to be closed.
+ * <h4>ExpStatSN</h4> This is the last ExpStatSN value for the connection to be
+ * closed.
  * <p>
- * <h4>Implicit termination of tasks</h4>
- * A target implicitly terminates the active tasks due to the iSCSI protocol in
- * the following cases:
+ * <h4>Implicit termination of tasks</h4> A target implicitly terminates the
+ * active tasks due to the iSCSI protocol in the following cases:
  * <p>
  * <ol type="a">
  * <li>When a connection is implicitly or explicitly logged out with the reason
  * code of "Close the connection" and there are active tasks allegiant to that
- * connection. </li>
+ * connection.</li>
  * <li>When a connection fails and eventually the connection state times out
  * (state transition M1 in Section 7.2.2 State Transition Descriptions for
  * Initiators and Targets) and there are active tasks allegiant to that
@@ -136,11 +128,10 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * the Time2Wait and Time2Retain periods without allegiance reassignment.</li>
  * <li>When a connection is implicitly or explicitly logged out with the reason
  * code of "Close the session" and there are active tasks in that session.</li>
- * </ol>
- * If the tasks terminated in any of the above cases are SCSI tasks, they must
- * be internally terminated as if with CHECK CONDITION status. This status is
- * only meaningful for appropriately handling the internal SCSI state and SCSI
- * side effects with respect to ordering because this status is never
+ * </ol> If the tasks terminated in any of the above cases are SCSI tasks, they
+ * must be internally terminated as if with CHECK CONDITION status. This status
+ * is only meaningful for appropriately handling the internal SCSI state and
+ * SCSI side effects with respect to ordering because this status is never
  * communicated back as a terminating status to the initiator. However
  * additional actions may have to be taken at SCSI level depending on the SCSI
  * context as defined by the SCSI standards (e.g., queued commands and ACA, in
@@ -149,11 +140,9 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * for each affected I_T_L nexus with the status of CHECK CONDITION, and the
  * ASC/ASCQ value of 47h/7Fh - "SOME COMMANDS CLEARED BY ISCSI PROTOCOL EVENT" -
  * etc. - see [SAM2] and [SPC3]).
- * 
  * <p>
  * 
  * @author Volker Wildi
- * 
  */
 public final class LogoutRequestParser extends InitiatorMessageParser {
 
@@ -191,13 +180,15 @@ public final class LogoutRequestParser extends InitiatorMessageParser {
 
     private static Map<Byte, LogoutReasonCode> mapping;
 
+    static {
+      LogoutReasonCode.mapping = new HashMap<Byte, LogoutReasonCode>();
+      for (LogoutReasonCode s : values()) {
+        LogoutReasonCode.mapping.put(s.value, s);
+      }
+    }
+
     private LogoutReasonCode(final byte newValue) {
 
-      if (LogoutReasonCode.mapping == null) {
-        LogoutReasonCode.mapping = new HashMap<Byte, LogoutReasonCode>();
-      }
-
-      LogoutReasonCode.mapping.put(newValue, this);
       value = newValue;
     }
 
@@ -293,8 +284,8 @@ public final class LogoutRequestParser extends InitiatorMessageParser {
    * (including closing the TCP stream). This field is only valid if the reason
    * code is not "close the session".
    * 
-   * @return The <em>Connection ID</em> of this
-   *         <code>LogoutRequestParser</code> object.
+   * @return The <em>Connection ID</em> of this <code>LogoutRequestParser</code>
+   *         object.
    */
   public final short getConnectionID() {
 
@@ -325,8 +316,8 @@ public final class LogoutRequestParser extends InitiatorMessageParser {
   }
 
   /**
-   * Sets the <code>Reason Code</code> of this
-   * <code>LogoutRequestParser</code> object.
+   * Sets the <code>Reason Code</code> of this <code>LogoutRequestParser</code>
+   * object.
    * 
    * @param newReasonCode
    *          The new <code> Reason Code</code>.
