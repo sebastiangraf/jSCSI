@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: LogoutResponse.java 2500 2007-03-05 13:29:08Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id:
+ * LogoutResponse.java 2500 2007-03-05 13:29:08Z lemke $
  */
 
 package org.jscsi.parser.logout;
@@ -29,7 +22,6 @@ import java.util.Map;
  * (RFC3720) defines.
  * 
  * @author Volker Wildi
- * 
  */
 public enum LogoutResponse {
 
@@ -58,13 +50,15 @@ public enum LogoutResponse {
 
   private static Map<Byte, LogoutResponse> mapping;
 
+  static {
+    LogoutResponse.mapping = new HashMap<Byte, LogoutResponse>();
+    for (LogoutResponse s : values()) {
+      LogoutResponse.mapping.put(s.value, s);
+    }
+  }
+
   private LogoutResponse(final byte newValue) {
 
-    if (LogoutResponse.mapping == null) {
-      LogoutResponse.mapping = new HashMap<Byte, LogoutResponse>();
-    }
-
-    LogoutResponse.mapping.put(newValue, this);
     value = newValue;
   }
 

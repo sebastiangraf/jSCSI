@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: SCSIStatus.java 2500 2007-03-05 13:29:08Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id: SCSIStatus.java
+ * 2500 2007-03-05 13:29:08Z lemke $
  */
 
 package org.jscsi.parser.scsi;
@@ -35,7 +28,6 @@ import java.util.Map;
  * <th>Task Ended</th>
  * <th>Service Response</th>
  * </tr>
- * 
  * <tr>
  * <td>00h</td>
  * <td>GOOD</td>
@@ -201,18 +193,13 @@ public enum SCSIStatus {
   /**
    * This status shall be returned when an ACA exists within a task set and a
    * SCSI initiator port issues a command for that task set when at least one of
-   * the following is true:
-   * <ol type="a">
-   * <li>There is a task with the ACA attribute (see 7.5.4)[SAM2] in the task
-   * set;</li>
-   * <li>The SCSI initiator port issuing the command did not cause the ACA
-   * condition; or</li>
-   * <li>The task created to process the command did not have the ACA attribute
-   * and the NACA bit was set to one in the CDB CONTROL byte of the faulting
-   * command (see 5.9.1)[SAM2].</li>
-   * </ol>
-   * The SCSI initiator port may reissue the command after the ACA condition has
-   * been cleared.
+   * the following is true: <ol type="a"> <li>There is a task with the ACA
+   * attribute (see 7.5.4)[SAM2] in the task set;</li> <li>The SCSI initiator
+   * port issuing the command did not cause the ACA condition; or</li> <li>The
+   * task created to process the command did not have the ACA attribute and the
+   * NACA bit was set to one in the CDB CONTROL byte of the faulting command
+   * (see 5.9.1)[SAM2].</li> </ol> The SCSI initiator port may reissue the
+   * command after the ACA condition has been cleared.
    */
   ACA_ACTIVE((byte) 0x30),
   /**
@@ -226,13 +213,15 @@ public enum SCSIStatus {
 
   private static Map<Byte, SCSIStatus> mapping;
 
+  static {
+    SCSIStatus.mapping = new HashMap<Byte, SCSIStatus>();
+    for (SCSIStatus s : values()) {
+      SCSIStatus.mapping.put(s.value, s);
+    }
+  }
+
   private SCSIStatus(final byte newValue) {
 
-    if (SCSIStatus.mapping == null) {
-      SCSIStatus.mapping = new HashMap<Byte, SCSIStatus>();
-    }
-
-    SCSIStatus.mapping.put(newValue, this);
     value = newValue;
   }
 

@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: TaskManagementFunctionRequestParser.java 2500 2007-03-05 13:29:08Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id:
+ * TaskManagementFunctionRequestParser.java 2500 2007-03-05 13:29:08Z lemke $
  */
 
 package org.jscsi.parser.tmf;
@@ -36,17 +29,15 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * This class parses a Task Management Function Request message defined in the
  * iSCSI Standard (RFC3720).
  * <p>
- * <h4>TotalAHSLength and DataSegmentLength</h4>
- * For this PDU TotalAHSLength and DataSegmentLength MUST be <code>0</code>.
+ * <h4>TotalAHSLength and DataSegmentLength</h4> For this PDU TotalAHSLength and
+ * DataSegmentLength MUST be <code>0</code>.
  * <p>
- * <h4>LUN</h4>
- * This field is required for functions that address a specific LU (ABORT TASK,
- * CLEAR TASK SET, ABORT TASK SET, CLEAR ACA, LOGICAL UNIT RESET) and is
- * reserved in all others.
+ * <h4>LUN</h4> This field is required for functions that address a specific LU
+ * (ABORT TASK, CLEAR TASK SET, ABORT TASK SET, CLEAR ACA, LOGICAL UNIT RESET)
+ * and is reserved in all others.
  * <p>
  * 
  * @author Volker Wildi
- * 
  */
 public final class TaskManagementFunctionRequestParser extends
     InitiatorMessageParser {
@@ -77,13 +68,15 @@ public final class TaskManagementFunctionRequestParser extends
 
     private static Map<Byte, FunctionCode> mapping;
 
+    static {
+      FunctionCode.mapping = new HashMap<Byte, FunctionCode>();
+      for (FunctionCode s : values()) {
+        FunctionCode.mapping.put(s.value, s);
+      }
+    }
+
     private FunctionCode(final byte newValue) {
 
-      if (FunctionCode.mapping == null) {
-        FunctionCode.mapping = new HashMap<Byte, FunctionCode>();
-      }
-
-      FunctionCode.mapping.put(newValue, this);
       value = newValue;
     }
 
@@ -190,23 +183,22 @@ public final class TaskManagementFunctionRequestParser extends
    * For recovery purposes, the iSCSI target and initiator maintain a data
    * acknowledgement reference number - the first input DataSN number
    * unacknowledged by the initiator. When issuing a new command, this number is
-   * set to <code>0</code>. If the function is TASK REASSIGN, which
-   * establishes a new connection allegiance for a previously issued Read or
-   * Bidirectional command, <code>ExpDataSN</code> will contain an updated
-   * data acknowledgement reference number or the value <code>0</code>; the
-   * latter indicating that the data acknowledgement reference number is
-   * unchanged. The initiator MUST discard any data PDUs from the previous
-   * execution that it did not acknowledge and the target MUST transmit all
-   * Data-In PDUs (if any) starting with the data acknowledgement reference
-   * number. The number of retransmitted PDUs may or may not be the same as the
-   * original transmission depending on if there was a change in
-   * MaxRecvDataSegmentLength in the reassignment. The target MAY also send no
-   * more Data-In PDUs if all data has been acknowledged. <p/> The value of
-   * <code>ExpDataSN</code> MUST be <code>0</code> or higher than the
-   * <code>DataSN</code> of the last acknowledged Data-In PDU, but not larger
-   * than <code>DataSN+1</code> of the last Data-In PDU sent by the target.
-   * Any other value MUST be ignored by the target. <p/> For other functions
-   * this field is reserved. <p/>
+   * set to <code>0</code>. If the function is TASK REASSIGN, which establishes
+   * a new connection allegiance for a previously issued Read or Bidirectional
+   * command, <code>ExpDataSN</code> will contain an updated data
+   * acknowledgement reference number or the value <code>0</code>; the latter
+   * indicating that the data acknowledgement reference number is unchanged. The
+   * initiator MUST discard any data PDUs from the previous execution that it
+   * did not acknowledge and the target MUST transmit all Data-In PDUs (if any)
+   * starting with the data acknowledgement reference number. The number of
+   * retransmitted PDUs may or may not be the same as the original transmission
+   * depending on if there was a change in MaxRecvDataSegmentLength in the
+   * reassignment. The target MAY also send no more Data-In PDUs if all data has
+   * been acknowledged. <p/> The value of <code>ExpDataSN</code> MUST be
+   * <code>0</code> or higher than the <code>DataSN</code> of the last
+   * acknowledged Data-In PDU, but not larger than <code>DataSN+1</code> of the
+   * last Data-In PDU sent by the target. Any other value MUST be ignored by the
+   * target. <p/> For other functions this field is reserved. <p/>
    * 
    * @return The expected data sequence number of this
    *         <code>TaskManagementFunctionRequestParser</code> object.
@@ -230,7 +222,7 @@ public final class TaskManagementFunctionRequestParser extends
    * <tr>
    * <td>1</td>
    * <td>ABORT TASK - aborts the task identified by the Referenced Task Tag
-   * field. </td>
+   * field.</td>
    * </tr>
    * <tr>
    * <td>2</td>
@@ -244,25 +236,25 @@ public final class TaskManagementFunctionRequestParser extends
    * <tr>
    * <td>4</td>
    * <td>CLEAR TASK SET - aborts all Tasks in the appropriate task set as
-   * defined by the TST field in the Control mode page (see [SPC3]). </td>
+   * defined by the TST field in the Control mode page (see [SPC3]).</td>
    * </tr>
    * <tr>
    * <td>5</td>
-   * <td>LOGICAL UNIT RESET </td>
+   * <td>LOGICAL UNIT RESET</td>
    * </tr>
    * <tr>
    * <td>6</td>
-   * <td>TARGET WARM RESET </td>
+   * <td>TARGET WARM RESET</td>
    * </tr>
    * <tr>
    * <td>7</td>
-   * <td>TARGET COLD RESET </td>
+   * <td>TARGET COLD RESET</td>
    * </tr>
    * <tr>
    * <td>8</td>
-   * <td>TASK REASSIGN - reassigns connection allegiance for the task
-   * identified by the Referenced Task Tag field to this connection, thus
-   * resuming the iSCSI exchanges for the task.</td>
+   * <td>TASK REASSIGN - reassigns connection allegiance for the task identified
+   * by the Referenced Task Tag field to this connection, thus resuming the
+   * iSCSI exchanges for the task.</td>
    * </tr>
    * </table>
    * <p>

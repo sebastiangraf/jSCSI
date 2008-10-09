@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: OperationalTextKey.java 2498 2007-03-05 12:32:43Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id:
+ * OperationalTextKey.java 2498 2007-03-05 12:32:43Z lemke $
  */
 
 package org.jscsi.parser.datasegment;
@@ -33,7 +26,8 @@ public enum OperationalTextKey {
    * security negotiation is the authentication method (AuthMethod). The
    * authentication methods that can be used (appear in the list-of-values) are
    * either those listed in the following table or are vendor-unique methods:
-   * <p/> <table border="1">
+   * <p/>
+   * <table border="1">
    * <tr>
    * <th>Name</th>
    * <th>Description</th>
@@ -62,27 +56,28 @@ public enum OperationalTextKey {
    * <td>None</td>
    * <td>No authentication</td>
    * </tr>
-   * </table> <br/> The AuthMethod selection is followed by an "authentication
-   * exchange" specific to the authentication method selected. The
-   * authentication method proposal may be made by either the initiator or the
-   * target. However the initiator MUST make the first step specific to the
-   * selected authentication method as soon as it is selected. It follows that
-   * if the target makes the authentication method proposal the initiator sends
-   * the first keys(s) of the exchange together with its authentication method
-   * selection. The authentication exchange authenticates the initiator to the
-   * target, and optionally, the target to the initiator. Authentication is
-   * OPTIONAL to use but MUST be supported by the target and initiator. The
-   * initiator and target MUST implement CHAP. All other authentication methods
-   * are OPTIONAL. Private or public extension algorithms MAY also be negotiated
-   * for authentication methods. Whenever a private or public extension
-   * algorithm is part of the default offer (the offer made in absence of
-   * explicit administrative action) the implementer MUST ensure that CHAP is
-   * listed as an alternative in the default offer and "None" is not part of the
-   * default offer. Extension authentication methods MUST be named using one of
-   * the following two formats:
+   * </table>
+   * <br/> The AuthMethod selection is followed by an "authentication exchange"
+   * specific to the authentication method selected. The authentication method
+   * proposal may be made by either the initiator or the target. However the
+   * initiator MUST make the first step specific to the selected authentication
+   * method as soon as it is selected. It follows that if the target makes the
+   * authentication method proposal the initiator sends the first keys(s) of the
+   * exchange together with its authentication method selection. The
+   * authentication exchange authenticates the initiator to the target, and
+   * optionally, the target to the initiator. Authentication is OPTIONAL to use
+   * but MUST be supported by the target and initiator. The initiator and target
+   * MUST implement CHAP. All other authentication methods are OPTIONAL. Private
+   * or public extension algorithms MAY also be negotiated for authentication
+   * methods. Whenever a private or public extension algorithm is part of the
+   * default offer (the offer made in absence of explicit administrative action)
+   * the implementer MUST ensure that CHAP is listed as an alternative in the
+   * default offer and "None" is not part of the default offer. Extension
+   * authentication methods MUST be named using one of the following two
+   * formats:
    * <ol>
-   * <li> Z-reversed.vendor.dns_name.do_something=</li>
-   * <li> Z&lt;#&gt;&lt;IANA-registered-string&gt;= </li>
+   * <li>Z-reversed.vendor.dns_name.do_something=</li>
+   * <li>Z&lt;#&gt;&lt;IANA-registered-string&gt;=</li>
    * </ol>
    * Authentication methods named using the Z- format are used as private
    * extensions. Authentication methods named using the Z# format are used as
@@ -98,7 +93,6 @@ public enum OperationalTextKey {
    * subsections define the specific exchanges for each of the standardized
    * authentication methods. As mentioned earlier the first step is always done
    * by the initiator.
-   * 
    */
   AUTH_METHOD("AuthMethod"),
 
@@ -113,7 +107,8 @@ public enum OperationalTextKey {
    * switches, and proxies. <br/> The following table lists cyclic integrity
    * checksums that can be negotiated for the digests and that MUST be
    * implemented by every iSCSI initiator and target. These digest options only
-   * have error detection significance.<p/> <table border="1">
+   * have error detection significance.<p/>
+   * <table border="1">
    * <tr>
    * <th>Name</th>
    * <th>Description</th>
@@ -128,35 +123,34 @@ public enum OperationalTextKey {
    * <td>None</td>
    * <td colspan="2">no digest</td>
    * </tr>
-   * </table> <br/> The generator polynomial for this digest is given in
-   * hex-notation (e.g., 0x3b stands for 0011 1011 and the polynomial is
-   * x**5+X**4+x**3+x+1). <p/> When the Initiator and Target agree on a digest,
-   * this digest MUST be used for every PDU in Full Feature Phase. <br/> Padding
-   * bytes, when present in a segment covered by a CRC, SHOULD be set to 0 and
-   * are included in the CRC. <br/> The CRC MUST be calculated by a method that
-   * produces the same results as the following process: <br/>
-   * 
+   * </table>
+   * <br/> The generator polynomial for this digest is given in hex-notation
+   * (e.g., 0x3b stands for 0011 1011 and the polynomial is x**5+X**4+x**3+x+1).
+   * <p/> When the Initiator and Target agree on a digest, this digest MUST be
+   * used for every PDU in Full Feature Phase. <br/> Padding bytes, when present
+   * in a segment covered by a CRC, SHOULD be set to 0 and are included in the
+   * CRC. <br/> The CRC MUST be calculated by a method that produces the same
+   * results as the following process: <br/>
    * <ul>
-   * <li> The PDU bits are considered as the coefficients of a polynomial M(x)
-   * of degree n-1; bit 7 of the lowest numbered byte is considered the most
+   * <li>The PDU bits are considered as the coefficients of a polynomial M(x) of
+   * degree n-1; bit 7 of the lowest numbered byte is considered the most
    * significant bit (x^n-1), followed by bit 6 of the lowest numbered byte
    * through bit 0 of the highest numbered byte (x^0).</li>
-   * <li>The most significant 32 bits are complemented. </li>
+   * <li>The most significant 32 bits are complemented.</li>
    * <li>The polynomial is multiplied by x^32 then divided by G(x). The
    * generator polynomial produces a remainder R(x) of degree <= 31.</li>
-   * <li>The coefficients of R(x) are considered a 32 bit sequence. </li>
-   * <li>The bit sequence is complemented and the result is the CRC. </li>
+   * <li>The coefficients of R(x) are considered a 32 bit sequence.</li>
+   * <li>The bit sequence is complemented and the result is the CRC.</li>
    * <li>The CRC bits are mapped into the digest word. The x^31 coefficient in
    * bit 7 of the lowest numbered byte of the digest continuing through to the
    * byte up to the x^24 coefficient in bit 0 of the lowest numbered byte,
    * continuing with the x^23 coefficient in bit 7 of next byte through x^0 in
-   * bit 0 of the highest numbered byte. </li>
-   * <li> Computing the CRC over any segment (data or header) extended to
-   * include the CRC built using the generator 0x11edc6f41 will always get the
-   * value 0x1c2d19ed as its final remainder (R(x)). This value is given here in
-   * its polynomial form (i.e., not mapped as the digest word). </li>
+   * bit 0 of the highest numbered byte.</li>
+   * <li>Computing the CRC over any segment (data or header) extended to include
+   * the CRC built using the generator 0x11edc6f41 will always get the value
+   * 0x1c2d19ed as its final remainder (R(x)). This value is given here in its
+   * polynomial form (i.e., not mapped as the digest word).</li>
    * </ul>
-   * 
    * For a discussion about selection criteria for the CRC, see [RFC3385]. For a
    * detailed analysis of the iSCSI polynomial, see [Castagnoli93]. <br/>
    * Private or public extension algorithms MAY also be negotiated for digests.
@@ -187,11 +181,11 @@ public enum OperationalTextKey {
   DATA_DIGEST("DataDigest"),
 
   /**
-   * Use: LO <br/> Senders: Initiator and Target<br/> Scope: SW <br/>
-   * Irrelevant when: SessionType=Discovery<p/>
+   * Use: LO <br/> Senders: Initiator and Target<br/> Scope: SW <br/> Irrelevant
+   * when: SessionType=Discovery<p/>
    * MaxConnections=&lt;numerical-value-from-1-to-65535&gt;<p/> Default is
-   * <code>1</code>. <br/> Result function is Minimum.<p/> Initiator and
-   * target negotiate the maximum number of connections requested/acceptable.
+   * <code>1</code>. <br/> Result function is Minimum.<p/> Initiator and target
+   * negotiate the maximum number of connections requested/acceptable.
    */
   MAX_CONNECTIONS("MaxConnections"),
 
@@ -238,8 +232,8 @@ public enum OperationalTextKey {
    * the initiator during a Login Response PDU if SessionType=Normal (see
    * Section 12.21 SessionType). This string is not used as an identifier, nor
    * is it meant to be used for authentication or authorization decisions. It
-   * can be displayed by the initiator’s user interface in a list of targets to
-   * which it is connected.
+   * can be displayed by the initiator’s user interface in a list of targets
+   * to which it is connected.
    */
   TARGET_ALIAS("TargetAlias"),
 
@@ -258,19 +252,16 @@ public enum OperationalTextKey {
 
   /**
    * Use: ALL, Declarative, Any-Stage <br/> Senders: Target <br/> Scope: SW
-   * <br/> TargetAddress=domainname[:port][,portal-group-tag]<p/> The
-   * domainname can be specified as either a DNS host name, a dotted-decimal
-   * IPv4 address, or a bracketed IPv6 address as specified in [RFC2732]. <br/>
-   * <br/>
-   * 
-   * If the TCP port is not specified, it is assumed to be the IANA-assigned
-   * default port for iSCSI (see Section 13 IANA Considerations). <br/> If the
+   * <br/> TargetAddress=domainname[:port][,portal-group-tag]<p/> The domainname
+   * can be specified as either a DNS host name, a dotted-decimal IPv4 address,
+   * or a bracketed IPv6 address as specified in [RFC2732]. <br/> <br/> If the
+   * TCP port is not specified, it is assumed to be the IANA-assigned default
+   * port for iSCSI (see Section 13 IANA Considerations). <br/> If the
    * TargetAddress is returned as the result of a redirect status in a login
    * response, the comma and portal group tag MUST be omitted. If the
    * TargetAddress is returned within a SendTargets response, the portal group
-   * tag MUST be included.<p/>
-   * 
-   * Examples: <br/> TargetAddress=10.0.0.1:5003,1<br/>
+   * tag MUST be included.<p/> Examples: <br/>
+   * TargetAddress=10.0.0.1:5003,1<br/>
    * TargetAddress=[1080:0:0:0:8:800:200C:417A],65<br/>
    * TargetAddress=[1080::8:800:200C:417A]:5003,1 <br/>
    * TargetAddress=computingcenter.example.com,23 <p/> Use of the
@@ -283,32 +274,30 @@ public enum OperationalTextKey {
   /**
    * Use: IO by target, Declarative, Any-Stage <br/> Senders: Target <br/>
    * Scope: SW <p/> TargetPortalGroupTag=&lt;16-bit-binary-value&gt; <p/>
-   * Examples: <br/> TargetPortalGroupTag=1<p/> The target portal group tag is
-   * a 16-bit binary-value that uniquely identifies a portal group within an
-   * iSCSI target node. This key carries the value of the tag of the portal
-   * group that is servicing the Login request. The iSCSI target returns this
-   * key to the initiator in the Login Response PDU to the first Login Request
-   * PDU that has the C bit set to 0 when TargetName is given by the initiator.
-   * <br/> For the complete usage expectations of this key see Section 5.3 Login
-   * Phase.
+   * Examples: <br/> TargetPortalGroupTag=1<p/> The target portal group tag is a
+   * 16-bit binary-value that uniquely identifies a portal group within an iSCSI
+   * target node. This key carries the value of the tag of the portal group that
+   * is servicing the Login request. The iSCSI target returns this key to the
+   * initiator in the Login Response PDU to the first Login Request PDU that has
+   * the C bit set to 0 when TargetName is given by the initiator. <br/> For the
+   * complete usage expectations of this key see Section 5.3 Login Phase.
    */
   TARGET_PORTAL_GROUP_TAG("TargetPortalGroupTag"),
 
   /**
-   * Use: LO <br/> Senders: Initiator and Target<br/> Scope: SW <br/>
-   * Irrelevant when: SessionType=Discovery <p/>
-   * InitialR2T=&lt;boolean-value&gt; <p/> Examples: <br/> I-&gt;InitialR2T=No
-   * <br/> T-&gt;InitialR2T=No <p/> Default is Yes. <br/> Result function is OR.
-   * <p/> The InitialR2T key is used to turn off the default use of R2T for
-   * unidirectional and the output part of bidirectional commands, thus allowing
-   * an initiator to start sending data to a target as if it has received an
-   * initial R2T with Buffer Offset=Immediate Data Length and Desired Data
-   * Transfer Length=(min(FirstBurstLength, Expected Data Transfer Length) -
-   * Received Immediate Data Length). <br/> The default action is that R2T is
-   * required, unless both the initiator and the target send this key-pair
-   * attribute specifying InitialR2T=No. Only the first outgoing data burst
-   * (immediate data and/or separate PDUs) can be sent unsolicited (i.e., not
-   * requiring an explicit R2T).
+   * Use: LO <br/> Senders: Initiator and Target<br/> Scope: SW <br/> Irrelevant
+   * when: SessionType=Discovery <p/> InitialR2T=&lt;boolean-value&gt; <p/>
+   * Examples: <br/> I-&gt;InitialR2T=No <br/> T-&gt;InitialR2T=No <p/> Default
+   * is Yes. <br/> Result function is OR. <p/> The InitialR2T key is used to
+   * turn off the default use of R2T for unidirectional and the output part of
+   * bidirectional commands, thus allowing an initiator to start sending data to
+   * a target as if it has received an initial R2T with Buffer Offset=Immediate
+   * Data Length and Desired Data Transfer Length=(min(FirstBurstLength,
+   * Expected Data Transfer Length) - Received Immediate Data Length). <br/> The
+   * default action is that R2T is required, unless both the initiator and the
+   * target send this key-pair attribute specifying InitialR2T=No. Only the
+   * first outgoing data burst (immediate data and/or separate PDUs) can be sent
+   * unsolicited (i.e., not requiring an explicit R2T).
    */
   INITIAL_R2T("InitialR2T"),
 
@@ -328,10 +317,9 @@ public enum OperationalTextKey {
    * initiator MUST NOT send unsolicited immediate data, but MAY send one
    * unsolicited burst of Data-Out PDUs. <br/> If ImmediateData is set to Yes
    * and InitialR2T is set to No, then the initiator MAY send unsolicited
-   * immediate data and/or one unsolicited burst of Data-Out PDUs. <p/>
-   * 
-   * The following table is a summary of unsolicited data options: <br/> <table
-   * border="1">
+   * immediate data and/or one unsolicited burst of Data-Out PDUs. <p/> The
+   * following table is a summary of unsolicited data options: <br/>
+   * <table * border="1">
    * <tr>
    * <th>InitialR2T</th>
    * <th>ImmediateData</th>
@@ -385,11 +373,11 @@ public enum OperationalTextKey {
    * Use: LO <br/> Senders: Initiator and Target <br/> Scope: SW <br/>
    * Irrelevant when: SessionType=Discovery <p/>
    * MaxBurstLength=&lt;numerical-value-512-to-(2**24-1)&gt; <p/> Default is
-   * <code>262144</code> (<code>256</code> Kbytes). <br/> Result function
-   * is Minimum. <p/> The initiator and target negotiate maximum SCSI data
-   * payload in bytes in a Data-In or a solicited Data-Out iSCSI sequence. A
-   * sequence consists of one or more consecutive Data-In or Data-Out PDUs that
-   * end with a Data-In or Data-Out PDU with the F bit set to one.
+   * <code>262144</code> (<code>256</code> Kbytes). <br/> Result function is
+   * Minimum. <p/> The initiator and target negotiate maximum SCSI data payload
+   * in bytes in a Data-In or a solicited Data-Out iSCSI sequence. A sequence
+   * consists of one or more consecutive Data-In or Data-Out PDUs that end with
+   * a Data-In or Data-Out PDU with the F bit set to one.
    */
   MAX_BURST_LENGTH("MaxBurstLength"),
 
@@ -399,10 +387,10 @@ public enum OperationalTextKey {
    * InitialR2T=Yes and ImmediateData=No ) <p/>
    * FirstBurstLength=&lt;numerical-value-512-to-(2**24-1)&gt; <p/> Default is
    * <code>65536</code> (<code>64</code> Kbytes).<br/> Result function is
-   * Minimum.<p/> The initiator and target negotiate the maximum amount in
-   * bytes of unsolicited data an iSCSI initiator may send to the target during
-   * the execution of a single SCSI command. This covers the immediate data (if
-   * any) and the sequence of unsolicited Data-Out PDUs (if any) that follow the
+   * Minimum.<p/> The initiator and target negotiate the maximum amount in bytes
+   * of unsolicited data an iSCSI initiator may send to the target during the
+   * execution of a single SCSI command. This covers the immediate data (if any)
+   * and the sequence of unsolicited Data-Out PDUs (if any) that follow the
    * command.<br/> FirstBurstLength MUST NOT exceed MaxBurstLength.
    */
   FIRST_BURST_LENGTH("FirstBurstLength"),
@@ -422,26 +410,26 @@ public enum OperationalTextKey {
   /**
    * Use: LO<br/> Senders: Initiator and Target<br/> Scope: SW <p/>
    * DefaultTime2Retain=&lt;numerical-value-0-to-3600&gt;<p/> Default is
-   * <code>20</code>. Result function is Minimum. <p/> The initiator and
-   * target negotiate the maximum time, in seconds after an initial wait
-   * (Time2Wait), before which an active task reassignment is still possible
-   * after an unexpected connection termination or a connection reset. <br/>
-   * This value is also the session state timeout if the connection in question
-   * is the last LOGGED_IN connection in the session. A value of 0 indicates
-   * that connection/task state is immediately discarded by the target.
+   * <code>20</code>. Result function is Minimum. <p/> The initiator and target
+   * negotiate the maximum time, in seconds after an initial wait (Time2Wait),
+   * before which an active task reassignment is still possible after an
+   * unexpected connection termination or a connection reset. <br/> This value
+   * is also the session state timeout if the connection in question is the last
+   * LOGGED_IN connection in the session. A value of 0 indicates that
+   * connection/task state is immediately discarded by the target.
    */
   DEFAULT_TIME_2_RETAIN("DefaultTime2Retain"),
 
   /**
    * Use: LO <br/> Senders: Initiator and Target <br/> Scope: SW <p/>
    * MaxOutstandingR2T=&lt;numerical-value-from-1-to-65535&gt;<p/> Irrelevant
-   * when: SessionType=Discovery <br/> Default is <code>1</code>. <br/>
-   * Result function is Minimum. <p/> Initiator and target negotiate the maximum
-   * number of outstanding R2Ts per task, excluding any implied initial R2T that
-   * might be part of that task. An R2T is considered outstanding until the last
-   * data PDU (with the <code>F</code> bit set to <code>1</code>) is
-   * transferred, or a sequence reception timeout (Section 6.1.4.1 Recovery
-   * Within-command) is encountered for that data sequence.
+   * when: SessionType=Discovery <br/> Default is <code>1</code>. <br/> Result
+   * function is Minimum. <p/> Initiator and target negotiate the maximum number
+   * of outstanding R2Ts per task, excluding any implied initial R2T that might
+   * be part of that task. An R2T is considered outstanding until the last data
+   * PDU (with the <code>F</code> bit set to <code>1</code>) is transferred, or
+   * a sequence reception timeout (Section 6.1.4.1 Recovery Within-command) is
+   * encountered for that data sequence.
    */
   MAX_OUTSTANDING_R2T("MaxOutstandingR2T"),
 
@@ -471,8 +459,8 @@ public enum OperationalTextKey {
    * <br/> If DataSequenceInOrder is set to Yes, a target may retry at most the
    * last R2T, and an initiator may at most request retransmission for the last
    * read data sequence. For this reason, if ErrorRecoveryLevel is not
-   * <code>0</code> and DataSequenceInOrder is set to Yes then
-   * MaxOustandingR2T MUST be set to <code>1</code>.
+   * <code>0</code> and DataSequenceInOrder is set to Yes then MaxOustandingR2T
+   * MUST be set to <code>1</code>.
    */
   DATA_SEQUENCE_IN_ORDER("DataSequenceInOrder"),
 
@@ -506,8 +494,7 @@ public enum OperationalTextKey {
    * <p>
    * Senders: Initiator
    * <p>
-   * Scope: SW
-   * <p>> SessionType= &lt;Discovery|Normal&gt;<p/> Default is Normal.
+   * Scope: SW <p>> SessionType= &lt;Discovery|Normal&gt;<p/> Default is Normal.
    * <p>
    * The initiator indicates the type of session it wants to create. The target
    * can either accept it or reject it.
@@ -517,14 +504,13 @@ public enum OperationalTextKey {
    * session are a text request with a SendTargets key and a logout request with
    * reason "close the session".
    * <p>
-   * The discovery session implies MaxConnections = <code>1</code> and
-   * overrides both the default and an explicit setting.
+   * The discovery session implies MaxConnections = <code>1</code> and overrides
+   * both the default and an explicit setting.
    */
   SESSION_TYPE("SessionType"),
   /**
    * OFMarker = <code>&lt;boolean-value&gt;</code>
    * <p>
-   * 
    * IFMarker = <code>&lt;boolean-value&gt;</code>
    * <p>
    * Default is <code>No</code>. Result function is <code>AND</code>.
@@ -556,13 +542,11 @@ public enum OperationalTextKey {
    * <p>
    * Offering:
    * <p>
-   * 
    * OFMarkInt=<code>&lt;numeric-range-from-1-to-65535&gt;</code><br/>
    * IFMarkInt=<code>&lt;numeric-range-from-1-to-65535&gt;</code>
    * <p>
    * Responding:
    * <p>
-   * 
    * OFMarkInt=<code>&lt;numeric-value-from-1-to-65535&gt|Reject</code><br/>
    * IFMarkInt=<code>&lt;numeric-value-from-1-to-65535&gt;|Reject</code>
    * <p>
@@ -580,13 +564,12 @@ public enum OperationalTextKey {
    * <p>
    * The interval is measured from the end of a marker to the beginning of the
    * next marker. For example, a value of <code>1024</code> means
-   * <code>1024</code> words (<code>4096</code> bytes of iSCSI payload
-   * between markers).
+   * <code>1024</code> words (<code>4096</code> bytes of iSCSI payload between
+   * markers).
    * <p>
    * The default is <code>2048</code>.
    * 
    * @see #IF_MARKER
-   * 
    */
   IF_MARK_INT("IFMarkInt"),
 
@@ -612,13 +595,15 @@ public enum OperationalTextKey {
 
   private static Map<String, OperationalTextKey> mapping;
 
+  static {
+    OperationalTextKey.mapping = new HashMap<String, OperationalTextKey>();
+    for (OperationalTextKey s : values()) {
+      OperationalTextKey.mapping.put(s.value, s);
+    }
+  }
+
   private OperationalTextKey(final String newValue) {
 
-    if (OperationalTextKey.mapping == null) {
-      OperationalTextKey.mapping = new HashMap<String, OperationalTextKey>();
-    }
-
-    OperationalTextKey.mapping.put(newValue, this);
     value = newValue;
   }
 

@@ -1,20 +1,13 @@
 /*
- * Copyright 2007 Marc Kramis
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- * $Id: SCSIResponseParser.java 2500 2007-03-05 13:29:08Z lemke $
- * 
+ * Copyright 2007 Marc Kramis Licensed under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
+ * or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License. $Id:
+ * SCSIResponseParser.java 2500 2007-03-05 13:29:08Z lemke $
  */
 
 package org.jscsi.parser.scsi;
@@ -36,36 +29,33 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * This class parses a SCSI Response message defined in the iSCSI Standard
  * (RFC3720).
  * <p>
- * <h4>StatSN - Status Sequence Number</h4>
- * StatSN is a Sequence Number that the target iSCSI layer generates per
- * connection and that in turn, enables the initiator to acknowledge status
- * reception. StatSN is incremented by <code>1</code> for every
- * response/status sent on a connection except for responses sent as a result of
- * a retry or SNACK. In the case of responses sent due to a retransmission
- * request, the StatSN MUST be the same as the first time the PDU was sent
- * unless the connection has since been restarted.
+ * <h4>StatSN - Status Sequence Number</h4> StatSN is a Sequence Number that the
+ * target iSCSI layer generates per connection and that in turn, enables the
+ * initiator to acknowledge status reception. StatSN is incremented by
+ * <code>1</code> for every response/status sent on a connection except for
+ * responses sent as a result of a retry or SNACK. In the case of responses sent
+ * due to a retransmission request, the StatSN MUST be the same as the first
+ * time the PDU was sent unless the connection has since been restarted.
  * <p>
- * <h4>ExpCmdSN - Next Expected CmdSN from this Initiator</h4>
- * ExpCmdSN is a Sequence Number that the target iSCSI returns to the initiator
- * to acknowledge command reception. It is used to update a local variable with
- * the same name. An ExpCmdSN equal to <code>MaxCmdSN + 1</code> indicates
- * that the target cannot accept new commands.
+ * <h4>ExpCmdSN - Next Expected CmdSN from this Initiator</h4> ExpCmdSN is a
+ * Sequence Number that the target iSCSI returns to the initiator to acknowledge
+ * command reception. It is used to update a local variable with the same name.
+ * An ExpCmdSN equal to <code>MaxCmdSN + 1</code> indicates that the target
+ * cannot accept new commands.
  * <p>
- * <h4>MaxCmdSN - Maximum CmdSN from this Initiator</h4>
- * MaxCmdSN is a Sequence Number that the target iSCSI returns to the initiator
- * to indicate the maximum CmdSN the initiator can send. It is used to update a
- * local variable with the same name. If MaxCmdSN is equal to
- * <code>ExpCmdSN - 1</code>, this indicates to the initiator that the target
- * cannot receive any additional commands. When MaxCmdSN changes at the target
- * while the target has no pending PDUs to convey this information to the
- * initiator, it MUST generate a NOP-IN to carry the new MaxCmdSN. <p/>
- * 
- * iSCSI targets MUST support and enable autosense. If Status is CHECK CONDITION (<code>0x02</code>),
- * then the Data Segment MUST contain sense data for the failed command. <br/>
- * For some iSCSI responses, the response data segment MAY contain some response
- * related information, (e.g., for a target failure, it may contain a vendor
- * specific detailed description of the failure).
- * 
+ * <h4>MaxCmdSN - Maximum CmdSN from this Initiator</h4> MaxCmdSN is a Sequence
+ * Number that the target iSCSI returns to the initiator to indicate the maximum
+ * CmdSN the initiator can send. It is used to update a local variable with the
+ * same name. If MaxCmdSN is equal to <code>ExpCmdSN - 1</code>, this indicates
+ * to the initiator that the target cannot receive any additional commands. When
+ * MaxCmdSN changes at the target while the target has no pending PDUs to convey
+ * this information to the initiator, it MUST generate a NOP-IN to carry the new
+ * MaxCmdSN. <p/> iSCSI targets MUST support and enable autosense. If Status is
+ * CHECK CONDITION (<code>0x02</code>), then the Data Segment MUST contain sense
+ * data for the failed command. <br/> For some iSCSI responses, the response
+ * data segment MAY contain some response related information, (e.g., for a
+ * target failure, it may contain a vendor specific detailed description of the
+ * failure).
  * 
  * @author Volker Wildi
  */
@@ -90,13 +80,15 @@ public class SCSIResponseParser extends TargetMessageParser {
 
     private static Map<Byte, ServiceResponse> mapping;
 
+    static {
+      ServiceResponse.mapping = new HashMap<Byte, ServiceResponse>();
+      for (ServiceResponse s : values()) {
+        ServiceResponse.mapping.put(s.value, s);
+      }
+    }
+
     private ServiceResponse(final byte newValue) {
 
-      if (ServiceResponse.mapping == null) {
-        ServiceResponse.mapping = new HashMap<Byte, ServiceResponse>();
-      }
-
-      ServiceResponse.mapping.put(newValue, this);
       value = newValue;
     }
 
@@ -299,8 +291,7 @@ public class SCSIResponseParser extends TargetMessageParser {
    * indicates the number of bytes that were not transferred out of the number
    * of bytes expected to be transferred.
    * 
-   * @return The residual count of this <code>SCSIResponseParser</code>
-   *         object.
+   * @return The residual count of this <code>SCSIResponseParser</code> object.
    */
   public final int getResidualCount() {
 
@@ -308,7 +299,6 @@ public class SCSIResponseParser extends TargetMessageParser {
   }
 
   /**
-   * 
    * Returns the status of the Residual Overflow flag. In this case, the
    * Residual Count indicates the number of bytes that were not transferred
    * because the initiator’s Expected Data Transfer Length was not sufficient.
@@ -316,7 +306,6 @@ public class SCSIResponseParser extends TargetMessageParser {
    * the write operation.
    * 
    * @return <code>true</code>, if it is set; else <code>false</code>.
-   * 
    */
   public final boolean isResidualOverflow() {
 
