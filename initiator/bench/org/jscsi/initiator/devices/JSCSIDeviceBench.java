@@ -25,14 +25,12 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.jscsi.initiator.devices.Device;
-import org.jscsi.initiator.devices.JSCSIDevice;
-import org.perfidix.AfterBenchClass;
-import org.perfidix.AfterEachBenchRun;
-import org.perfidix.BeforeBenchClass;
-import org.perfidix.Bench;
-import org.perfidix.BenchClass;
-import org.perfidix.SkipBench;
+import org.perfidix.annotation.AfterBenchClass;
+import org.perfidix.annotation.AfterEachRun;
+import org.perfidix.annotation.BeforeBenchClass;
+import org.perfidix.annotation.Bench;
+import org.perfidix.annotation.BenchClass;
+import org.perfidix.annotation.SkipBench;
 
 /**
  * <h1>JSCSIDeviceBench</h1>
@@ -43,105 +41,93 @@ import org.perfidix.SkipBench;
 @BenchClass(runs = 10)
 public class JSCSIDeviceBench {
 
-  private static final String TARGET = "titan04";
+	private static final String TARGET = "titan04";
 
-  private static final int BLOCK_SIZE = 4096;
+	private static final int BLOCK_SIZE = 4096;
 
-  /** Address to start read/write from. */
-  private static final long START_ADDRESS = 0;
+	/** Address to start read/write from. */
+	private static final long START_ADDRESS = 0;
 
-  /** Size (in blocks) to read/write from/to the target(s). */
-  private static final int TEST_DATA_SIZE = 10;
+	/** Size (in blocks) to read/write from/to the target(s). */
+	private static final int TEST_DATA_SIZE = 10;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
 
-  private final Device device;
+	private final Device device;
 
-  private final Logger logger = Logger.getLogger(JSCSIDeviceBench.class);
+	private final Logger logger = Logger.getLogger(JSCSIDeviceBench.class);
 
-  /** The random number generator to fill the buffer to send. */
-  private final Random randomGenerator;
+	/** The random number generator to fill the buffer to send. */
+	private final Random randomGenerator;
 
-  private int benchCounter = 0;
+	private int benchCounter = 0;
 
-  /** This array contains the data. */
-  private byte[] testData;
+	/** This array contains the data. */
+	private final byte[] testData;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
 
-  public JSCSIDeviceBench() throws Exception {
+	public JSCSIDeviceBench() throws Exception {
 
-    randomGenerator = new Random(System.currentTimeMillis());
-    testData = new byte[TEST_DATA_SIZE * BLOCK_SIZE];
-    randomGenerator.nextBytes(testData);
-    device = new JSCSIDevice(TARGET);
+		randomGenerator = new Random(System.currentTimeMillis());
+		testData = new byte[TEST_DATA_SIZE * BLOCK_SIZE];
+		randomGenerator.nextBytes(testData);
+		device = new JSCSIDevice(TARGET);
 
-    logger.setLevel(Level.ALL);
-    logger.addAppender(new ConsoleAppender(new PatternLayout()));
-  }
+		logger.setLevel(Level.ALL);
+		logger.addAppender(new ConsoleAppender(new PatternLayout()));
+	}
 
-  @BeforeBenchClass
-  public final void setUp() throws Exception {
-    device.open();
-    logger.debug("Device " + device.getName() + " opened.");
-  }
+	@BeforeBenchClass
+	public final void setUp() throws Exception {
+		device.open();
+		logger.debug("Device " + device.getName() + " opened.");
+	}
 
-  @AfterBenchClass
-  public final void tearDown() throws Exception {
-    String deviceName = device.getName();
-    device.close();
-    logger.debug("Device " + deviceName + " closed.");
-  }
+	@AfterBenchClass
+	public final void tearDown() throws Exception {
+		String deviceName = device.getName();
+		device.close();
+		logger.debug("Device " + deviceName + " closed.");
+	}
 
-  @AfterEachBenchRun
-  public final void increaseBenchCounter() {
+	@AfterEachRun
+	public final void increaseBenchCounter() {
 
-    benchCounter++;
-  }
+		benchCounter++;
+	}
 
-  @SkipBench
-  public final void setUpWrite() {
+	@SkipBench
+	public final void setUpWrite() {
 
-    logger.info(benchCounter
-        + ": started to write "
-        + TEST_DATA_SIZE
-        * BLOCK_SIZE
-        + " bytes to "
-        + device.getName()
-        + " - "
-        + START_ADDRESS
-        + ".");
-  }
+		logger.info(benchCounter + ": started to write " + TEST_DATA_SIZE
+				* BLOCK_SIZE + " bytes to " + device.getName() + " - "
+				+ START_ADDRESS + ".");
+	}
 
-  @SkipBench
-  public final void setUpRead() {
+	@SkipBench
+	public final void setUpRead() {
 
-    logger.info(benchCounter
-        + ": started to read "
-        + TEST_DATA_SIZE
-        * BLOCK_SIZE
-        + " bytes from "
-        + device.getName()
-        + " - "
-        + START_ADDRESS
-        + ".");
-  }
+		logger.info(benchCounter + ": started to read " + TEST_DATA_SIZE
+				* BLOCK_SIZE + " bytes from " + device.getName() + " - "
+				+ START_ADDRESS + ".");
+	}
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
 
-  @Bench(beforeEveryBenchRun = "setUpWrite")
-  public final void write_JSCSIDevice() throws Exception {
+	@Bench(beforeEachRun = "setUpWrite")
+	public final void write_JSCSIDevice() throws Exception {
 
-    device.write(START_ADDRESS, testData);
+		device.write(START_ADDRESS, testData);
 
-  }
+	}
 
-  @Bench(beforeEveryBenchRun = "setUpRead")
-  public final void read_JSCSIDevice() throws Exception {
+	@Bench(beforeEachRun = "setUpRead")
+	public final void read_JSCSIDevice() throws Exception {
 
-    device.read(START_ADDRESS, testData);
-  }
+		device.read(START_ADDRESS, testData);
+	}
 }
