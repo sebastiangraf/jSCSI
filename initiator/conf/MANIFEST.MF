@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: org.jscsi.initiator.InitiatorBench
+Class-Path: . lib/commons-logging__V1.1.1.jar lib/junit__V4.4.jar lib/log4j__V1.2.15.jar lib/perfidix_currentSourcesBuild.jar
