@@ -199,9 +199,7 @@ public final class SettingsMap {
       }
 
       if (settingsMap.size() != aMap.size()) {
-        if (LOGGER.isErrorEnabled()) {
-          LOGGER.error("The maps have different sizes.");
-        }
+        LOGGER.error("The maps have different sizes.");
         break;
       }
 
@@ -213,21 +211,17 @@ public final class SettingsMap {
         value = e.getValue();
 
         if (!settingsMap.containsKey(key)) {
-          if (LOGGER.isErrorEnabled()) {
-            LOGGER.error("KeyValuePair does not contain a key: " + key);
-          }
+          LOGGER.error("KeyValuePair does not contain a key: " + key);
 
           return false;
         }
 
         if (settingsMap.get(key).compareTo(value) != 0) {
-          if (LOGGER.isErrorEnabled()) {
-            LOGGER
-                .error("KeyValuePair does not pass the compareTo method with key "
-                    + key);
-            LOGGER.error("Value in KeyValuePair: " + settingsMap.get(key));
-            LOGGER.error("Value should be: " + value);
-          }
+          LOGGER
+              .error("KeyValuePair does not pass the compareTo method with key "
+                  + key);
+          LOGGER.error("Value in KeyValuePair: " + settingsMap.get(key));
+          LOGGER.error("Value should be: " + value);
 
           return false;
         }
