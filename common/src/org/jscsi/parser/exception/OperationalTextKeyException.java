@@ -13,8 +13,10 @@
 package org.jscsi.parser.exception;
 
 /**
- * <h1>OperationalTextKeyException</h1> <p/> This exception is thrown when an
- * error with an <code>OperationalTextKey</code> occurs.
+ * <h1>OperationalTextKeyException</h1>
+ * <p/>
+ * This exception is thrown when an error with an
+ * <code>OperationalTextKey</code> occurs.
  * 
  * @author Volker Wildi
  */
@@ -47,6 +49,17 @@ public class OperationalTextKeyException extends InternetSCSIException {
   public OperationalTextKeyException(final String msg) {
 
     super(msg);
+  }
+
+  /**
+   * Constructs a new exception with the specified exception.
+   * 
+   * @param e
+   *          the detail exception.
+   */
+  public OperationalTextKeyException(final Exception e) {
+
+    super(e);
   }
 
   // --------------------------------------------------------------------------
