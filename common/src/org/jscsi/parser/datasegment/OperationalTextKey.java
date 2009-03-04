@@ -508,6 +508,20 @@ public enum OperationalTextKey {
    * both the default and an explicit setting.
    */
   SESSION_TYPE("SessionType"),
+  
+  /**
+   * Use: LO, Declarative, Any-Stage
+   * <p>
+   * Senders: Initiator
+   * <p>
+   * Scope: SW <p>> SessionBalancer= &lt;RoundRobinSessionBalancer|ParallelSessionBalancer&gt;<p/> 
+   * Default is RoundRobinSessionBalancer.
+   * <p>
+   * The SessionBalancer to use;
+   * <p>
+   */
+  SESSION_BALANCER("SessionBalancer"),
+  
   /**
    * OFMarker = <code>&lt;boolean-value&gt;</code>
    * <p>
