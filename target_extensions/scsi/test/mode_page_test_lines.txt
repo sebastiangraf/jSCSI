@@ -1,4 +1,0 @@
-PowerCondition,ParametersSavable=1:std,SubPageFormat=1:0b0,PageCode=6:0x1A,PageLength=8:0x0A,reserved=14:0x00,Idle=1:std,Standby=1:std,IdleConditionTimer=32:std,StandbyConditionTimer=32:std
-ProtocolSpecificLogicalUnit,ParametersSavable=1:std,SubPageFormat=1:0b0,PageCode=6:0x1A,PageLength=8:0x03,reserved=4:0b0,ProtocolIdentifier=4:0x05,reserved=16:random
-ProtocolSpecificPort,ParametersSavable=1:std,SubPageFormat=1:0b0,PageCode=6:0x19,PageLength=8:0x03,reserved=4:0b0,ProtocolIdentifier=4:0x05,reserved=16:random
-ReadWriteErrorRecovery,ParametersSavable=1:std,SubPageFormat=1:0b0,PageCode=6:0x01,PageLength=8:0x0A,AWRE=1:std,ARRE=1:std,TB=1:std,RC=1:std,EER=1:std,PER=1:std,DTE=1:std,DCR=1:std,ReadRetryCount=8:std,obsolete=24:0x00,reserved=8:0x00,WriteRetryCount=8:std,reserved=8:0x00,RecoveryTimeLimit=16:std
