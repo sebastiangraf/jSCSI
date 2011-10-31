@@ -6,7 +6,6 @@
         <version>2.2-SNAPSHOT</version>
   	</parent>
 
- 	<groupId>jSCSI</groupId>
  	<artifactId>target</artifactId>
  	<name>jSCSI-target</name>
  	<version>0.1-SNAPSHOT</version>

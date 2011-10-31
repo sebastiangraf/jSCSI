@@ -8,7 +8,6 @@
 
   <artifactId>commons</artifactId>
   <name>jSCSI-commons</name>
-  <version>2.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
 </project>
