@@ -18,41 +18,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-	<groupId>jSCSI</groupId>
-    <artifactId>jSCSI-builder</artifactId>
+	<parent>
+		<groupId>jSCSI</groupId>
+		<artifactId>pom</artifactId>
+	    <version>2.2-SNAPSHOT</version>
+	</parent>
+
+    <artifactId>complete</artifactId>
     <packaging>pom</packaging>
     <version>2.1</version>
 
 	<name>jSCSI</name>
     <description>Pseudo project to build the complete jSCSI project</description>
-    <inceptionYear>2009</inceptionYear>
-
-	<url>http://www.jscsi.org</url>
-
-    <prerequisites>
-        <maven>2.0.7</maven>
-    </prerequisites>
 
 	<modules>
+		<module>parent</module>
 		<module>bundles/commons</module>
 		<module>bundles/initiator</module>
 		<module>bundles/target</module>
 		<module>bundles/initiatorExtensions/storagePool</module>
-	</modules>
-	
-	<distributionManagement>
-  		<repository>
-    		<id>xen5</id>
-    		<name>Xen5 Repository</name>
-        	<url>scp://xen5.disy.inf.uni-konstanz.de/home/disyadmin/repo/repository</url>
-			<uniqueVersion>false</uniqueVersion>
-  		</repository>
-  		<snapshotRepository>
-    		<id>xen5</id>
-    		<name>Xen5 SnapshotRepository</name>
-         		<url>scp://xen5.disy.inf.uni-konstanz.de/home/disyadmin/repo/snapshotRepository</url>
-		 		<uniqueVersion>false</uniqueVersion>
-  		</snapshotRepository>
-	</distributionManagement>
+	</modules>	
+	<repositories>
+	<repository>
+				<id>disyInternal</id>
+				<name>Internal Repository for the Distributed System Group</name>
+				<url>http://mavenrepo.disy.inf.uni-konstanz.de/repository/disyInternal</url>
+				<releases>
+					<enabled>true</enabled>
+				</releases>
+				<snapshots>
+					<enabled>false</enabled>
+				</snapshots>
+			</repository>
+			<repository>
+				<id>disyInternalSnapshot</id>
+				<name>Internal Snapshot Repository for the Distributed System Group</name>
+				<url>http://mavenrepo.disy.inf.uni-konstanz.de/repository/disyInternalSnapshot</url>
+				<releases>
+					<enabled>true</enabled>
+				</releases>
+				<snapshots>
+					<enabled>true</enabled>
+				</snapshots>
+			</repository>
+	</repositories>
 	
 </project>

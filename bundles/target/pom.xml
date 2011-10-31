@@ -2,13 +2,12 @@
  	<modelVersion>4.0.0</modelVersion>
   	<parent>
         <groupId>jSCSI</groupId>
-        <artifactId>jSCSI</artifactId>
-        <version>2.1</version>
-        <relativePath>../../parent/pom.xml</relativePath>
+        <artifactId>pom</artifactId>
+        <version>2.2-SNAPSHOT</version>
   	</parent>
 
  	<groupId>jSCSI</groupId>
- 	<artifactId>jSCSI-target</artifactId>
+ 	<artifactId>target</artifactId>
  	<name>jSCSI-target</name>
  	<version>0.1-SNAPSHOT</version>
  	<packaging>jar</packaging>
@@ -16,8 +15,8 @@
 	<dependencies>
         <dependency>
             <groupId>jSCSI</groupId>
-  			<artifactId>jSCSI-commons</artifactId>
-            <version>2.1</version>
+  			<artifactId>commons</artifactId>
+            <version>2.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 	</dependencies>
