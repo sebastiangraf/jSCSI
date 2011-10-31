@@ -8,7 +8,6 @@
 
  	<artifactId>storagepool</artifactId>
  	<name>storagepool</name>
- 	<version>2.2-SNAPSHOT</version>
  	<packaging>jar</packaging>
   
 	<dependencies>
