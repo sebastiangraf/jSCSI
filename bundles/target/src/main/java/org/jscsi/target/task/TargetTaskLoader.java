@@ -190,7 +190,7 @@ public class TargetTaskLoader {
 
 	/**
 	 * Returns the total number of different loaded Task objects the TaskLoader
-	 * can use. This number is equal or greater thán the supported number of
+	 * can use. This number is equal or greater than the supported number of
 	 * different Opcodes.
 	 * 
 	 * @return

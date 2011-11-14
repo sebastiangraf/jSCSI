@@ -230,7 +230,7 @@
 		<dependency>
 			<groupId>org.perfidix</groupId>
 			<artifactId>perfidix</artifactId>
-			<version>3.6</version>
+			<version>3.6.4</version>
 			<scope>test</scope>
 		</dependency>
 			</dependencies>
