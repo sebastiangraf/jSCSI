@@ -228,9 +228,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.perfidix</groupId>
+			<groupId>perfidix</groupId>
 			<artifactId>perfidix</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.3</version>
 			<scope>test</scope>
 		</dependency>
 			</dependencies>
