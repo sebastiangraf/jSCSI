@@ -110,7 +110,7 @@ public final class ReadWrite {
 	 * @return the unsigned value of the four-byte integer
 	 */
 	public static final int readFourByteInt(byte[] array, int start) {
-		return ((array[start] & 255) << 24) + ((array[start + 1] & 255) << 16) + ((array[start + 2] & 255) << 8) + (array[start + 3] & 255);
+		return ((array[start] & 255) << 24) | ((array[start + 1] & 255) << 16) | ((array[start + 2] & 255) << 8) | (array[start + 3] & 255);
 	}
 	
 	/**
@@ -265,4 +265,5 @@ public final class ReadWrite {
 	public static long readUnsignedInt(final ByteBuffer buffer, final int start) {
 		return readFourByteInt(buffer, start) & 0xffffffffL;
 	}
+	
 }

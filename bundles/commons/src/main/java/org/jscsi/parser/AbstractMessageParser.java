@@ -241,7 +241,15 @@ public abstract class AbstractMessageParser {
 
     return logicalUnitNumber;
   }
-
+  
+  /**
+   * Set the Logical Unit Number (LUN) of this
+   * <code>AbstractMessageParser</code> object.
+   * @param logicalUnitNumber The Logical Unit Number of this object.
+   */
+  public final void setLogicalUnitNumber(final long logicalUnitNumber) {
+	  this.logicalUnitNumber = logicalUnitNumber;
+  }
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
 

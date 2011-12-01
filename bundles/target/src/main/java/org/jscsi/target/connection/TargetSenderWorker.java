@@ -175,10 +175,10 @@ public class TargetSenderWorker {
 				throw new InternetSCSIException("received ExpStatusSN != local StatusSN + 1");
 		}
 		
-		//increment CmdSN if not immediate PDU
-		if (!bhs.isImmediateFlag())
+		//increment CmdSN if not immediate PDU (or Data-Out PDU)
+		if (parser.incrementSequenceNumber())
 			session.getExpectedCommandSequenceNumber().increment();
-		
+			
 		return pdu;
 	}
 	

@@ -28,9 +28,11 @@ package org.jscsi.initiator.connection.state;
 
 import org.jscsi.initiator.connection.Connection;
 import org.jscsi.initiator.connection.TargetCapacityInformations;
+import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.data.DataInParser;
 import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIStatus;
 
 /**
@@ -90,11 +92,18 @@ final class CapacityResponseState extends AbstractState {
     capacityInformation.deserialize(protocolDataUnit.getDataSegment());
 
     if (!parser.isStatusFlag() || parser.getStatus() != SCSIStatus.GOOD) {
-      throw new InternetSCSIException(
-          "Error: Task is not completed successfully.");
+    	//receive SCSI Response PDU and check status (no phase collapse)
+    	final ProtocolDataUnit scsiPdu = connection.receive();
+    	if (scsiPdu.getBasicHeaderSegment().getOpCode() ==
+    		OperationCode.SCSI_RESPONSE) {
+    		final SCSIResponseParser scsiParser = 
+    			(SCSIResponseParser) scsiPdu.getBasicHeaderSegment().getParser();
+    		if (scsiParser.getStatus() == SCSIStatus.GOOD)
+    			return;//done
+    	}//else
+    	throw new InternetSCSIException(
+    		"Error: Task did not finish successfully.");
     }
-
-//    return false;
   }
 
   // --------------------------------------------------------------------------

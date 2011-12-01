@@ -8,6 +8,7 @@ import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIStatus;
+import org.jscsi.parser.scsi.SCSIResponseParser.ServiceResponse;
 import org.jscsi.target.connection.TargetPduFactory;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.connection.stage.TargetStage;
@@ -20,6 +21,7 @@ import org.jscsi.target.scsi.sense.FixedFormatSenseData;
 import org.jscsi.target.scsi.sense.SenseKey;
 import org.jscsi.target.scsi.sense.information.FourByteInformation;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
+import org.jscsi.target.settings.SettingsException;
 
 /**
  * This class is an abstract super-class for stages of the
@@ -41,7 +43,9 @@ public abstract class TargetFullFeatureStage extends TargetStage {
 	 * Creates a PDU with {@link FixedFormatSenseData} that must be sent
 	 * to the initiator after receiving a Command Descriptor Block with an
 	 * illegal field.
-	 * @param senseKeySpecificData contains a list of all illegal fields  
+	 * @param senseKeySpecificData contains a list of all illegal fields 
+	 * @param additionalSenseCodeAndQualifier provides more specific information
+	 * about the cause of the check condition
 	 * @param initiatorTaskTag used by the initiator to identify the task
 	 * @param expectedDataTransferLength the amount of payload data expected
 	 * by the initiator (i.e. allocated buffer space)
@@ -49,6 +53,7 @@ public abstract class TargetFullFeatureStage extends TargetStage {
 	 */
 	protected static final ProtocolDataUnit createFixedFormatErrorPdu(
 			final FieldPointerSenseKeySpecificData[] senseKeySpecificData,
+			final AdditionalSenseCodeAndQualifier additionalSenseCodeAndQualifier,
 			final int initiatorTaskTag,
 			final int expectedDataTransferLength) {
 		
@@ -62,7 +67,7 @@ public abstract class TargetFullFeatureStage extends TargetStage {
 				SenseKey.ILLEGAL_REQUEST,//sense key
 				new FourByteInformation(),//information
 				new FourByteInformation(),//command specific information
-				AdditionalSenseCodeAndQualifier.INVALID_FIELD_IN_CDB,//additional sense code and qualifier
+				additionalSenseCodeAndQualifier,//additional sense code and qualifier
 				(byte)0,//field replaceable unit code
 				senseKeySpecificData[0],//sense key specific data, only report first problem
 				new AdditionalSenseBytes());//additional sense bytes
@@ -92,6 +97,28 @@ public abstract class TargetFullFeatureStage extends TargetStage {
 				0,//bidirectionalReadResidualCount
 				residualCount,//residualCount
 				dataSegment);//data segment
+	}
+	
+	/**
+	 * Creates a PDU with {@link FixedFormatSenseData} that must be sent
+	 * to the initiator after receiving a Command Descriptor Block with an
+	 * illegal field, which requires the the additional sense code
+	 * {@link AdditionalSenseCodeAndQualifier#INVALID_FIELD_IN_CDB}.
+	 * @param senseKeySpecificData contains a list of all illegal fields  
+	 * @param initiatorTaskTag used by the initiator to identify the task
+	 * @param expectedDataTransferLength the amount of payload data expected
+	 * by the initiator (i.e. allocated buffer space)
+	 * @return the error PDU
+	 */
+	protected static final ProtocolDataUnit createFixedFormatErrorPdu(
+			final FieldPointerSenseKeySpecificData[] senseKeySpecificData,
+			final int initiatorTaskTag,
+			final int expectedDataTransferLength) {
+		return createFixedFormatErrorPdu(
+				senseKeySpecificData,
+				AdditionalSenseCodeAndQualifier.INVALID_FIELD_IN_CDB,
+				initiatorTaskTag,
+				expectedDataTransferLength);
 	}
 	
 	/**
@@ -153,19 +180,53 @@ public abstract class TargetFullFeatureStage extends TargetStage {
 			final IResponseData responseData) throws InterruptedException,
 			IOException, InternetSCSIException {	
 		
-		/*
-		 * Sends response data in first Data-In PDU, status and
-		 * residual count in SCSI Response PDU.
-		 */
+		//serialize all response data
+		final ByteBuffer fullBuffer = ByteBuffer.allocate(responseData.size());
+		responseData.serialize(fullBuffer, 0);
 		
-		final ByteBuffer buffer = ByteBuffer.allocate(responseData.size());
-		responseData.serialize(buffer, 0);
+		//copy fullBuffer to buffer with size trimmed to expectedDataTransferLength
+		ByteBuffer trimmedBuffer;
+		if (fullBuffer.capacity() <= expectedDataTransferLength) {
+			//no trimming
+			trimmedBuffer = fullBuffer;
+		} else {
+			trimmedBuffer = ByteBuffer.allocate(expectedDataTransferLength);
+			trimmedBuffer.put(
+					fullBuffer.array(),//source array
+					0,//offset in source
+					expectedDataTransferLength);//length
+		}
 		
+		//coompute residual count and associated flags
+		final boolean residualOverflow =
+			expectedDataTransferLength < fullBuffer.capacity();
+		final boolean residualUnderflow =
+			expectedDataTransferLength > fullBuffer.capacity();
+		final int residualCount =
+			Math.abs(expectedDataTransferLength - fullBuffer.capacity());
+		
+//		//create and send PDU//TODO this worked for Open-iSCSI, MS Initiator does not like phase collapse 
+//		ProtocolDataUnit pdu = TargetPduFactory.createDataInPdu(
+//				true,//finalFlag
+//				false,//acknowledgeFlag always false
+//				residualOverflow,//residualOverflowFlag
+//				residualUnderflow,//residualUnderflowFlag
+//				true,//statusFlag
+//				SCSIStatus.GOOD,//status
+//				0,//logicalUnitNumber reserved
+//				initiatorTaskTag,//initiatorTaskTag
+//				-1,//targetTransferTag reserved
+//				0,//dataSequenceNumber
+//				0,//bufferOffset
+//				residualCount,//residualCount
+//				trimmedBuffer);//dataSegment
+		
+		//create and send PDU
 		ProtocolDataUnit pdu = TargetPduFactory.createDataInPdu(
 				true,//finalFlag
 				false,//acknowledgeFlag always false
-				false,//residualOverflowFlag
-				false,//residualUnderflowFlag
+				false,//residualOverflowFlag			x
+				false,//residualUnderflowFlag			x
 				false,//statusFlag
 				SCSIStatus.GOOD,//status, reserved
 				0,//logicalUnitNumber reserved
@@ -173,17 +234,26 @@ public abstract class TargetFullFeatureStage extends TargetStage {
 				-1,//targetTransferTag reserved
 				0,//dataSequenceNumber
 				0,//bufferOffset
-				0,//residualCount
-				buffer);//dataSegment
+				0,//residualCount						x
+				trimmedBuffer);//dataSegment
 		
 		connection.sendPdu(pdu);
 		
-		pdu = createScsiResponsePdu(
+		pdu = TargetPduFactory.createSCSIResponsePdu(
+				false,//bidirectionalReadResidualOverflow
+				false,//bidirectionalReadResidualUnderflow
+				residualOverflow,//residualOverflow
+				residualUnderflow,//residualUnderflow
+				ServiceResponse.COMMAND_COMPLETED_AT_TARGET,//response
 				SCSIStatus.GOOD,//status
-				initiatorTaskTag,//initiatorTaskTag
-				expectedDataTransferLength,//expectedDataTransferLength
-				responseData.size());//responseDataSize
+				initiatorTaskTag,
+				0,//snackTag, reserved
+				0,//expectedDataSequenceNumber
+				0,//bidirectionalReadResidualCount
+				residualCount,//residualCount
+				ScsiResponseDataSegment.EMPTY_DATA_SEGMENT);//scsiResponseDataSegment
 		
 		connection.sendPdu(pdu);
+		
 	}
 }

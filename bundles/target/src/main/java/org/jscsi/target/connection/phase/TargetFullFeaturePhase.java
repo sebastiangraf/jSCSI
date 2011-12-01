@@ -12,11 +12,12 @@ import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.stage.fullfeature.FormatUnitStage;
+import org.jscsi.target.connection.stage.fullfeature.PingStage;
+import org.jscsi.target.connection.stage.fullfeature.ReadCapacityStage;
 import org.jscsi.target.connection.stage.fullfeature.TargetFullFeatureStage;
 import org.jscsi.target.connection.stage.fullfeature.InquiryStage;
 import org.jscsi.target.connection.stage.fullfeature.LogoutStage;
 import org.jscsi.target.connection.stage.fullfeature.ModeSenseStage;
-import org.jscsi.target.connection.stage.fullfeature.ReadCapacityStage;
 import org.jscsi.target.connection.stage.fullfeature.ReadStage;
 import org.jscsi.target.connection.stage.fullfeature.ReportLunsStage;
 import org.jscsi.target.connection.stage.fullfeature.RequestSenseStage;
@@ -77,6 +78,8 @@ public final class TargetFullFeaturePhase extends TargetPhase {
 			
 			//identify desired stage
 			switch (bhs.getOpCode()) {
+				
+			
 				case SCSI_COMMAND:
 					if (connection.getTargetSession().isNormalSession()) {
 						final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
@@ -115,7 +118,8 @@ public final class TargetFullFeaturePhase extends TargetPhase {
 								case SEND_DIAGNOSTIC:
 									stage = new SendDiagnosticStage(this);
 									break;
-								case READ_CAPACITY:
+								case READ_CAPACITY_10://use common read capacity stage
+								case READ_CAPACITY_16:
 									stage = new ReadCapacityStage(this);
 									break;
 								case WRITE_6://use common write stage
@@ -140,25 +144,29 @@ public final class TargetFullFeaturePhase extends TargetPhase {
 									+ " in SCSI Command PDU.");
 							stage = new UnsupportedOpCodeStage(this);
 						}
-						//execute stage
-						stage.execute(pdu);
 						
 					} else {//session is discovery session
-						throw new InternetSCSIException();
+						throw new InternetSCSIException(
+								"received SCSI command in discovery session");
 					}
 					break; //SCSI_COMMAND
+				
+				case NOP_OUT:
+					stage = new PingStage(this);
+					break;
 				case TEXT_REQUEST:
 					stage = new TextNegotiationStage(this);
-					stage.execute(pdu);
 					break;
 				case LOGOUT_REQUEST:
 					stage = new LogoutStage(this);
-					stage.execute(pdu);
 					running = false;
 					break;
 				default:
 					throw new InternetSCSIException();
 			}
+			
+			//process the PDU
+			stage.execute(pdu);
 		}
 		return false;
 	}
