@@ -662,30 +662,30 @@ public final class Configuration {
 			sessionConfiguration.update(textKey, textValue, resultFunction);
 		}
 
-		// /**
-		// * Adds a connection-specific parameter to this
-		// * <code>SessionConfiguration</code> object.
-		// *
-		// * @param connectionID
-		// * The ID of the connection to which this parameter should be
-		// * added.
-		// * @param textKey
-		// * The name of the parameter to add. The name of the
-		// * parameter to add.
-		// * @param textValue
-		// * The value of the parameter to add.
-		// */
-		// final void addConnectionSetting(final int connectionID,
-		// final OperationalTextKey textKey, final String textValue) {
-		//
-		// SettingsMap sm = connectionConfiguration.get(connectionID);
-		// if (sm == null) {
-		// sm = new SettingsMap();
-		// connectionConfiguration.put(connectionID, sm);
-		// }
-		//
-		// sm.add(textKey, textValue);
-		// }
+//		/**
+//		 * Adds a connection-specific parameter to this
+//		 * <code>SessionConfiguration</code> object.
+//		 * 
+//		 * @param connectionID
+//		 *            The ID of the connection to which this parameter should be
+//		 *            added.
+//		 * @param textKey
+//		 *            The name of the parameter to add. The name of the
+//		 *            parameter to add.
+//		 * @param textValue
+//		 *            The value of the parameter to add.
+//		 */
+//		final void addConnectionSetting(final int connectionID,
+//				final OperationalTextKey textKey, final String textValue) {
+//
+//			SettingsMap sm = connectionConfiguration.get(connectionID);
+//			if (sm == null) {
+//				sm = new SettingsMap();
+//				connectionConfiguration.put(connectionID, sm);
+//			}
+//
+//			sm.add(textKey, textValue);
+//		}
 
 		/**
 		 * Updates the value of the given <code>OperationTextKey</code> of the
@@ -755,29 +755,30 @@ public final class Configuration {
 		//
 		// }
 
-		// /**
-		// * Returns the value of a key-value pair with the given key for the
-		// * connection within this session.
-		// *
-		// * @param connectionID
-		// * The ID of the connection.
-		// * @param textKey
-		// * The <code>OperationalTextKey</code> key.
-		// * @return The value of the given <code>textKey</code>.
-		// * @throws Exception
-		// * if any error occurs.
-		// */
-		// final String getConnectionSetting(final int connectionID,
-		// final OperationalTextKey textKey) throws Exception {
-		//
-		// final SettingsMap sm = connectionConfiguration.get(connectionID);
-		// if (sm != null) {
-		// // look for connection-specific information
-		// return sm.get(textKey);
-		// } else {
-		// return getSessionSetting(textKey);
-		// }
-		// }
+
+//		/**
+//		 * Returns the value of a key-value pair with the given key for the
+//		 * connection within this session.
+//		 * 
+//		 * @param connectionID
+//		 *            The ID of the connection.
+//		 * @param textKey
+//		 *            The <code>OperationalTextKey</code> key.
+//		 * @return The value of the given <code>textKey</code>.
+//		 * @throws Exception
+//		 *             if any error occurs.
+//		 */
+//		final String getConnectionSetting(final int connectionID,
+//				final OperationalTextKey textKey) throws Exception {
+//
+//			final SettingsMap sm = connectionConfiguration.get(connectionID);
+//			if (sm != null) {
+//				// look for connection-specific information
+//				return sm.get(textKey);
+//			} else {
+//				return getSessionSetting(textKey);
+//			}
+//		}
 
 		/**
 		 * Returns a single setting value of a connection (specified by the ID).

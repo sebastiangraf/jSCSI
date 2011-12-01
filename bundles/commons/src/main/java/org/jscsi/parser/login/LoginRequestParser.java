@@ -401,7 +401,7 @@ public final class LoginRequestParser extends InitiatorMessageParser {
 
   /**
    * Sets the new <em>Initiator Session ID (ISID)</em> of this
-   * <code>LoginRequestParser</code> obejct.
+   * <code>LoginRequestParser</code> object.
    * 
    * @param initISID
    *          The new Initiator Session ID (ISID).

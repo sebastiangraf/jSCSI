@@ -315,6 +315,10 @@ public final class SettingsMap {
 
 		return ByteBuffer.wrap(sb.toString().getBytes());
 	}
+  
+  public int size() {
+	  return settingsMap.size();
+  }
 
 	// --------------------------------------------------------------------------
 	// --------------------------------------------------------------------------

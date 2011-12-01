@@ -180,7 +180,27 @@ public final class Ready2TransferParser extends TargetMessageParser {
 
     return targetTransferTag;
   }
-
+  
+  public final void setLogicalUnitNumber(long logicalUnitNumber) {
+	  this.logicalUnitNumber = logicalUnitNumber;
+  }
+  
+  public final void setTargetTransferTag(int targetTransferTag) {
+	  this.targetTransferTag = targetTransferTag;
+  }
+  
+  public final void setReady2TransferSequenceNumber(int ready2TransferSequenceNumber) {
+	  this.ready2TransferSequenceNumber = ready2TransferSequenceNumber;
+  }
+  
+  public final void setBufferOffset(int bufferOffset) {
+	  this.bufferOffset = bufferOffset;
+  }
+  
+  public final void setDesiredDataTransferLength(int desiredDataTransferLength) {
+	  this.desiredDataTransferLength = desiredDataTransferLength;
+  }
+  
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration xmlns="http://www.jscsi.org/2010-04"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.jscsi.org/2010-04 jscsi-target.xsd">
+	
+	<TargetName>iqn.2010-04.local-test:disk-1</TargetName>
+	<TargetAlias>jSCSI Target</TargetAlias>
+	<Port>3260</Port>
+	<StorageFile>
+		<FilePath>storage.dat</FilePath>
+	</StorageFile>
+	<AllowSloppyNegotiation>true</AllowSloppyNegotiation>
+</configuration>
