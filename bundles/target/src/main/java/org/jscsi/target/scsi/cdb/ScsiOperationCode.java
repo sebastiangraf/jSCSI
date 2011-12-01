@@ -25,9 +25,10 @@ public enum ScsiOperationCode {
 	MODE_SELECT_6((byte)0x15),
 	MODE_SENSE_6((byte)0x1a),
 	SEND_DIAGNOSTIC((byte)0x1d),
-	READ_CAPACITY((byte)0x25),
+	READ_CAPACITY_10((byte)0x25),
 	READ_10((byte)0x28),
 	WRITE_10((byte)0x2a),
+	READ_CAPACITY_16((byte)0x9e),
 	REPORT_LUNS((byte)0xa0);
 	
 	/**

@@ -2,6 +2,7 @@ package org.jscsi.target.scsi;
 
 import java.nio.ByteBuffer;
 
+import org.apache.log4j.Logger;
 import org.jscsi.target.connection.TargetPduFactory;
 import org.jscsi.target.scsi.sense.SenseData;
 import org.jscsi.target.util.Debug;
@@ -24,6 +25,8 @@ import org.jscsi.target.util.ReadWrite;
  * @author Andreas Ergenzinger
  */
 public final class ScsiResponseDataSegment {
+	
+	private static final Logger LOGGER = Logger.getLogger(ScsiResponseDataSegment.class);
 	
 	/**
 	 * A {@link ScsiResponseDataSegment} of length zero.
@@ -156,7 +159,9 @@ public final class ScsiResponseDataSegment {
 			 return croppedBuffer;
 		}
 		
-		Debug.printByteBuffer(buffer);
+		if (LOGGER.isDebugEnabled())
+			LOGGER.debug("SCSI Response Data Segment:\n" +
+					Debug.byteBufferToString(buffer));
 		
 		return buffer;
 	}

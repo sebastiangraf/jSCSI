@@ -111,6 +111,14 @@ public final class NOPInParser extends TargetMessageParser {
 
     return targetTransferTag;
   }
+  
+  /**
+   * Sets the Target Transfer Tag of this object.
+   * @param targetTransferTag the new Target Transfer Tag.
+   */
+  public final void setTargetTransferTag(final int targetTransferTag) {
+	  this.targetTransferTag = targetTransferTag;
+  }
 
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------

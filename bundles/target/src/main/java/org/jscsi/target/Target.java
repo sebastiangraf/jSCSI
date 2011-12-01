@@ -119,7 +119,7 @@ public final class Target {
 		
 		//open the storage medium
 		try {
-			storageModule = RandomAccessStorageModule.open(config.getStorageFilePath());
+			storageModule = SynchronizedRandomAccessStorageModule.open(config.getStorageFilePath());
 		} catch (FileNotFoundException e) {
 			LOGGER.fatal(e.toString());
 			return;

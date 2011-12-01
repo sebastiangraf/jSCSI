@@ -104,7 +104,7 @@ public final class LoginResponseState extends AbstractState {
     // from the target. Then add the constant 2 to this value, because the
     // incrementExpectedStatusSequence() method was already invoked.
     connection
-        .setExpectedStatusSequenceNumber(parser.getStatusSequenceNumber() + 2);
+        .setExpectedStatusSequenceNumber(parser.getStatusSequenceNumber() + 1);//TODO was +2
 
     // check parameters....
       LOGGER.info("Retrieving these login parameters:\n"

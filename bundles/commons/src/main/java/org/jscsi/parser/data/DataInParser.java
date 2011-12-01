@@ -396,10 +396,6 @@ public class DataInParser extends TargetMessageParser {
 	  this.status = status;
   }
   
-  public void setLogicalUnitNumber(long logicalUnitNumber) {
-	  this.logicalUnitNumber = logicalUnitNumber;
-  }
-  
   public void setTargetTransferTag(int targetTransferTag) {
 	  this.targetTransferTag = targetTransferTag;
   }

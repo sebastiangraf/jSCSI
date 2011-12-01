@@ -105,7 +105,8 @@ final class WriteSecondBurstState extends AbstractState {
       LOGGER.debug("TTT set to " + targetTransferTag);
     }
     desiredDataTransferLength = initDesiredDataTransferLength;
-    dataSequenceNumber = initDataSequenceNumber;
+    //dataSequenceNumber = initDataSequenceNumber;//FIXME always starts at 0
+    dataSequenceNumber = 0; 
     bufferOffset = initBufferOffset;
   }
 

@@ -181,10 +181,6 @@ public final class Ready2TransferParser extends TargetMessageParser {
     return targetTransferTag;
   }
   
-  public final void setLogicalUnitNumber(long logicalUnitNumber) {
-	  this.logicalUnitNumber = logicalUnitNumber;
-  }
-  
   public final void setTargetTransferTag(int targetTransferTag) {
 	  this.targetTransferTag = targetTransferTag;
   }

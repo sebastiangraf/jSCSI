@@ -188,7 +188,7 @@ public final class WriteStage extends ReadOrWriteStage {
 				connection.sendPdu(pdu);
 				
 				//receive DataOut PDUs
-				expectedDataSequenceNumber = 0;//reset sequence counter
+				expectedDataSequenceNumber = 0;//reset sequence counter//FIXME fix in jSCSI Initiator
 				boolean solicitedDataCycleOver = false;
 				int bytesReceivedThisCycle = 0;
 				while (!solicitedDataCycleOver) {
