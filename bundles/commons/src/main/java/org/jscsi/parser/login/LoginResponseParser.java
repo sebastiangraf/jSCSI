@@ -325,7 +325,30 @@ public final class LoginResponseParser extends TargetMessageParser {
 
     return targetSessionIdentifyingHandle;
   }
-
+  
+  public void setStatus(LoginStatus status) {
+	  this.status = status;
+  }
+  
+  public void setContinueFlag(boolean continueFlag) {
+	  this.continueFlag = continueFlag;
+  }
+  
+  public void setCurrentStageNumber(LoginStage currentStage) {
+	  this.currentStageNumber = currentStage;
+  }
+  
+  public void setNextStageNumber(LoginStage nextStage) {
+	  this.nextStageNumber = nextStage;
+  }
+  
+  public void setInitiatorSessionID(ISID initiatorSessionID) {
+	  this.initiatorSessionID = initiatorSessionID;
+  }
+  
+  public void setTargetSessionIdentifyingHandle(short targetSessionIdentifyingHandle) {
+	  this.targetSessionIdentifyingHandle = targetSessionIdentifyingHandle;
+  }
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
 

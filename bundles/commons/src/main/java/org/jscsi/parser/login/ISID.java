@@ -306,7 +306,7 @@ public final class ISID {
    * @throws InternetSCSIException
    *           If any violation of the iSCSI-Standard emerge.
    */
-  final long serialize() throws InternetSCSIException {
+  public final long serialize() throws InternetSCSIException {
 
     checkIntegrity();
 

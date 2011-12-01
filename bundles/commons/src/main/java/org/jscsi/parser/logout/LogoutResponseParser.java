@@ -184,7 +184,18 @@ public final class LogoutResponseParser extends TargetMessageParser {
 
     return time2Wait;
   }
-
+  
+  public final void setResponse(LogoutResponse response) {
+	  this.response = response;
+  }
+  
+  public final void setTime2Retain(short time2Retain) {
+	  this.time2Retain = time2Retain;
+  }
+  
+  public final void setTime2Wait(short time2Wait) {
+	  this.time2Wait = time2Wait;
+  }
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
 

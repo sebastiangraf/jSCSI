@@ -147,7 +147,18 @@ public final class TextResponseParser extends TargetMessageParser {
 
     return targetTransferTag;
   }
-
+  
+  public final void setContinueFlag(boolean continueFlag) {
+	  this.continueFlag = continueFlag;
+  }
+  
+  public final void setLogicalUnitNumber(long logicalUnitNumber) {
+	  this.logicalUnitNumber = logicalUnitNumber;
+  }
+  
+  public final void setTargetTransferTag(int targetTransferTag) {
+	  this.targetTransferTag = targetTransferTag;
+  }
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
   /** {@inheritDoc} */

@@ -398,7 +398,46 @@ public class SCSIResponseParser extends TargetMessageParser {
 
     return status;
   }
-
+  
+  public final void setBidirectionalReadResidualCount(int bidirectionalReadResidualCount) {
+	  this.bidirectionalReadResidualCount = bidirectionalReadResidualCount;
+  }
+  
+  public final void setBidirectionalReadResidualOverflow(boolean bidirectionalReadResidualOverflow) {
+	  this.bidirectionalReadResidualOverflow = bidirectionalReadResidualOverflow;
+  }
+  
+  public final void setBidirectionalReadResidualUnderflow(boolean bidirectionalReadResidualUnderflow) {
+	  this.bidirectionalReadResidualUnderflow = bidirectionalReadResidualUnderflow;
+  }
+  
+  public final void setExpectedDataSequenceNumber(int expectedDataSequenceNumber) {
+	  this.expectedDataSequenceNumber = expectedDataSequenceNumber;
+  }
+  
+  public final void setResidualCount(int residualCount) {
+	  this.residualCount = residualCount;
+  }
+  
+  public final void setResidualOverflow(boolean residualOverflow) {
+	  this.residualOverflow = residualOverflow;
+  }
+  
+  public final void setResidualUnderflow(boolean residualUnderflow) {
+	  this.residualUnderflow = residualUnderflow;
+  }
+  
+  public void setResponse(SCSIResponseParser.ServiceResponse response) {
+	  this.response = response;
+  }
+  
+  public final void setSNACKTag(int snackTag) {
+	  this.snackTag = snackTag;
+  }
+  
+  public final void setStatus(SCSIStatus status) {
+	  this.status = status;
+  }
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
 
@@ -472,7 +511,7 @@ public class SCSIResponseParser extends TargetMessageParser {
           exceptionMessage = "Theses bits must to be 0, because the command is not completed at the target.";
           break;
         }
-
+        
         if (status != SCSIStatus.GOOD) {
           exceptionMessage = "Status Code is only valid, because the command is not completed at the target.";
           break;

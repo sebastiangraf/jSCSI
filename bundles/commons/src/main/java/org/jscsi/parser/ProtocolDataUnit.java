@@ -520,6 +520,12 @@ public final class ProtocolDataUnit {
     return dataSegment;
   }
 
+  public final void setDataSegment(final ByteBuffer dataSegment) {
+	  dataSegment.clear();
+	  this.dataSegment = dataSegment;
+	  basicHeaderSegment.setDataSegmentLength(dataSegment.capacity());
+  }
+  
   /**
    * Sets a new data segment in this PDU.
    * 

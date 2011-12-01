@@ -375,7 +375,46 @@ public class DataInParser extends TargetMessageParser {
 
     return statusFlag;
   }
-
+  
+  public void setAcknowledgeFlag(boolean acknowledgeFlag) {
+	  this.acknowledgeFlag = acknowledgeFlag;
+  }
+  
+  public void setResidualOverflowFlag(boolean residualOverflowFlag) {
+	  this.residualOverflow = residualOverflowFlag;
+  }
+  
+  public void setResidualUnderflowFlag(boolean residualUnderflowFlag) {
+	  this.residualUnderflow = residualUnderflowFlag;
+  }
+  
+  public void setStatusFlag(boolean statusFlag) {
+	  this.statusFlag = statusFlag;
+  }
+  
+  public void setStatus (SCSIStatus status) {
+	  this.status = status;
+  }
+  
+  public void setLogicalUnitNumber(long logicalUnitNumber) {
+	  this.logicalUnitNumber = logicalUnitNumber;
+  }
+  
+  public void setTargetTransferTag(int targetTransferTag) {
+	  this.targetTransferTag = targetTransferTag;
+  }
+  
+  public void setDataSequenceNumber(int dataSequenceNumber) {
+	  this.dataSequenceNumber = dataSequenceNumber;
+  }
+  
+  public void setBufferOffset(int bufferOffset) {
+	  this.bufferOffset = bufferOffset;
+  }
+  
+  public void setResidualCount(int residualCount) {
+	  this.residualCount = residualCount;
+  }
   // --------------------------------------------------------------------------
   // --------------------------------------------------------------------------
 
