@@ -12,14 +12,6 @@ README					this readme file
 LICENSE	 				license file
 parent					parent pom with global settings
 bundles					bundles
-  '-commons				common functions needed for initiator and target
-  '-initator			the initiator implementation
-  '-initiatorExtensions	extensions using the initiator
-  | '-storagePool		implementation of a raid-like storage pool
-  | '-whiskas			Eclipse-plugin visualizing blocks
-  '-target				the target implementation
-  '-targetExtensions	extensions to the target
-    '-scsi				SCSI-layer provided by Cleversafe 
 scripts					bash scripts for syncing against disy-internal repo.
 pom.xml					Simple pom (yes we do use Maven)
 
