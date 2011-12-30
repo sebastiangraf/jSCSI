@@ -197,18 +197,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ftp</artifactId>
-				<version>2.0</version>
-			</extension>
-			<extension>
-			<groupId>org.apache.maven.wagon</groupId>
-<artifactId> wagon-ssh-external </artifactId>
-			<version> 1.0-beta-6 </version>
-			</extension>
-		</extensions>
 	</build>
 	<dependencies>
 		<dependency>
@@ -235,10 +223,6 @@
 		</dependency>
 			</dependencies>
 	<distributionManagement>
-	     <site>
-            <id>sf</id>
-            <url>scp://shell.sourceforge.net/home/groups/j/js/jscsi/htdocs</url>
-        </site>
 		<repository>
 			<id>disyInternal</id>
 			<url>http://mavenrepo.disy.inf.uni-konstanz.de/repository/disyInternal</url>
