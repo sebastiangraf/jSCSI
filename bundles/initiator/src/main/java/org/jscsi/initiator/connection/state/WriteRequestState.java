@@ -42,128 +42,131 @@ import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.parser.scsi.SCSICommandParser.TaskAttributes;
 
 /**
- * <h1>WriteRequestState</h1> <p/> This state handles a Write Response with
- * unsolicited data.
+ * <h1>WriteRequestState</h1>
+ * <p/>
+ * This state handles a Write Response with unsolicited data.
  * 
  * @author Volker Wildi
  */
 public final class WriteRequestState extends AbstractState {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The buffer to used for the message transfer. */
-  private final ByteBuffer buffer;
+    /** The buffer to used for the message transfer. */
+    private final ByteBuffer buffer;
 
-  /** The task attributes of this write operation. */
-  private final TaskAttributes taskAttributes;
+    /** The task attributes of this write operation. */
+    private final TaskAttributes taskAttributes;
 
-  /** The expected length in bytes, which should be transfered. */
-  private final int expectedDataTransferLength;
+    /** The expected length in bytes, which should be transfered. */
+    private final int expectedDataTransferLength;
 
-  /** The logical block address of the start block for this write operation. */
-  private final int logicalBlockAddress;
+    /** The logical block address of the start block for this write operation. */
+    private final int logicalBlockAddress;
 
-  /** The start index of the buffer. */
-  private final int bufferPosition;
+    /** The start index of the buffer. */
+    private final int bufferPosition;
 
-  /**
-   * The number of blocks (This block size is dependent on the size used on the
-   * target side.) to read.
-   */
-  private final short transferLength;
+    /**
+     * The number of blocks (This block size is dependent on the size used on
+     * the target side.) to read.
+     */
+    private final short transferLength;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a <code>WriteRequestState</code> instance, which
-   * creates a request to the iSCSI Target.
-   * 
-   * @param initConnection
-   *          This is the connection, which is used for the network
-   *          transmission.
-   * @param initBuffer
-   *          This buffer should be sent.
-   * @param initBufferPosition
-   *          The start index of the buffer.
-   * @param initTaskAttributes
-   *          The task attributes of this task.
-   * @param initExpectedDataTransferLength
-   *          The expected length in bytes, which should be transfered.
-   * @param initLogicalBlockAddress
-   *          The logical block address of the first block to write.
-   * @param initTransferLength
-   *          The number of blocks to write.
-   */
-  public WriteRequestState(final Connection initConnection,
-      final ByteBuffer initBuffer, final int initBufferPosition,
-      final TaskAttributes initTaskAttributes,
-      final int initExpectedDataTransferLength,
-      final int initLogicalBlockAddress, final short initTransferLength) {
+    /**
+     * Constructor to create a <code>WriteRequestState</code> instance, which
+     * creates a request to the iSCSI Target.
+     * 
+     * @param initConnection
+     *            This is the connection, which is used for the network
+     *            transmission.
+     * @param initBuffer
+     *            This buffer should be sent.
+     * @param initBufferPosition
+     *            The start index of the buffer.
+     * @param initTaskAttributes
+     *            The task attributes of this task.
+     * @param initExpectedDataTransferLength
+     *            The expected length in bytes, which should be transfered.
+     * @param initLogicalBlockAddress
+     *            The logical block address of the first block to write.
+     * @param initTransferLength
+     *            The number of blocks to write.
+     */
+    public WriteRequestState(final Connection initConnection,
+            final ByteBuffer initBuffer, final int initBufferPosition,
+            final TaskAttributes initTaskAttributes,
+            final int initExpectedDataTransferLength,
+            final int initLogicalBlockAddress, final short initTransferLength) {
 
-    super(initConnection);
-    buffer = initBuffer;
-    bufferPosition = initBufferPosition;
-    taskAttributes = initTaskAttributes;
-    expectedDataTransferLength = initExpectedDataTransferLength;
-    logicalBlockAddress = initLogicalBlockAddress;
-    transferLength = initTransferLength;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  public final void execute() throws InternetSCSIException {
-
-    final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory.create(
-        false, true, OperationCode.SCSI_COMMAND, connection
-            .getSetting(OperationalTextKey.HEADER_DIGEST), connection
-            .getSetting(OperationalTextKey.DATA_DIGEST));
-    final SCSICommandParser scsi = (SCSICommandParser) protocolDataUnit
-        .getBasicHeaderSegment().getParser();
-
-    scsi.setReadExpectedFlag(false);
-    scsi.setWriteExpectedFlag(true);
-    scsi.setTaskAttributes(taskAttributes);
-
-    scsi.setExpectedDataTransferLength(expectedDataTransferLength);
-
-    final int maxRecvDataSegmentLength = connection
-        .getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH);
-    scsi.setCommandDescriptorBlock(SCSICommandDescriptorBlockParser
-        .createWriteMessage(logicalBlockAddress, transferLength));
-
-    final IDataSegment dataSegment = DataSegmentFactory.create(buffer,
-        bufferPosition, expectedDataTransferLength, DataSegmentFormat.BINARY,
-        maxRecvDataSegmentLength);
-    final IDataSegmentIterator iterator = dataSegment.iterator();
-    int bufferOffset = 0;
-
-    if (connection.getSettingAsBoolean(OperationalTextKey.IMMEDIATE_DATA)) {
-      final int min = Math.min(maxRecvDataSegmentLength, connection
-          .getSettingAsInt(OperationalTextKey.FIRST_BURST_LENGTH));
-      protocolDataUnit.setDataSegment(iterator.next(min));
-      bufferOffset += min;
+        super(initConnection);
+        buffer = initBuffer;
+        bufferPosition = initBufferPosition;
+        taskAttributes = initTaskAttributes;
+        expectedDataTransferLength = initExpectedDataTransferLength;
+        logicalBlockAddress = initLogicalBlockAddress;
+        transferLength = initTransferLength;
     }
 
-    connection.send(protocolDataUnit);
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    if (!connection.getSettingAsBoolean(OperationalTextKey.INITIAL_R2T)
-        && iterator.hasNext()) {
-      connection.nextState(new WriteFirstBurstState(connection, iterator,
-          0xFFFFFFFF, 0, bufferOffset));
-    } else {
-      connection.nextState(new WriteSecondResponseState(connection, iterator, 0,
-          bufferOffset));
+    /** {@inheritDoc} */
+    public final void execute() throws InternetSCSIException {
+
+        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory
+                .create(false,
+                        true,
+                        OperationCode.SCSI_COMMAND,
+                        connection.getSetting(OperationalTextKey.HEADER_DIGEST),
+                        connection.getSetting(OperationalTextKey.DATA_DIGEST));
+        final SCSICommandParser scsi = (SCSICommandParser) protocolDataUnit
+                .getBasicHeaderSegment().getParser();
+
+        scsi.setReadExpectedFlag(false);
+        scsi.setWriteExpectedFlag(true);
+        scsi.setTaskAttributes(taskAttributes);
+
+        scsi.setExpectedDataTransferLength(expectedDataTransferLength);
+
+        final int maxRecvDataSegmentLength = connection
+                .getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH);
+        scsi.setCommandDescriptorBlock(SCSICommandDescriptorBlockParser
+                .createWriteMessage(logicalBlockAddress, transferLength));
+
+        final IDataSegment dataSegment = DataSegmentFactory.create(buffer,
+                bufferPosition, expectedDataTransferLength,
+                DataSegmentFormat.BINARY, maxRecvDataSegmentLength);
+        final IDataSegmentIterator iterator = dataSegment.iterator();
+        int bufferOffset = 0;
+
+        if (connection.getSettingAsBoolean(OperationalTextKey.IMMEDIATE_DATA)) {
+            final int min = Math.min(maxRecvDataSegmentLength, connection
+                    .getSettingAsInt(OperationalTextKey.FIRST_BURST_LENGTH));
+            protocolDataUnit.setDataSegment(iterator.next(min));
+            bufferOffset += min;
+        }
+
+        connection.send(protocolDataUnit);
+
+        if (!connection.getSettingAsBoolean(OperationalTextKey.INITIAL_R2T)
+                && iterator.hasNext()) {
+            connection.nextState(new WriteFirstBurstState(connection, iterator,
+                    0xFFFFFFFF, 0, bufferOffset));
+        } else {
+            connection.nextState(new WriteSecondResponseState(connection,
+                    iterator, 0, bufferOffset));
+        }
+        super.stateFollowing = true;
+        // return true;
     }
-    super.stateFollowing = true;
-//    return true;
-  }
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

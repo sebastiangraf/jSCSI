@@ -47,65 +47,65 @@ import org.junit.Test;
  */
 public class AsynchronousMessageParserTest extends ProtocolDataUnitTest {
 
-  private static final String TEST_CASE_1 = "32 80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
-      + "FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00 ";
+    private static final String TEST_CASE_1 = "32 80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+            + "FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00 ";
 
-  @Test
-  public void test(){
-	  
-	  //TODO: Remove this if the tests are working
-  }
-  
-  /**
-   * This test case validates the parsing process.
-   * 
-   * @throws IOException
-   *           This exception should be never thrown.
-   * @throws InternetSCSIException
-   *           This exception should be never thrown.
-   * @throws DigestException
-   *           This exception should be never thrown.
-   */
-  @Ignore
-  public void testDeserialize1() throws IOException, InternetSCSIException,
-      DigestException {
+    @Test
+    public void test() {
 
-    super.setUp(TEST_CASE_1);
-    super.testDeserialize(false, true, OperationCode.ASYNC_MESSAGE, 0x00000000,
-        0x00000001, 0x48044B81);
+        // TODO: Remove this if the tests are working
+    }
 
-    assertTrue(recognizedParser instanceof AsynchronousMessageParser);
+    /**
+     * This test case validates the parsing process.
+     * 
+     * @throws IOException
+     *             This exception should be never thrown.
+     * @throws InternetSCSIException
+     *             This exception should be never thrown.
+     * @throws DigestException
+     *             This exception should be never thrown.
+     */
+    @Ignore
+    public void testDeserialize1() throws IOException, InternetSCSIException,
+            DigestException {
 
-    AsynchronousMessageParser parser = (AsynchronousMessageParser) recognizedParser;
+        super.setUp(TEST_CASE_1);
+        super.testDeserialize(false, true, OperationCode.ASYNC_MESSAGE,
+                0x00000000, 0x00000001, 0x48044B81);
 
-    assertEquals(0x0000000000000000L, parser.getLogicalUnitNumber());
+        assertTrue(recognizedParser instanceof AsynchronousMessageParser);
 
-    assertEquals(0x00000002, parser.getExpectedCommandSequenceNumber());
-    assertEquals(0x00000009, parser.getMaximumCommandSequenceNumber());
-  }
+        AsynchronousMessageParser parser = (AsynchronousMessageParser) recognizedParser;
 
-  /**
-   * This test case validates the serialization process.
-   * 
-   * @throws InternetSCSIException
-   *           This exception should be never thrown.
-   * @throws IOException
-   *           This exception should be never thrown.
-   * @throws DigestException
-   *           This exception should be never thrown.
-   */
-  @Ignore
-  public void testSerialize() throws InternetSCSIException, IOException,
-      DigestException {
+        assertEquals(0x0000000000000000L, parser.getLogicalUnitNumber());
 
-    super.setUp(TEST_CASE_1);
-    // int[] expectedResult = WiresharkMessageParser.parse(TEST_CASE_1);
-    ByteBuffer expectedResult = WiresharkMessageParser
-        .parseToByteBuffer(TEST_CASE_1);
+        assertEquals(0x00000002, parser.getExpectedCommandSequenceNumber());
+        assertEquals(0x00000009, parser.getMaximumCommandSequenceNumber());
+    }
 
-    // assertTrue(Arrays.equals(expectedResult,
-    // protocolDataUnit.serialize()));
-    assertTrue(expectedResult.equals(protocolDataUnit.serialize()));
-  }
+    /**
+     * This test case validates the serialization process.
+     * 
+     * @throws InternetSCSIException
+     *             This exception should be never thrown.
+     * @throws IOException
+     *             This exception should be never thrown.
+     * @throws DigestException
+     *             This exception should be never thrown.
+     */
+    @Ignore
+    public void testSerialize() throws InternetSCSIException, IOException,
+            DigestException {
+
+        super.setUp(TEST_CASE_1);
+        // int[] expectedResult = WiresharkMessageParser.parse(TEST_CASE_1);
+        ByteBuffer expectedResult = WiresharkMessageParser
+                .parseToByteBuffer(TEST_CASE_1);
+
+        // assertTrue(Arrays.equals(expectedResult,
+        // protocolDataUnit.serialize()));
+        assertTrue(expectedResult.equals(protocolDataUnit.serialize()));
+    }
 
 }

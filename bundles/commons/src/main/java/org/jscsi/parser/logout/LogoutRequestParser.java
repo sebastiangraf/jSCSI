@@ -142,10 +142,11 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * the Time2Wait and Time2Retain periods without allegiance reassignment.</li>
  * <li>When a connection is implicitly or explicitly logged out with the reason
  * code of "Close the session" and there are active tasks in that session.</li>
- * </ol> If the tasks terminated in any of the above cases are SCSI tasks, they
- * must be internally terminated as if with CHECK CONDITION status. This status
- * is only meaningful for appropriately handling the internal SCSI state and
- * SCSI side effects with respect to ordering because this status is never
+ * </ol>
+ * If the tasks terminated in any of the above cases are SCSI tasks, they must
+ * be internally terminated as if with CHECK CONDITION status. This status is
+ * only meaningful for appropriately handling the internal SCSI state and SCSI
+ * side effects with respect to ordering because this status is never
  * communicated back as a terminating status to the initiator. However
  * additional actions may have to be taken at SCSI level depending on the SCSI
  * context as defined by the SCSI standards (e.g., queued commands and ACA, in
@@ -160,261 +161,265 @@ import org.jscsi.parser.exception.InternetSCSIException;
  */
 public final class LogoutRequestParser extends InitiatorMessageParser {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /**
-   * This enumeration defines all the Logout Reasons Codes, which are allowed in
-   * a iSCSI Logout Request message (RFC3720). All other values are reserved.
-   * <p>
-   * All other values are reserved.
-   * <p>
-   */
-  public static enum LogoutReasonCode {
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
     /**
-     * Close the session. All commands associated with the session (if any) are
-     * terminated.
+     * This enumeration defines all the Logout Reasons Codes, which are allowed
+     * in a iSCSI Logout Request message (RFC3720). All other values are
+     * reserved.
+     * <p>
+     * All other values are reserved.
+     * <p>
      */
-    CLOSE_SESSION((byte) 0),
+    public static enum LogoutReasonCode {
 
-    /**
-     * Close the connection. All commands associated with connection (if any)
-     * are terminated.
-     */
-    CLOSE_CONNECTION((byte) 1),
+        /**
+         * Close the session. All commands associated with the session (if any)
+         * are terminated.
+         */
+        CLOSE_SESSION((byte) 0),
 
-    /**
-     * Remove the connection for recovery. Connection is closed and all commands
-     * associated with it, if any, are to be prepared for a new allegiance.
-     */
-    CONNECTION_RECOVERY((byte) 2);
+        /**
+         * Close the connection. All commands associated with connection (if
+         * any) are terminated.
+         */
+        CLOSE_CONNECTION((byte) 1),
 
-    private final byte value;
+        /**
+         * Remove the connection for recovery. Connection is closed and all
+         * commands associated with it, if any, are to be prepared for a new
+         * allegiance.
+         */
+        CONNECTION_RECOVERY((byte) 2);
 
-    private static Map<Byte, LogoutReasonCode> mapping;
+        private final byte value;
 
-    static {
-      LogoutReasonCode.mapping = new HashMap<Byte, LogoutReasonCode>();
-      for (LogoutReasonCode s : values()) {
-        LogoutReasonCode.mapping.put(s.value, s);
-      }
+        private static Map<Byte, LogoutReasonCode> mapping;
+
+        static {
+            LogoutReasonCode.mapping = new HashMap<Byte, LogoutReasonCode>();
+            for (LogoutReasonCode s : values()) {
+                LogoutReasonCode.mapping.put(s.value, s);
+            }
+        }
+
+        private LogoutReasonCode(final byte newValue) {
+
+            value = newValue;
+        }
+
+        /**
+         * Returns the value of this enumeration.
+         * 
+         * @return The value of this enumeration.
+         */
+        public final byte value() {
+
+            return value;
+        }
+
+        /**
+         * Returns the constant defined for the given <code>value</code>.
+         * 
+         * @param value
+         *            The value to search for.
+         * @return The constant defined for the given <code>value</code>. Or
+         *         <code>null</code>, if this value is not defined by this
+         *         enumeration.
+         */
+        public static final LogoutReasonCode valueOf(final byte value) {
+
+            return LogoutReasonCode.mapping.get(value);
+        }
+
     }
 
-    private LogoutReasonCode(final byte newValue) {
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-      value = newValue;
-    }
+    /** Reason code indicates the reason for the logout. */
+    private LogoutReasonCode reasonCode;
+
+    /** The Connection ID. */
+    private short connectionID;
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
     /**
-     * Returns the value of this enumeration.
+     * Default constructor, creates a new, empty
+     * <code>LogoutRequestParser</code> object.
      * 
-     * @return The value of this enumeration.
+     * @param initProtocolDataUnit
+     *            The reference <code>ProtocolDataUnit</code> instance, which
+     *            contains this <code>LogoutRequestParser</code> subclass
+     *            object.
      */
-    public final byte value() {
+    public LogoutRequestParser(final ProtocolDataUnit initProtocolDataUnit) {
 
-      return value;
+        super(initProtocolDataUnit);
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /** {@inheritDoc} */
+    @Override
+    public final String toString() {
+
+        final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
+
+        Utils.printField(sb, "Reson Code", reasonCode.value(), 1);
+        Utils.printField(sb, "CID", connectionID, 1);
+        sb.append(super.toString());
+
+        return sb.toString();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final DataSegmentFormat getDataSegmentFormat() {
+
+        return DataSegmentFormat.BINARY;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final void clear() {
+
+        super.clear();
+
+        reasonCode = LogoutReasonCode.CLOSE_SESSION;
+        connectionID = 0x0000;
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /**
+     * This is the <em>Connection ID</em> of the connection to be closed
+     * (including closing the TCP stream). This field is only valid if the
+     * reason code is not "close the session".
+     * 
+     * @return The <em>Connection ID</em> of this
+     *         <code>LogoutRequestParser</code> object.
+     */
+    public final short getConnectionID() {
+
+        return connectionID;
     }
 
     /**
-     * Returns the constant defined for the given <code>value</code>.
+     * Returns the reason for the logout.
      * 
-     * @param value
-     *          The value to search for.
-     * @return The constant defined for the given <code>value</code>. Or
-     *         <code>null</code>, if this value is not defined by this
-     *         enumeration.
+     * @return The reason code for this logout request.
+     * @see LogoutReasonCode
      */
-    public static final LogoutReasonCode valueOf(final byte value) {
+    public final LogoutReasonCode getReasonCode() {
 
-      return LogoutReasonCode.mapping.get(value);
+        return reasonCode;
     }
 
-  }
+    /**
+     * Sets the new <code>Connection ID</code> of this
+     * <code>LogoutRequestParser</code> object.
+     * 
+     * @param newCID
+     *            The new <code>Connection ID</code>.
+     */
+    public final void setConnectionID(final short newCID) {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+        connectionID = newCID;
+    }
 
-  /** Reason code indicates the reason for the logout. */
-  private LogoutReasonCode reasonCode;
+    /**
+     * Sets the <code>Reason Code</code> of this
+     * <code>LogoutRequestParser</code> object.
+     * 
+     * @param newReasonCode
+     *            The new <code> Reason Code</code>.
+     */
+    public final void setReasonCode(final LogoutReasonCode newReasonCode) {
 
-  /** The Connection ID. */
-  private short connectionID;
+        reasonCode = newReasonCode;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Default constructor, creates a new, empty <code>LogoutRequestParser</code>
-   * object.
-   * 
-   * @param initProtocolDataUnit
-   *          The reference <code>ProtocolDataUnit</code> instance, which
-   *          contains this <code>LogoutRequestParser</code> subclass object.
-   */
-  public LogoutRequestParser(final ProtocolDataUnit initProtocolDataUnit) {
+    /** {@inheritDoc} */
+    @Override
+    protected final void deserializeBytes1to3(final int line)
+            throws InternetSCSIException {
 
-    super(initProtocolDataUnit);
-  }
+        reasonCode = LogoutReasonCode
+                .valueOf((byte) ((line & Constants.SECOND_BYTE_MASK) >>> Constants.TWO_BYTES_SHIFT));
+        Utils.isReserved(line & Constants.LAST_TWO_BYTES_MASK);
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /** {@inheritDoc} */
+    @Override
+    protected final void deserializeBytes20to23(final int line)
+            throws InternetSCSIException {
 
-  /** {@inheritDoc} */
-  @Override
-  public final String toString() {
+        connectionID = (short) ((line & Constants.FIRST_TWO_BYTES_MASK) >>> Constants.TWO_BYTES_SHIFT);
+        Utils.isReserved(line & Constants.LAST_TWO_BYTES_MASK);
+    }
 
-    final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    Utils.printField(sb, "Reson Code", reasonCode.value(), 1);
-    Utils.printField(sb, "CID", connectionID, 1);
-    sb.append(super.toString());
+    /** {@inheritDoc} */
+    @Override
+    protected final void checkIntegrity() throws InternetSCSIException {
 
-    return sb.toString();
-  }
+        String exceptionMessage;
+        do {
+            Utils.isReserved(logicalUnitNumber);
 
-  /** {@inheritDoc} */
-  @Override
-  public final DataSegmentFormat getDataSegmentFormat() {
+            if (reasonCode == LogoutReasonCode.CLOSE_SESSION
+                    && connectionID != 0) {
+                exceptionMessage = "The CID field must be zero, if close session is requested.";
+                break;
+            }
 
-    return DataSegmentFormat.BINARY;
-  }
+            if (protocolDataUnit.getBasicHeaderSegment().getTotalAHSLength() != 0) {
+                exceptionMessage = "TotalAHSLength must be 0!";
+                break;
+            }
 
-  /** {@inheritDoc} */
-  @Override
-  public final void clear() {
+            if (protocolDataUnit.getBasicHeaderSegment().getDataSegmentLength() != 0) {
+                exceptionMessage = "DataSegmentLength must be 0!";
+                break;
+            }
 
-    super.clear();
+            // message is checked correctly
+            return;
+        } while (false);
 
-    reasonCode = LogoutReasonCode.CLOSE_SESSION;
-    connectionID = 0x0000;
-  }
+        throw new InternetSCSIException(exceptionMessage);
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    }
 
-  /**
-   * This is the <em>Connection ID</em> of the connection to be closed
-   * (including closing the TCP stream). This field is only valid if the reason
-   * code is not "close the session".
-   * 
-   * @return The <em>Connection ID</em> of this <code>LogoutRequestParser</code>
-   *         object.
-   */
-  public final short getConnectionID() {
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    return connectionID;
-  }
+    /** {@inheritDoc} */
+    @Override
+    protected final int serializeBytes1to3() {
 
-  /**
-   * Returns the reason for the logout.
-   * 
-   * @return The reason code for this logout request.
-   * @see LogoutReasonCode
-   */
-  public final LogoutReasonCode getReasonCode() {
+        return reasonCode.value() << Constants.TWO_BYTES_SHIFT;
+    }
 
-    return reasonCode;
-  }
+    /** {@inheritDoc} */
+    @Override
+    protected final int serializeBytes20to23() {
 
-  /**
-   * Sets the new <code>Connection ID</code> of this
-   * <code>LogoutRequestParser</code> object.
-   * 
-   * @param newCID
-   *          The new <code>Connection ID</code>.
-   */
-  public final void setConnectionID(final short newCID) {
+        return connectionID << Constants.TWO_BYTES_SHIFT;
+    }
 
-    connectionID = newCID;
-  }
-
-  /**
-   * Sets the <code>Reason Code</code> of this <code>LogoutRequestParser</code>
-   * object.
-   * 
-   * @param newReasonCode
-   *          The new <code> Reason Code</code>.
-   */
-  public final void setReasonCode(final LogoutReasonCode newReasonCode) {
-
-    reasonCode = newReasonCode;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  @Override
-  protected final void deserializeBytes1to3(final int line)
-      throws InternetSCSIException {
-
-    reasonCode = LogoutReasonCode
-        .valueOf((byte) ((line & Constants.SECOND_BYTE_MASK) >>> Constants.TWO_BYTES_SHIFT));
-    Utils.isReserved(line & Constants.LAST_TWO_BYTES_MASK);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected final void deserializeBytes20to23(final int line)
-      throws InternetSCSIException {
-
-    connectionID = (short) ((line & Constants.FIRST_TWO_BYTES_MASK) >>> Constants.TWO_BYTES_SHIFT);
-    Utils.isReserved(line & Constants.LAST_TWO_BYTES_MASK);
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  @Override
-  protected final void checkIntegrity() throws InternetSCSIException {
-
-    String exceptionMessage;
-    do {
-      Utils.isReserved(logicalUnitNumber);
-
-      if (reasonCode == LogoutReasonCode.CLOSE_SESSION && connectionID != 0) {
-        exceptionMessage = "The CID field must be zero, if close session is requested.";
-        break;
-      }
-
-      if (protocolDataUnit.getBasicHeaderSegment().getTotalAHSLength() != 0) {
-        exceptionMessage = "TotalAHSLength must be 0!";
-        break;
-      }
-
-      if (protocolDataUnit.getBasicHeaderSegment().getDataSegmentLength() != 0) {
-        exceptionMessage = "DataSegmentLength must be 0!";
-        break;
-      }
-
-      // message is checked correctly
-      return;
-    } while (false);
-
-    throw new InternetSCSIException(exceptionMessage);
-
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  @Override
-  protected final int serializeBytes1to3() {
-
-    return reasonCode.value() << Constants.TWO_BYTES_SHIFT;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected final int serializeBytes20to23() {
-
-    return connectionID << Constants.TWO_BYTES_SHIFT;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

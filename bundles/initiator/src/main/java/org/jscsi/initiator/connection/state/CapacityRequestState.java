@@ -37,87 +37,92 @@ import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.parser.scsi.SCSICommandParser.TaskAttributes;
 
 /**
- * <h1>CapacityRequestState</h1> <p/> This state handles a Capacity Request to
- * retrieve the block size and the size of the iSCSI Device.
+ * <h1>CapacityRequestState</h1>
+ * <p/>
+ * This state handles a Capacity Request to retrieve the block size and the size
+ * of the iSCSI Device.
  * 
  * @author Volker Wildi
  */
 public final class CapacityRequestState extends AbstractState {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The sent command has a fixed size of <code>8</code> bytes. */
-  private static final int EXPECTED_DATA_TRANSFER_LENGTH = 0x08;
+    /** The sent command has a fixed size of <code>8</code> bytes. */
+    private static final int EXPECTED_DATA_TRANSFER_LENGTH = 0x08;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * This object contains the informations about the capacity of the connected
-   * target.
-   */
+    /**
+     * This object contains the informations about the capacity of the connected
+     * target.
+     */
 
-  private final TargetCapacityInformations capacityInformation;
+    private final TargetCapacityInformations capacityInformation;
 
-  private final TaskAttributes taskAttributes;
+    private final TaskAttributes taskAttributes;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a new, empty <code>CapacityRequestState</code>
-   * instance.
-   * 
-   * @param initConnection
-   *          This is the connection, which is used for the network
-   *          transmission.
-   * @param initCapacityInformation
-   *          Store the informations about that iSCSI Device in this instance.
-   * @param initTaskAttributes
-   *          The task attributes, which are used with task.
-   */
-  public CapacityRequestState(final Connection initConnection,
-      final TargetCapacityInformations initCapacityInformation,
-      final TaskAttributes initTaskAttributes) {
+    /**
+     * Constructor to create a new, empty <code>CapacityRequestState</code>
+     * instance.
+     * 
+     * @param initConnection
+     *            This is the connection, which is used for the network
+     *            transmission.
+     * @param initCapacityInformation
+     *            Store the informations about that iSCSI Device in this
+     *            instance.
+     * @param initTaskAttributes
+     *            The task attributes, which are used with task.
+     */
+    public CapacityRequestState(final Connection initConnection,
+            final TargetCapacityInformations initCapacityInformation,
+            final TaskAttributes initTaskAttributes) {
 
-    super(initConnection);
-    capacityInformation = initCapacityInformation;
-    taskAttributes = initTaskAttributes;
-  }
+        super(initConnection);
+        capacityInformation = initCapacityInformation;
+        taskAttributes = initTaskAttributes;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  public final void execute() throws InternetSCSIException {
+    /** {@inheritDoc} */
+    public final void execute() throws InternetSCSIException {
 
-    final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory.create(
-        false, true, OperationCode.SCSI_COMMAND, connection
-            .getSetting(OperationalTextKey.HEADER_DIGEST), connection
-            .getSetting(OperationalTextKey.DATA_DIGEST));
-    final SCSICommandParser scsi = (SCSICommandParser) protocolDataUnit
-        .getBasicHeaderSegment().getParser();
+        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory
+                .create(false,
+                        true,
+                        OperationCode.SCSI_COMMAND,
+                        connection.getSetting(OperationalTextKey.HEADER_DIGEST),
+                        connection.getSetting(OperationalTextKey.DATA_DIGEST));
+        final SCSICommandParser scsi = (SCSICommandParser) protocolDataUnit
+                .getBasicHeaderSegment().getParser();
 
-    scsi.setReadExpectedFlag(true);
-    scsi.setWriteExpectedFlag(false);
-    scsi.setTaskAttributes(taskAttributes);
+        scsi.setReadExpectedFlag(true);
+        scsi.setWriteExpectedFlag(false);
+        scsi.setTaskAttributes(taskAttributes);
 
-    scsi.setExpectedDataTransferLength(EXPECTED_DATA_TRANSFER_LENGTH);
+        scsi.setExpectedDataTransferLength(EXPECTED_DATA_TRANSFER_LENGTH);
 
-    scsi.setCommandDescriptorBlock(SCSICommandDescriptorBlockParser
-        .createReadCapacityMessage());
+        scsi.setCommandDescriptorBlock(SCSICommandDescriptorBlockParser
+                .createReadCapacityMessage());
 
-    connection.send(protocolDataUnit);
-    connection.nextState(new CapacityResponseState(connection,
-        capacityInformation));
-    super.stateFollowing = true;
-//    return true;
-  }
+        connection.send(protocolDataUnit);
+        connection.nextState(new CapacityResponseState(connection,
+                capacityInformation));
+        super.stateFollowing = true;
+        // return true;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

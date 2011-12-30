@@ -35,54 +35,55 @@ import org.jscsi.parser.datasegment.ResultFunctionFactory.ChooseResultFunction;
 import org.junit.Test;
 
 /**
- * <h1>ResultFunctionFactoryTest</h1> <p/>
+ * <h1>ResultFunctionFactoryTest</h1>
+ * <p/>
  * 
  * @author Volker Wildi
  */
 public final class ResultFunctionFactoryTest {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  @Test
-  public final void testValidChoose1() {
+    @Test
+    public final void testValidChoose1() {
 
-    final ResultFunctionFactory resultFunctionFactory = new ResultFunctionFactory();
-    final IResultFunction resultFunction = resultFunctionFactory
-        .create("Choose");
+        final ResultFunctionFactory resultFunctionFactory = new ResultFunctionFactory();
+        final IResultFunction resultFunction = resultFunctionFactory
+                .create("Choose");
 
-    assertTrue(resultFunction instanceof ChooseResultFunction);
-    assertEquals("CRC32CDigest", resultFunction.result("CRC32CDigest,None",
-        "MD5,CRC32CDigest,None"));
-  }
+        assertTrue(resultFunction instanceof ChooseResultFunction);
+        assertEquals("CRC32CDigest", resultFunction.result("CRC32CDigest,None",
+                "MD5,CRC32CDigest,None"));
+    }
 
-  @Test
-  public final void testValidChoose2() {
+    @Test
+    public final void testValidChoose2() {
 
-    final ResultFunctionFactory resultFunctionFactory = new ResultFunctionFactory();
-    final IResultFunction resultFunction = resultFunctionFactory
-        .create("Choose");
+        final ResultFunctionFactory resultFunctionFactory = new ResultFunctionFactory();
+        final IResultFunction resultFunction = resultFunctionFactory
+                .create("Choose");
 
-    assertTrue(resultFunction instanceof ChooseResultFunction);
-    assertEquals("None", resultFunction.result("CRC32,None",
-        "MD5,CRC32CDigest,None"));
+        assertTrue(resultFunction instanceof ChooseResultFunction);
+        assertEquals("None",
+                resultFunction.result("CRC32,None", "MD5,CRC32CDigest,None"));
 
-  }
+    }
 
-  @Test(expected = NoSuchElementException.class)
-  public final void testInvalidChoose() {
+    @Test(expected = NoSuchElementException.class)
+    public final void testInvalidChoose() {
 
-    final ResultFunctionFactory resultFunctionFactory = new ResultFunctionFactory();
-    final IResultFunction resultFunction = resultFunctionFactory
-        .create("Choose");
+        final ResultFunctionFactory resultFunctionFactory = new ResultFunctionFactory();
+        final IResultFunction resultFunction = resultFunctionFactory
+                .create("Choose");
 
-    assertTrue(resultFunction instanceof ChooseResultFunction);
-    resultFunction.result("CRC32", "MD5,CRC32CDigest");
-  }
+        assertTrue(resultFunction instanceof ChooseResultFunction);
+        resultFunction.result("CRC32", "MD5,CRC32CDigest");
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

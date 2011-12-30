@@ -42,189 +42,193 @@ import org.jscsi.parser.datasegment.OperationalTextKey;
 import org.jscsi.parser.exception.InternetSCSIException;
 
 /**
- * <h1>SenderWorker</h1> <p/> The worker caller to send all the protocol data
- * units over the socket of this connection.
+ * <h1>SenderWorker</h1>
+ * <p/>
+ * The worker caller to send all the protocol data units over the socket of this
+ * connection.
  * 
  * @author Volker Wildi
  */
 final class SenderWorker {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The logger interface. */
-  private static final Log LOGGER = LogFactory.getLog(SenderWorker.class);
+    /** The logger interface. */
+    private static final Log LOGGER = LogFactory.getLog(SenderWorker.class);
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The <code>Connection</code> instance of this worker caller. */
-  private final Connection connection;
+    /** The <code>Connection</code> instance of this worker caller. */
+    private final Connection connection;
 
-  /**
-   * Non-blocking socket connection to use for the data transfer.
-   */
-  private final SocketChannel socketChannel;
+    /**
+     * Non-blocking socket connection to use for the data transfer.
+     */
+    private final SocketChannel socketChannel;
 
-  /**
-   * Factory class for creating the several <code>ProtocolDataUnit</code>
-   * instances.
-   */
-  private final ProtocolDataUnitFactory protocolDataUnitFactory;
+    /**
+     * Factory class for creating the several <code>ProtocolDataUnit</code>
+     * instances.
+     */
+    private final ProtocolDataUnitFactory protocolDataUnitFactory;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Creates a new, empty <code>SenderWorker</code> instance.
-   * 
-   * @param initConnection
-   *          The reference connection of this worker caller.
-   * @param inetAddress
-   *          The InetSocketAddress of the Target.
-   * @throws IOException
-   *           if any IO error occurs.
-   */
-  public SenderWorker(final Connection initConnection,
-      final InetSocketAddress inetAddress) throws IOException {
+    /**
+     * Creates a new, empty <code>SenderWorker</code> instance.
+     * 
+     * @param initConnection
+     *            The reference connection of this worker caller.
+     * @param inetAddress
+     *            The InetSocketAddress of the Target.
+     * @throws IOException
+     *             if any IO error occurs.
+     */
+    public SenderWorker(final Connection initConnection,
+            final InetSocketAddress inetAddress) throws IOException {
 
-    connection = initConnection;
-    socketChannel = SocketChannel.open(inetAddress);
-    socketChannel.socket().setTcpNoDelay(true);
+        connection = initConnection;
+        socketChannel = SocketChannel.open(inetAddress);
+        socketChannel.socket().setTcpNoDelay(true);
 
-    protocolDataUnitFactory = new ProtocolDataUnitFactory();
+        protocolDataUnitFactory = new ProtocolDataUnitFactory();
 
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /**
-   * This method does all the necessary steps, which are needed when a
-   * connection should be closed.
-   * 
-   * @throws IOException
-   *           if an I/O error occurs.
-   */
-  public final void close() throws IOException {
-
-    socketChannel.close();
-
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /**
-   * Receives a <code>ProtocolDataUnit</code> from the socket and appends it to
-   * the end of the receiving queue of this connection.
-   * 
-   * @return Queue with the resulting units
-   * @throws IOException
-   *           if an I/O error occurs.
-   * @throws InternetSCSIException
-   *           if any violation of the iSCSI-Standard emerge.
-   * @throws DigestException
-   *           if a mismatch of the digest exists.
-   */
-  public ProtocolDataUnit receiveFromWire() throws DigestException,
-      InternetSCSIException, IOException {
-
-    final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory.create(
-        connection.getSetting(OperationalTextKey.HEADER_DIGEST), connection
-            .getSetting(OperationalTextKey.DATA_DIGEST));
-
-    try {
-      protocolDataUnit.read(socketChannel);
-    } catch (ClosedChannelException e) {
-      throw new InternetSCSIException(e);
     }
 
-    LOGGER.debug("Receiving this PDU: " + protocolDataUnit);
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    final Exception isCorrect = connection.getState().isCorrect(
-        protocolDataUnit);
-    if (isCorrect == null) {
-      LOGGER.trace("Adding PDU to Receiving Queue.");
+    /**
+     * This method does all the necessary steps, which are needed when a
+     * connection should be closed.
+     * 
+     * @throws IOException
+     *             if an I/O error occurs.
+     */
+    public final void close() throws IOException {
 
-      final TargetMessageParser parser = (TargetMessageParser) protocolDataUnit
-          .getBasicHeaderSegment().getParser();
-      final Session session = connection.getSession();
+        socketChannel.close();
 
-      // the PDU maxCmdSN is greater than the local maxCmdSN, so we
-      // have to update the local one
-      if (session.getMaximumCommandSequenceNumber().compareTo(
-          parser.getMaximumCommandSequenceNumber()) < 0) {
-        session.setMaximumCommandSequenceNumber(parser
-            .getMaximumCommandSequenceNumber());
-      }
+    }
 
-      // the PDU expCmdSN is greater than the local expCmdSN, so we
-      // have to update the local one
-      if (parser.incrementSequenceNumber()) {
-        if (connection.getExpectedStatusSequenceNumber().compareTo(
-            parser.getStatusSequenceNumber()) >= 0) {
-          connection.incrementExpectedStatusSequenceNumber();
-        } else {
-          LOGGER.error("Status Sequence Number Mismatch (received, expected): "
-              + parser.getStatusSequenceNumber() + ", "
-              + (connection.getExpectedStatusSequenceNumber().getValue() - 1));
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /**
+     * Receives a <code>ProtocolDataUnit</code> from the socket and appends it
+     * to the end of the receiving queue of this connection.
+     * 
+     * @return Queue with the resulting units
+     * @throws IOException
+     *             if an I/O error occurs.
+     * @throws InternetSCSIException
+     *             if any violation of the iSCSI-Standard emerge.
+     * @throws DigestException
+     *             if a mismatch of the digest exists.
+     */
+    public ProtocolDataUnit receiveFromWire() throws DigestException,
+            InternetSCSIException, IOException {
+
+        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory
+                .create(connection.getSetting(OperationalTextKey.HEADER_DIGEST),
+                        connection.getSetting(OperationalTextKey.DATA_DIGEST));
+
+        try {
+            protocolDataUnit.read(socketChannel);
+        } catch (ClosedChannelException e) {
+            throw new InternetSCSIException(e);
         }
 
-      }
+        LOGGER.debug("Receiving this PDU: " + protocolDataUnit);
 
-    } else {
-      throw new InternetSCSIException(isCorrect);
-    }
-    return protocolDataUnit;
-  }
+        final Exception isCorrect = connection.getState().isCorrect(
+                protocolDataUnit);
+        if (isCorrect == null) {
+            LOGGER.trace("Adding PDU to Receiving Queue.");
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+            final TargetMessageParser parser = (TargetMessageParser) protocolDataUnit
+                    .getBasicHeaderSegment().getParser();
+            final Session session = connection.getSession();
 
-  /**
-   * Sends the given <code>ProtocolDataUnit</code> instance over the socket to
-   * the connected iSCSI Target.
-   * 
-   * @param unit
-   *          The <code>ProtocolDataUnit</code> instances to send.
-   * @throws InternetSCSIException
-   *           if any violation of the iSCSI-Standard emerge.
-   * @throws IOException
-   *           if an I/O error occurs.
-   * @throws InterruptedException
-   *           if another caller interrupted the current caller before or while
-   *           the current caller was waiting for a notification. The
-   *           interrupted status of the current caller is cleared when this
-   *           exception is thrown.
-   */
-  public final void sendOverWire(final ProtocolDataUnit unit)
-      throws InternetSCSIException, IOException, InterruptedException {
+            // the PDU maxCmdSN is greater than the local maxCmdSN, so we
+            // have to update the local one
+            if (session.getMaximumCommandSequenceNumber().compareTo(
+                    parser.getMaximumCommandSequenceNumber()) < 0) {
+                session.setMaximumCommandSequenceNumber(parser
+                        .getMaximumCommandSequenceNumber());
+            }
 
-    final Session session = connection.getSession();
+            // the PDU expCmdSN is greater than the local expCmdSN, so we
+            // have to update the local one
+            if (parser.incrementSequenceNumber()) {
+                if (connection.getExpectedStatusSequenceNumber().compareTo(
+                        parser.getStatusSequenceNumber()) >= 0) {
+                    connection.incrementExpectedStatusSequenceNumber();
+                } else {
+                    LOGGER.error("Status Sequence Number Mismatch (received, expected): "
+                            + parser.getStatusSequenceNumber()
+                            + ", "
+                            + (connection.getExpectedStatusSequenceNumber()
+                                    .getValue() - 1));
+                }
 
-    unit.getBasicHeaderSegment().setInitiatorTaskTag(
-        session.getInitiatorTaskTag());
-    final InitiatorMessageParser parser = (InitiatorMessageParser) unit
-        .getBasicHeaderSegment().getParser();
-    parser.setCommandSequenceNumber(session.getCommandSequenceNumber());
-    parser.setExpectedStatusSequenceNumber(connection
-        .getExpectedStatusSequenceNumber().getValue());
+            }
 
-    unit.write(socketChannel);
-
-    LOGGER.debug("Sending this PDU: " + unit);
-
-    // increment the Command Sequence Number
-    if (parser.incrementSequenceNumber()) {
-      connection.getSession().incrementCommandSequenceNumber();
+        } else {
+            throw new InternetSCSIException(isCorrect);
+        }
+        return protocolDataUnit;
     }
 
-  }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /**
+     * Sends the given <code>ProtocolDataUnit</code> instance over the socket to
+     * the connected iSCSI Target.
+     * 
+     * @param unit
+     *            The <code>ProtocolDataUnit</code> instances to send.
+     * @throws InternetSCSIException
+     *             if any violation of the iSCSI-Standard emerge.
+     * @throws IOException
+     *             if an I/O error occurs.
+     * @throws InterruptedException
+     *             if another caller interrupted the current caller before or
+     *             while the current caller was waiting for a notification. The
+     *             interrupted status of the current caller is cleared when this
+     *             exception is thrown.
+     */
+    public final void sendOverWire(final ProtocolDataUnit unit)
+            throws InternetSCSIException, IOException, InterruptedException {
+
+        final Session session = connection.getSession();
+
+        unit.getBasicHeaderSegment().setInitiatorTaskTag(
+                session.getInitiatorTaskTag());
+        final InitiatorMessageParser parser = (InitiatorMessageParser) unit
+                .getBasicHeaderSegment().getParser();
+        parser.setCommandSequenceNumber(session.getCommandSequenceNumber());
+        parser.setExpectedStatusSequenceNumber(connection
+                .getExpectedStatusSequenceNumber().getValue());
+
+        unit.write(socketChannel);
+
+        LOGGER.debug("Sending this PDU: " + unit);
+
+        // increment the Command Sequence Number
+        if (parser.incrementSequenceNumber()) {
+            connection.getSession().incrementCommandSequenceNumber();
+        }
+
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

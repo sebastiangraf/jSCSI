@@ -39,40 +39,40 @@ import org.jscsi.parser.exception.NoSuchConnectionException;
  */
 public final class SimpleTaskBalancer extends AbstractTaskBalancer {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  /**
-   * Constructor to create a <code>SimpleLoadBalancer</code> instance.
-   * 
-   * @param initConnections
-   *          The list with all opened connections.
-   */
-  public SimpleTaskBalancer(
-      final LinkedBlockingQueue<Connection> initConnections) {
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    /**
+     * Constructor to create a <code>SimpleLoadBalancer</code> instance.
+     * 
+     * @param initConnections
+     *            The list with all opened connections.
+     */
+    public SimpleTaskBalancer(
+            final LinkedBlockingQueue<Connection> initConnections) {
 
-    super(initConnections);
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  @Override
-  public Connection getConnection() throws NoSuchConnectionException {
-
-    Connection retConnection;
-    try {
-      retConnection = freeConnections.take();
-      return retConnection;
-
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-      return null;
+        super(initConnections);
     }
-  }
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /** {@inheritDoc} */
+    @Override
+    public Connection getConnection() throws NoSuchConnectionException {
+
+        Connection retConnection;
+        try {
+            retConnection = freeConnections.take();
+            return retConnection;
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

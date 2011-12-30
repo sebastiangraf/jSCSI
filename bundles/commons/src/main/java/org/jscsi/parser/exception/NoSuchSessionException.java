@@ -27,45 +27,46 @@
 package org.jscsi.parser.exception;
 
 /**
- * <h1>NoSuchSessionException</h1> <p/> This exception is thrown when no session
- * is open.
+ * <h1>NoSuchSessionException</h1>
+ * <p/>
+ * This exception is thrown when no session is open.
  * 
  * @author Volker Wildi
  */
 public class NoSuchSessionException extends InternetSCSIException {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The Serial Version ID. */
-  private static final long serialVersionUID = 1L;
+    /** The Serial Version ID. */
+    private static final long serialVersionUID = 1L;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructs a new exception with null as its detail message.
-   */
-  public NoSuchSessionException() {
+    /**
+     * Constructs a new exception with null as its detail message.
+     */
+    public NoSuchSessionException() {
 
-    super();
-  }
+        super();
+    }
 
-  /**
-   * Constructs a new exception with the specified detail message.
-   * 
-   * @param msg
-   *          the detail message. The detail message is saved for later
-   *          retrieval by the Throwable.getMessage() method.
-   */
-  public NoSuchSessionException(final String msg) {
+    /**
+     * Constructs a new exception with the specified detail message.
+     * 
+     * @param msg
+     *            the detail message. The detail message is saved for later
+     *            retrieval by the Throwable.getMessage() method.
+     */
+    public NoSuchSessionException(final String msg) {
 
-    super(msg);
-  }
+        super(msg);
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

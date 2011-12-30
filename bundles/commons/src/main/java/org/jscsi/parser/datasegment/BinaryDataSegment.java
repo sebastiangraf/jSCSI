@@ -38,73 +38,73 @@ import java.nio.ByteBuffer;
  */
 final class BinaryDataSegment extends AbstractDataSegment {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a new, empty <code>BinaryDataSegment</code> object
-   * with the given chunk size.
-   * 
-   * @param chunkSize
-   *          The maximum number of bytes of a chunk.
-   */
-  public BinaryDataSegment(final int chunkSize) {
+    /**
+     * Constructor to create a new, empty <code>BinaryDataSegment</code> object
+     * with the given chunk size.
+     * 
+     * @param chunkSize
+     *            The maximum number of bytes of a chunk.
+     */
+    public BinaryDataSegment(final int chunkSize) {
 
-    super(chunkSize);
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  public final int deserialize(final ByteBuffer src, final int len) {
-
-    resizeBuffer(src.remaining(), false);
-    dataBuffer.rewind();
-
-    transferBytes(src, dataBuffer, len);
-
-    return dataBuffer.limit();
-  }
-
-  /** {@inheritDoc} */
-  public final int append(final ByteBuffer src, final int len) {
-
-    if (src == null) {
-      throw new NullPointerException();
+        super(chunkSize);
     }
 
-    dataBuffer.position(length);
-    resizeBuffer(length + len, true);
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    transferBytes(src, dataBuffer, len);
+    /** {@inheritDoc} */
+    public final int deserialize(final ByteBuffer src, final int len) {
 
-    return dataBuffer.limit();
-  }
+        resizeBuffer(src.remaining(), false);
+        dataBuffer.rewind();
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+        transferBytes(src, dataBuffer, len);
 
-  private final void transferBytes(final ByteBuffer src, final ByteBuffer dst,
-      final int len) {
-
-    if (dst.remaining() < len) {
-      throw new IllegalArgumentException(
-          "The given length must be less or equal than the remaining bytes in the destination buffer.");
+        return dataBuffer.limit();
     }
-    for (int i = 0; i < len; i++) {
-      if (src.hasRemaining() && dst.hasRemaining()) {
-        dst.put(src.get());
-      } else {
-        throw new RuntimeException(
-            "Error by transferring the bytes in this data segment.");
-      }
-    }
-  }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public final int append(final ByteBuffer src, final int len) {
+
+        if (src == null) {
+            throw new NullPointerException();
+        }
+
+        dataBuffer.position(length);
+        resizeBuffer(length + len, true);
+
+        transferBytes(src, dataBuffer, len);
+
+        return dataBuffer.limit();
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    private final void transferBytes(final ByteBuffer src,
+            final ByteBuffer dst, final int len) {
+
+        if (dst.remaining() < len) {
+            throw new IllegalArgumentException(
+                    "The given length must be less or equal than the remaining bytes in the destination buffer.");
+        }
+        for (int i = 0; i < len; i++) {
+            if (src.hasRemaining() && dst.hasRemaining()) {
+                dst.put(src.get());
+            } else {
+                throw new RuntimeException(
+                        "Error by transferring the bytes in this data segment.");
+            }
+        }
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

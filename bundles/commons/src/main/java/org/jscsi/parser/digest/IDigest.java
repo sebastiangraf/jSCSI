@@ -39,33 +39,33 @@ import java.util.zip.Checksum;
  */
 public interface IDigest extends Checksum {
 
-  /**
-   * This method updates the used digest with the values of the given
-   * <code>ByteBuffer</code> object.
-   * 
-   * @param data
-   *          The values used for updating the checksum.
-   * @param off
-   *          Start offset.
-   * @param len
-   *          Length of the used values. (Must be a multiple of <code>4</code>
-   *          bytes)
-   */
-  public void update(final ByteBuffer data, final int off, final int len);
+    /**
+     * This method updates the used digest with the values of the given
+     * <code>ByteBuffer</code> object.
+     * 
+     * @param data
+     *            The values used for updating the checksum.
+     * @param off
+     *            Start offset.
+     * @param len
+     *            Length of the used values. (Must be a multiple of
+     *            <code>4</code> bytes)
+     */
+    public void update(final ByteBuffer data, final int off, final int len);
 
-  /**
-   * This method validates the calculated checksum with the expected checksum.
-   * 
-   * @throws DigestException
-   *           Dismatch between the calculated and expected checksum.
-   */
-  public void validate() throws DigestException;
+    /**
+     * This method validates the calculated checksum with the expected checksum.
+     * 
+     * @throws DigestException
+     *             Dismatch between the calculated and expected checksum.
+     */
+    public void validate() throws DigestException;
 
-  /**
-   * Returns the length in bytes, which are needed to store this digest.
-   * 
-   * @return The number of bytes of this digest.
-   */
-  public int getSize();
+    /**
+     * Returns the length in bytes, which are needed to store this digest.
+     * 
+     * @return The number of bytes of this digest.
+     */
+    public int getSize();
 
 }

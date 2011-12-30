@@ -46,91 +46,93 @@ import org.junit.Test;
  */
 public class AdditionalHeaderSegmentTest extends ProtocolDataUnitTest {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** Specific field of the TEST_CASE_1. */
-  private static final String TEST_CASE_1_SPECIFIC_FIELD = "00 CA 25 26 C4";
+    /** Specific field of the TEST_CASE_1. */
+    private static final String TEST_CASE_1_SPECIFIC_FIELD = "00 CA 25 26 C4";
 
-  /**
-   * Valid Test Case with the following expected values. <blockquote> AHSLength
-   * = <code>0x0005</code><br/> AHSType =
-   * <code>AdditionalHeaderSegmentType.EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH</code>
-   * <br/> Expected Read-Data Length = <code>0xCA2526C4</code><br/>
-   * </blockquote>
-   */
-  private static final String TEST_CASE_1 = "00 05 02" + " "
-      + TEST_CASE_1_SPECIFIC_FIELD;
+    /**
+     * Valid Test Case with the following expected values. <blockquote>
+     * AHSLength = <code>0x0005</code><br/>
+     * AHSType =
+     * <code>AdditionalHeaderSegmentType.EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH</code>
+     * <br/>
+     * Expected Read-Data Length = <code>0xCA2526C4</code><br/>
+     * </blockquote>
+     */
+    private static final String TEST_CASE_1 = "00 05 02" + " "
+            + TEST_CASE_1_SPECIFIC_FIELD;
 
-  private AdditionalHeaderSegment additionalHeaderSegment;
+    private AdditionalHeaderSegment additionalHeaderSegment;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  @Before
-  public final void setUp() {
+    @Before
+    public final void setUp() {
 
-    additionalHeaderSegment = new AdditionalHeaderSegment();
-  }
+        additionalHeaderSegment = new AdditionalHeaderSegment();
+    }
 
-  @After
-  public final void tearDown() {
+    @After
+    public final void tearDown() {
 
-    additionalHeaderSegment = null;
-  }
+        additionalHeaderSegment = null;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * This test case validates the parsing process.
-   * 
-   * @throws IOException
-   *           This exception should be never thrown.
-   * @throws InternetSCSIException
-   *           This exception should be never thrown.
-   */
-  @Test
-  public final void testDeserialize1() throws InternetSCSIException {
+    /**
+     * This test case validates the parsing process.
+     * 
+     * @throws IOException
+     *             This exception should be never thrown.
+     * @throws InternetSCSIException
+     *             This exception should be never thrown.
+     */
+    @Test
+    public final void testDeserialize1() throws InternetSCSIException {
 
-    additionalHeaderSegment.deserialize(WiresharkMessageParser
-        .parseToByteBuffer(TEST_CASE_1), 0);
+        additionalHeaderSegment.deserialize(
+                WiresharkMessageParser.parseToByteBuffer(TEST_CASE_1), 0);
 
-    ByteBuffer expectedReadDataLength = WiresharkMessageParser
-        .parseToByteBuffer(TEST_CASE_1_SPECIFIC_FIELD);
+        ByteBuffer expectedReadDataLength = WiresharkMessageParser
+                .parseToByteBuffer(TEST_CASE_1_SPECIFIC_FIELD);
 
-    assertEquals((short) 0x0005, additionalHeaderSegment.getLength());
-    assertEquals(
-        AdditionalHeaderSegmentType.EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH,
-        additionalHeaderSegment.getType());
-    assertTrue(expectedReadDataLength.equals(additionalHeaderSegment
-        .getSpecificField()));
+        assertEquals((short) 0x0005, additionalHeaderSegment.getLength());
+        assertEquals(
+                AdditionalHeaderSegmentType.EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH,
+                additionalHeaderSegment.getType());
+        assertTrue(expectedReadDataLength.equals(additionalHeaderSegment
+                .getSpecificField()));
 
-  }
+    }
 
-  /**
-   * This test case validates the serialization process.
-   * 
-   * @throws InternetSCSIException
-   * @throws InternetSCSIException
-   *           This exception should be never thrown.
-   * @throws IOException
-   *           This exception should be never thrown.
-   */
-  @Test
-  public final void testSerialize1() throws InternetSCSIException {
+    /**
+     * This test case validates the serialization process.
+     * 
+     * @throws InternetSCSIException
+     * @throws InternetSCSIException
+     *             This exception should be never thrown.
+     * @throws IOException
+     *             This exception should be never thrown.
+     */
+    @Test
+    public final void testSerialize1() throws InternetSCSIException {
 
-    ByteBuffer expectedResult = WiresharkMessageParser
-        .parseToByteBuffer(TEST_CASE_1);
-    additionalHeaderSegment.deserialize(expectedResult, 0);
-    ByteBuffer testSerialize = ByteBuffer.allocate(8);
-    assertEquals(8, additionalHeaderSegment.serialize(testSerialize, 0));
-    assertTrue(expectedResult.equals(testSerialize));
-  }
+        ByteBuffer expectedResult = WiresharkMessageParser
+                .parseToByteBuffer(TEST_CASE_1);
+        additionalHeaderSegment.deserialize(expectedResult, 0);
+        ByteBuffer testSerialize = ByteBuffer.allocate(8);
+        assertEquals(8, additionalHeaderSegment.serialize(testSerialize, 0));
+        assertTrue(expectedResult.equals(testSerialize));
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

@@ -36,48 +36,48 @@ package org.jscsi.parser.exception;
  */
 public class OperationalTextKeyException extends InternetSCSIException {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The Serial Version ID. */
-  private static final long serialVersionUID = 1L;
+    /** The Serial Version ID. */
+    private static final long serialVersionUID = 1L;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructs a new exception with null as its detail message.
-   */
-  public OperationalTextKeyException() {
+    /**
+     * Constructs a new exception with null as its detail message.
+     */
+    public OperationalTextKeyException() {
 
-    super();
-  }
+        super();
+    }
 
-  /**
-   * Constructs a new exception with the specified detail message.
-   * 
-   * @param msg
-   *          the detail message. The detail message is saved for later
-   *          retrieval by the Throwable.getMessage() method.
-   */
-  public OperationalTextKeyException(final String msg) {
+    /**
+     * Constructs a new exception with the specified detail message.
+     * 
+     * @param msg
+     *            the detail message. The detail message is saved for later
+     *            retrieval by the Throwable.getMessage() method.
+     */
+    public OperationalTextKeyException(final String msg) {
 
-    super(msg);
-  }
+        super(msg);
+    }
 
-  /**
-   * Constructs a new exception with the specified exception.
-   * 
-   * @param e
-   *          the detail exception.
-   */
-  public OperationalTextKeyException(final Exception e) {
+    /**
+     * Constructs a new exception with the specified exception.
+     * 
+     * @param e
+     *            the detail exception.
+     */
+    public OperationalTextKeyException(final Exception e) {
 
-    super(e);
-  }
+        super(e);
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 }

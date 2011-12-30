@@ -42,31 +42,31 @@ import org.junit.Test;
  */
 public class LogoutRequestParserTest extends ProtocolDataUnitTest {
 
-  /**
-   * This Test Case violates the iSCSI Protocol Standard (RFC3720) and throws an
-   * InternetSCSIException. The reason is, that the CID field must be zero, if
-   * close session is requested.
-   */
-  private static final String TEST_CASE_1 = "46 80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
-      + "00 01 a2 cc 00 01 00 00 00 01 a2 cc 00 01 a2 cd "
-      + "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00";
+    /**
+     * This Test Case violates the iSCSI Protocol Standard (RFC3720) and throws
+     * an InternetSCSIException. The reason is, that the CID field must be zero,
+     * if close session is requested.
+     */
+    private static final String TEST_CASE_1 = "46 80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+            + "00 01 a2 cc 00 01 00 00 00 01 a2 cc 00 01 a2 cd "
+            + "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00";
 
-  /**
-   * This test case validates the recognition of an false Protocol Data Unit.
-   * 
-   * @throws IOException
-   *           This exception should be never thrown.
-   */
-  @Test
-  public void testDeserialize1() throws IOException, DigestException {
+    /**
+     * This test case validates the recognition of an false Protocol Data Unit.
+     * 
+     * @throws IOException
+     *             This exception should be never thrown.
+     */
+    @Test
+    public void testDeserialize1() throws IOException, DigestException {
 
-    try {
-      super.setUp(TEST_CASE_1);
-      // should never happen
-      assertTrue(false);
-    } catch (InternetSCSIException e) {
-      assertTrue(true);
+        try {
+            super.setUp(TEST_CASE_1);
+            // should never happen
+            assertTrue(false);
+        } catch (InternetSCSIException e) {
+            assertTrue(true);
+        }
     }
-  }
 
 }

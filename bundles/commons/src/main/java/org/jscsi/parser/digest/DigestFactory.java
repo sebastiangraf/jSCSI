@@ -27,51 +27,52 @@
 package org.jscsi.parser.digest;
 
 /**
- * <h1>DigestFactory</h1> <p/> A factory to create instances of the supported
- * digest algorithms.
+ * <h1>DigestFactory</h1>
+ * <p/>
+ * A factory to create instances of the supported digest algorithms.
  * 
  * @author Volker Wildi
  */
 public final class DigestFactory {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create new, empty <code>DigestFactory</code> instance.
-   */
-  public DigestFactory() {
+    /**
+     * Constructor to create new, empty <code>DigestFactory</code> instance.
+     */
+    public DigestFactory() {
 
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /**
-   * This method creates an <code>IDigest</code> instance of the given type.
-   * 
-   * @param digestName
-   *          The name of the digest type.
-   * @return The <code>IDigest</code> instance of the given type.
-   */
-  public final IDigest create(final String digestName) {
-
-    IDigest digest;
-    if (digestName.compareTo("None") == 0) {
-      digest = new NullDigest();
-    } else if (digestName.compareTo("CRC32C") == 0) {
-      digest = new CRC32CDigest();
-    } else {
-      throw new IllegalArgumentException("Digest Type (" + digestName
-          + ") is unknown.");
     }
 
-    return digest;
-  }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /**
+     * This method creates an <code>IDigest</code> instance of the given type.
+     * 
+     * @param digestName
+     *            The name of the digest type.
+     * @return The <code>IDigest</code> instance of the given type.
+     */
+    public final IDigest create(final String digestName) {
+
+        IDigest digest;
+        if (digestName.compareTo("None") == 0) {
+            digest = new NullDigest();
+        } else if (digestName.compareTo("CRC32C") == 0) {
+            digest = new CRC32CDigest();
+        } else {
+            throw new IllegalArgumentException("Digest Type (" + digestName
+                    + ") is unknown.");
+        }
+
+        return digest;
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

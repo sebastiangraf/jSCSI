@@ -79,142 +79,143 @@ import java.util.Map;
  */
 public enum LoginStatus {
 
-  /**
-   * Login is proceeding OK.
-   * <p>
-   * If the response <code>T</code> bit is <code>1</code> in both the request
-   * and the matching response, and the <code>NSG</code> is
-   * <code>FullFeaturePhase</code> in both the request and the matching
-   * response, the Login Phase is finished and the initiator may proceed to
-   * issue SCSI commands.
-   */
-  SUCCESS((short) 0x0000),
+    /**
+     * Login is proceeding OK.
+     * <p>
+     * If the response <code>T</code> bit is <code>1</code> in both the request
+     * and the matching response, and the <code>NSG</code> is
+     * <code>FullFeaturePhase</code> in both the request and the matching
+     * response, the Login Phase is finished and the initiator may proceed to
+     * issue SCSI commands.
+     */
+    SUCCESS((short) 0x0000),
 
-  /**
-   * The requested iSCSI Target Name (ITN) has temporarily moved to the address
-   * provided.
-   */
-  TARGET_MOVED_TEMPORARILY((short) 0x0101),
+    /**
+     * The requested iSCSI Target Name (ITN) has temporarily moved to the
+     * address provided.
+     */
+    TARGET_MOVED_TEMPORARILY((short) 0x0101),
 
-  /**
-   * The requested ITN has permanently moved permanently to the address
-   * provided.
-   */
-  TARGET_MOVED((short) 0x0102),
+    /**
+     * The requested ITN has permanently moved permanently to the address
+     * provided.
+     */
+    TARGET_MOVED((short) 0x0102),
 
-  /**
-   * Miscellaneous iSCSI initiator errors.
-   */
-  INITIATOR_ERROR((short) 0x0200),
+    /**
+     * Miscellaneous iSCSI initiator errors.
+     */
+    INITIATOR_ERROR((short) 0x0200),
 
-  /**
-   * The initiator could not be successfully authenticated or target
-   * authentication is not supported.
-   */
-  AUTHENTICATION_FAILURE((short) 0x0201),
+    /**
+     * The initiator could not be successfully authenticated or target
+     * authentication is not supported.
+     */
+    AUTHENTICATION_FAILURE((short) 0x0201),
 
-  /**
-   * The initiator is not allowed access to the given target.
-   */
-  AUTHORIZATION_FAILURE((short) 0x0202),
+    /**
+     * The initiator is not allowed access to the given target.
+     */
+    AUTHORIZATION_FAILURE((short) 0x0202),
 
-  /**
-   * The requested ITN does not exist at this address.
-   */
-  NOT_FOUND((short) 0x0203),
+    /**
+     * The requested ITN does not exist at this address.
+     */
+    NOT_FOUND((short) 0x0203),
 
-  /**
-   * The requested ITN has been removed and no forwarding address is provided.
-   */
-  TARGET_REMOVED((short) 0x0204),
+    /**
+     * The requested ITN has been removed and no forwarding address is provided.
+     */
+    TARGET_REMOVED((short) 0x0204),
 
-  /**
-   * The requested iSCSI version range is not supported by the target.
-   */
-  UNSUPPORTED_VERSION((short) 0x0205),
+    /**
+     * The requested iSCSI version range is not supported by the target.
+     */
+    UNSUPPORTED_VERSION((short) 0x0205),
 
-  /**
-   * Too many connections on this SSID.
-   */
-  TOO_MANY_CONNECTIONS((short) 0x0206),
+    /**
+     * Too many connections on this SSID.
+     */
+    TOO_MANY_CONNECTIONS((short) 0x0206),
 
-  /**
-   * Missing parameters (e.g., iSCSI Initiator and/or Target Name).
-   */
-  MISSING_PARAMETER((short) 0x0207),
+    /**
+     * Missing parameters (e.g., iSCSI Initiator and/or Target Name).
+     */
+    MISSING_PARAMETER((short) 0x0207),
 
-  /**
-   * Target does not support session spanning to this connection (address).
-   */
-  CANNOT_INCLUDE_IN_SESSION((short) 0x0208),
+    /**
+     * Target does not support session spanning to this connection (address).
+     */
+    CANNOT_INCLUDE_IN_SESSION((short) 0x0208),
 
-  /**
-   * Target does not support this type of of session or not from this Initiator.
-   */
-  SESSION_TYPE_NOT_SUPPORTED((short) 0x0209),
+    /**
+     * Target does not support this type of of session or not from this
+     * Initiator.
+     */
+    SESSION_TYPE_NOT_SUPPORTED((short) 0x0209),
 
-  /**
-   * Attempt to add a connection to a non-existent session.
-   */
-  SESSION_DOSE_NOT_EXIST((short) 0x020A),
+    /**
+     * Attempt to add a connection to a non-existent session.
+     */
+    SESSION_DOSE_NOT_EXIST((short) 0x020A),
 
-  /**
-   * Invalid Request type during Login.
-   */
-  INVALID_DURING_LOGIN((short) 0x020B),
+    /**
+     * Invalid Request type during Login.
+     */
+    INVALID_DURING_LOGIN((short) 0x020B),
 
-  /**
-   * Target hardware or software error.
-   */
-  TARGET_ERROR((short) 0x0300),
+    /**
+     * Target hardware or software error.
+     */
+    TARGET_ERROR((short) 0x0300),
 
-  /**
-   * The iSCSI service or target is not currently operational.
-   */
-  SERVICE_UNAVAILABLE((short) 0x0301),
+    /**
+     * The iSCSI service or target is not currently operational.
+     */
+    SERVICE_UNAVAILABLE((short) 0x0301),
 
-  /**
-   * The target has insufficient session, connection, or other resources.
-   */
-  OUT_OF_RESOURCES((short) 0x0302);
+    /**
+     * The target has insufficient session, connection, or other resources.
+     */
+    OUT_OF_RESOURCES((short) 0x0302);
 
-  private final short value;
+    private final short value;
 
-  private static Map<Short, LoginStatus> mapping;
+    private static Map<Short, LoginStatus> mapping;
 
-  static {
-    LoginStatus.mapping = new HashMap<Short, LoginStatus>();
-    for (LoginStatus s : values()) {
-      LoginStatus.mapping.put(s.value, s);
+    static {
+        LoginStatus.mapping = new HashMap<Short, LoginStatus>();
+        for (LoginStatus s : values()) {
+            LoginStatus.mapping.put(s.value, s);
+        }
     }
-  }
 
-  private LoginStatus(final short newValue) {
+    private LoginStatus(final short newValue) {
 
-    value = newValue;
-  }
+        value = newValue;
+    }
 
-  /**
-   * Returns the value of this enumeration.
-   * 
-   * @return The value of this enumeration.
-   */
-  public final short value() {
+    /**
+     * Returns the value of this enumeration.
+     * 
+     * @return The value of this enumeration.
+     */
+    public final short value() {
 
-    return value;
-  }
+        return value;
+    }
 
-  /**
-   * Returns the constant defined for the given <code>value</code>.
-   * 
-   * @param value
-   *          The value to search for.
-   * @return The constant defined for the given <code>value</code>. Or
-   *         <code>null</code>, if this value is not defined by this
-   *         enumeration.
-   */
-  public static final LoginStatus valueOf(final short value) {
+    /**
+     * Returns the constant defined for the given <code>value</code>.
+     * 
+     * @param value
+     *            The value to search for.
+     * @return The constant defined for the given <code>value</code>. Or
+     *         <code>null</code>, if this value is not defined by this
+     *         enumeration.
+     */
+    public static final LoginStatus valueOf(final short value) {
 
-    return LoginStatus.mapping.get(value);
-  }
+        return LoginStatus.mapping.get(value);
+    }
 }

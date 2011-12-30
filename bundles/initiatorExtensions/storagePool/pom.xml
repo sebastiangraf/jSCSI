@@ -7,7 +7,7 @@
   	</parent>
 
  	<artifactId>storagepool</artifactId>
- 	<name>storagepool</name>
+ 	<name>jSCSI-storagepool</name>
  	<packaging>jar</packaging>
   
 	<dependencies>

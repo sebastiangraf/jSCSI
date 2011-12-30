@@ -43,141 +43,147 @@ import org.jscsi.initiator.Initiator;
  */
 public class JSCSIDevice implements Device {
 
-  private final Initiator initiator;
+    private final Initiator initiator;
 
-  private final String target;
+    private final String target;
 
-  private int blockSize = -1;
+    private int blockSize = -1;
 
-  private long blockCount = -1;
+    private long blockCount = -1;
 
-  /** The Logger interface. */
-  private static final Log LOGGER = LogFactory.getLog(JSCSIDevice.class);
+    /** The Logger interface. */
+    private static final Log LOGGER = LogFactory.getLog(JSCSIDevice.class);
 
-  /**
-   * Constructor to create an JSCSIDevice. The Device has to be initialized
-   * before it can be used.
-   * 
-   * @param targetName
-   *          name of the target to connect to
-   * @throws Exception
-   *           if any error occurs
-   */
-  public JSCSIDevice(final String targetName) throws Exception {
+    /**
+     * Constructor to create an JSCSIDevice. The Device has to be initialized
+     * before it can be used.
+     * 
+     * @param targetName
+     *            name of the target to connect to
+     * @throws Exception
+     *             if any error occurs
+     */
+    public JSCSIDevice(final String targetName) throws Exception {
 
-    initiator = new Initiator(Configuration.create());
-    target = targetName;
-  }
-
-  /** {@inheritDoc} */
-  public void close() throws Exception {
-
-    if (initiator == null) {
-      throw new NullPointerException();
+        initiator = new Initiator(Configuration.create());
+        target = targetName;
     }
 
-    initiator.closeSession(target);
-    blockSize = -1;
-    blockCount = -1;
-    LOGGER.info("Closed " + getName() + ".");
-  }
+    /** {@inheritDoc} */
+    public void close() throws Exception {
 
-  /** {@inheritDoc} */
-  public int getBlockSize() {
+        if (initiator == null) {
+            throw new NullPointerException();
+        }
 
-    if (blockSize == -1) {
-      throw new IllegalStateException("You first have to open the Device!");
+        initiator.closeSession(target);
+        blockSize = -1;
+        blockCount = -1;
+        LOGGER.info("Closed " + getName() + ".");
     }
 
-    return blockSize;
-  }
+    /** {@inheritDoc} */
+    public int getBlockSize() {
 
-  /** {@inheritDoc} */
-  public String getName() {
+        if (blockSize == -1) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
 
-    return "JSCSIDevice(" + target + ")";
-  }
-
-  /** {@inheritDoc} */
-  public long getBlockCount() {
-
-    if (blockCount == -1) {
-      throw new IllegalStateException("You first have to open the Device!");
+        return blockSize;
     }
 
-    return blockCount;
-  }
+    /** {@inheritDoc} */
+    public String getName() {
 
-  /** {@inheritDoc} */
-  public void open() throws Exception {
-
-    if (blockCount != -1) {
-      throw new IllegalStateException("JSCSIDevice is already opened!");
+        return "JSCSIDevice(" + target + ")";
     }
 
-    initiator.createSession(target);
-    blockSize = (int) initiator.getBlockSize(target);
-    blockCount = initiator.getCapacity(target);
+    /** {@inheritDoc} */
+    public long getBlockCount() {
 
-    LOGGER.info("Initialized " + getName() + ".");
-  }
+        if (blockCount == -1) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
 
-  /** {@inheritDoc} */
-  public void read(final long address, final byte[] data) throws Exception {
-
-    if (blockCount == -1) {
-      throw new IllegalStateException("You first have to open the Device!");
+        return blockCount;
     }
 
-    long blocks = data.length / blockSize;
+    /** {@inheritDoc} */
+    public void open() throws Exception {
 
-    if (address < 0 || address + blocks > blockCount) {
-      long adr;
-      if (address < 0) {
-        adr = address;
-      } else {
-        adr = address + blocks - 1;
-      }
-      throw new IllegalArgumentException("Address " + adr + " out of range!");
+        if (blockCount != -1) {
+            throw new IllegalStateException("JSCSIDevice is already opened!");
+        }
+
+        initiator.createSession(target);
+        blockSize = (int) initiator.getBlockSize(target);
+        blockCount = initiator.getCapacity(target);
+
+        LOGGER.info("Initialized " + getName() + ".");
     }
 
-    if (data.length % blockSize != 0) {
-      throw new IllegalArgumentException(
-          "Number of bytes is not a multiple of the blocksize!");
+    /** {@inheritDoc} */
+    public void read(final long address, final byte[] data) throws Exception {
+
+        if (blockCount == -1) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
+
+        long blocks = data.length / blockSize;
+
+        if (address < 0 || address + blocks > blockCount) {
+            long adr;
+            if (address < 0) {
+                adr = address;
+            } else {
+                adr = address + blocks - 1;
+            }
+            throw new IllegalArgumentException("Address " + adr
+                    + " out of range!");
+        }
+
+        if (data.length % blockSize != 0) {
+            throw new IllegalArgumentException(
+                    "Number of bytes is not a multiple of the blocksize!");
+        }
+
+        final ByteBuffer dst = ByteBuffer.allocate(data.length);
+        initiator.read(this, target, dst, (int) address, data.length);
+        dst.rewind();
+        dst.get(data);
     }
 
-    final ByteBuffer dst = ByteBuffer.allocate(data.length);
-    initiator.read(this, target, dst, (int) address, data.length);
-    dst.rewind();
-    dst.get(data);
-  }
+    /** {@inheritDoc} */
+    public void write(final long address, final byte[] data) throws Exception {
 
-  /** {@inheritDoc} */
-  public void write(final long address, final byte[] data) throws Exception {
+        if (blockCount == -1) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
 
-    if (blockCount == -1) {
-      throw new IllegalStateException("You first have to open the Device!");
+        long blocks = data.length / blockSize;
+
+        if (address < 0 || address + blocks > blockCount) {
+            long adr;
+            if (address < 0) {
+                adr = address;
+            } else {
+                adr = address + blocks - 1;
+            }
+            throw new IllegalArgumentException("Address " + adr
+                    + " out of range.");
+        }
+
+        if (data.length % blockSize != 0) {
+            throw new IllegalArgumentException(
+                    "Number of bytes is not a multiple of the blocksize!");
+        }
+
+        final ByteBuffer src = ByteBuffer.wrap(data);
+        initiator.write(this, target, src, (int) address, data.length);
     }
-
-    long blocks = data.length / blockSize;
-
-    if (address < 0 || address + blocks > blockCount) {
-      long adr;
-      if (address < 0) {
-        adr = address;
-      } else {
-        adr = address + blocks - 1;
-      }
-      throw new IllegalArgumentException("Address " + adr + " out of range.");
-    }
-
-    if (data.length % blockSize != 0) {
-      throw new IllegalArgumentException(
-          "Number of bytes is not a multiple of the blocksize!");
-    }
-
-    final ByteBuffer src = ByteBuffer.wrap(data);
-    initiator.write(this, target, src, (int) address, data.length);
-  }
 
 }

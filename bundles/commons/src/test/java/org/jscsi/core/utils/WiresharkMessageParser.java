@@ -38,79 +38,79 @@ import org.jscsi.parser.Constants;
  */
 public final class WiresharkMessageParser {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The radix of hexadecimal numbers. */
-  private static final int HEX_RADIX = 16;
+    /** The radix of hexadecimal numbers. */
+    private static final int HEX_RADIX = 16;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * To disable the creation of such an object, declare the constructor as
-   * private.
-   */
-  private WiresharkMessageParser() {
+    /**
+     * To disable the creation of such an object, declare the constructor as
+     * private.
+     */
+    private WiresharkMessageParser() {
 
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /**
-   * Parses a given iSCSI message from wireshark to an integer array.
-   * 
-   * @param str
-   *          The given iSCSI message from wireshark
-   * @return The parsed integer array
-   */
-  public static int[] parseToIntArray(final String str) {
-
-    final String[] tokens = str.trim().split(" ");
-    final int n = tokens.length;
-
-    final int[] numbers = new int[n / Constants.BYTES_PER_INT];
-    for (int i = 0; i < n; i++) {
-      numbers[i / Constants.BYTES_PER_INT] <<= Constants.ONE_BYTE_SHIFT;
-      numbers[i / Constants.BYTES_PER_INT] |= Integer.parseInt(tokens[i],
-          HEX_RADIX);
     }
 
-    return numbers;
-  }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Parses a given iSCSI message from wireshark to a <code>ByteBuffer</code>.
-   * 
-   * @param str
-   *          The given iSCSI message from wireshark
-   * @return The parsed integer array
-   */
-  public static ByteBuffer parseToByteBuffer(final String str) {
+    /**
+     * Parses a given iSCSI message from wireshark to an integer array.
+     * 
+     * @param str
+     *            The given iSCSI message from wireshark
+     * @return The parsed integer array
+     */
+    public static int[] parseToIntArray(final String str) {
 
-    final String[] tokens = str.trim().split(" ");
-    int n = tokens.length;
+        final String[] tokens = str.trim().split(" ");
+        final int n = tokens.length;
 
-    if (str.equals("")) {
-      n--;
+        final int[] numbers = new int[n / Constants.BYTES_PER_INT];
+        for (int i = 0; i < n; i++) {
+            numbers[i / Constants.BYTES_PER_INT] <<= Constants.ONE_BYTE_SHIFT;
+            numbers[i / Constants.BYTES_PER_INT] |= Integer.parseInt(tokens[i],
+                    HEX_RADIX);
+        }
+
+        return numbers;
     }
 
-    final ByteBuffer numbers = ByteBuffer.allocate(n);
-    short val = 0;
-    for (int i = 0; i < n; i++) {
-      val = Short.parseShort(tokens[i], HEX_RADIX);
-      numbers.put((byte) val);
+    /**
+     * Parses a given iSCSI message from wireshark to a <code>ByteBuffer</code>.
+     * 
+     * @param str
+     *            The given iSCSI message from wireshark
+     * @return The parsed integer array
+     */
+    public static ByteBuffer parseToByteBuffer(final String str) {
+
+        final String[] tokens = str.trim().split(" ");
+        int n = tokens.length;
+
+        if (str.equals("")) {
+            n--;
+        }
+
+        final ByteBuffer numbers = ByteBuffer.allocate(n);
+        short val = 0;
+        for (int i = 0; i < n; i++) {
+            val = Short.parseShort(tokens[i], HEX_RADIX);
+            numbers.put((byte) val);
+        }
+
+        numbers.rewind();
+
+        return numbers;
     }
 
-    numbers.rewind();
-
-    return numbers;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

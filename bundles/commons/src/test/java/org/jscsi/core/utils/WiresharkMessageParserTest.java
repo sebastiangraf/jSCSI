@@ -41,62 +41,62 @@ import org.junit.Test;
  */
 public class WiresharkMessageParserTest {
 
-  /** Testing of a validate parsing process of a single line message. */
-  @Test
-  public void testParseSingleLineMessage() {
+    /** Testing of a validate parsing process of a single line message. */
+    @Test
+    public void testParseSingleLineMessage() {
 
-    String str = "43 00 02 02";
-    int result = 1124073986;
+        String str = "43 00 02 02";
+        int result = 1124073986;
 
-    int[] test = WiresharkMessageParser.parseToIntArray(str);
-    assertEquals(test[0], result);
-  }
-
-  /** Testing of a validate parsing process of multiple lines message. */
-  @Test
-  public void testParseMultiLineMessage() {
-
-    String str = "43 00 02 02 69 74 69 61";
-    int[] result = { 1124073986, 1769236833 };
-
-    int[] test = WiresharkMessageParser.parseToIntArray(str);
-
-    assertEquals(result.length, test.length);
-    for (int i = 0; i < test.length; i++) {
-      assertEquals(test[i], result[i]);
+        int[] test = WiresharkMessageParser.parseToIntArray(str);
+        assertEquals(test[0], result);
     }
-  }
 
-  /** Testing of a validate parsing process of a single line message. */
-  @Test
-  public void testParseSingleLineMessageToByteBuffer() {
+    /** Testing of a validate parsing process of multiple lines message. */
+    @Test
+    public void testParseMultiLineMessage() {
 
-    String str = "43 00 02 02";
+        String str = "43 00 02 02 69 74 69 61";
+        int[] result = { 1124073986, 1769236833 };
 
-    int result = 1124073986;
-    ByteBuffer resultBuffer = ByteBuffer.allocate(Constants.BYTES_PER_INT);
-    resultBuffer.putInt(result).rewind();
+        int[] test = WiresharkMessageParser.parseToIntArray(str);
 
-    ByteBuffer test = WiresharkMessageParser.parseToByteBuffer(str);
-    assertTrue(resultBuffer.equals(test));
-  }
-
-  /** Testing of a validate parsing process of multiple lines message. */
-  @Test
-  public void testParseMultiLineMessageToByteBuffer() {
-
-    String str = "43 00 02 02 69 74 69 61";
-
-    int[] result = { 1124073986, 1769236833 };
-    ByteBuffer resultBuffer = ByteBuffer.allocate(result.length
-        * Constants.BYTES_PER_INT);
-
-    for (int n : result) {
-      resultBuffer.putInt(n);
+        assertEquals(result.length, test.length);
+        for (int i = 0; i < test.length; i++) {
+            assertEquals(test[i], result[i]);
+        }
     }
-    resultBuffer.rewind();
 
-    ByteBuffer test = WiresharkMessageParser.parseToByteBuffer(str);
-    assertTrue(resultBuffer.equals(test));
-  }
+    /** Testing of a validate parsing process of a single line message. */
+    @Test
+    public void testParseSingleLineMessageToByteBuffer() {
+
+        String str = "43 00 02 02";
+
+        int result = 1124073986;
+        ByteBuffer resultBuffer = ByteBuffer.allocate(Constants.BYTES_PER_INT);
+        resultBuffer.putInt(result).rewind();
+
+        ByteBuffer test = WiresharkMessageParser.parseToByteBuffer(str);
+        assertTrue(resultBuffer.equals(test));
+    }
+
+    /** Testing of a validate parsing process of multiple lines message. */
+    @Test
+    public void testParseMultiLineMessageToByteBuffer() {
+
+        String str = "43 00 02 02 69 74 69 61";
+
+        int[] result = { 1124073986, 1769236833 };
+        ByteBuffer resultBuffer = ByteBuffer.allocate(result.length
+                * Constants.BYTES_PER_INT);
+
+        for (int n : result) {
+            resultBuffer.putInt(n);
+        }
+        resultBuffer.rewind();
+
+        ByteBuffer test = WiresharkMessageParser.parseToByteBuffer(str);
+        assertTrue(resultBuffer.equals(test));
+    }
 }

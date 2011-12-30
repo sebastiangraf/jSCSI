@@ -42,124 +42,128 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 public class WhiskasDevice implements Device {
 
-  private final Device device;
+    private final Device device;
 
-  private int blockSize = -1;
+    private int blockSize = -1;
 
-  private long blockCount = -1;
+    private long blockCount = -1;
 
-  private SocketHubAppender sha;
+    private SocketHubAppender sha;
 
-  private Logger logger;
+    private Logger logger;
 
-  /**
-   * Constructor to create an WhiskasDevice. The Device has to be initialized
-   * before it can be used.
-   * 
-   * @param initDevice
-   *          device to use
-   * @throws Exception
-   *           if any error occurs
-   */
-  public WhiskasDevice(final Device initDevice) throws Exception {
+    /**
+     * Constructor to create an WhiskasDevice. The Device has to be initialized
+     * before it can be used.
+     * 
+     * @param initDevice
+     *            device to use
+     * @throws Exception
+     *             if any error occurs
+     */
+    public WhiskasDevice(final Device initDevice) throws Exception {
 
-    device = initDevice;
-  }
-
-  /** {@inheritDoc} */
-  public void close() throws Exception {
-
-    if (blockCount == -1) {
-      throw new NullPointerException();
+        device = initDevice;
     }
 
-    /* Generate teardown message for Whiskas */
-    String logMessage = "teardown " + device.getName();
-    LoggingEvent logEvent = new LoggingEvent(Logger.class.getName(), logger,
-        Level.ALL, logMessage, null);
-    sha.append(logEvent);
+    /** {@inheritDoc} */
+    public void close() throws Exception {
 
-    blockSize = -1;
-    blockCount = -1;
+        if (blockCount == -1) {
+            throw new NullPointerException();
+        }
 
-    sha.close();
-  }
+        /* Generate teardown message for Whiskas */
+        String logMessage = "teardown " + device.getName();
+        LoggingEvent logEvent = new LoggingEvent(Logger.class.getName(),
+                logger, Level.ALL, logMessage, null);
+        sha.append(logEvent);
 
-  /** {@inheritDoc} */
-  public int getBlockSize() {
+        blockSize = -1;
+        blockCount = -1;
 
-    if (blockSize == -1) {
-      throw new IllegalStateException("You first have to open the Device!");
+        sha.close();
     }
 
-    return blockSize;
-  }
+    /** {@inheritDoc} */
+    public int getBlockSize() {
 
-  /** {@inheritDoc} */
-  public String getName() {
+        if (blockSize == -1) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
 
-    return "WhiskasDevice(" + device.getName() + ")";
-  }
-
-  /** {@inheritDoc} */
-  public long getBlockCount() {
-
-    if (blockCount == -1) {
-      throw new IllegalStateException("You first have to open the Device!");
+        return blockSize;
     }
 
-    return blockCount;
-  }
+    /** {@inheritDoc} */
+    public String getName() {
 
-  /** {@inheritDoc} */
-  public void open() throws Exception {
-
-    if (blockCount != -1) {
-      throw new IllegalStateException("WhiskasDevice is already opened!");
+        return "WhiskasDevice(" + device.getName() + ")";
     }
 
-    device.open();
+    /** {@inheritDoc} */
+    public long getBlockCount() {
 
-    sha = LogAppender.getInstance();
-    logger = Logger.getLogger(WhiskasDevice.class);
+        if (blockCount == -1) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
 
-    blockSize = device.getBlockSize();
-    blockCount = device.getBlockCount();
-  }
-
-  /** {@inheritDoc} */
-  public void read(final long address, final byte[] data) throws Exception {
-
-    if (blockCount == -1) {
-      throw new IllegalStateException("You first have to open the Device!");
+        return blockCount;
     }
 
-    /* Generate log message for Whiskas */
-    String logMessage = device.getName() + ",r," + address + "," + data.length
-        / device.getBlockSize();
-    LoggingEvent logEvent = new LoggingEvent(Logger.class.getName(), logger,
-        Level.ALL, logMessage, null);
-    sha.append(logEvent);
+    /** {@inheritDoc} */
+    public void open() throws Exception {
 
-    device.read(address, data);
-  }
+        if (blockCount != -1) {
+            throw new IllegalStateException("WhiskasDevice is already opened!");
+        }
 
-  /** {@inheritDoc} */
-  public void write(final long address, final byte[] data) throws Exception {
+        device.open();
 
-    if (blockCount == -1) {
-      throw new IllegalStateException("You first have to open the Device!");
+        sha = LogAppender.getInstance();
+        logger = Logger.getLogger(WhiskasDevice.class);
+
+        blockSize = device.getBlockSize();
+        blockCount = device.getBlockCount();
     }
 
-    /* Generate log message for Whiskas */
-    String logMessage = device.getName() + ",w," + address + "," + data.length
-        / device.getBlockSize();
-    LoggingEvent logEvent = new LoggingEvent(Logger.class.getName(), logger,
-        Level.ALL, logMessage, null);
-    sha.append(logEvent);
+    /** {@inheritDoc} */
+    public void read(final long address, final byte[] data) throws Exception {
 
-    device.write(address, data);
-  }
+        if (blockCount == -1) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
+
+        /* Generate log message for Whiskas */
+        String logMessage = device.getName() + ",r," + address + ","
+                + data.length / device.getBlockSize();
+        LoggingEvent logEvent = new LoggingEvent(Logger.class.getName(),
+                logger, Level.ALL, logMessage, null);
+        sha.append(logEvent);
+
+        device.read(address, data);
+    }
+
+    /** {@inheritDoc} */
+    public void write(final long address, final byte[] data) throws Exception {
+
+        if (blockCount == -1) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
+
+        /* Generate log message for Whiskas */
+        String logMessage = device.getName() + ",w," + address + ","
+                + data.length / device.getBlockSize();
+        LoggingEvent logEvent = new LoggingEvent(Logger.class.getName(),
+                logger, Level.ALL, logMessage, null);
+        sha.append(logEvent);
+
+        device.write(address, data);
+    }
 }
 
 /**
@@ -169,24 +173,24 @@ public class WhiskasDevice implements Device {
  */
 final class LogAppender {
 
-  private static SocketHubAppender sha = null;
+    private static SocketHubAppender sha = null;
 
-  private static final int SOCKET_PORT = 1986;
+    private static final int SOCKET_PORT = 1986;
 
-  private LogAppender() {
+    private LogAppender() {
 
-  }
-
-  /**
-   * Get an instance of the SocketHupAppender.
-   * 
-   * @return sha
-   */
-  public static synchronized SocketHubAppender getInstance() {
-
-    if (sha == null) {
-      sha = new SocketHubAppender(SOCKET_PORT);
     }
-    return sha;
-  }
+
+    /**
+     * Get an instance of the SocketHupAppender.
+     * 
+     * @return sha
+     */
+    public static synchronized SocketHubAppender getInstance() {
+
+        if (sha == null) {
+            sha = new SocketHubAppender(SOCKET_PORT);
+        }
+        return sha;
+    }
 }

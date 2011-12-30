@@ -42,258 +42,264 @@ import org.jscsi.parser.logout.LogoutRequestParser.LogoutReasonCode;
 import org.jscsi.parser.scsi.SCSICommandParser.TaskAttributes;
 
 /**
- * <h1>FullFeaturePhase</h1> <p/> This class represents the Full-Feature Phase
- * of a session. In this phase all commands are allowed (eg. read, write, login
- * of further connections, ...).
+ * <h1>FullFeaturePhase</h1>
+ * <p/>
+ * This class represents the Full-Feature Phase of a session. In this phase all
+ * commands are allowed (eg. read, write, login of further connections, ...).
  * 
  * @author Volker Wildi
  */
 public final class FullFeaturePhase extends AbstractPhase {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** Number of blocks to read in the first stage of a read operation. */
-  private static final int READ_FIRST_STAGE_BLOCKS = 64;
+    /** Number of blocks to read in the first stage of a read operation. */
+    private static final int READ_FIRST_STAGE_BLOCKS = 64;
 
-  /** Number of blocks to read in the second stage of a read operation. */
-  private static final int READ_SECOND_STAGE_BLOCKS = 128;
+    /** Number of blocks to read in the second stage of a read operation. */
+    private static final int READ_SECOND_STAGE_BLOCKS = 128;
 
-  /** Number of blocks to read in the third stage of a read operation. */
-  private static final int READ_THIRD_STAGE_BLOCKS = 256;
+    /** Number of blocks to read in the third stage of a read operation. */
+    private static final int READ_THIRD_STAGE_BLOCKS = 256;
 
-  /** Number of blocks to read in the first stage of a write operation. */
-  private static final int WRITE_FIRST_STAGE_BLOCKS = 1024;
+    /** Number of blocks to read in the first stage of a write operation. */
+    private static final int WRITE_FIRST_STAGE_BLOCKS = 1024;
 
-  /** Number of blocks to read in the second stage of a write operation. */
-  private static final int WRITE_SECOND_STAGE_BLOCKS = 2048;
+    /** Number of blocks to read in the second stage of a write operation. */
+    private static final int WRITE_SECOND_STAGE_BLOCKS = 2048;
 
-  /** Number of blocks to read in the third stage of a write operation. */
-  private static final int WRITE_THIRD_STAGE_BLOCKS = 4096;
+    /** Number of blocks to read in the third stage of a write operation. */
+    private static final int WRITE_THIRD_STAGE_BLOCKS = 4096;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  @Override
-  public final boolean login(final Session session) throws Exception {
+    /** {@inheritDoc} */
+    @Override
+    public final boolean login(final Session session) throws Exception {
 
-    final Connection connection = session.getNextFreeConnection();
-    connection.nextState(new GetConnectionsRequestState(connection));
-    session.releaseUsedConnection(connection);
-    return true;
-  }
-
-  // TODO: Uncomment
-  // /** {@inheritDoc} */
-  // @Override
-  // public final void logoutConnection(final Session session) throws Exception
-  // {
-  //
-  // final Connection connection = session.getNextFreeConnection();
-  // connection.setState(new LogoutRequestState(connection,
-  // LogoutReasonCode.CLOSE_CONNECTION));
-  // connection.execute();
-  // }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean logoutSession(final ITask task, final Session session)
-      throws Exception {
-
-    final Connection connection = session.getNextFreeConnection();
-    connection.getSession().addOutstandingTask(connection,
-        task);
-    connection.nextState(new LogoutRequestState(connection,
-        LogoutReasonCode.CLOSE_SESSION));
-    return true;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean read(final ITask task, final Session session,
-      final ByteBuffer dst, final int logicalBlockAddress, final long length)
-      throws Exception {
-
-    if (dst.remaining() < length) {
-      throw new IllegalArgumentException("Destination buffer is too small.");
+        final Connection connection = session.getNextFreeConnection();
+        connection.nextState(new GetConnectionsRequestState(connection));
+        session.releaseUsedConnection(connection);
+        return true;
     }
 
-    int startAddress = logicalBlockAddress;
-    final long blockSize = session.getBlockSize();
-    long totalBlocks = (long) Math.ceil(length / (double) blockSize);
-    long bytes2Process = length;
+    // TODO: Uncomment
+    // /** {@inheritDoc} */
+    // @Override
+    // public final void logoutConnection(final Session session) throws
+    // Exception
+    // {
+    //
+    // final Connection connection = session.getNextFreeConnection();
+    // connection.setState(new LogoutRequestState(connection,
+    // LogoutReasonCode.CLOSE_CONNECTION));
+    // connection.execute();
+    // }
 
-    final Connection connection = session.getNextFreeConnection();
-    connection.getSession().addOutstandingTask(connection,
-        task);
+    /** {@inheritDoc} */
+    @Override
+    public final boolean logoutSession(final ITask task, final Session session)
+            throws Exception {
 
-    // first stage
-    short blocks = (short) Math.min(READ_FIRST_STAGE_BLOCKS, totalBlocks);
-
-    if (LOGGER.isInfoEnabled()) {
-      LOGGER.info("Now reading sequences of length " + blocks + " blocks.");
+        final Connection connection = session.getNextFreeConnection();
+        connection.getSession().addOutstandingTask(connection, task);
+        connection.nextState(new LogoutRequestState(connection,
+                LogoutReasonCode.CLOSE_SESSION));
+        return true;
     }
 
-    connection.nextState(new ReadRequestState(connection, dst,
-        TaskAttributes.SIMPLE, (int) Math
-            .min(bytes2Process, blocks * blockSize), startAddress, blocks));
-    startAddress += blocks;
-    totalBlocks -= blocks;
-    bytes2Process -= blocks * blockSize;
+    /** {@inheritDoc} */
+    @Override
+    public final boolean read(final ITask task, final Session session,
+            final ByteBuffer dst, final int logicalBlockAddress,
+            final long length) throws Exception {
 
-    // second stage
-    blocks = (short) Math.min(READ_SECOND_STAGE_BLOCKS, totalBlocks);
+        if (dst.remaining() < length) {
+            throw new IllegalArgumentException(
+                    "Destination buffer is too small.");
+        }
 
-    if (blocks > 0) {
+        int startAddress = logicalBlockAddress;
+        final long blockSize = session.getBlockSize();
+        long totalBlocks = (long) Math.ceil(length / (double) blockSize);
+        long bytes2Process = length;
 
-      if (LOGGER.isInfoEnabled()) {
-        LOGGER.info("Now reading sequences of length " + blocks + " blocks.");
-      }
-      connection.nextState(new ReadRequestState(connection, dst,
-          TaskAttributes.SIMPLE, (int) Math.min(bytes2Process, blocks
-              * blockSize), startAddress, blocks));
-      startAddress += blocks;
-      totalBlocks -= blocks;
-      bytes2Process -= blocks * blockSize;
+        final Connection connection = session.getNextFreeConnection();
+        connection.getSession().addOutstandingTask(connection, task);
+
+        // first stage
+        short blocks = (short) Math.min(READ_FIRST_STAGE_BLOCKS, totalBlocks);
+
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Now reading sequences of length " + blocks
+                    + " blocks.");
+        }
+
+        connection.nextState(new ReadRequestState(connection, dst,
+                TaskAttributes.SIMPLE, (int) Math.min(bytes2Process, blocks
+                        * blockSize), startAddress, blocks));
+        startAddress += blocks;
+        totalBlocks -= blocks;
+        bytes2Process -= blocks * blockSize;
+
+        // second stage
+        blocks = (short) Math.min(READ_SECOND_STAGE_BLOCKS, totalBlocks);
+
+        if (blocks > 0) {
+
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Now reading sequences of length " + blocks
+                        + " blocks.");
+            }
+            connection.nextState(new ReadRequestState(connection, dst,
+                    TaskAttributes.SIMPLE, (int) Math.min(bytes2Process, blocks
+                            * blockSize), startAddress, blocks));
+            startAddress += blocks;
+            totalBlocks -= blocks;
+            bytes2Process -= blocks * blockSize;
+        }
+
+        // third stage
+        blocks = (short) Math.min(READ_THIRD_STAGE_BLOCKS, totalBlocks);
+
+        while (blocks > 0) {
+
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Now reading sequences of length " + blocks
+                        + " blocks.");
+            }
+
+            connection.nextState(new ReadRequestState(connection, dst,
+                    TaskAttributes.SIMPLE, (int) Math.min(bytes2Process, blocks
+                            * blockSize), startAddress, blocks));
+            startAddress += blocks;
+            totalBlocks -= blocks;
+            blocks = (short) Math.min(READ_THIRD_STAGE_BLOCKS, totalBlocks);
+        }
+        return true;
     }
 
-    // third stage
-    blocks = (short) Math.min(READ_THIRD_STAGE_BLOCKS, totalBlocks);
+    /** {@inheritDoc} */
+    @Override
+    public final boolean write(final ITask task, final Session session,
+            final ByteBuffer src, final int logicalBlockAddress,
+            final long length) throws Exception {
 
-    while (blocks > 0) {
+        if (src.remaining() < length) {
+            throw new IllegalArgumentException(
+                    "Source buffer is too small. Buffer size: "
+                            + src.remaining() + " Expected: " + length);
+        }
 
-      if (LOGGER.isInfoEnabled()) {
-        LOGGER.info("Now reading sequences of length " + blocks + " blocks.");
-      }
+        int startAddress = logicalBlockAddress;
+        final long blockSize = session.getBlockSize();
+        int totalBlocks = (int) Math.ceil(length / (double) blockSize);
+        long bytes2Process = length;
+        int bufferPosition = 0;
 
-      connection.nextState(new ReadRequestState(connection, dst,
-          TaskAttributes.SIMPLE, (int) Math.min(bytes2Process, blocks
-              * blockSize), startAddress, blocks));
-      startAddress += blocks;
-      totalBlocks -= blocks;
-      blocks = (short) Math.min(READ_THIRD_STAGE_BLOCKS, totalBlocks);
-    }
-    return true;
-  }
+        final Connection connection = session.getNextFreeConnection();
+        connection.getSession().addOutstandingTask(connection, task);
 
-  /** {@inheritDoc} */
-  @Override
-  public final boolean write(final ITask task, final Session session,
-      final ByteBuffer src, final int logicalBlockAddress, final long length)
-      throws Exception {
+        // first stage
+        short blocks = (short) Math.min(WRITE_FIRST_STAGE_BLOCKS, totalBlocks);
 
-    if (src.remaining() < length) {
-      throw new IllegalArgumentException(
-          "Source buffer is too small. Buffer size: " + src.remaining()
-              + " Expected: " + length);
-    }
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("Now sending sequences of length " + blocks
+                    + " blocks.");
+        }
 
-    int startAddress = logicalBlockAddress;
-    final long blockSize = session.getBlockSize();
-    int totalBlocks = (int) Math.ceil(length / (double) blockSize);
-    long bytes2Process = length;
-    int bufferPosition = 0;
+        int expectedDataTransferLength = (int) Math.min(bytes2Process, blocks
+                * blockSize);
+        connection.nextState(new WriteRequestState(connection, src,
+                bufferPosition, TaskAttributes.SIMPLE,
+                expectedDataTransferLength, startAddress, blocks));
+        startAddress += blocks;
+        totalBlocks -= blocks;
+        bytes2Process -= blocks * blockSize;
+        bufferPosition += expectedDataTransferLength;
 
-    final Connection connection = session.getNextFreeConnection();
-    connection.getSession().addOutstandingTask(connection,
-        task);
+        // second stage
+        blocks = (short) Math.min(WRITE_SECOND_STAGE_BLOCKS, totalBlocks);
 
-    // first stage
-    short blocks = (short) Math.min(WRITE_FIRST_STAGE_BLOCKS, totalBlocks);
+        if (blocks > 0) {
 
-    if (LOGGER.isInfoEnabled()) {
-      LOGGER.info("Now sending sequences of length " + blocks + " blocks.");
-    }
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Now sending sequences of length " + blocks
+                        + " blocks.");
+                LOGGER.info("Remaining, DataSegmentLength: " + bytes2Process
+                        + ", " + expectedDataTransferLength);
+            }
 
-    int expectedDataTransferLength = (int) Math.min(bytes2Process, blocks
-        * blockSize);
-    connection
-        .nextState(new WriteRequestState(connection, src, bufferPosition,
-            TaskAttributes.SIMPLE, expectedDataTransferLength, startAddress,
-            blocks));
-    startAddress += blocks;
-    totalBlocks -= blocks;
-    bytes2Process -= blocks * blockSize;
-    bufferPosition += expectedDataTransferLength;
+            expectedDataTransferLength = (int) Math.min(bytes2Process, blocks
+                    * blockSize);
+            connection.nextState(new WriteRequestState(connection, src,
+                    bufferPosition, TaskAttributes.SIMPLE,
+                    expectedDataTransferLength, startAddress, blocks));
+            startAddress += blocks;
+            totalBlocks -= blocks;
+            bytes2Process -= blocks * blockSize;
+            bufferPosition += expectedDataTransferLength;
+        }
 
-    // second stage
-    blocks = (short) Math.min(WRITE_SECOND_STAGE_BLOCKS, totalBlocks);
+        // third stage
+        blocks = (short) Math.min(WRITE_THIRD_STAGE_BLOCKS, totalBlocks);
 
-    if (blocks > 0) {
+        while (blocks > 0) {
 
-      if (LOGGER.isInfoEnabled()) {
-        LOGGER.info("Now sending sequences of length " + blocks + " blocks.");
-        LOGGER.info("Remaining, DataSegmentLength: " + bytes2Process + ", "
-            + expectedDataTransferLength);
-      }
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Now sending sequences of length " + blocks
+                        + " blocks.");
+            }
 
-      expectedDataTransferLength = (int) Math.min(bytes2Process, blocks
-          * blockSize);
-      connection.nextState(new WriteRequestState(connection, src,
-          bufferPosition, TaskAttributes.SIMPLE, expectedDataTransferLength,
-          startAddress, blocks));
-      startAddress += blocks;
-      totalBlocks -= blocks;
-      bytes2Process -= blocks * blockSize;
-      bufferPosition += expectedDataTransferLength;
-    }
-
-    // third stage
-    blocks = (short) Math.min(WRITE_THIRD_STAGE_BLOCKS, totalBlocks);
-
-    while (blocks > 0) {
-
-      if (LOGGER.isInfoEnabled()) {
-        LOGGER.info("Now sending sequences of length " + blocks + " blocks.");
-      }
-
-      expectedDataTransferLength = (int) Math.min(bytes2Process, blocks
-          * blockSize);
-      connection.nextState(new WriteRequestState(connection, src,
-          bufferPosition, TaskAttributes.SIMPLE, expectedDataTransferLength,
-          startAddress, blocks));
-      startAddress += blocks;
-      totalBlocks -= blocks;
-      blocks = (short) Math.min(READ_THIRD_STAGE_BLOCKS, totalBlocks);
-      bufferPosition += expectedDataTransferLength;
-    }
-    return true;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean getCapacity(final Session session,
-      final TargetCapacityInformations capacityInformation) throws Exception {
-
-    if (capacityInformation == null) {
-      throw new NullPointerException();
+            expectedDataTransferLength = (int) Math.min(bytes2Process, blocks
+                    * blockSize);
+            connection.nextState(new WriteRequestState(connection, src,
+                    bufferPosition, TaskAttributes.SIMPLE,
+                    expectedDataTransferLength, startAddress, blocks));
+            startAddress += blocks;
+            totalBlocks -= blocks;
+            blocks = (short) Math.min(READ_THIRD_STAGE_BLOCKS, totalBlocks);
+            bufferPosition += expectedDataTransferLength;
+        }
+        return true;
     }
 
-    final Connection connection = session.getNextFreeConnection();
-    if (connection == null) {
-      throw new NullPointerException();
+    /** {@inheritDoc} */
+    @Override
+    public final boolean getCapacity(final Session session,
+            final TargetCapacityInformations capacityInformation)
+            throws Exception {
+
+        if (capacityInformation == null) {
+            throw new NullPointerException();
+        }
+
+        final Connection connection = session.getNextFreeConnection();
+        if (connection == null) {
+            throw new NullPointerException();
+        }
+
+        connection.nextState(new CapacityRequestState(connection,
+                capacityInformation, TaskAttributes.SIMPLE));
+        session.releaseUsedConnection(connection);
+        return true;
     }
 
-    connection.nextState(new CapacityRequestState(connection,
-        capacityInformation, TaskAttributes.SIMPLE));
-    session.releaseUsedConnection(connection);
-    return true;
-  }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /** {@inheritDoc} */
+    @Override
+    public final LoginStage getStage() {
 
-  /** {@inheritDoc} */
-  @Override
-  public final LoginStage getStage() {
+        return LoginStage.FULL_FEATURE_PHASE;
+    }
 
-    return LoginStage.FULL_FEATURE_PHASE;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

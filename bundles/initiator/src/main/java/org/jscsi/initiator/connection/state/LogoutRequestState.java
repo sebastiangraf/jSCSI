@@ -35,65 +35,69 @@ import org.jscsi.parser.logout.LogoutRequestParser;
 import org.jscsi.parser.logout.LogoutRequestParser.LogoutReasonCode;
 
 /**
- * <h1>LogoutRequestState</h1> <p/> This state handles a Logout Request.
+ * <h1>LogoutRequestState</h1>
+ * <p/>
+ * This state handles a Logout Request.
  * 
  * @author Volker Wildi
  */
 public final class LogoutRequestState extends AbstractState {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The reason for the logout request. */
-  private final LogoutReasonCode reasonCode;
+    /** The reason for the logout request. */
+    private final LogoutReasonCode reasonCode;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a <code>LogoutRequestState</code> instance, which
-   * uses the given connection for transmission.
-   * 
-   * @param initConnection
-   *          The context connection, which is used for the network
-   *          transmission.
-   * @param initReasonCode
-   *          The reason code for the logout.
-   */
-  public LogoutRequestState(final Connection initConnection,
-      final LogoutReasonCode initReasonCode) {
+    /**
+     * Constructor to create a <code>LogoutRequestState</code> instance, which
+     * uses the given connection for transmission.
+     * 
+     * @param initConnection
+     *            The context connection, which is used for the network
+     *            transmission.
+     * @param initReasonCode
+     *            The reason code for the logout.
+     */
+    public LogoutRequestState(final Connection initConnection,
+            final LogoutReasonCode initReasonCode) {
 
-    super(initConnection);
-    reasonCode = initReasonCode;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  public final void execute() throws InternetSCSIException {
-
-    final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory.create(
-        true, true, OperationCode.LOGOUT_REQUEST, connection
-            .getSetting(OperationalTextKey.HEADER_DIGEST), connection
-            .getSetting(OperationalTextKey.DATA_DIGEST));
-    final LogoutRequestParser logoutRequest = (LogoutRequestParser) protocolDataUnit
-        .getBasicHeaderSegment().getParser();
-
-    logoutRequest.setReasonCode(reasonCode);
-    if (reasonCode != LogoutReasonCode.CLOSE_SESSION) {
-      logoutRequest.setConnectionID(connection.getConnectionID());
+        super(initConnection);
+        reasonCode = initReasonCode;
     }
 
-    connection.send(protocolDataUnit);
-    connection.nextState(new LogoutResponseState(connection));
-    super.stateFollowing = true;
-    // return true;
-  }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public final void execute() throws InternetSCSIException {
+
+        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory
+                .create(true,
+                        true,
+                        OperationCode.LOGOUT_REQUEST,
+                        connection.getSetting(OperationalTextKey.HEADER_DIGEST),
+                        connection.getSetting(OperationalTextKey.DATA_DIGEST));
+        final LogoutRequestParser logoutRequest = (LogoutRequestParser) protocolDataUnit
+                .getBasicHeaderSegment().getParser();
+
+        logoutRequest.setReasonCode(reasonCode);
+        if (reasonCode != LogoutReasonCode.CLOSE_SESSION) {
+            logoutRequest.setConnectionID(connection.getConnectionID());
+        }
+
+        connection.send(protocolDataUnit);
+        connection.nextState(new LogoutResponseState(connection));
+        super.stateFollowing = true;
+        // return true;
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

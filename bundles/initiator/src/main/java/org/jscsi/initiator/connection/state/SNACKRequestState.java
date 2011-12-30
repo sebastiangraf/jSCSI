@@ -35,67 +35,71 @@ import org.jscsi.parser.snack.SNACKRequestParser;
 import org.jscsi.parser.snack.SNACKRequestParser.SNACKType;
 
 /**
- * <h1>SNACKRequestState</h1> <p/> This state handles a SNACK Request.
+ * <h1>SNACKRequestState</h1>
+ * <p/>
+ * This state handles a SNACK Request.
  * 
  * @author Volker Wildi
  */
 public final class SNACKRequestState extends AbstractState {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  private final IState prevState;
+    private final IState prevState;
 
-  private final int targetTransferTag;
+    private final int targetTransferTag;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a new, empty <code>SNACKRequestState</code>.
-   * 
-   * @param initConnection
-   *          This is the connection, which is used for the network
-   *          transmission.
-   * @param initPrevState
-   *          The <code>IState</code> instance, which was executed before this
-   *          state.
-   * @param initTargetTransferTag
-   *          The Target Transfer Tag of this state.
-   */
-  public SNACKRequestState(final Connection initConnection,
-      final IState initPrevState, final int initTargetTransferTag) {
+    /**
+     * Constructor to create a new, empty <code>SNACKRequestState</code>.
+     * 
+     * @param initConnection
+     *            This is the connection, which is used for the network
+     *            transmission.
+     * @param initPrevState
+     *            The <code>IState</code> instance, which was executed before
+     *            this state.
+     * @param initTargetTransferTag
+     *            The Target Transfer Tag of this state.
+     */
+    public SNACKRequestState(final Connection initConnection,
+            final IState initPrevState, final int initTargetTransferTag) {
 
-    super(initConnection);
-    prevState = initPrevState;
-    targetTransferTag = initTargetTransferTag;
-  }
+        super(initConnection);
+        prevState = initPrevState;
+        targetTransferTag = initTargetTransferTag;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  public final void execute() throws InternetSCSIException {
+    /** {@inheritDoc} */
+    public final void execute() throws InternetSCSIException {
 
-    final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory.create(
-        false, true, OperationCode.SNACK_REQUEST, connection
-            .getSetting(OperationalTextKey.HEADER_DIGEST), connection
-            .getSetting(OperationalTextKey.DATA_DIGEST));
+        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory
+                .create(false,
+                        true,
+                        OperationCode.SNACK_REQUEST,
+                        connection.getSetting(OperationalTextKey.HEADER_DIGEST),
+                        connection.getSetting(OperationalTextKey.DATA_DIGEST));
 
-    final SNACKRequestParser parser = (SNACKRequestParser) protocolDataUnit
-        .getBasicHeaderSegment().getParser();
-    parser.setType(SNACKType.DATA_ACK);
-    parser.setTargetTransferTag(targetTransferTag);
+        final SNACKRequestParser parser = (SNACKRequestParser) protocolDataUnit
+                .getBasicHeaderSegment().getParser();
+        parser.setType(SNACKType.DATA_ACK);
+        parser.setTargetTransferTag(targetTransferTag);
 
-    connection.send(protocolDataUnit);
-    connection.nextState(prevState);
-    super.stateFollowing = true;
-//    return true;
-  }
+        connection.send(protocolDataUnit);
+        connection.nextState(prevState);
+        super.stateFollowing = true;
+        // return true;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

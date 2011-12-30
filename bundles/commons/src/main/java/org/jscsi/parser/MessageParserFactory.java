@@ -59,105 +59,107 @@ import org.jscsi.parser.tmf.TaskManagementFunctionResponseParser;
  */
 public final class MessageParserFactory {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** Logger Interface. */
-  private static final Log LOGGER = LogFactory
-      .getLog(MessageParserFactory.class);
+    /** Logger Interface. */
+    private static final Log LOGGER = LogFactory
+            .getLog(MessageParserFactory.class);
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** Default constructor, which prevent a instance of this class. */
-  private MessageParserFactory() {
+    /** Default constructor, which prevent a instance of this class. */
+    private MessageParserFactory() {
 
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /**
-   * Returns the parser object with the given operation code.
-   * 
-   * @param protocolDataUnit
-   *          The reference <code>ProtocolDataUnit</code> instance, which
-   *          contains this <code>AbstractMessageParser</code> object.
-   * @param operationCode
-   *          The operation code of the requested
-   *          <code>AbstractMessageParser</code>.
-   * @return The instance of the requested <code>AbstractMessageParser</code>.
-   * @see OperatorCode
-   */
-  public static final AbstractMessageParser getParser(
-      final ProtocolDataUnit protocolDataUnit, final OperationCode operationCode) {
-
-    return createParser(protocolDataUnit, operationCode);
-  }
-
-  /**
-   * Creates an instance of a concrete <code>AbstractMessageParser</code>
-   * object.
-   * 
-   * @param protocolDataUnit
-   *          The reference <code>ProtocolDataUnit</code> instance, which
-   *          contains this <code>AbstractMessageParser</code> object.
-   * @param operationCode
-   *          The operation code of the requested
-   *          <code>AbstractMessageParser</code>.
-   * @return The instance of the requested <code>AbstractMessageParser</code>.
-   * @see OperationCode
-   */
-  private static final AbstractMessageParser createParser(
-      final ProtocolDataUnit protocolDataUnit, final OperationCode operationCode) {
-
-    switch (operationCode) {
-      case LOGIN_REQUEST:
-        return new LoginRequestParser(protocolDataUnit);
-      case LOGIN_RESPONSE:
-        return new LoginResponseParser(protocolDataUnit);
-      case LOGOUT_REQUEST:
-        return new LogoutRequestParser(protocolDataUnit);
-      case LOGOUT_RESPONSE:
-        return new LogoutResponseParser(protocolDataUnit);
-      case TEXT_REQUEST:
-        return new TextRequestParser(protocolDataUnit);
-      case TEXT_RESPONSE:
-        return new TextResponseParser(protocolDataUnit);
-      case SCSI_DATA_OUT:
-        return new DataOutParser(protocolDataUnit);
-      case SCSI_DATA_IN:
-        return new DataInParser(protocolDataUnit);
-      case NOP_OUT:
-        return new NOPOutParser(protocolDataUnit);
-      case NOP_IN:
-        return new NOPInParser(protocolDataUnit);
-      case R2T:
-        return new Ready2TransferParser(protocolDataUnit);
-      case REJECT:
-        return new RejectParser(protocolDataUnit);
-      case SNACK_REQUEST:
-        return new SNACKRequestParser(protocolDataUnit);
-      case SCSI_TM_REQUEST:
-        return new TaskManagementFunctionRequestParser(protocolDataUnit);
-      case SCSI_TM_RESPONSE:
-        return new TaskManagementFunctionResponseParser(protocolDataUnit);
-      case SCSI_COMMAND:
-        return new SCSICommandParser(protocolDataUnit);
-      case SCSI_RESPONSE:
-        return new SCSIResponseParser(protocolDataUnit);
-      default:
-        if (LOGGER.isErrorEnabled()) {
-          LOGGER.error("Parser not supported with this operation code "
-              + operationCode);
-        }
-        throw new NoSuchElementException();
     }
-  }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /**
+     * Returns the parser object with the given operation code.
+     * 
+     * @param protocolDataUnit
+     *            The reference <code>ProtocolDataUnit</code> instance, which
+     *            contains this <code>AbstractMessageParser</code> object.
+     * @param operationCode
+     *            The operation code of the requested
+     *            <code>AbstractMessageParser</code>.
+     * @return The instance of the requested <code>AbstractMessageParser</code>.
+     * @see OperatorCode
+     */
+    public static final AbstractMessageParser getParser(
+            final ProtocolDataUnit protocolDataUnit,
+            final OperationCode operationCode) {
+
+        return createParser(protocolDataUnit, operationCode);
+    }
+
+    /**
+     * Creates an instance of a concrete <code>AbstractMessageParser</code>
+     * object.
+     * 
+     * @param protocolDataUnit
+     *            The reference <code>ProtocolDataUnit</code> instance, which
+     *            contains this <code>AbstractMessageParser</code> object.
+     * @param operationCode
+     *            The operation code of the requested
+     *            <code>AbstractMessageParser</code>.
+     * @return The instance of the requested <code>AbstractMessageParser</code>.
+     * @see OperationCode
+     */
+    private static final AbstractMessageParser createParser(
+            final ProtocolDataUnit protocolDataUnit,
+            final OperationCode operationCode) {
+
+        switch (operationCode) {
+        case LOGIN_REQUEST:
+            return new LoginRequestParser(protocolDataUnit);
+        case LOGIN_RESPONSE:
+            return new LoginResponseParser(protocolDataUnit);
+        case LOGOUT_REQUEST:
+            return new LogoutRequestParser(protocolDataUnit);
+        case LOGOUT_RESPONSE:
+            return new LogoutResponseParser(protocolDataUnit);
+        case TEXT_REQUEST:
+            return new TextRequestParser(protocolDataUnit);
+        case TEXT_RESPONSE:
+            return new TextResponseParser(protocolDataUnit);
+        case SCSI_DATA_OUT:
+            return new DataOutParser(protocolDataUnit);
+        case SCSI_DATA_IN:
+            return new DataInParser(protocolDataUnit);
+        case NOP_OUT:
+            return new NOPOutParser(protocolDataUnit);
+        case NOP_IN:
+            return new NOPInParser(protocolDataUnit);
+        case R2T:
+            return new Ready2TransferParser(protocolDataUnit);
+        case REJECT:
+            return new RejectParser(protocolDataUnit);
+        case SNACK_REQUEST:
+            return new SNACKRequestParser(protocolDataUnit);
+        case SCSI_TM_REQUEST:
+            return new TaskManagementFunctionRequestParser(protocolDataUnit);
+        case SCSI_TM_RESPONSE:
+            return new TaskManagementFunctionResponseParser(protocolDataUnit);
+        case SCSI_COMMAND:
+            return new SCSICommandParser(protocolDataUnit);
+        case SCSI_RESPONSE:
+            return new SCSIResponseParser(protocolDataUnit);
+        default:
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error("Parser not supported with this operation code "
+                        + operationCode);
+            }
+            throw new NoSuchElementException();
+        }
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

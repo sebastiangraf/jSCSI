@@ -27,31 +27,32 @@
 package org.jscsi.parser.datasegment;
 
 /**
- * <h1>IResultFunction</h1> <p/> This interface represents the result function
- * of an iSCSI parameter. Each such result function must implement this
- * interface.
+ * <h1>IResultFunction</h1>
+ * <p/>
+ * This interface represents the result function of an iSCSI parameter. Each
+ * such result function must implement this interface.
  * 
  * @author Volker Wildi
  */
 public interface IResultFunction {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * This method represents the result function.
-   * 
-   * @param a
-   *          The value of the request.
-   * @param b
-   *          The value of the response.
-   * @return The result of these both parameters.
-   */
-  public String result(final String a, final String b);
+    /**
+     * This method represents the result function.
+     * 
+     * @param a
+     *            The value of the request.
+     * @param b
+     *            The value of the response.
+     * @return The result of these both parameters.
+     */
+    public String result(final String a, final String b);
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

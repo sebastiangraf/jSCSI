@@ -41,53 +41,53 @@ import java.util.Map;
  */
 public enum LoginStage {
 
-  /** The Security Negotiation Flag. */
-  SECURITY_NEGOTIATION((byte) 0),
+    /** The Security Negotiation Flag. */
+    SECURITY_NEGOTIATION((byte) 0),
 
-  /** The Login Operational Negotiation Flag. */
-  LOGIN_OPERATIONAL_NEGOTIATION((byte) 1),
+    /** The Login Operational Negotiation Flag. */
+    LOGIN_OPERATIONAL_NEGOTIATION((byte) 1),
 
-  /** The Full Feature Phase Flag. */
-  FULL_FEATURE_PHASE((byte) 3);
+    /** The Full Feature Phase Flag. */
+    FULL_FEATURE_PHASE((byte) 3);
 
-  private final byte value;
+    private final byte value;
 
-  private static Map<Byte, LoginStage> mapping;
+    private static Map<Byte, LoginStage> mapping;
 
-  static {
-    LoginStage.mapping = new HashMap<Byte, LoginStage>();
-    for (LoginStage s : values()) {
-      LoginStage.mapping.put(s.value, s);
+    static {
+        LoginStage.mapping = new HashMap<Byte, LoginStage>();
+        for (LoginStage s : values()) {
+            LoginStage.mapping.put(s.value, s);
+        }
     }
-  }
 
-  private LoginStage(final byte newValue) {
+    private LoginStage(final byte newValue) {
 
-    value = newValue;
-  }
+        value = newValue;
+    }
 
-  /**
-   * Returns the value of this enumeration.
-   * 
-   * @return The value of this enumeration.
-   */
-  public final byte value() {
+    /**
+     * Returns the value of this enumeration.
+     * 
+     * @return The value of this enumeration.
+     */
+    public final byte value() {
 
-    return value;
-  }
+        return value;
+    }
 
-  /**
-   * Returns the constant defined for the given <code>value</code>.
-   * 
-   * @param value
-   *          The value to search for.
-   * @return The constant defined for the given <code>value</code>. Or
-   *         <code>null</code>, if this value is not defined by this
-   *         enumeration.
-   */
-  public static final LoginStage valueOf(final byte value) {
+    /**
+     * Returns the constant defined for the given <code>value</code>.
+     * 
+     * @param value
+     *            The value to search for.
+     * @return The constant defined for the given <code>value</code>. Or
+     *         <code>null</code>, if this value is not defined by this
+     *         enumeration.
+     */
+    public static final LoginStage valueOf(final byte value) {
 
-    return LoginStage.mapping.get(value);
-  }
+        return LoginStage.mapping.get(value);
+    }
 
 }

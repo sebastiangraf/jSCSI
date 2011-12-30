@@ -39,147 +39,151 @@ import org.jscsi.parser.datasegment.IDataSegmentIterator.IDataSegmentChunk;
 import org.jscsi.parser.exception.InternetSCSIException;
 
 /**
- * <h1>WriteSecondBurstState</h1> <p/> This state handles the second and all
- * following Write Sending States, which sends at most
- * <code>MaxBurstLength</code> bytes in each sequence.
+ * <h1>WriteSecondBurstState</h1>
+ * <p/>
+ * This state handles the second and all following Write Sending States, which
+ * sends at most <code>MaxBurstLength</code> bytes in each sequence.
  * 
  * @author Volker Wildi
  */
 final class WriteSecondBurstState extends AbstractState {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The chunk of the data segment to send as next. */
-  private final IDataSegmentIterator iterator;
+    /** The chunk of the data segment to send as next. */
+    private final IDataSegmentIterator iterator;
 
-  /**
-   * The Target Transfer Tag, which is sent by the iSCSI Target within a
-   * Ready2Transfer PDU.
-   */
-  private final int targetTransferTag;
+    /**
+     * The Target Transfer Tag, which is sent by the iSCSI Target within a
+     * Ready2Transfer PDU.
+     */
+    private final int targetTransferTag;
 
-  /**
-   * The desired data transfer length, which the iSCSI Target specified in the
-   * last Ready2Transfer message.
-   */
-  private final int desiredDataTransferLength;
+    /**
+     * The desired data transfer length, which the iSCSI Target specified in the
+     * last Ready2Transfer message.
+     */
+    private final int desiredDataTransferLength;
 
-  /** The sequence number of this data package unit. */
-  private int dataSequenceNumber;
+    /** The sequence number of this data package unit. */
+    private int dataSequenceNumber;
 
-  /** The start offset of the data to send. */
-  private int bufferOffset;
+    /** The start offset of the data to send. */
+    private int bufferOffset;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a <code>WriteSecondBurstState</code> instance, which
-   * sends the second and all following data sequences.
-   * 
-   * @param initConnection
-   *          This is the connection, which is used for the network
-   *          transmission.
-   * @param initIterator
-   *          The next chunk of the data to send.
-   * @param initTargetTransferTag
-   *          The Target Transfer Tag to use.
-   * @param initDesiredDataTransferLength
-   *          The desired data transfer length, which the iSCSI Target specified
-   *          in the last Ready2Transfer message.
-   * @param initDataSequenceNumber
-   *          The Data Sequence Number to use as next.
-   * @param initBufferOffset
-   *          The start offset of the data to send.
-   */
-  public WriteSecondBurstState(final Connection initConnection,
-      final IDataSegmentIterator initIterator, final int initTargetTransferTag,
-      final int initDesiredDataTransferLength,
-      final int initDataSequenceNumber, final int initBufferOffset) {
+    /**
+     * Constructor to create a <code>WriteSecondBurstState</code> instance,
+     * which sends the second and all following data sequences.
+     * 
+     * @param initConnection
+     *            This is the connection, which is used for the network
+     *            transmission.
+     * @param initIterator
+     *            The next chunk of the data to send.
+     * @param initTargetTransferTag
+     *            The Target Transfer Tag to use.
+     * @param initDesiredDataTransferLength
+     *            The desired data transfer length, which the iSCSI Target
+     *            specified in the last Ready2Transfer message.
+     * @param initDataSequenceNumber
+     *            The Data Sequence Number to use as next.
+     * @param initBufferOffset
+     *            The start offset of the data to send.
+     */
+    public WriteSecondBurstState(final Connection initConnection,
+            final IDataSegmentIterator initIterator,
+            final int initTargetTransferTag,
+            final int initDesiredDataTransferLength,
+            final int initDataSequenceNumber, final int initBufferOffset) {
 
-    super(initConnection);
-    iterator = initIterator;
-    targetTransferTag = initTargetTransferTag;
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("TTT set to " + targetTransferTag);
-    }
-    desiredDataTransferLength = initDesiredDataTransferLength;
-    //dataSequenceNumber = initDataSequenceNumber;//FIXME always starts at 0
-    dataSequenceNumber = 0; 
-    bufferOffset = initBufferOffset;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  public final void execute() throws InternetSCSIException {
-
-    final Queue<ProtocolDataUnit> protocolDataUnits = new LinkedList<ProtocolDataUnit>();
-
-    ProtocolDataUnit protocolDataUnit;
-    DataOutParser dataOut;
-    IDataSegmentChunk dataSegmentChunk;
-    boolean finalFlag = false;
-    final int maxRecvDataSegmentLength = connection
-        .getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH);
-    int bytes2Transfer = Math.min(connection
-        .getSettingAsInt(OperationalTextKey.MAX_BURST_LENGTH),
-        desiredDataTransferLength);
-
-    if (LOGGER.isTraceEnabled()) {
-      LOGGER.trace("bytes2Transfer: " + bytes2Transfer
-          + " iterator.hasNext(): " + iterator.hasNext());
+        super(initConnection);
+        iterator = initIterator;
+        targetTransferTag = initTargetTransferTag;
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("TTT set to " + targetTransferTag);
+        }
+        desiredDataTransferLength = initDesiredDataTransferLength;
+        // dataSequenceNumber = initDataSequenceNumber;//FIXME always starts at
+        // 0
+        dataSequenceNumber = 0;
+        bufferOffset = initBufferOffset;
     }
 
-    while (bytes2Transfer > 0 && iterator.hasNext()) {
-      if (bytes2Transfer <= maxRecvDataSegmentLength) {
-        dataSegmentChunk = iterator.next(bytes2Transfer);
-        finalFlag = true;
-      } else {
-        dataSegmentChunk = iterator.next(maxRecvDataSegmentLength);
-        finalFlag = false;
-      }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-      protocolDataUnit = protocolDataUnitFactory.create(false, finalFlag,
-          OperationCode.SCSI_DATA_OUT, connection
-              .getSetting(OperationalTextKey.HEADER_DIGEST), connection
-              .getSetting(OperationalTextKey.DATA_DIGEST));
-      protocolDataUnit.getBasicHeaderSegment().setInitiatorTaskTag(
-          connection.getSession().getInitiatorTaskTag());
+    /** {@inheritDoc} */
+    public final void execute() throws InternetSCSIException {
 
-      dataOut = (DataOutParser) protocolDataUnit.getBasicHeaderSegment()
-          .getParser();
+        final Queue<ProtocolDataUnit> protocolDataUnits = new LinkedList<ProtocolDataUnit>();
 
-      dataOut.setTargetTransferTag(targetTransferTag);
-      dataOut.setDataSequenceNumber(dataSequenceNumber++);
-      dataOut.setBufferOffset(bufferOffset);
-      bufferOffset += maxRecvDataSegmentLength;
+        ProtocolDataUnit protocolDataUnit;
+        DataOutParser dataOut;
+        IDataSegmentChunk dataSegmentChunk;
+        boolean finalFlag = false;
+        final int maxRecvDataSegmentLength = connection
+                .getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH);
+        int bytes2Transfer = Math
+                .min(connection
+                        .getSettingAsInt(OperationalTextKey.MAX_BURST_LENGTH),
+                        desiredDataTransferLength);
 
-      protocolDataUnit.setDataSegment(dataSegmentChunk);
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("bytes2Transfer: " + bytes2Transfer
+                    + " iterator.hasNext(): " + iterator.hasNext());
+        }
 
-      protocolDataUnits.offer(protocolDataUnit);
-      bytes2Transfer -= maxRecvDataSegmentLength;
+        while (bytes2Transfer > 0 && iterator.hasNext()) {
+            if (bytes2Transfer <= maxRecvDataSegmentLength) {
+                dataSegmentChunk = iterator.next(bytes2Transfer);
+                finalFlag = true;
+            } else {
+                dataSegmentChunk = iterator.next(maxRecvDataSegmentLength);
+                finalFlag = false;
+            }
+
+            protocolDataUnit = protocolDataUnitFactory.create(false, finalFlag,
+                    OperationCode.SCSI_DATA_OUT,
+                    connection.getSetting(OperationalTextKey.HEADER_DIGEST),
+                    connection.getSetting(OperationalTextKey.DATA_DIGEST));
+            protocolDataUnit.getBasicHeaderSegment().setInitiatorTaskTag(
+                    connection.getSession().getInitiatorTaskTag());
+
+            dataOut = (DataOutParser) protocolDataUnit.getBasicHeaderSegment()
+                    .getParser();
+
+            dataOut.setTargetTransferTag(targetTransferTag);
+            dataOut.setDataSequenceNumber(dataSequenceNumber++);
+            dataOut.setBufferOffset(bufferOffset);
+            bufferOffset += maxRecvDataSegmentLength;
+
+            protocolDataUnit.setDataSegment(dataSegmentChunk);
+
+            protocolDataUnits.offer(protocolDataUnit);
+            bytes2Transfer -= maxRecvDataSegmentLength;
+        }
+
+        connection.send(protocolDataUnits);
+        connection.nextState(new WriteSecondResponseState(connection, iterator,
+                dataSequenceNumber, bufferOffset));
+
+        // return true;
     }
 
-    connection.send(protocolDataUnits);
-    connection.nextState(new WriteSecondResponseState(connection, iterator,
-        dataSequenceNumber, bufferOffset));
+    /**
+     * {@inheritDoc}
+     */
+    public boolean nextStateFollowing() {
+        return true;
+    }
 
-//    return true;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public boolean nextStateFollowing() {
-    return true;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }
