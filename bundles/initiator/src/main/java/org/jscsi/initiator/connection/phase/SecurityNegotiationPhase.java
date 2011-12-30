@@ -30,37 +30,38 @@ import org.jscsi.initiator.connection.Session;
 import org.jscsi.parser.login.LoginStage;
 
 /**
- * <h1>SecurityNegotiationPhase</h1> <p/> This class represents the Security
- * Negotiation Phase of a session. In this phase only a exchange of securtiy
- * parameters are allowed.
+ * <h1>SecurityNegotiationPhase</h1>
+ * <p/>
+ * This class represents the Security Negotiation Phase of a session. In this
+ * phase only a exchange of securtiy parameters are allowed.
  * 
  * @author Volker Wildi
  */
 public final class SecurityNegotiationPhase extends AbstractPhase {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  @Override
-  public final boolean login(final Session session) throws Exception {
+    /** {@inheritDoc} */
+    @Override
+    public final boolean login(final Session session) throws Exception {
 
-    // session.addNewConnection();
-    return true;
-  }
+        // session.addNewConnection();
+        return true;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  @Override
-  public final LoginStage getStage() {
+    /** {@inheritDoc} */
+    @Override
+    public final LoginStage getStage() {
 
-    return LoginStage.LOGIN_OPERATIONAL_NEGOTIATION;
-  }
+        return LoginStage.LOGIN_OPERATIONAL_NEGOTIATION;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 }

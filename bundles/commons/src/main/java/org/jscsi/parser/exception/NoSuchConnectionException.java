@@ -27,56 +27,57 @@
 package org.jscsi.parser.exception;
 
 /**
- * <h1>NoSuchConnectionException</h1> <p/> This exception is thrown when no
- * connection is open.
+ * <h1>NoSuchConnectionException</h1>
+ * <p/>
+ * This exception is thrown when no connection is open.
  * 
  * @author Volker Wildi
  */
 public final class NoSuchConnectionException extends InternetSCSIException {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The Serial Version ID. */
-  private static final long serialVersionUID = 1L;
+    /** The Serial Version ID. */
+    private static final long serialVersionUID = 1L;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructs a new exception with null as its detail message.
-   */
-  public NoSuchConnectionException() {
+    /**
+     * Constructs a new exception with null as its detail message.
+     */
+    public NoSuchConnectionException() {
 
-    super();
-  }
+        super();
+    }
 
-  /**
-   * Constructs a new exception with the specified detail message.
-   * 
-   * @param msg
-   *          the detail message. The detail message is saved for later
-   *          retrieval by the Throwable.getMessage() method.
-   */
-  public NoSuchConnectionException(final String msg) {
+    /**
+     * Constructs a new exception with the specified detail message.
+     * 
+     * @param msg
+     *            the detail message. The detail message is saved for later
+     *            retrieval by the Throwable.getMessage() method.
+     */
+    public NoSuchConnectionException(final String msg) {
 
-    super(msg);
-  }
+        super(msg);
+    }
 
-  /**
-   * Constructs a new exception with the specified detail message.
-   * 
-   * @param e
-   *          the Exception to be wrappteed
-   */
-  public NoSuchConnectionException(final Exception  e) {
+    /**
+     * Constructs a new exception with the specified detail message.
+     * 
+     * @param e
+     *            the Exception to be wrappteed
+     */
+    public NoSuchConnectionException(final Exception e) {
 
-    super(e);
-  }
-  
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+        super(e);
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

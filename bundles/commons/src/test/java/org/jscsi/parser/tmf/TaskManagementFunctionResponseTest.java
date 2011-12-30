@@ -47,58 +47,58 @@ import org.junit.Test;
  */
 public class TaskManagementFunctionResponseTest extends ProtocolDataUnitTest {
 
-  private static final String TEST_CASE_1 = "e2 d3 3d c7 ef 54 95 6b 3d f7 c7 d7 ea 5d 7f ae "
-      + "ed 3b c6 c6 e4 05 ec 1c bd ff c5 ec 5b 70 0a e7 "
-      + "2f d6 f1 1a 4d be d8 ec 5b 2f be bc 4c 99 dc 80";
+    private static final String TEST_CASE_1 = "e2 d3 3d c7 ef 54 95 6b 3d f7 c7 d7 ea 5d 7f ae "
+            + "ed 3b c6 c6 e4 05 ec 1c bd ff c5 ec 5b 70 0a e7 "
+            + "2f d6 f1 1a 4d be d8 ec 5b 2f be bc 4c 99 dc 80";
 
-  @Test
-  public void test(){
-	  
-	  //TODO: Remove this if the tests are working
-  }
-  
-  /**
-   * This test case validates the parsing process.
-   * 
-   * @throws IOException
-   *           This exception should be never thrown.
-   * @throws InternetSCSIException
-   *           This exception should be never thrown.
-   */
-  @Ignore
-  public void testDeserialize1() throws IOException, InternetSCSIException,
-      DigestException {
+    @Test
+    public void test() {
 
-    super.setUp(TEST_CASE_1);
-    super.testDeserialize(false, true, OperationCode.SCSI_TM_RESPONSE,
-        0x00000000, 0x00000000, 0xECF407ED);
+        // TODO: Remove this if the tests are working
+    }
 
-    assertTrue(recognizedParser instanceof TaskManagementFunctionResponseParser);
+    /**
+     * This test case validates the parsing process.
+     * 
+     * @throws IOException
+     *             This exception should be never thrown.
+     * @throws InternetSCSIException
+     *             This exception should be never thrown.
+     */
+    @Ignore
+    public void testDeserialize1() throws IOException, InternetSCSIException,
+            DigestException {
 
-    TaskManagementFunctionResponseParser parser = (TaskManagementFunctionResponseParser) recognizedParser;
+        super.setUp(TEST_CASE_1);
+        super.testDeserialize(false, true, OperationCode.SCSI_TM_RESPONSE,
+                0x00000000, 0x00000000, 0xECF407ED);
 
-    assertEquals(0, parser.getResponse());
-    assertEquals(0xA6C84985, parser.getStatusSequenceNumber());
-    assertEquals(0xB86232D6, parser.getExpectedCommandSequenceNumber());
-    assertEquals(0x60126FF5, parser.getMaximumCommandSequenceNumber());
-  }
+        assertTrue(recognizedParser instanceof TaskManagementFunctionResponseParser);
 
-  /**
-   * This test case validates the serialization process.
-   * 
-   * @throws InternetSCSIException
-   *           This exception should be never thrown.
-   * @throws IOException
-   *           This exception should be never thrown.
-   */
-  @Ignore
-  public void testSerialize1() throws InternetSCSIException, IOException,
-      DigestException {
+        TaskManagementFunctionResponseParser parser = (TaskManagementFunctionResponseParser) recognizedParser;
 
-    super.setUp(TEST_CASE_1);
+        assertEquals(0, parser.getResponse());
+        assertEquals(0xA6C84985, parser.getStatusSequenceNumber());
+        assertEquals(0xB86232D6, parser.getExpectedCommandSequenceNumber());
+        assertEquals(0x60126FF5, parser.getMaximumCommandSequenceNumber());
+    }
 
-    ByteBuffer expectedResult = WiresharkMessageParser
-        .parseToByteBuffer(TEST_CASE_1);
-    assertTrue(expectedResult.equals(protocolDataUnit.serialize()));
-  }
+    /**
+     * This test case validates the serialization process.
+     * 
+     * @throws InternetSCSIException
+     *             This exception should be never thrown.
+     * @throws IOException
+     *             This exception should be never thrown.
+     */
+    @Ignore
+    public void testSerialize1() throws InternetSCSIException, IOException,
+            DigestException {
+
+        super.setUp(TEST_CASE_1);
+
+        ByteBuffer expectedResult = WiresharkMessageParser
+                .parseToByteBuffer(TEST_CASE_1);
+        assertTrue(expectedResult.equals(protocolDataUnit.serialize()));
+    }
 }

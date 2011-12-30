@@ -35,66 +35,68 @@ import org.jscsi.parser.logout.LogoutResponse;
 import org.jscsi.parser.logout.LogoutResponseParser;
 
 /**
- * <h1>LogoutResponseState</h1> <p/> This state handles a Logout Response.
+ * <h1>LogoutResponseState</h1>
+ * <p/>
+ * This state handles a Logout Response.
  * 
  * @author Volker Wildi
  */
 final class LogoutResponseState extends AbstractState {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a <code>LogoutResponseState</code> instance, which
-   * uses the given connection for transmission.
-   * 
-   * @param initConnection
-   *          The context connection, which is used for the network
-   *          transmission.
-   */
-  public LogoutResponseState(final Connection initConnection) {
+    /**
+     * Constructor to create a <code>LogoutResponseState</code> instance, which
+     * uses the given connection for transmission.
+     * 
+     * @param initConnection
+     *            The context connection, which is used for the network
+     *            transmission.
+     */
+    public LogoutResponseState(final Connection initConnection) {
 
-    super(initConnection);
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  public final void execute() throws InternetSCSIException {
-
-    final ProtocolDataUnit protocolDataUnit = connection.receive();
-
-    if (!(protocolDataUnit.getBasicHeaderSegment().getParser() instanceof LogoutResponseParser)) {
-      throw new InternetSCSIException("This PDU type ("
-          + protocolDataUnit.getBasicHeaderSegment().getParser()
-          + ") is not expected. ");
+        super(initConnection);
     }
 
-    final LogoutResponseParser parser = (LogoutResponseParser) protocolDataUnit
-        .getBasicHeaderSegment().getParser();
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    if (parser.getResponse() == LogoutResponse.CONNECTION_CLOSED_SUCCESSFULLY) {
-      // exception rethrow
-      try {
-        // FIXME: Implement Connection close
-        connection.getSession().close();
-      } catch (IOException e) {
-        throw new InternetSCSIException(
-            "Closing the connection throws this error: "
-                + e.getLocalizedMessage());
-      }
-    } else {
-      throw new InternetSCSIException(
-          "The connection could not be closed successfully.");
+    /** {@inheritDoc} */
+    public final void execute() throws InternetSCSIException {
+
+        final ProtocolDataUnit protocolDataUnit = connection.receive();
+
+        if (!(protocolDataUnit.getBasicHeaderSegment().getParser() instanceof LogoutResponseParser)) {
+            throw new InternetSCSIException("This PDU type ("
+                    + protocolDataUnit.getBasicHeaderSegment().getParser()
+                    + ") is not expected. ");
+        }
+
+        final LogoutResponseParser parser = (LogoutResponseParser) protocolDataUnit
+                .getBasicHeaderSegment().getParser();
+
+        if (parser.getResponse() == LogoutResponse.CONNECTION_CLOSED_SUCCESSFULLY) {
+            // exception rethrow
+            try {
+                // FIXME: Implement Connection close
+                connection.getSession().close();
+            } catch (IOException e) {
+                throw new InternetSCSIException(
+                        "Closing the connection throws this error: "
+                                + e.getLocalizedMessage());
+            }
+        } else {
+            throw new InternetSCSIException(
+                    "The connection could not be closed successfully.");
+        }
+
+        // return false;
     }
 
-//    return false;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

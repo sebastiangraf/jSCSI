@@ -37,45 +37,45 @@ import java.nio.ByteBuffer;
  */
 final class NullDataSegment extends AbstractDataSegment {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a new, empty <code>NullDataSegment</code> object.
-   * 
-   * @param initChunkSize
-   *          The size (in bytes) of one chunk, which represents the
-   *          <code>MaxRecvDataSegmentLength</code>.
-   */
-  public NullDataSegment(final int initChunkSize) {
+    /**
+     * Constructor to create a new, empty <code>NullDataSegment</code> object.
+     * 
+     * @param initChunkSize
+     *            The size (in bytes) of one chunk, which represents the
+     *            <code>MaxRecvDataSegmentLength</code>.
+     */
+    public NullDataSegment(final int initChunkSize) {
 
-    super(initChunkSize);
-  }
+        super(initChunkSize);
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  public int deserialize(final ByteBuffer src, final int len) {
+    /** {@inheritDoc} */
+    public int deserialize(final ByteBuffer src, final int len) {
 
-    return 0;
-  }
+        return 0;
+    }
 
-  /** {@inheritDoc} */
-  public int append(final ByteBuffer src, final int len) {
+    /** {@inheritDoc} */
+    public int append(final ByteBuffer src, final int len) {
 
-    return 0;
-  }
+        return 0;
+    }
 
-  /** {@inheritDoc} */
-  public int serialize(final ByteBuffer dst, final int off) {
+    /** {@inheritDoc} */
+    public int serialize(final ByteBuffer dst, final int off) {
 
-    return 0;
-  }
+        return 0;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

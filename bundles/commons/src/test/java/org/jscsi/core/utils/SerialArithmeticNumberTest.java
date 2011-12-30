@@ -32,52 +32,54 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- * <h1>SerialArithmetricNumberTest</h1> <p/>
+ * <h1>SerialArithmetricNumberTest</h1>
+ * <p/>
  * 
  * @author Volker Wildi
  */
 public final class SerialArithmeticNumberTest {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  @Test
-  public final void testInitialize() {
+    @Test
+    public final void testInitialize() {
 
-    final SerialArithmeticNumber serialNumber = new SerialArithmeticNumber(1);
-    assertEquals(1, serialNumber.getValue());
-  }
+        final SerialArithmeticNumber serialNumber = new SerialArithmeticNumber(
+                1);
+        assertEquals(1, serialNumber.getValue());
+    }
 
-  @Test
-  public final void testCompare1() {
+    @Test
+    public final void testCompare1() {
 
-    final SerialArithmeticNumber serialNumber = new SerialArithmeticNumber();
-    assertEquals(0, serialNumber.getValue());
+        final SerialArithmeticNumber serialNumber = new SerialArithmeticNumber();
+        assertEquals(0, serialNumber.getValue());
 
-    assertTrue(serialNumber.compareTo(4) < 0);
-  }
+        assertTrue(serialNumber.compareTo(4) < 0);
+    }
 
-  @Test
-  public final void testCompare2() {
+    @Test
+    public final void testCompare2() {
 
-    final SerialArithmeticNumber sNumber = new SerialArithmeticNumber(4);
-    assertEquals(4, sNumber.getValue());
+        final SerialArithmeticNumber sNumber = new SerialArithmeticNumber(4);
+        assertEquals(4, sNumber.getValue());
 
-    assertTrue(sNumber.compareTo(3) > 0);
-  }
+        assertTrue(sNumber.compareTo(3) > 0);
+    }
 
-  @Test
-  public final void testCompare3() {
+    @Test
+    public final void testCompare3() {
 
-    final SerialArithmeticNumber sNumber = new SerialArithmeticNumber(2);
-    assertEquals(2, sNumber.getValue());
+        final SerialArithmeticNumber sNumber = new SerialArithmeticNumber(2);
+        assertEquals(2, sNumber.getValue());
 
-    assertTrue(sNumber.compareTo(0xFFFFFFFF - 1) > 0);
-  }
+        assertTrue(sNumber.compareTo(0xFFFFFFFF - 1) > 0);
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

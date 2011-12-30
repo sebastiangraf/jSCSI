@@ -38,97 +38,101 @@ import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.parser.scsi.SCSICommandParser.TaskAttributes;
 
 /**
- * <h1>ReadRequestState</h1> <p/> This state handles a Read Request with some
- * unsolicited data.
+ * <h1>ReadRequestState</h1>
+ * <p/>
+ * This state handles a Read Request with some unsolicited data.
  * 
  * @author Volker Wildi
  */
 public final class ReadRequestState extends AbstractState {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The buffer to used for the message transfer. */
-  private final ByteBuffer buffer;
+    /** The buffer to used for the message transfer. */
+    private final ByteBuffer buffer;
 
-  /** The task attributes of this read operation. */
-  private final TaskAttributes taskAttributes;
+    /** The task attributes of this read operation. */
+    private final TaskAttributes taskAttributes;
 
-  /** The expected length in bytes, which should be transfered. */
-  private final int expectedDataTransferLength;
+    /** The expected length in bytes, which should be transfered. */
+    private final int expectedDataTransferLength;
 
-  /** The logical block address of the beginning of the read operation. */
-  private final int logicalBlockAddress;
+    /** The logical block address of the beginning of the read operation. */
+    private final int logicalBlockAddress;
 
-  /**
-   * The number of blocks (This block size is dependent on the size used on the
-   * target side.) to read.
-   */
-  private final short transferLength;
+    /**
+     * The number of blocks (This block size is dependent on the size used on
+     * the target side.) to read.
+     */
+    private final short transferLength;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a <code>ReadRequestState</code> instance, which
-   * creates a request to the iSCSI Target.
-   * 
-   * @param initConnection
-   *          This is the connection, which is used for the network
-   *          transmission.
-   * @param initBuffer
-   *          This buffer should be read.
-   * @param initTaskAttributes
-   *          The task attributes of this task.
-   * @param initExpectedDataTransferLength
-   *          The expected length in bytes, which should be transfered.
-   * @param initLogicalBlockAddress
-   *          The logical block address of the first block to read.
-   * @param initTransferLength
-   *          The number of blocks to read.
-   */
-  public ReadRequestState(final Connection initConnection,
-      final ByteBuffer initBuffer, final TaskAttributes initTaskAttributes,
-      final int initExpectedDataTransferLength,
-      final int initLogicalBlockAddress, final short initTransferLength) {
+    /**
+     * Constructor to create a <code>ReadRequestState</code> instance, which
+     * creates a request to the iSCSI Target.
+     * 
+     * @param initConnection
+     *            This is the connection, which is used for the network
+     *            transmission.
+     * @param initBuffer
+     *            This buffer should be read.
+     * @param initTaskAttributes
+     *            The task attributes of this task.
+     * @param initExpectedDataTransferLength
+     *            The expected length in bytes, which should be transfered.
+     * @param initLogicalBlockAddress
+     *            The logical block address of the first block to read.
+     * @param initTransferLength
+     *            The number of blocks to read.
+     */
+    public ReadRequestState(final Connection initConnection,
+            final ByteBuffer initBuffer,
+            final TaskAttributes initTaskAttributes,
+            final int initExpectedDataTransferLength,
+            final int initLogicalBlockAddress, final short initTransferLength) {
 
-    super(initConnection);
-    buffer = initBuffer;
-    taskAttributes = initTaskAttributes;
-    expectedDataTransferLength = initExpectedDataTransferLength;
-    logicalBlockAddress = initLogicalBlockAddress;
-    transferLength = initTransferLength;
-  }
+        super(initConnection);
+        buffer = initBuffer;
+        taskAttributes = initTaskAttributes;
+        expectedDataTransferLength = initExpectedDataTransferLength;
+        logicalBlockAddress = initLogicalBlockAddress;
+        transferLength = initTransferLength;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  public final void execute() throws InternetSCSIException {
+    /** {@inheritDoc} */
+    public final void execute() throws InternetSCSIException {
 
-    final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory.create(
-        false, true, OperationCode.SCSI_COMMAND, connection
-            .getSetting(OperationalTextKey.HEADER_DIGEST), connection
-            .getSetting(OperationalTextKey.DATA_DIGEST));
-    final SCSICommandParser scsi = (SCSICommandParser) protocolDataUnit
-        .getBasicHeaderSegment().getParser();
+        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory
+                .create(false,
+                        true,
+                        OperationCode.SCSI_COMMAND,
+                        connection.getSetting(OperationalTextKey.HEADER_DIGEST),
+                        connection.getSetting(OperationalTextKey.DATA_DIGEST));
+        final SCSICommandParser scsi = (SCSICommandParser) protocolDataUnit
+                .getBasicHeaderSegment().getParser();
 
-    scsi.setReadExpectedFlag(true);
-    scsi.setWriteExpectedFlag(false);
-    scsi.setTaskAttributes(taskAttributes);
-    scsi.setExpectedDataTransferLength(expectedDataTransferLength);
-    scsi.setCommandDescriptorBlock(SCSICommandDescriptorBlockParser
-        .createReadMessage(logicalBlockAddress, transferLength));
+        scsi.setReadExpectedFlag(true);
+        scsi.setWriteExpectedFlag(false);
+        scsi.setTaskAttributes(taskAttributes);
+        scsi.setExpectedDataTransferLength(expectedDataTransferLength);
+        scsi.setCommandDescriptorBlock(SCSICommandDescriptorBlockParser
+                .createReadMessage(logicalBlockAddress, transferLength));
 
-    connection.send(protocolDataUnit);
-    connection.nextState(new ReadResponseState(connection, buffer, 0, 0));
-    super.stateFollowing = true;
-//    return true;
-  }
+        connection.send(protocolDataUnit);
+        connection.nextState(new ReadResponseState(connection, buffer, 0, 0));
+        super.stateFollowing = true;
+        // return true;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

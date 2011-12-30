@@ -47,35 +47,35 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { AdditionalHeaderSegmentTest.class, DataInParserTest.class,
-    DataOutParserTest.class, ISIDTest.class, LoginRequestParserTest.class,
-    LoginResponseParserTest.class, LogoutRequestParserTest.class,
-    LogoutResponseParserTest.class, Ready2TransferParserTest.class,
-    RejectParserTest.class, SCSICommandParserTest.class,
-    SNACKRequestParserTest.class, TextRequestParserTest.class,
-    TextResponseParserTest.class })
+@SuiteClasses({ AdditionalHeaderSegmentTest.class, DataInParserTest.class,
+        DataOutParserTest.class, ISIDTest.class, LoginRequestParserTest.class,
+        LoginResponseParserTest.class, LogoutRequestParserTest.class,
+        LogoutResponseParserTest.class, Ready2TransferParserTest.class,
+        RejectParserTest.class, SCSICommandParserTest.class,
+        SNACKRequestParserTest.class, TextRequestParserTest.class,
+        TextResponseParserTest.class })
 public final class AllMessageParsersTests {
 
-  public AllMessageParsersTests() {
+    public AllMessageParsersTests() {
 
-  }
+    }
 
-  // suite.addTestSuite(AsynchronousMessageParserTest.class);
-  // suite.addTestSuite(TestSCSIDataSegment.class);
-  // suite.addTestSuite(TestSCSIResponseParser.class);
-  // suite.addTestSuite(TaskManagementFunctionRequestTest.class);
-  // suite.addTestSuite(TaskManagementFunctionResponseTest.class);
+    // suite.addTestSuite(AsynchronousMessageParserTest.class);
+    // suite.addTestSuite(TestSCSIDataSegment.class);
+    // suite.addTestSuite(TestSCSIResponseParser.class);
+    // suite.addTestSuite(TaskManagementFunctionRequestTest.class);
+    // suite.addTestSuite(TaskManagementFunctionResponseTest.class);
 
-  /**
-   * @param args
-   */
-  public static void main(String[] args) {
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
 
-    junit.textui.TestRunner.run(suite());
-  }
+        junit.textui.TestRunner.run(suite());
+    }
 
-  public static Test suite() {
+    public static Test suite() {
 
-    return new JUnit4TestAdapter(AllMessageParsersTests.class);
-  }
+        return new JUnit4TestAdapter(AllMessageParsersTests.class);
+    }
 }

@@ -34,98 +34,100 @@ import org.jscsi.initiator.devices.JSCSIDevice;
 import org.jscsi.initiator.devices.WriteBufferDevice;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("Lack of testembed, removing")
 public class WriteBufferDeviceTest {
 
-  /** previous Target_Name - "disk6" */
-  private static final String TARGET_NAME = "testing-xen2-disk1";
+    /** previous Target_Name - "disk6" */
+    private static final String TARGET_NAME = "testing-xen2-disk1";
 
-  private static WriteBufferDevice device;
+    private static WriteBufferDevice device;
 
-  /* Byte arrays (for all blocksizes) which are written to the targets. */
-  private final byte[] testDataBlock8kb;
+    /* Byte arrays (for all blocksizes) which are written to the targets. */
+    private final byte[] testDataBlock8kb;
 
-  private final byte[] testDataBlock128kb;
+    private final byte[] testDataBlock128kb;
 
-  Random randomGenerator;
+    Random randomGenerator;
 
-  // ---------------------------------------------------------------------------
-  // ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
 
-  public WriteBufferDeviceTest() {
+    public WriteBufferDeviceTest() {
 
-    // create byte arrays with random values for all blocksizes.
-    randomGenerator = new Random(System.currentTimeMillis());
-    testDataBlock8kb = new byte[8 * 1024];
-    randomGenerator.nextBytes(testDataBlock8kb);
-    testDataBlock128kb = new byte[128 * 1024];
-    randomGenerator.nextBytes(testDataBlock128kb);
-  }
-
-  @Before
-  public final void setUp() throws Exception {
-
-    device = new WriteBufferDevice(new JSCSIDevice(TARGET_NAME));
-    device.open();
-  }
-
-  @After
-  public final void tearDown() throws Exception {
-
-    device.close();
-  }
-
-  /**
-   * Test buffered write with 8kb blocks on the device.
-   * 
-   * @throws Exception
-   *           These should never be thrown.
-   */
-  @Test
-  public final void testReadWriteBeginning8kb() throws Exception {
-
-    int writeBlockCount = 50;
-    int blockFactor = testDataBlock8kb.length / device.getBlockSize();
-    long address = 0;
-
-    for (int i = 0; i < writeBlockCount; i++) {
-      device.write(address + i * blockFactor, testDataBlock8kb);
+        // create byte arrays with random values for all blocksizes.
+        randomGenerator = new Random(System.currentTimeMillis());
+        testDataBlock8kb = new byte[8 * 1024];
+        randomGenerator.nextBytes(testDataBlock8kb);
+        testDataBlock128kb = new byte[128 * 1024];
+        randomGenerator.nextBytes(testDataBlock128kb);
     }
-    device.flush();
-    for (int j = 0; j < writeBlockCount; j++) {
-      byte[] result = new byte[testDataBlock8kb.length];
-      device.read(address + j * blockFactor, result);
-      for (int i = 0; i < testDataBlock8kb.length; i++) {
-        assertEquals(result[i], testDataBlock8kb[i]);
-      }
-    }
-  }
 
-  /**
-   * Test buffered write with 128kb blocks on the device.
-   * 
-   * @throws Exception
-   *           These should never be thrown.
-   */
-  @Test
-  public final void testReadWriteBeginning128kb() throws Exception {
+    @Before
+    public final void setUp() throws Exception {
 
-    int writeBlockCount = 50;
-    int blockFactor = testDataBlock128kb.length / device.getBlockSize();
-    long address = 0;
+        device = new WriteBufferDevice(new JSCSIDevice(TARGET_NAME));
+        device.open();
+    }
 
-    for (int i = 0; i < writeBlockCount; i++) {
-      device.write(address + i * blockFactor, testDataBlock128kb);
+    @After
+    public final void tearDown() throws Exception {
+
+        device.close();
     }
-    device.flush();
-    for (int j = 0; j < writeBlockCount; j++) {
-      byte[] result = new byte[testDataBlock128kb.length];
-      device.read(address + j * blockFactor, result);
-      for (int i = 0; i < testDataBlock128kb.length; i++) {
-        assertEquals(result[i], testDataBlock128kb[i]);
-      }
+
+    /**
+     * Test buffered write with 8kb blocks on the device.
+     * 
+     * @throws Exception
+     *             These should never be thrown.
+     */
+    @Test
+    public final void testReadWriteBeginning8kb() throws Exception {
+
+        int writeBlockCount = 50;
+        int blockFactor = testDataBlock8kb.length / device.getBlockSize();
+        long address = 0;
+
+        for (int i = 0; i < writeBlockCount; i++) {
+            device.write(address + i * blockFactor, testDataBlock8kb);
+        }
+        device.flush();
+        for (int j = 0; j < writeBlockCount; j++) {
+            byte[] result = new byte[testDataBlock8kb.length];
+            device.read(address + j * blockFactor, result);
+            for (int i = 0; i < testDataBlock8kb.length; i++) {
+                assertEquals(result[i], testDataBlock8kb[i]);
+            }
+        }
     }
-  }
+
+    /**
+     * Test buffered write with 128kb blocks on the device.
+     * 
+     * @throws Exception
+     *             These should never be thrown.
+     */
+    @Test
+    public final void testReadWriteBeginning128kb() throws Exception {
+
+        int writeBlockCount = 50;
+        int blockFactor = testDataBlock128kb.length / device.getBlockSize();
+        long address = 0;
+
+        for (int i = 0; i < writeBlockCount; i++) {
+            device.write(address + i * blockFactor, testDataBlock128kb);
+        }
+        device.flush();
+        for (int j = 0; j < writeBlockCount; j++) {
+            byte[] result = new byte[testDataBlock128kb.length];
+            device.read(address + j * blockFactor, result);
+            for (int i = 0; i < testDataBlock128kb.length; i++) {
+                assertEquals(result[i], testDataBlock128kb[i]);
+            }
+        }
+    }
 
 }

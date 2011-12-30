@@ -34,49 +34,49 @@ package org.jscsi.parser.exception;
  */
 public class InternetSCSIException extends Exception {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The Serial Version ID. */
-  private static final long serialVersionUID = 1L;
+    /** The Serial Version ID. */
+    private static final long serialVersionUID = 1L;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructs a new exception with null as its detail message.
-   */
-  public InternetSCSIException() {
+    /**
+     * Constructs a new exception with null as its detail message.
+     */
+    public InternetSCSIException() {
 
-    super();
-  }
+        super();
+    }
 
-  /**
-   * Constructs a new exception with the specified detail message.
-   * 
-   * @param msg
-   *          the detail message. The detail message is saved for later
-   *          retrieval by the Throwable.getMessage() method.
-   */
-  public InternetSCSIException(final String msg) {
+    /**
+     * Constructs a new exception with the specified detail message.
+     * 
+     * @param msg
+     *            the detail message. The detail message is saved for later
+     *            retrieval by the Throwable.getMessage() method.
+     */
+    public InternetSCSIException(final String msg) {
 
-    super(msg);
-  }
+        super(msg);
+    }
 
-  /**
-   * Constructs a new exception as a wrapper for a given exception.
-   * 
-   * @param e
-   *          the exception to be wrapped
-   */
-  public InternetSCSIException(final Exception e) {
+    /**
+     * Constructs a new exception as a wrapper for a given exception.
+     * 
+     * @param e
+     *            the exception to be wrapped
+     */
+    public InternetSCSIException(final Exception e) {
 
-    super(e);
-  }
+        super(e);
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

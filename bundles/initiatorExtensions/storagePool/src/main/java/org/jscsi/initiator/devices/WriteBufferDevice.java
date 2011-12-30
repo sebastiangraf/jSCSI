@@ -42,133 +42,134 @@ import java.util.Map;
  */
 public class WriteBufferDevice implements Device {
 
-  private final Device device;
+    private final Device device;
 
-  private static final int MAX_WRITE_COUNT = 10;
+    private static final int MAX_WRITE_COUNT = 10;
 
-  private final Map<Long, byte[]> buffer;
+    private final Map<Long, byte[]> buffer;
 
-  private int writeCount;
+    private int writeCount;
 
-  /**
-   * Constructor to create an Prefetcher. The Device has to be initialized
-   * before it can be used.
-   * 
-   * @param initDevice
-   *          Device to prefetch
-   * @throws Exception
-   *           if any error occurs
-   */
-  public WriteBufferDevice(final Device initDevice) throws Exception {
+    /**
+     * Constructor to create an Prefetcher. The Device has to be initialized
+     * before it can be used.
+     * 
+     * @param initDevice
+     *            Device to prefetch
+     * @throws Exception
+     *             if any error occurs
+     */
+    public WriteBufferDevice(final Device initDevice) throws Exception {
 
-    this.device = initDevice;
-    buffer = new HashMap<Long, byte[]>();
-    // flushThread = new FlushThread();
-    // flushThread.start();
-    writeCount = 0;
-  }
-
-  /** {@inheritDoc} */
-  public void close() throws Exception {
-
-    // flushThread.interrupt();
-    flush();
-    device.close();
-  }
-
-  /** {@inheritDoc} */
-  public int getBlockSize() {
-
-    int size = device.getBlockSize();
-    return size;
-
-  }
-
-  /** {@inheritDoc} */
-  public String getName() {
-
-    String name = device.getName();
-    try {
-      flush();
-    } catch (Exception e) {
-      new RuntimeException(e);
+        this.device = initDevice;
+        buffer = new HashMap<Long, byte[]>();
+        // flushThread = new FlushThread();
+        // flushThread.start();
+        writeCount = 0;
     }
-    return name;
-  }
 
-  /** {@inheritDoc} */
-  public long getBlockCount() {
+    /** {@inheritDoc} */
+    public void close() throws Exception {
 
-    long count = device.getBlockCount();
-    try {
-      flush();
-    } catch (Exception e) {
-      new RuntimeException(e);
+        // flushThread.interrupt();
+        flush();
+        device.close();
     }
-    return count;
-  }
 
-  /** {@inheritDoc} */
-  public void open() throws Exception {
+    /** {@inheritDoc} */
+    public int getBlockSize() {
 
-    flush();
-    device.open();
-  }
+        int size = device.getBlockSize();
+        return size;
 
-  /**
-   * Flush the buffer to the target.
-   * 
-   * @throws Exception for any error
-   */
-  public final synchronized void flush() throws Exception {
-
-    List<Long> sortedKeys = new ArrayList<Long>(buffer.keySet());
-    Collections.sort(sortedKeys);
-
-    while (sortedKeys.size() > 0) {
-      long firstKey = sortedKeys.get(0);
-      int firstDataLength = buffer.get(firstKey).length;
-      int i = 1;
-      while (i < sortedKeys.size()
-          && sortedKeys.get(i) == sortedKeys.get(i - 1)
-              + (firstDataLength / getBlockSize())) {
-        i++;
-      }
-      byte[] data = new byte[firstDataLength * i];
-      for (int j = 0; j < i; j++) {
-        System.arraycopy(buffer.get(sortedKeys.get(j)), 0, data, j
-            * firstDataLength, firstDataLength);
-      }
-      device.write(firstKey, data);
-      if (sortedKeys.size() != 1) {
-        sortedKeys = sortedKeys.subList(i, sortedKeys.size());
-      } else {
-        sortedKeys.clear();
-      }
     }
-    buffer.clear();
-  }
 
-  /** {@inheritDoc} */
-  public void read(final long address, final byte[] data) throws Exception {
+    /** {@inheritDoc} */
+    public String getName() {
 
-    byte[] bufferedData = buffer.get(address);
-    if (bufferedData != null && bufferedData.length == data.length) {
-      System.arraycopy(bufferedData, 0, data, 0, data.length);
-    } else {
-      device.read(address, data);
+        String name = device.getName();
+        try {
+            flush();
+        } catch (Exception e) {
+            new RuntimeException(e);
+        }
+        return name;
     }
-  }
 
-  /** {@inheritDoc} */
-  public void write(final long address, final byte[] data) throws Exception {
+    /** {@inheritDoc} */
+    public long getBlockCount() {
 
-    buffer.put(address, data);
-    writeCount++;
-    if (writeCount >= MAX_WRITE_COUNT) {
-      writeCount = 0;
-      flush();
+        long count = device.getBlockCount();
+        try {
+            flush();
+        } catch (Exception e) {
+            new RuntimeException(e);
+        }
+        return count;
     }
-  }
+
+    /** {@inheritDoc} */
+    public void open() throws Exception {
+
+        flush();
+        device.open();
+    }
+
+    /**
+     * Flush the buffer to the target.
+     * 
+     * @throws Exception
+     *             for any error
+     */
+    public final synchronized void flush() throws Exception {
+
+        List<Long> sortedKeys = new ArrayList<Long>(buffer.keySet());
+        Collections.sort(sortedKeys);
+
+        while (sortedKeys.size() > 0) {
+            long firstKey = sortedKeys.get(0);
+            int firstDataLength = buffer.get(firstKey).length;
+            int i = 1;
+            while (i < sortedKeys.size()
+                    && sortedKeys.get(i) == sortedKeys.get(i - 1)
+                            + (firstDataLength / getBlockSize())) {
+                i++;
+            }
+            byte[] data = new byte[firstDataLength * i];
+            for (int j = 0; j < i; j++) {
+                System.arraycopy(buffer.get(sortedKeys.get(j)), 0, data, j
+                        * firstDataLength, firstDataLength);
+            }
+            device.write(firstKey, data);
+            if (sortedKeys.size() != 1) {
+                sortedKeys = sortedKeys.subList(i, sortedKeys.size());
+            } else {
+                sortedKeys.clear();
+            }
+        }
+        buffer.clear();
+    }
+
+    /** {@inheritDoc} */
+    public void read(final long address, final byte[] data) throws Exception {
+
+        byte[] bufferedData = buffer.get(address);
+        if (bufferedData != null && bufferedData.length == data.length) {
+            System.arraycopy(bufferedData, 0, data, 0, data.length);
+        } else {
+            device.read(address, data);
+        }
+    }
+
+    /** {@inheritDoc} */
+    public void write(final long address, final byte[] data) throws Exception {
+
+        buffer.put(address, data);
+        writeCount++;
+        if (writeCount >= MAX_WRITE_COUNT) {
+            writeCount = 0;
+            flush();
+        }
+    }
 
 }

@@ -45,55 +45,55 @@ import org.jscsi.parser.exception.NoSuchConnectionException;
  */
 public abstract class AbstractTaskBalancer {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** This list contains all free connections of a iSCSI Session. */
-  protected LinkedBlockingQueue<Connection> freeConnections;
+    /** This list contains all free connections of a iSCSI Session. */
+    protected LinkedBlockingQueue<Connection> freeConnections;
 
-  /** The Logger interface. */
-  protected static final Log LOGGER = LogFactory
-      .getLog(AbstractTaskBalancer.class);
+    /** The Logger interface. */
+    protected static final Log LOGGER = LogFactory
+            .getLog(AbstractTaskBalancer.class);
 
-  /** The Session. */
-  protected Session session;
+    /** The Session. */
+    protected Session session;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a new <code>AbstractLoadBalancer</code> instance,
-   * which distribute the work to these connections.
-   * 
-   * @param initConnections
-   *          The list with all opened connections.
-   */
-  protected AbstractTaskBalancer(
-      final LinkedBlockingQueue<Connection> initConnections) {
+    /**
+     * Constructor to create a new <code>AbstractLoadBalancer</code> instance,
+     * which distribute the work to these connections.
+     * 
+     * @param initConnections
+     *            The list with all opened connections.
+     */
+    protected AbstractTaskBalancer(
+            final LinkedBlockingQueue<Connection> initConnections) {
 
-    freeConnections = initConnections;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  public abstract Connection getConnection() throws NoSuchConnectionException;
-
-  public void releaseConnection(final Connection connection)
-      throws NoSuchConnectionException {
-
-    if (connection != null) {
-      try {
-        freeConnections.add(connection);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+        freeConnections = initConnections;
     }
-  }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    public abstract Connection getConnection() throws NoSuchConnectionException;
+
+    public void releaseConnection(final Connection connection)
+            throws NoSuchConnectionException {
+
+        if (connection != null) {
+            try {
+                freeConnections.add(connection);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

@@ -36,88 +36,91 @@ import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.text.TextResponseParser;
 
 /**
- * <h1>GetConnectionsResponseState</h1> <p/> This state handles the response of
- * a TextRequest PDU. So, there can be opened more connections to these targets
- * listed in this response.
+ * <h1>GetConnectionsResponseState</h1>
+ * <p/>
+ * This state handles the response of a TextRequest PDU. So, there can be opened
+ * more connections to these targets listed in this response.
  * 
  * @author Volker Wildi
  */
 final class GetConnectionsResponseState extends AbstractState {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a <code>GetConnectionsResponseState</code> instance,
-   * which uses the given connection for transmission.
-   * 
-   * @param initConnection
-   *          The context connection, which is used for the network
-   *          transmission.
-   */
-  protected GetConnectionsResponseState(final Connection initConnection) {
+    /**
+     * Constructor to create a <code>GetConnectionsResponseState</code>
+     * instance, which uses the given connection for transmission.
+     * 
+     * @param initConnection
+     *            The context connection, which is used for the network
+     *            transmission.
+     */
+    protected GetConnectionsResponseState(final Connection initConnection) {
 
-    super(initConnection);
-  }
+        super(initConnection);
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  public void execute() throws InternetSCSIException {
+    /** {@inheritDoc} */
+    public void execute() throws InternetSCSIException {
 
-    ProtocolDataUnit protocolDataUnit;
-    final IDataSegment textResponse = DataSegmentFactory.create(
-        DataSegmentFormat.TEXT, connection
-            .getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH));
+        ProtocolDataUnit protocolDataUnit;
+        final IDataSegment textResponse = DataSegmentFactory
+                .create(DataSegmentFormat.TEXT,
+                        connection
+                                .getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH));
 
-    do {
-      protocolDataUnit = connection.receive();
+        do {
+            protocolDataUnit = connection.receive();
 
-      if (!(protocolDataUnit.getBasicHeaderSegment().getParser() instanceof TextResponseParser)) {
-        break;
-      }
+            if (!(protocolDataUnit.getBasicHeaderSegment().getParser() instanceof TextResponseParser)) {
+                break;
+            }
 
-      textResponse.append(protocolDataUnit.getDataSegment(), protocolDataUnit
-          .getBasicHeaderSegment().getDataSegmentLength());
-    } while (!protocolDataUnit.getBasicHeaderSegment().isFinalFlag());
+            textResponse.append(protocolDataUnit.getDataSegment(),
+                    protocolDataUnit.getBasicHeaderSegment()
+                            .getDataSegmentLength());
+        } while (!protocolDataUnit.getBasicHeaderSegment().isFinalFlag());
 
-    // extract Target Session Handle Identifying Handle
-    // final TextResponseParser parser = (TextResponseParser)
-    // protocolDataUnit.getBasicHeaderSegment().getParser();
-    // final ByteBuffer textDataSegment = ByteBuffer
-    // .allocate(AbstractDataSegment.getTotalLength(textResponse.getLength()));
-    // textResponse.serialize(textDataSegment, 0);
+        // extract Target Session Handle Identifying Handle
+        // final TextResponseParser parser = (TextResponseParser)
+        // protocolDataUnit.getBasicHeaderSegment().getParser();
+        // final ByteBuffer textDataSegment = ByteBuffer
+        // .allocate(AbstractDataSegment.getTotalLength(textResponse.getLength()));
+        // textResponse.serialize(textDataSegment, 0);
+        //
+        // try {
+        // final String response = new String(textDataSegment.array(), "UTF-8");
+        // final String[] lines = response.split("\0");
+        // } catch (UnsupportedEncodingException e) {
+        // if (LOGGER.isErrorEnabled()) {
+        // LOGGER.error("Unsupported Encoding Exception: " +
+        // e.getLocalizedMessage());
+        // }
+        // }
+
+        // return false;
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    // /** {@inheritDoc} */
+    // @Override
+    // public final boolean isCorrect(final ProtocolDataUnit protocolDataUnit)
+    // throws InternetSCSIException {
     //
-    // try {
-    // final String response = new String(textDataSegment.array(), "UTF-8");
-    // final String[] lines = response.split("\0");
-    // } catch (UnsupportedEncodingException e) {
-    // if (LOGGER.isErrorEnabled()) {
-    // LOGGER.error("Unsupported Encoding Exception: " +
-    // e.getLocalizedMessage());
-    // }
+    // // FIXME: Reject must also be supported.
+    // return protocolDataUnit.getBasicHeaderSegment().getParser() instanceof
+    // TextResponseParser;
     // }
 
-//    return false;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  // /** {@inheritDoc} */
-  // @Override
-  // public final boolean isCorrect(final ProtocolDataUnit protocolDataUnit)
-  // throws InternetSCSIException {
-  //
-  // // FIXME: Reject must also be supported.
-  // return protocolDataUnit.getBasicHeaderSegment().getParser() instanceof
-  // TextResponseParser;
-  // }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

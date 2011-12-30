@@ -34,111 +34,115 @@ import org.jscsi.parser.ProtocolDataUnitFactory;
 import org.jscsi.parser.exception.InternetSCSIException;
 
 /**
- * <h1>IState</h1> <p/> Each inherited state must implement this interface.
+ * <h1>IState</h1>
+ * <p/>
+ * Each inherited state must implement this interface.
  * 
  * @author Volker Wildi
  */
 public interface IState {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * This method is always invoked, when a request message must be send or
-   * response message must be received and then parsed.
-   * 
-   * @throws InternetSCSIException
-   *           if any violation of the iSCSI Standard (RfC3720) has emerged.
-   */
-  public void execute() throws InternetSCSIException;
+    /**
+     * This method is always invoked, when a request message must be send or
+     * response message must be received and then parsed.
+     * 
+     * @throws InternetSCSIException
+     *             if any violation of the iSCSI Standard (RfC3720) has emerged.
+     */
+    public void execute() throws InternetSCSIException;
 
-  /**
-   * This method shows if another state is following this one.
-   * 
-   * @return <code>true</code>, if another state must follow this state. Else an
-   *         final state is reached.
-   */
-  public boolean nextStateFollowing();
+    /**
+     * This method shows if another state is following this one.
+     * 
+     * @return <code>true</code>, if another state must follow this state. Else
+     *         an final state is reached.
+     */
+    public boolean nextStateFollowing();
 
-  /**
-   * This method checks the correctness of the given
-   * <code>ProtocolDataUnit</code> instance within the current state of a
-   * connection.
-   * 
-   * @param protocolDataUnit
-   *          The <code>ProtocolDataUnit</code> instance to check.
-   * @return <code>Exception</code> if any problem occured with the PDU,
-   *         <code>null</code> otherwise.
-   */
-  public Exception isCorrect(final ProtocolDataUnit protocolDataUnit);
+    /**
+     * This method checks the correctness of the given
+     * <code>ProtocolDataUnit</code> instance within the current state of a
+     * connection.
+     * 
+     * @param protocolDataUnit
+     *            The <code>ProtocolDataUnit</code> instance to check.
+     * @return <code>Exception</code> if any problem occured with the PDU,
+     *         <code>null</code> otherwise.
+     */
+    public Exception isCorrect(final ProtocolDataUnit protocolDataUnit);
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }
 
 /**
- * <h1>AbstractState</h1> <p/> Each connection state must extend this abstract
- * class to support some basic features.
+ * <h1>AbstractState</h1>
+ * <p/>
+ * Each connection state must extend this abstract class to support some basic
+ * features.
  * 
  * @author Volker Wildi
  */
 abstract class AbstractState implements IState {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The Logger interface. */
-  protected static final Log LOGGER = LogFactory.getLog(AbstractState.class);
+    /** The Logger interface. */
+    protected static final Log LOGGER = LogFactory.getLog(AbstractState.class);
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The context connection used by all message kinds. */
-  protected final Connection connection;
+    /** The context connection used by all message kinds. */
+    protected final Connection connection;
 
-  /** Factory to create the <code>ProtocolDataUnit</code> instances. */
-  protected final ProtocolDataUnitFactory protocolDataUnitFactory = new ProtocolDataUnitFactory();
+    /** Factory to create the <code>ProtocolDataUnit</code> instances. */
+    protected final ProtocolDataUnitFactory protocolDataUnitFactory = new ProtocolDataUnitFactory();
 
-  /** boolean to mark following states.*/
-  protected boolean stateFollowing;
+    /** boolean to mark following states. */
+    protected boolean stateFollowing;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  public Exception isCorrect(final ProtocolDataUnit protocolDataUnit) {
+    /** {@inheritDoc} */
+    public Exception isCorrect(final ProtocolDataUnit protocolDataUnit) {
 
-    return null;
-  }
+        return null;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor, which each subclass must implement to set the context
-   * connectioncorrectly.
-   * 
-   * @param initConnection
-   *          The connection, which is used for the message transmission.
-   */
-  protected AbstractState(final Connection initConnection) {
+    /**
+     * Constructor, which each subclass must implement to set the context
+     * connectioncorrectly.
+     * 
+     * @param initConnection
+     *            The connection, which is used for the message transmission.
+     */
+    protected AbstractState(final Connection initConnection) {
 
-    connection = initConnection;
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  public boolean nextStateFollowing() {
-    return this.stateFollowing;
-  }
+        connection = initConnection;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    public boolean nextStateFollowing() {
+        return this.stateFollowing;
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

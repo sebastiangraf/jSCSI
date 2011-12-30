@@ -124,382 +124,382 @@ import org.jscsi.parser.exception.InternetSCSIException;
  */
 public final class SNACKRequestParser extends InitiatorMessageParser {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * This enumeration defines all valid SNACK types.
-   * <p>
-   * <table border="1">
-   * <tr>
-   * <th>Type</th>
-   * <th>Description</th>
-   * </tr>
-   * <tr>
-   * <td>0</td>
-   * <td>Data/R2T SNACK - requesting retransmission of one or more Data- In or
-   * R2T PDUs.</td>
-   * </tr>
-   * <tr>
-   * <td>1</td>
-   * <td>Status SNACK - requesting retransmission of one or more numbered
-   * responses.</td>
-   * </tr>
-   * <tr>
-   * <td>2</td>
-   * <td>DataACK - positively acknowledges Data-In PDUs.</td>
-   * </tr>
-   * <tr>
-   * <td>3</td>
-   * <td>R-Data SNACK - requesting retransmission of Data-In PDUs with possible
-   * resegmentation and status tagging.</td>
-   * </tr>
-   * </table>
-   * <p>
-   * All other values are reserved.
-   * <p>
-   * Data/R2T SNACK, Status SNACK, or R-Data SNACK for a command MUST precede
-   * status acknowledgement for the given command.
-   */
-  public static enum SNACKType {
+    /**
+     * This enumeration defines all valid SNACK types.
+     * <p>
+     * <table border="1">
+     * <tr>
+     * <th>Type</th>
+     * <th>Description</th>
+     * </tr>
+     * <tr>
+     * <td>0</td>
+     * <td>Data/R2T SNACK - requesting retransmission of one or more Data- In or
+     * R2T PDUs.</td>
+     * </tr>
+     * <tr>
+     * <td>1</td>
+     * <td>Status SNACK - requesting retransmission of one or more numbered
+     * responses.</td>
+     * </tr>
+     * <tr>
+     * <td>2</td>
+     * <td>DataACK - positively acknowledges Data-In PDUs.</td>
+     * </tr>
+     * <tr>
+     * <td>3</td>
+     * <td>R-Data SNACK - requesting retransmission of Data-In PDUs with
+     * possible resegmentation and status tagging.</td>
+     * </tr>
+     * </table>
+     * <p>
+     * All other values are reserved.
+     * <p>
+     * Data/R2T SNACK, Status SNACK, or R-Data SNACK for a command MUST precede
+     * status acknowledgement for the given command.
+     */
+    public static enum SNACKType {
 
-    /** The Data/R2T-Snack. */
-    DATA_R2T_SNACK((byte) 0),
+        /** The Data/R2T-Snack. */
+        DATA_R2T_SNACK((byte) 0),
 
-    /** The Status-SNACK. */
-    STATUS_SNACK((byte) 1),
+        /** The Status-SNACK. */
+        STATUS_SNACK((byte) 1),
 
-    /** The DataACK. */
-    DATA_ACK((byte) 2),
+        /** The DataACK. */
+        DATA_ACK((byte) 2),
 
-    /** The R-Data SNACK. */
-    R_DATA_SNACK((byte) 3);
+        /** The R-Data SNACK. */
+        R_DATA_SNACK((byte) 3);
 
-    private final byte value;
+        private final byte value;
 
-    private static Map<Byte, SNACKType> mapping;
+        private static Map<Byte, SNACKType> mapping;
 
-    static {
-      SNACKType.mapping = new HashMap<Byte, SNACKType>();
-      for (SNACKType s : values()) {
-        SNACKType.mapping.put(s.value, s);
-      }
+        static {
+            SNACKType.mapping = new HashMap<Byte, SNACKType>();
+            for (SNACKType s : values()) {
+                SNACKType.mapping.put(s.value, s);
+            }
+        }
+
+        private SNACKType(final byte newValue) {
+
+            value = newValue;
+        }
+
+        /**
+         * Returns the value of this enumeration.
+         * 
+         * @return The value of this enumeration.
+         */
+        public final byte value() {
+
+            return value;
+        }
+
+        /**
+         * Returns the constant defined for the given <code>value</code>.
+         * 
+         * @param value
+         *            The value to search for.
+         * @return The constant defined for the given <code>value</code>. Or
+         *         <code>null</code>, if this value is not defined by this
+         *         enumeration.
+         */
+        public static final SNACKType valueOf(final byte value) {
+
+            return SNACKType.mapping.get(value);
+        }
     }
 
-    private SNACKType(final byte newValue) {
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-      value = newValue;
+    /** Bit mask to extract the SNACK type. */
+    private static final int TYPE_MASK = 0x000F0000;
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /** The SNACK type. */
+    private SNACKType type;
+
+    /** The target transfer tag. */
+    private int targetTransferTag;
+
+    /** The first PDU number to start from with the retransmission. */
+    private int begRun;
+
+    /** The run length of requested PDUs to retransmit. */
+    private int runLength;
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /**
+     * Default constructor, creates a new, empty <code>SNACKRequestParser</code>
+     * object.
+     * 
+     * @param initProtocolDataUnit
+     *            The reference <code>ProtocolDataUnit</code> instance, which
+     *            contains this <code>SNACKRequestParser</code> subclass object.
+     */
+    public SNACKRequestParser(final ProtocolDataUnit initProtocolDataUnit) {
+
+        super(initProtocolDataUnit);
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /**
+     * The <code>DataSN</code>, <code>R2TSN</code>, or <code>StatSN</code> of
+     * the first PDU whose retransmission is requested (Data/R2T and Status
+     * SNACK), or the next expected DataSN (DataACK SNACK).
+     * <p>
+     * <code>BegRun</code> <code>0</code> when used in conjunction with
+     * <code>RunLength</code> <code>0</code> means resend all unacknowledged
+     * Data-In, R2T or Response PDUs.
+     * <p>
+     * <code>BegRun</code> MUST be <code>0</code> for a R-Data SNACK.
+     * 
+     * @return The BegRun of this <code>SNACKRequestParser</code> obejct.
+     */
+    public final int getBegRun() {
+
+        return begRun;
     }
 
     /**
-     * Returns the value of this enumeration.
+     * The number of PDUs whose retransmission is requested.
+     * <p>
+     * <code>RunLength</code> <code>0</code> signals that all Data-In, R2T, or
+     * Response PDUs carrying the numbers equal to or greater than BegRun have
+     * to be resent.
+     * <p>
+     * The <code>RunLength</code> MUST also be <code>0</code> for a DataACK
+     * SNACK in addition to R-Data SNACK.
      * 
-     * @return The value of this enumeration.
+     * @return The RunLength of this <code>SNACKRequestParser</code> object.
      */
-    public final byte value() {
+    public final int getRunLength() {
 
-      return value;
+        return runLength;
     }
 
     /**
-     * Returns the constant defined for the given <code>value</code>.
+     * For an R-Data SNACK, this field MUST contain a value that is different
+     * from <code>0</code> or <code>0xffffffff</code> and is unique for the task
+     * (identified by the Initiator Task Tag). This value MUST be copied by the
+     * iSCSI target in the last or only SCSI Response PDU it issues for the
+     * command.
+     * <p>
+     * For <code>DataACK</code>, the Target Transfer Tag MUST contain a copy of
+     * the Target Transfer Tag and LUN provided with the SCSI Data-In PDU with
+     * the <code>A</code> bit set to <code>1</code>.
+     * <p>
+     * In all other cases, the Target Transfer Tag field MUST be set to the
+     * reserved value of <code>0xffffffff</code>.
      * 
-     * @param value
-     *          The value to search for.
-     * @return The constant defined for the given <code>value</code>. Or
-     *         <code>null</code>, if this value is not defined by this
-     *         enumeration.
+     * @return The target transfer tag of this <code>SNACKRequestParser</code>
+     *         object.
      */
-    public static final SNACKType valueOf(final byte value) {
+    public final int getTargetTransferTag() {
 
-      return SNACKType.mapping.get(value);
+        return targetTransferTag;
     }
-  }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /**
+     * Returns the SNACK Function Code of this <code>SNACKRequestParser</code>
+     * object.
+     * 
+     * @return The SNACK Function code of this <code>SNACKRequestParser</code>
+     *         object.
+     * @see #SNACKType
+     */
+    public final SNACKType getType() {
 
-  /** Bit mask to extract the SNACK type. */
-  private static final int TYPE_MASK = 0x000F0000;
+        return type;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The SNACK type. */
-  private SNACKType type;
+    /**
+     * Sets the <code>begRun</code> variable to the given new value.
+     * 
+     * @param newBegRun
+     *            The new value.
+     */
+    public final void setBegRun(final int newBegRun) {
 
-  /** The target transfer tag. */
-  private int targetTransferTag;
+        begRun = newBegRun;
+    }
 
-  /** The first PDU number to start from with the retransmission. */
-  private int begRun;
+    /**
+     * Sets the Run Length to the given value.
+     * 
+     * @param newRunLength
+     *            The new value.
+     */
+    public final void setRunLength(final int newRunLength) {
 
-  /** The run length of requested PDUs to retransmit. */
-  private int runLength;
+        runLength = newRunLength;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /**
+     * Sets the Target Transfer Tag to the given value.
+     * 
+     * @param newTargetTransferTag
+     *            The new value.
+     */
+    public final void setTargetTransferTag(final int newTargetTransferTag) {
 
-  /**
-   * Default constructor, creates a new, empty <code>SNACKRequestParser</code>
-   * object.
-   * 
-   * @param initProtocolDataUnit
-   *          The reference <code>ProtocolDataUnit</code> instance, which
-   *          contains this <code>SNACKRequestParser</code> subclass object.
-   */
-  public SNACKRequestParser(final ProtocolDataUnit initProtocolDataUnit) {
+        targetTransferTag = newTargetTransferTag;
+    }
 
-    super(initProtocolDataUnit);
-  }
+    /**
+     * Sets the type of this SNACKRequest to the given value.
+     * 
+     * @param newType
+     *            The new value.
+     */
+    public final void setType(final SNACKType newType) {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+        type = newType;
+    }
 
-  /**
-   * The <code>DataSN</code>, <code>R2TSN</code>, or <code>StatSN</code> of the
-   * first PDU whose retransmission is requested (Data/R2T and Status SNACK), or
-   * the next expected DataSN (DataACK SNACK).
-   * <p>
-   * <code>BegRun</code> <code>0</code> when used in conjunction with
-   * <code>RunLength</code> <code>0</code> means resend all unacknowledged
-   * Data-In, R2T or Response PDUs.
-   * <p>
-   * <code>BegRun</code> MUST be <code>0</code> for a R-Data SNACK.
-   * 
-   * @return The BegRun of this <code>SNACKRequestParser</code> obejct.
-   */
-  public final int getBegRun() {
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    return begRun;
-  }
+    /** {@inheritDoc} */
+    @Override
+    public final String toString() {
 
-  /**
-   * The number of PDUs whose retransmission is requested.
-   * <p>
-   * <code>RunLength</code> <code>0</code> signals that all Data-In, R2T, or
-   * Response PDUs carrying the numbers equal to or greater than BegRun have to
-   * be resent.
-   * <p>
-   * The <code>RunLength</code> MUST also be <code>0</code> for a DataACK SNACK
-   * in addition to R-Data SNACK.
-   * 
-   * @return The RunLength of this <code>SNACKRequestParser</code> object.
-   */
-  public final int getRunLength() {
+        final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
 
-    return runLength;
-  }
+        Utils.printField(sb, "Type", type.value(), 1);
+        Utils.printField(sb, "LUN", logicalUnitNumber, 1);
+        Utils.printField(sb, "Target Transfer Tag", targetTransferTag, 1);
+        sb.append(super.toString());
+        Utils.printField(sb, "BegRun", begRun, 1);
+        Utils.printField(sb, "Run Length", runLength, 1);
 
-  /**
-   * For an R-Data SNACK, this field MUST contain a value that is different from
-   * <code>0</code> or <code>0xffffffff</code> and is unique for the task
-   * (identified by the Initiator Task Tag). This value MUST be copied by the
-   * iSCSI target in the last or only SCSI Response PDU it issues for the
-   * command.
-   * <p>
-   * For <code>DataACK</code>, the Target Transfer Tag MUST contain a copy of
-   * the Target Transfer Tag and LUN provided with the SCSI Data-In PDU with the
-   * <code>A</code> bit set to <code>1</code>.
-   * <p>
-   * In all other cases, the Target Transfer Tag field MUST be set to the
-   * reserved value of <code>0xffffffff</code>.
-   * 
-   * @return The target transfer tag of this <code>SNACKRequestParser</code>
-   *         object.
-   */
-  public final int getTargetTransferTag() {
+        return sb.toString();
+    }
 
-    return targetTransferTag;
-  }
+    /** {@inheritDoc} */
+    @Override
+    public final DataSegmentFormat getDataSegmentFormat() {
 
-  /**
-   * Returns the SNACK Function Code of this <code>SNACKRequestParser</code>
-   * object.
-   * 
-   * @return The SNACK Function code of this <code>SNACKRequestParser</code>
-   *         object.
-   * @see #SNACKType
-   */
-  public final SNACKType getType() {
+        return DataSegmentFormat.NONE;
+    }
 
-    return type;
-  }
+    /** {@inheritDoc} */
+    @Override
+    public final void clear() {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+        super.clear();
 
-  /**
-   * Sets the <code>begRun</code> variable to the given new value.
-   * 
-   * @param newBegRun
-   *          The new value.
-   */
-  public final void setBegRun(final int newBegRun) {
+        type = SNACKType.DATA_ACK;
+        targetTransferTag = 0x00000000;
+        begRun = 0x00000000;
+        runLength = 0x00000000;
+    }
 
-    begRun = newBegRun;
-  }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Sets the Run Length to the given value.
-   * 
-   * @param newRunLength
-   *          The new value.
-   */
-  public final void setRunLength(final int newRunLength) {
+    /** {@inheritDoc} */
+    @Override
+    protected final void deserializeBytes1to3(final int line)
+            throws InternetSCSIException {
 
-    runLength = newRunLength;
-  }
+        type = SNACKType
+                .valueOf((byte) ((line & TYPE_MASK) >> Constants.TWO_BYTES_SHIFT));
+        Utils.isReserved(line & Constants.LAST_TWO_BYTES_MASK);
+    }
 
-  /**
-   * Sets the Target Transfer Tag to the given value.
-   * 
-   * @param newTargetTransferTag
-   *          The new value.
-   */
-  public final void setTargetTransferTag(final int newTargetTransferTag) {
+    /** {@inheritDoc} */
+    @Override
+    protected final void deserializeBytes20to23(final int line)
+            throws InternetSCSIException {
 
-    targetTransferTag = newTargetTransferTag;
-  }
+        targetTransferTag = line;
+    }
 
-  /**
-   * Sets the type of this SNACKRequest to the given value.
-   * 
-   * @param newType
-   *          The new value.
-   */
-  public final void setType(final SNACKType newType) {
+    /** {@inheritDoc} */
+    @Override
+    protected final void deserializeBytes40to43(final int line)
+            throws InternetSCSIException {
 
-    type = newType;
-  }
+        begRun = line;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /** {@inheritDoc} */
+    @Override
+    protected final void deserializeBytes44to47(final int line)
+            throws InternetSCSIException {
 
-  /** {@inheritDoc} */
-  @Override
-  public final String toString() {
+        runLength = line;
+    }
 
-    final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    Utils.printField(sb, "Type", type.value(), 1);
-    Utils.printField(sb, "LUN", logicalUnitNumber, 1);
-    Utils.printField(sb, "Target Transfer Tag", targetTransferTag, 1);
-    sb.append(super.toString());
-    Utils.printField(sb, "BegRun", begRun, 1);
-    Utils.printField(sb, "Run Length", runLength, 1);
+    /** {@inheritDoc} */
+    @Override
+    protected final void checkIntegrity() throws InternetSCSIException {
 
-    return sb.toString();
-  }
+        // FIXME: Sure?
+        // do nothing...
+    }
 
-  /** {@inheritDoc} */
-  @Override
-  public final DataSegmentFormat getDataSegmentFormat() {
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    return DataSegmentFormat.NONE;
-  }
+    /** {@inheritDoc} */
+    @Override
+    protected final int serializeBytes1to3() {
 
-  /** {@inheritDoc} */
-  @Override
-  public final void clear() {
+        return type.value() << Constants.TWO_BYTES_SHIFT;
+    }
 
-    super.clear();
+    /** {@inheritDoc} */
+    @Override
+    protected final int serializeBytes20to23() {
 
-    type = SNACKType.DATA_ACK;
-    targetTransferTag = 0x00000000;
-    begRun = 0x00000000;
-    runLength = 0x00000000;
-  }
+        return targetTransferTag;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /** {@inheritDoc} */
+    @Override
+    protected final int serializeBytes24to27() {
 
-  /** {@inheritDoc} */
-  @Override
-  protected final void deserializeBytes1to3(final int line)
-      throws InternetSCSIException {
+        return 0;
+    }
 
-    type = SNACKType
-        .valueOf((byte) ((line & TYPE_MASK) >> Constants.TWO_BYTES_SHIFT));
-    Utils.isReserved(line & Constants.LAST_TWO_BYTES_MASK);
-  }
+    /** {@inheritDoc} */
+    @Override
+    protected final int serializeBytes40to43() {
 
-  /** {@inheritDoc} */
-  @Override
-  protected final void deserializeBytes20to23(final int line)
-      throws InternetSCSIException {
+        return begRun;
+    }
 
-    targetTransferTag = line;
-  }
+    /** {@inheritDoc} */
+    @Override
+    protected final int serializeBytes44to47() {
 
-  /** {@inheritDoc} */
-  @Override
-  protected final void deserializeBytes40to43(final int line)
-      throws InternetSCSIException {
+        return runLength;
+    }
 
-    begRun = line;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected final void deserializeBytes44to47(final int line)
-      throws InternetSCSIException {
-
-    runLength = line;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  @Override
-  protected final void checkIntegrity() throws InternetSCSIException {
-
-    // FIXME: Sure?
-    // do nothing...
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  @Override
-  protected final int serializeBytes1to3() {
-
-    return type.value() << Constants.TWO_BYTES_SHIFT;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected final int serializeBytes20to23() {
-
-    return targetTransferTag;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected final int serializeBytes24to27() {
-
-    return 0;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected final int serializeBytes40to43() {
-
-    return begRun;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected final int serializeBytes44to47() {
-
-    return runLength;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

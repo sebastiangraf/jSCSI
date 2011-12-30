@@ -29,27 +29,28 @@ package org.jscsi.initiator.connection.phase;
 import org.jscsi.parser.login.LoginStage;
 
 /**
- * <h1>LoginOperationalNegotiationPhase</h1> <p/> This class represents the
- * Login Operational Negotiation Phase of a session. In this phase only further
- * exchange of the parameters are allowed.
+ * <h1>LoginOperationalNegotiationPhase</h1>
+ * <p/>
+ * This class represents the Login Operational Negotiation Phase of a session.
+ * In this phase only further exchange of the parameters are allowed.
  * 
  * @author Volker Wildi
  */
 public final class LoginOperationalNegotiationPhase extends AbstractPhase {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  @Override
-  public final LoginStage getStage() {
+    /** {@inheritDoc} */
+    @Override
+    public final LoginStage getStage() {
 
-    return LoginStage.LOGIN_OPERATIONAL_NEGOTIATION;
-  }
+        return LoginStage.LOGIN_OPERATIONAL_NEGOTIATION;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

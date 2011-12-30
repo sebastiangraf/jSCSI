@@ -53,10 +53,11 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * the NOP-In Target Transfer Tag.
  * <p>
  * These fields have these specific meanings: <blockquote> <b>Initiator Task
- * Tag:</b><br/> The NOP-Out MUST have the Initiator Task Tag set to a valid
- * value only if a response in the form of NOP-In is requested (i.e., the
- * NOP-Out is used as a ping request). Otherwise, the Initiator Task Tag MUST be
- * set to <code>0xffffffff</code>.
+ * Tag:</b><br/>
+ * The NOP-Out MUST have the Initiator Task Tag set to a valid value only if a
+ * response in the form of NOP-In is requested (i.e., the NOP-Out is used as a
+ * ping request). Otherwise, the Initiator Task Tag MUST be set to
+ * <code>0xffffffff</code>.
  * <p>
  * When a target receives the NOP-Out with a valid Initiator Task Tag, it MUST
  * respond with a Nop-In Response (see Section 10.19 NOP-In).
@@ -65,132 +66,134 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * <code>I bit</code> MUST be set to <code>1</code> and the <code>CmdSN</code>
  * is not advanced after this PDU is sent.
  * <p>
- * <b>Ping Data</b><br/> Ping data are reflected in the NOP-In Response. The
- * length of the reflected data are limited to
- * <code>MaxRecvDataSegmentLength</code>. The length of ping data are indicated
- * by the <code>DataSegmentLength</code>. <code>0</code> is a valid value for
- * the <code>DataSegmentLength</code> and indicates the absence of ping data.
- * </blockquote>
+ * <b>Ping Data</b><br/>
+ * Ping data are reflected in the NOP-In Response. The length of the reflected
+ * data are limited to <code>MaxRecvDataSegmentLength</code>. The length of ping
+ * data are indicated by the <code>DataSegmentLength</code>. <code>0</code> is a
+ * valid value for the <code>DataSegmentLength</code> and indicates the absence
+ * of ping data. </blockquote>
  * 
  * @author Volker Wildi
  */
 public final class NOPOutParser extends InitiatorMessageParser {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The TargetTransferTag. */
-  protected int targetTransferTag;
+    /** The TargetTransferTag. */
+    protected int targetTransferTag;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Default constructor, creates a new, empty <code>NOPOutParser</code> object.
-   * 
-   * @param initProtocolDataUnit
-   *          The reference <code>ProtocolDataUnit</code> instance, which
-   *          contains this <code>NOPOutParser</code> subclass object.
-   */
-  public NOPOutParser(final ProtocolDataUnit initProtocolDataUnit) {
+    /**
+     * Default constructor, creates a new, empty <code>NOPOutParser</code>
+     * object.
+     * 
+     * @param initProtocolDataUnit
+     *            The reference <code>ProtocolDataUnit</code> instance, which
+     *            contains this <code>NOPOutParser</code> subclass object.
+     */
+    public NOPOutParser(final ProtocolDataUnit initProtocolDataUnit) {
 
-    super(initProtocolDataUnit);
-  }
+        super(initProtocolDataUnit);
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * A target assigned identifier for the operation.
-   * <p>
-   * The NOP-Out MUST only have the Target Transfer Tag set if it is issued in
-   * response to a NOP-In with a valid Target Transfer Tag. In this case, it
-   * copies the Target Transfer Tag from the NOP-In PDU. Otherwise, the Target
-   * Transfer Tag MUST be set to <code>0xffffffff</code>.
-   * <p>
-   * When the Target Transfer Tag is set to a value other than
-   * <code>0xffffffff</code>, the LUN field MUST also be copied from the NOP-In.
-   * 
-   * @return The target transfer tag of this object.
-   */
-  public final int getTargetTransferTag() {
+    /**
+     * A target assigned identifier for the operation.
+     * <p>
+     * The NOP-Out MUST only have the Target Transfer Tag set if it is issued in
+     * response to a NOP-In with a valid Target Transfer Tag. In this case, it
+     * copies the Target Transfer Tag from the NOP-In PDU. Otherwise, the Target
+     * Transfer Tag MUST be set to <code>0xffffffff</code>.
+     * <p>
+     * When the Target Transfer Tag is set to a value other than
+     * <code>0xffffffff</code>, the LUN field MUST also be copied from the
+     * NOP-In.
+     * 
+     * @return The target transfer tag of this object.
+     */
+    public final int getTargetTransferTag() {
 
-    return targetTransferTag;
-  }
+        return targetTransferTag;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  @Override
-  public final String toString() {
+    /** {@inheritDoc} */
+    @Override
+    public final String toString() {
 
-    final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
-    Utils.printField(sb, "LUN", logicalUnitNumber, 1);
-    Utils.printField(sb, "Target Transfer Tag", targetTransferTag, 1);
-    sb.append(super.toString());
+        final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
+        Utils.printField(sb, "LUN", logicalUnitNumber, 1);
+        Utils.printField(sb, "Target Transfer Tag", targetTransferTag, 1);
+        sb.append(super.toString());
 
-    return sb.toString();
-  }
+        return sb.toString();
+    }
 
-  /** {@inheritDoc} */
-  @Override
-  public final DataSegmentFormat getDataSegmentFormat() {
+    /** {@inheritDoc} */
+    @Override
+    public final DataSegmentFormat getDataSegmentFormat() {
 
-    return DataSegmentFormat.BINARY;
-  }
+        return DataSegmentFormat.BINARY;
+    }
 
-  /** {@inheritDoc} */
-  @Override
-  public final void clear() {
+    /** {@inheritDoc} */
+    @Override
+    public final void clear() {
 
-    super.clear();
+        super.clear();
 
-    targetTransferTag = 0x00000000;
-  }
+        targetTransferTag = 0x00000000;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  @Override
-  protected final void deserializeBytes1to3(final int line)
-      throws InternetSCSIException {
+    /** {@inheritDoc} */
+    @Override
+    protected final void deserializeBytes1to3(final int line)
+            throws InternetSCSIException {
 
-    Utils.isReserved(line & Constants.LAST_THREE_BYTES_MASK);
-  }
+        Utils.isReserved(line & Constants.LAST_THREE_BYTES_MASK);
+    }
 
-  /** {@inheritDoc} */
-  @Override
-  protected final void deserializeBytes20to23(final int line)
-      throws InternetSCSIException {
+    /** {@inheritDoc} */
+    @Override
+    protected final void deserializeBytes20to23(final int line)
+            throws InternetSCSIException {
 
-    targetTransferTag = line;
-  }
+        targetTransferTag = line;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  @Override
-  protected final void checkIntegrity() throws InternetSCSIException {
+    /** {@inheritDoc} */
+    @Override
+    protected final void checkIntegrity() throws InternetSCSIException {
 
-    // do nothing...
-  }
+        // do nothing...
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  @Override
-  protected final int serializeBytes20to23() {
+    /** {@inheritDoc} */
+    @Override
+    protected final int serializeBytes20to23() {
 
-    return targetTransferTag;
-  }
+        return targetTransferTag;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

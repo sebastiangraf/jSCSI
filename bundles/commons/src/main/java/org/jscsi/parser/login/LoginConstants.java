@@ -35,30 +35,30 @@ package org.jscsi.parser.login;
  */
 final class LoginConstants {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** Current Stage bit mask. */
-  static final int CSG_FLAG_MASK = 0x000C0000;
+    /** Current Stage bit mask. */
+    static final int CSG_FLAG_MASK = 0x000C0000;
 
-  /** Number of bits to shift to the current stage. */
-  static final int CSG_BIT_SHIFT = 18;
+    /** Number of bits to shift to the current stage. */
+    static final int CSG_BIT_SHIFT = 18;
 
-  /** Next Stage bit mask. */
-  static final int NSG_FLAG_MASK = 0x00030000;
+    /** Next Stage bit mask. */
+    static final int NSG_FLAG_MASK = 0x00030000;
 
-  /** Bit mask, where the 11th and 12th bit are set. */
-  static final int BIT_11_AND_12_FLAG_MASK = 0x00300000;
+    /** Bit mask, where the 11th and 12th bit are set. */
+    static final int BIT_11_AND_12_FLAG_MASK = 0x00300000;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** Hidden default constructor. */
-  private LoginConstants() {
+    /** Hidden default constructor. */
+    private LoginConstants() {
 
-  }
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

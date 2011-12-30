@@ -69,130 +69,133 @@ import org.jscsi.parser.exception.InternetSCSIException;
  */
 public final class NOPInParser extends TargetMessageParser {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** Target Transfer Tag. */
-  private int targetTransferTag;
+    /** Target Transfer Tag. */
+    private int targetTransferTag;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Default constructor, creates a new, empty <code>NOPInParser</code> object.
-   * 
-   * @param initProtocolDataUnit
-   *          The reference <code>ProtocolDataUnit</code> instance, which
-   *          contains this <code>NOPInParser</code> subclass object.
-   */
-  public NOPInParser(final ProtocolDataUnit initProtocolDataUnit) {
+    /**
+     * Default constructor, creates a new, empty <code>NOPInParser</code>
+     * object.
+     * 
+     * @param initProtocolDataUnit
+     *            The reference <code>ProtocolDataUnit</code> instance, which
+     *            contains this <code>NOPInParser</code> subclass object.
+     */
+    public NOPInParser(final ProtocolDataUnit initProtocolDataUnit) {
 
-    super(initProtocolDataUnit);
-  }
+        super(initProtocolDataUnit);
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * If the target is responding to a NOP-Out, this is set to the reserved value
-   * <code>0xffffffff</code>.
-   * <p>
-   * If the target is sending a NOP-In as a Ping (intending to receive a
-   * corresponding NOP-Out), this field is set to a valid value (not the
-   * reserved <code>0xffffffff</code>).
-   * <p>
-   * If the target is initiating a NOP-In without wanting to receive a
-   * corresponding NOP-Out, this field MUST hold the reserved value of
-   * <code>0xffffffff</code>.
-   * 
-   * @return The target transfer tag of this object.
-   */
-  public final int getTargetTransferTag() {
+    /**
+     * If the target is responding to a NOP-Out, this is set to the reserved
+     * value <code>0xffffffff</code>.
+     * <p>
+     * If the target is sending a NOP-In as a Ping (intending to receive a
+     * corresponding NOP-Out), this field is set to a valid value (not the
+     * reserved <code>0xffffffff</code>).
+     * <p>
+     * If the target is initiating a NOP-In without wanting to receive a
+     * corresponding NOP-Out, this field MUST hold the reserved value of
+     * <code>0xffffffff</code>.
+     * 
+     * @return The target transfer tag of this object.
+     */
+    public final int getTargetTransferTag() {
 
-    return targetTransferTag;
-  }
-  
-  /**
-   * Sets the Target Transfer Tag of this object.
-   * @param targetTransferTag the new Target Transfer Tag.
-   */
-  public final void setTargetTransferTag(final int targetTransferTag) {
-	  this.targetTransferTag = targetTransferTag;
-  }
+        return targetTransferTag;
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /**
+     * Sets the Target Transfer Tag of this object.
+     * 
+     * @param targetTransferTag
+     *            the new Target Transfer Tag.
+     */
+    public final void setTargetTransferTag(final int targetTransferTag) {
+        this.targetTransferTag = targetTransferTag;
+    }
 
-  /** {@inheritDoc} */
-  @Override
-  public final String toString() {
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
-    Utils.printField(sb, "LUN", logicalUnitNumber, 1);
-    Utils.printField(sb, "Target Transfer Tag", targetTransferTag, 1);
-    sb.append(super.toString());
+    /** {@inheritDoc} */
+    @Override
+    public final String toString() {
 
-    return sb.toString();
-  }
+        final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
+        Utils.printField(sb, "LUN", logicalUnitNumber, 1);
+        Utils.printField(sb, "Target Transfer Tag", targetTransferTag, 1);
+        sb.append(super.toString());
 
-  /** {@inheritDoc} */
-  @Override
-  public final DataSegmentFormat getDataSegmentFormat() {
+        return sb.toString();
+    }
 
-    return DataSegmentFormat.BINARY;
-  }
+    /** {@inheritDoc} */
+    @Override
+    public final DataSegmentFormat getDataSegmentFormat() {
 
-  /** {@inheritDoc} */
-  @Override
-  public final void clear() {
+        return DataSegmentFormat.BINARY;
+    }
 
-    super.clear();
+    /** {@inheritDoc} */
+    @Override
+    public final void clear() {
 
-    targetTransferTag = 0x00000000;
-  }
+        super.clear();
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+        targetTransferTag = 0x00000000;
+    }
 
-  /** {@inheritDoc} */
-  @Override
-  protected final void deserializeBytes1to3(final int line)
-      throws InternetSCSIException {
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    Utils.isReserved(line & Constants.LAST_THREE_BYTES_MASK);
-  }
+    /** {@inheritDoc} */
+    @Override
+    protected final void deserializeBytes1to3(final int line)
+            throws InternetSCSIException {
 
-  /** {@inheritDoc} */
-  @Override
-  protected final void deserializeBytes20to23(final int line)
-      throws InternetSCSIException {
+        Utils.isReserved(line & Constants.LAST_THREE_BYTES_MASK);
+    }
 
-    targetTransferTag = line;
-  }
+    /** {@inheritDoc} */
+    @Override
+    protected final void deserializeBytes20to23(final int line)
+            throws InternetSCSIException {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+        targetTransferTag = line;
+    }
 
-  /** {@inheritDoc} */
-  @Override
-  protected final void checkIntegrity() throws InternetSCSIException {
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    // do nothing...
-  }
+    /** {@inheritDoc} */
+    @Override
+    protected final void checkIntegrity() throws InternetSCSIException {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+        // do nothing...
+    }
 
-  /** {@inheritDoc} */
-  @Override
-  protected final int serializeBytes20to23() {
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    return targetTransferTag;
-  }
+    /** {@inheritDoc} */
+    @Override
+    protected final int serializeBytes20to23() {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+        return targetTransferTag;
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

@@ -40,69 +40,74 @@ import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.text.TextRequestParser;
 
 /**
- * <h1>GetConnectionsRequestState</h1> <p/> This state requests a list of all
- * possible connections to a specific target. So it sends a TextRequest PDU with
- * <code>SendTargets=</code> as the only <code>OperationalTextKey</code> as data
- * segment.
+ * <h1>GetConnectionsRequestState</h1>
+ * <p/>
+ * This state requests a list of all possible connections to a specific target.
+ * So it sends a TextRequest PDU with <code>SendTargets=</code> as the only
+ * <code>OperationalTextKey</code> as data segment.
  * 
  * @author Volker Wildi
  */
 public final class GetConnectionsRequestState extends AbstractState {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Constructor to create a <code>GetConnectionsRequestState</code> instance,
-   * which uses the given connection for transmission.
-   * 
-   * @param initConnection
-   *          The context connection, which is used for the network
-   *          transmission.
-   */
-  public GetConnectionsRequestState(final Connection initConnection) {
+    /**
+     * Constructor to create a <code>GetConnectionsRequestState</code> instance,
+     * which uses the given connection for transmission.
+     * 
+     * @param initConnection
+     *            The context connection, which is used for the network
+     *            transmission.
+     */
+    public GetConnectionsRequestState(final Connection initConnection) {
 
-    super(initConnection);
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  public final void execute() throws InternetSCSIException {
-
-    final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory.create(
-        false, true, OperationCode.TEXT_REQUEST, connection
-            .getSetting(OperationalTextKey.HEADER_DIGEST), connection
-            .getSetting(OperationalTextKey.DATA_DIGEST));
-    final TextRequestParser parser = (TextRequestParser) protocolDataUnit
-        .getBasicHeaderSegment().getParser();
-
-    final SettingsMap settings = new SettingsMap();
-    settings.add(OperationalTextKey.SEND_TARGETS, "");
-
-    final IDataSegment dataSegment = DataSegmentFactory.create(settings
-        .asByteBuffer(), DataSegmentFormat.TEXT, connection
-        .getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH));
-
-    int bytes2Process = dataSegment.getLength();
-    for (IDataSegmentIterator dataSegmentIterator = dataSegment.iterator(); dataSegmentIterator
-        .hasNext();) {
-      IDataSegmentChunk dataSegmentChunk = dataSegmentIterator
-          .next(bytes2Process);
-      protocolDataUnit.setDataSegment(dataSegmentChunk);
-      parser.setTargetTransferTag(0xFFFFFFFF);
+        super(initConnection);
     }
 
-    connection.send(protocolDataUnit);
-    connection.nextState(new GetConnectionsResponseState(connection));
-    super.stateFollowing = true;
-//    return true;
-  }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /** {@inheritDoc} */
+    public final void execute() throws InternetSCSIException {
+
+        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory
+                .create(false,
+                        true,
+                        OperationCode.TEXT_REQUEST,
+                        connection.getSetting(OperationalTextKey.HEADER_DIGEST),
+                        connection.getSetting(OperationalTextKey.DATA_DIGEST));
+        final TextRequestParser parser = (TextRequestParser) protocolDataUnit
+                .getBasicHeaderSegment().getParser();
+
+        final SettingsMap settings = new SettingsMap();
+        settings.add(OperationalTextKey.SEND_TARGETS, "");
+
+        final IDataSegment dataSegment = DataSegmentFactory
+                .create(settings.asByteBuffer(),
+                        DataSegmentFormat.TEXT,
+                        connection
+                                .getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH));
+
+        int bytes2Process = dataSegment.getLength();
+        for (IDataSegmentIterator dataSegmentIterator = dataSegment.iterator(); dataSegmentIterator
+                .hasNext();) {
+            IDataSegmentChunk dataSegmentChunk = dataSegmentIterator
+                    .next(bytes2Process);
+            protocolDataUnit.setDataSegment(dataSegmentChunk);
+            parser.setTargetTransferTag(0xFFFFFFFF);
+        }
+
+        connection.send(protocolDataUnit);
+        connection.nextState(new GetConnectionsResponseState(connection));
+        super.stateFollowing = true;
+        // return true;
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

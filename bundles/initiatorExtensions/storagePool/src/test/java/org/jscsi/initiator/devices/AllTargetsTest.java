@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -39,57 +40,58 @@ import org.junit.Test;
  * 
  * @author Bastian Lemke
  */
+@Ignore("Lack of testembed, removing")
 public class AllTargetsTest {
 
-  private static final String[] TARGET_NAMES = { "testing-xen2-disk1",
-      "testing-xen2-disk2"/*
-                           * , "testing-xen1-disk3" , "testing-xen1-disk1",
-                           * "testing-xen1-disk2"
-                           */};
+    private static final String[] TARGET_NAMES = { "testing-xen2-disk1",
+            "testing-xen2-disk2"/*
+                                 * , "testing-xen1-disk3" ,
+                                 * "testing-xen1-disk1", "testing-xen1-disk2"
+                                 */};
 
-  /**
-   * Number of Blocks to write.
-   * 
-   * @throws Exception
-   */
+    /**
+     * Number of Blocks to write.
+     * 
+     * @throws Exception
+     */
 
-  @Test
-  public final void test() throws Exception {
+    @Test
+    public final void test() throws Exception {
 
-    final Hashtable<String, List<Exception>> exc = new Hashtable<String, List<Exception>>();
+        final Hashtable<String, List<Exception>> exc = new Hashtable<String, List<Exception>>();
 
-    for (String target : TARGET_NAMES) {
-      // System.out.print(target);
-      exc.put(target, new ArrayList<Exception>());
-      JSCSIDevice device = null;
-      try {
-        device = new JSCSIDevice(target);
-      } catch (Exception e) {
-        exc.get(target).add(e);
-      }
-      try {
-        device.open();
-      } catch (Exception e) {
-        exc.get(target).add(e);
-      }
-      // System.out.println(" (" + device.getName() + ") --- OK");
-      try {
-        device.close();
-      } catch (Exception e) {
-        exc.get(target).add(e);
-      }
+        for (String target : TARGET_NAMES) {
+            // System.out.print(target);
+            exc.put(target, new ArrayList<Exception>());
+            JSCSIDevice device = null;
+            try {
+                device = new JSCSIDevice(target);
+            } catch (Exception e) {
+                exc.get(target).add(e);
+            }
+            try {
+                device.open();
+            } catch (Exception e) {
+                exc.get(target).add(e);
+            }
+            // System.out.println(" (" + device.getName() + ") --- OK");
+            try {
+                device.close();
+            } catch (Exception e) {
+                exc.get(target).add(e);
+            }
+        }
+
+        boolean failed = false;
+        for (final String target : exc.keySet()) {
+            if (!exc.get(target).isEmpty()) {
+                exc.get(target).get(0).printStackTrace();
+                failed = true;
+            }
+        }
+        if (failed) {
+            fail();
+        }
+
     }
-
-    boolean failed = false;
-    for (final String target : exc.keySet()) {
-      if (!exc.get(target).isEmpty()) {
-        exc.get(target).get(0).printStackTrace();
-        failed = true;
-      }
-    }
-    if (failed) {
-      fail();
-    }
-
-  }
 }

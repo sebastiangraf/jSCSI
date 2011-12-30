@@ -41,137 +41,144 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DummyDevice implements Device {
 
-  private Date creationDate;
+    private Date creationDate;
 
-  private final int blockSize;
+    private final int blockSize;
 
-  private final long blockCount;
+    private final long blockCount;
 
-  private boolean opened = false;
+    private boolean opened = false;
 
-  /** The Logger interface. */
-  private static final Log LOGGER = LogFactory.getLog(DummyDevice.class);
+    /** The Logger interface. */
+    private static final Log LOGGER = LogFactory.getLog(DummyDevice.class);
 
-  /**
-   * Constructor to create an DummyDevice. The Device has to be initialized
-   * before it can be used.
-   * 
-   * @param initBlockSize
-   *          block size of the dummy device
-   * @param initBlockCount
-   *          number of blocks of the dummy device
-   * @throws Exception
-   *           if any error occurs
-   */
-  public DummyDevice(final int initBlockSize, final long initBlockCount)
-      throws Exception {
+    /**
+     * Constructor to create an DummyDevice. The Device has to be initialized
+     * before it can be used.
+     * 
+     * @param initBlockSize
+     *            block size of the dummy device
+     * @param initBlockCount
+     *            number of blocks of the dummy device
+     * @throws Exception
+     *             if any error occurs
+     */
+    public DummyDevice(final int initBlockSize, final long initBlockCount)
+            throws Exception {
 
-    blockSize = initBlockSize;
-    blockCount = initBlockCount;
-  }
-
-  /** {@inheritDoc} */
-  public void close() throws Exception {
-
-    LOGGER.info("Closed " + getName() + ".");
-    opened = false;
-  }
-
-  /** {@inheritDoc} */
-  public int getBlockSize() {
-
-    if (!opened) {
-      throw new IllegalStateException("You first have to open the Device!");
+        blockSize = initBlockSize;
+        blockCount = initBlockCount;
     }
 
-    return blockSize;
-  }
+    /** {@inheritDoc} */
+    public void close() throws Exception {
 
-  /** {@inheritDoc} */
-  public String getName() {
-
-    if (!opened) {
-      throw new IllegalStateException("You first have to open the Device!");
+        LOGGER.info("Closed " + getName() + ".");
+        opened = false;
     }
 
-    return "DummyDevice(" + creationDate.getTime() + ")";
-  }
+    /** {@inheritDoc} */
+    public int getBlockSize() {
 
-  /** {@inheritDoc} */
-  public long getBlockCount() {
+        if (!opened) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
 
-    if (!opened) {
-      throw new IllegalStateException("You first have to open the Device!");
+        return blockSize;
     }
 
-    return blockCount;
-  }
+    /** {@inheritDoc} */
+    public String getName() {
 
-  /** {@inheritDoc} */
-  public void open() throws Exception {
+        if (!opened) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
 
-    if (opened) {
-      throw new IllegalStateException("DummyDevice is already opened!");
+        return "DummyDevice(" + creationDate.getTime() + ")";
     }
 
-    opened = true;
-    creationDate = new Date();
+    /** {@inheritDoc} */
+    public long getBlockCount() {
 
-    LOGGER.info("Initialized " + getName() + ".");
-  }
+        if (!opened) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
 
-  /** {@inheritDoc} */
-  public void read(final long address, final byte[] data) throws Exception {
-
-    if (!opened) {
-      throw new IllegalStateException("You first have to open the Device!");
+        return blockCount;
     }
 
-    long blocks = data.length / blockSize;
+    /** {@inheritDoc} */
+    public void open() throws Exception {
 
-    if (address < 0 || address + blocks > blockCount) {
-      long adr;
-      if (address < 0) {
-        adr = address;
-      } else {
-        adr = address + blocks - 1;
-      }
-      throw new IllegalArgumentException("Address " + adr + " out of range!");
+        if (opened) {
+            throw new IllegalStateException("DummyDevice is already opened!");
+        }
+
+        opened = true;
+        creationDate = new Date();
+
+        LOGGER.info("Initialized " + getName() + ".");
     }
 
-    if (data.length % blockSize != 0) {
-      throw new IllegalArgumentException(
-          "Number of bytes is not a multiple of the blocksize!");
+    /** {@inheritDoc} */
+    public void read(final long address, final byte[] data) throws Exception {
+
+        if (!opened) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
+
+        long blocks = data.length / blockSize;
+
+        if (address < 0 || address + blocks > blockCount) {
+            long adr;
+            if (address < 0) {
+                adr = address;
+            } else {
+                adr = address + blocks - 1;
+            }
+            throw new IllegalArgumentException("Address " + adr
+                    + " out of range!");
+        }
+
+        if (data.length % blockSize != 0) {
+            throw new IllegalArgumentException(
+                    "Number of bytes is not a multiple of the blocksize!");
+        }
+
+        // do nothing
     }
 
-    // do nothing
-  }
+    /** {@inheritDoc} */
+    public void write(final long address, final byte[] data) throws Exception {
 
-  /** {@inheritDoc} */
-  public void write(final long address, final byte[] data) throws Exception {
+        if (!opened) {
+            throw new IllegalStateException(
+                    "You first have to open the Device!");
+        }
 
-    if (!opened) {
-      throw new IllegalStateException("You first have to open the Device!");
+        long blocks = data.length / blockSize;
+
+        if (address < 0 || address + blocks > blockCount) {
+            long adr;
+            if (address < 0) {
+                adr = address;
+            } else {
+                adr = address + blocks - 1;
+            }
+            throw new IllegalArgumentException("Address " + adr
+                    + " out of range.");
+        }
+
+        if (data.length % blockSize != 0) {
+            throw new IllegalArgumentException(
+                    "Number of bytes is not a multiple of the blocksize!");
+        }
+
+        // do nothing
     }
-
-    long blocks = data.length / blockSize;
-
-    if (address < 0 || address + blocks > blockCount) {
-      long adr;
-      if (address < 0) {
-        adr = address;
-      } else {
-        adr = address + blocks - 1;
-      }
-      throw new IllegalArgumentException("Address " + adr + " out of range.");
-    }
-
-    if (data.length % blockSize != 0) {
-      throw new IllegalArgumentException(
-          "Number of bytes is not a multiple of the blocksize!");
-    }
-
-    // do nothing
-  }
 
 }

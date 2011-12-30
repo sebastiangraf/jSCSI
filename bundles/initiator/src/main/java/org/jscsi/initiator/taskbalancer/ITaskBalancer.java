@@ -45,35 +45,35 @@ import org.jscsi.parser.exception.NoSuchConnectionException;
 @Deprecated
 public interface ITaskBalancer {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Returns the next connection, which should used for the next task.
-   * 
-   * @return The <code>Connection</code> instance to use.
-   * @throws NoSuchConnectionException
-   *           If there is no such connection.
-   */
-  public Connection getConnection() throws NoSuchConnectionException;
+    /**
+     * Returns the next connection, which should used for the next task.
+     * 
+     * @return The <code>Connection</code> instance to use.
+     * @throws NoSuchConnectionException
+     *             If there is no such connection.
+     */
+    public Connection getConnection() throws NoSuchConnectionException;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /**
-   * Releases a used connection, so that it can be used by another task.
-   * 
-   * @param connection
-   *          The <code>Connection</code> instance to release.
-   * @throws NoSuchConnectionException
-   *           If there is no such connection.
-   */
-  public void releaseConnection(Connection connection)
-      throws NoSuchConnectionException;
+    /**
+     * Releases a used connection, so that it can be used by another task.
+     * 
+     * @param connection
+     *            The <code>Connection</code> instance to release.
+     * @throws NoSuchConnectionException
+     *             If there is no such connection.
+     */
+    public void releaseConnection(Connection connection)
+            throws NoSuchConnectionException;
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

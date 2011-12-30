@@ -54,7 +54,8 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * <li>Receives any responses for the tasks in the affected task set (may
  * process them as usual because they are guaranteed to be valid).</li>
  * <li>Receives the task set management response, thus concluding all the tasks
- * in the affected task set.</li> </ol>
+ * in the affected task set.</li>
+ * </ol>
  * <p>
  * The target:
  * <p>
@@ -79,269 +80,292 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * @author Volker Wildi
  */
 public final class TaskManagementFunctionResponseParser extends
-    TargetMessageParser {
-
-  /**
-   * This enumeration defines all valid response code, which are defined in the
-   * iSCSI Standard (RFC 3720).
-   * 
-   * @author Volker Wildi
-   */
-  public static enum ResponseCode {
-
-    /** Function complete. */
-    FUNCTION_COMPLETE((byte) 0),
-    /** Task does not exist. */
-    TASK_DOES_NOT_EXIST((byte) 1),
-    /** LUN does not exist. */
-    LUN_DOES_NOT_EXIST((byte) 2),
-    /** Task still allegiant. */
-    TASK_STILL_ALLEGIANT((byte) 3),
-    /** Task allegiance reassignment not supported. */
-    TASK_ALLEGIANCE_REASSIGNMENT_NOT_SUPPORTED((byte) 4),
-    /** Task management function not supported. */
-    TASK_MANAGEMENT_FUNCTION_NOT_SUPPORTED((byte) 5),
-    /** Function authorization failed. */
-    FUNCTION_AUTHORIZATION_FAILED((byte) 6),
-    /** Function rejected. */
-    FUNCTION_REJECTED((byte) 255);
-
-    private byte value;
-
-    private static Map<Byte, ResponseCode> mapping;
-
-    static {
-      ResponseCode.mapping = new HashMap<Byte, ResponseCode>();
-      for (ResponseCode s : values()) {
-        ResponseCode.mapping.put(s.value, s);
-      }
-    }
-
-    private ResponseCode(final byte newValue) {
-
-      value = newValue;
-    }
+        TargetMessageParser {
 
     /**
-     * Returns the value of this enumeration.
+     * This enumeration defines all valid response code, which are defined in
+     * the iSCSI Standard (RFC 3720).
      * 
-     * @return The value of this enumeration.
+     * @author Volker Wildi
      */
-    public final byte value() {
+    public static enum ResponseCode {
 
-      return value;
+        /** Function complete. */
+        FUNCTION_COMPLETE((byte) 0),
+        /** Task does not exist. */
+        TASK_DOES_NOT_EXIST((byte) 1),
+        /** LUN does not exist. */
+        LUN_DOES_NOT_EXIST((byte) 2),
+        /** Task still allegiant. */
+        TASK_STILL_ALLEGIANT((byte) 3),
+        /** Task allegiance reassignment not supported. */
+        TASK_ALLEGIANCE_REASSIGNMENT_NOT_SUPPORTED((byte) 4),
+        /** Task management function not supported. */
+        TASK_MANAGEMENT_FUNCTION_NOT_SUPPORTED((byte) 5),
+        /** Function authorization failed. */
+        FUNCTION_AUTHORIZATION_FAILED((byte) 6),
+        /** Function rejected. */
+        FUNCTION_REJECTED((byte) 255);
+
+        private byte value;
+
+        private static Map<Byte, ResponseCode> mapping;
+
+        static {
+            ResponseCode.mapping = new HashMap<Byte, ResponseCode>();
+            for (ResponseCode s : values()) {
+                ResponseCode.mapping.put(s.value, s);
+            }
+        }
+
+        private ResponseCode(final byte newValue) {
+
+            value = newValue;
+        }
+
+        /**
+         * Returns the value of this enumeration.
+         * 
+         * @return The value of this enumeration.
+         */
+        public final byte value() {
+
+            return value;
+        }
+
+        /**
+         * Returns the constant defined for the given <code>value</code>.
+         * 
+         * @param value
+         *            The value to search for.
+         * @return The constant defined for the given <code>value</code>. Or
+         *         <code>null</code>, if this value is not defined by this
+         *         enumeration.
+         */
+        public static final ResponseCode valueOf(final byte value) {
+
+            return ResponseCode.mapping.get(value);
+        }
     }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /** The response code. */
+    private ResponseCode response;
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
     /**
-     * Returns the constant defined for the given <code>value</code>.
+     * Default constructor, creates a new, empty
+     * <code>TaskManagementFunctionResponseParser</code> object.
      * 
-     * @param value
-     *          The value to search for.
-     * @return The constant defined for the given <code>value</code>. Or
-     *         <code>null</code>, if this value is not defined by this
-     *         enumeration.
+     * @param initProtocolDataUnit
+     *            The reference <code>ProtocolDataUnit</code> instance, which
+     *            contains this
+     *            <code>TaskManagementFunctionResponseParser</code> subclass
+     *            object.
      */
-    public static final ResponseCode valueOf(final byte value) {
+    public TaskManagementFunctionResponseParser(
+            final ProtocolDataUnit initProtocolDataUnit) {
 
-      return ResponseCode.mapping.get(value);
+        super(initProtocolDataUnit);
     }
-  }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** The response code. */
-  private ResponseCode response;
+    /** {@inheritDoc} */
+    @Override
+    public final String toString() {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+        final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
 
-  /**
-   * Default constructor, creates a new, empty
-   * <code>TaskManagementFunctionResponseParser</code> object.
-   * 
-   * @param initProtocolDataUnit
-   *          The reference <code>ProtocolDataUnit</code> instance, which
-   *          contains this <code>TaskManagementFunctionResponseParser</code>
-   *          subclass object.
-   */
-  public TaskManagementFunctionResponseParser(
-      final ProtocolDataUnit initProtocolDataUnit) {
+        Utils.printField(sb, "Response", response.value(), 1);
+        sb.append(super.toString());
 
-    super(initProtocolDataUnit);
-  }
+        return sb.toString();
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    /** {@inheritDoc} */
+    @Override
+    public final DataSegmentFormat getDataSegmentFormat() {
 
-  /** {@inheritDoc} */
-  @Override
-  public final String toString() {
+        return DataSegmentFormat.NONE;
+    }
 
-    final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
+    /** {@inheritDoc} */
+    @Override
+    public final void clear() {
 
-    Utils.printField(sb, "Response", response.value(), 1);
-    sb.append(super.toString());
+        super.clear();
 
-    return sb.toString();
-  }
+        response = null;
+    }
 
-  /** {@inheritDoc} */
-  @Override
-  public final DataSegmentFormat getDataSegmentFormat() {
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    return DataSegmentFormat.NONE;
-  }
+    /**
+     * The target provides a Response, which may take on the following values: <br/>
+     * <table border = "1">
+     * <tr>
+     * <th>Response Code</th>
+     * <th>Description</th>
+     * </tr>
+     * <tr>
+     * <td>0</td>
+     * <td>Function complete.</td>
+     * </tr>
+     * <tr>
+     * <td>1</td>
+     * <td>Task does not exist.</td>
+     * </tr>
+     * <tr>
+     * <td>2</td>
+     * <td>LUN does not exist.</td>
+     * </tr>
+     * <tr>
+     * <td>3</td>
+     * <td>Task still allegiant.</td>
+     * </tr>
+     * <tr>
+     * <td>4</td>
+     * <td>Task allegiance reassignment not supported.</td>
+     * </tr>
+     * <tr>
+     * <td>5</td>
+     * <td>Task management function not supported.</td>
+     * </tr>
+     * <tr>
+     * <td>6</td>
+     * <td>Function authorization failed.</td>
+     * </tr>
+     * <tr>
+     * <td>255</td>
+     * <td>Function rejected.</td>
+     * </tr>
+     * </table>
+     * <br/>
+     * <br/>
+     * All other values are reserved. <br/>
+     * <br/>
+     * For a discussion on usage of response codes <code>3</code> and
+     * <code>4</code>, see Section 6.2.2 Allegiance Reassignment.<br/>
+     * <br/>
+     * For the TARGET COLD RESET and TARGET WARM RESET functions, the target
+     * cancels all pending operations across all Logical Units known to the
+     * issuing initiator. For the TARGET COLD RESET function, the target MUST
+     * then close all of its TCP connections to all initiators (terminates all
+     * sessions).<br/>
+     * <br/>
+     * The mapping of the response code into a SCSI service response code value,
+     * if needed, is outside the scope of this document. However, in symbolic
+     * terms Response values 0 and 1 map to the SCSI service response of
+     * FUNCTION COMPLETE. All other Response values map to the SCSI service
+     * response of FUNCTION REJECTED. If a Task Management function response PDU
+     * does not arrive before the session is terminated, the SCSI service
+     * response is SERVICE DELIVERY OR TARGET FAILURE.<br/>
+     * <br/>
+     * The response to ABORT TASK SET and CLEAR TASK SET MUST only be issued by
+     * the target after all of the commands affected have been received by the
+     * target, the corresponding task management functions have been executed by
+     * the SCSI target, and the delivery of all responses delivered until the
+     * task management function completion have been confirmed (acknowledged
+     * through ExpStatSN) by the initiator on all connections of this session.
+     * For the exact timeline of events, refer to Section 10.6.2 Task Management
+     * Actions on Task Sets.<br/>
+     * <br/>
+     * For the ABORT TASK function,
+     * <ol type="a">
+     * <li>If the Referenced Task Tag identifies a valid task leading to a
+     * successful termination, then targets must return the "Function complete"
+     * response.</li>
+     * <li>If the Referenced Task Tag does not identify an existing task, but if
+     * the CmdSN indicated by the RefCmdSN field in the Task Management function
+     * request is within the valid CmdSN window and less than the CmdSN of the
+     * Task Management function request itself, then targets must consider the
+     * CmdSN received and return the "Function complete" response.</li>
+     * <li>If the Referenced Task Tag does not identify an existing task and if
+     * the CmdSN indicated by the RefCmdSN field in the Task Management function
+     * request is outside the valid CmdSN window, then targets must return the
+     * "Task does not exist" response.</li>
+     * </ol>
+     * 
+     * @return The response code of this
+     *         <code>TaskManagementFunctionResponseParser</code> object.
+     */
+    public final ResponseCode getResponse() {
 
-  /** {@inheritDoc} */
-  @Override
-  public final void clear() {
+        return response;
+    }
 
-    super.clear();
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-    response = null;
-  }
+    /** {@inheritDoc} */
+    @Override
+    protected final void deserializeBytes1to3(final int line)
+            throws InternetSCSIException {
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+        Utils.isReserved(line & Constants.SECOND_BYTE_MASK);
+        response = ResponseCode
+                .valueOf((byte) (line & Constants.THIRD_BYTE_MASK));
+        Utils.isReserved(line & Constants.FOURTH_BYTE_MASK);
+    }
 
-  /**
-   * The target provides a Response, which may take on the following values:
-   * <br/>
-   * <table border = "1">
-   * <tr>
-   * <th>Response Code</th> <th>Description</th>
-   * </tr>
-   * <tr>
-   * <td>0</td> <td>Function complete. </td>
-   * </tr>
-   * <tr>
-   * <td>1</td> <td>Task does not exist. </td>
-   * </tr>
-   * <tr>
-   * <td>2</td> <td>LUN does not exist. </td>
-   * </tr>
-   * <tr>
-   * <td>3</td> <td>Task still allegiant. </td>
-   * </tr>
-   * <tr>
-   * <td>4</td> <td>Task allegiance reassignment not supported.</td>
-   * </tr>
-   * <tr>
-   * <td>5</td> <td>Task management function not supported. </td>
-   * </tr>
-   * <tr>
-   * <td>6</td> <td>Function authorization failed. </td>
-   * </tr>
-   * <tr>
-   * <td>255</td> <td>Function rejected. </td>
-   * </tr>
-   * </table>
-   * <br/><br/> All other values are reserved. <br/><br/> For a discussion on
-   * usage of response codes <code>3</code> and <code>4</code>, see Section
-   * 6.2.2 Allegiance Reassignment.<br/><br/> For the TARGET COLD RESET and
-   * TARGET WARM RESET functions, the target cancels all pending operations
-   * across all Logical Units known to the issuing initiator. For the TARGET
-   * COLD RESET function, the target MUST then close all of its TCP connections
-   * to all initiators (terminates all sessions).<br/><br/> The mapping of the
-   * response code into a SCSI service response code value, if needed, is
-   * outside the scope of this document. However, in symbolic terms Response
-   * values 0 and 1 map to the SCSI service response of FUNCTION COMPLETE. All
-   * other Response values map to the SCSI service response of FUNCTION
-   * REJECTED. If a Task Management function response PDU does not arrive before
-   * the session is terminated, the SCSI service response is SERVICE DELIVERY OR
-   * TARGET FAILURE.<br/><br/> The response to ABORT TASK SET and CLEAR TASK SET
-   * MUST only be issued by the target after all of the commands affected have
-   * been received by the target, the corresponding task management functions
-   * have been executed by the SCSI target, and the delivery of all responses
-   * delivered until the task management function completion have been confirmed
-   * (acknowledged through ExpStatSN) by the initiator on all connections of
-   * this session. For the exact timeline of events, refer to Section 10.6.2
-   * Task Management Actions on Task Sets.<br/><br/> For the ABORT TASK
-   * function, <ol type="a"> <li>If the Referenced Task Tag identifies a valid
-   * task leading to a successful termination, then targets must return the
-   * "Function complete" response.</li> <li>If the Referenced Task Tag does not
-   * identify an existing task, but if the CmdSN indicated by the RefCmdSN field
-   * in the Task Management function request is within the valid CmdSN window
-   * and less than the CmdSN of the Task Management function request itself,
-   * then targets must consider the CmdSN received and return the
-   * "Function complete" response.</li> <li>If the Referenced Task Tag does not
-   * identify an existing task and if the CmdSN indicated by the RefCmdSN field
-   * in the Task Management function request is outside the valid CmdSN window,
-   * then targets must return the "Task does not exist" response.</li> </ol>
-   * 
-   * @return The response code of this
-   *         <code>TaskManagementFunctionResponseParser</code> object.
-   */
-  public final ResponseCode getResponse() {
+    /** {@inheritDoc} */
+    @Override
+    protected final void deserializeBytes20to23(final int line)
+            throws InternetSCSIException {
 
-    return response;
-  }
+        Utils.isReserved(line);
+    }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-  /** {@inheritDoc} */
-  @Override
-  protected final void deserializeBytes1to3(final int line)
-      throws InternetSCSIException {
+    /** {@inheritDoc} */
+    @Override
+    protected final void checkIntegrity() throws InternetSCSIException {
 
-    Utils.isReserved(line & Constants.SECOND_BYTE_MASK);
-    response = ResponseCode.valueOf((byte) (line & Constants.THIRD_BYTE_MASK));
-    Utils.isReserved(line & Constants.FOURTH_BYTE_MASK);
-  }
+        String exceptionMessage;
 
-  /** {@inheritDoc} */
-  @Override
-  protected final void deserializeBytes20to23(final int line)
-      throws InternetSCSIException {
+        do {
+            BasicHeaderSegment bhs = protocolDataUnit.getBasicHeaderSegment();
+            if (bhs.getTotalAHSLength() != 0) {
+                exceptionMessage = "TotalAHSLength must be 0!";
+                break;
+            }
 
-    Utils.isReserved(line);
-  }
+            if (bhs.getDataSegmentLength() != 0) {
+                exceptionMessage = "DataSegmentLength must be 0!";
+                break;
+            }
 
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+            Utils.isReserved(logicalUnitNumber);
 
-  /** {@inheritDoc} */
-  @Override
-  protected final void checkIntegrity() throws InternetSCSIException {
+            // message is checked correctly
+            return;
+        } while (false);
 
-    String exceptionMessage;
+        throw new InternetSCSIException(exceptionMessage);
+    }
 
-    do {
-      BasicHeaderSegment bhs = protocolDataUnit.getBasicHeaderSegment();
-      if (bhs.getTotalAHSLength() != 0) {
-        exceptionMessage = "TotalAHSLength must be 0!";
-        break;
-      }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
-      if (bhs.getDataSegmentLength() != 0) {
-        exceptionMessage = "DataSegmentLength must be 0!";
-        break;
-      }
+    /** {@inheritDoc} */
+    @Override
+    protected final int serializeBytes1to3() {
 
-      Utils.isReserved(logicalUnitNumber);
+        return response.value() << Constants.ONE_BYTE_SHIFT;
+    }
 
-      // message is checked correctly
-      return;
-    } while (false);
-
-    throw new InternetSCSIException(exceptionMessage);
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-
-  /** {@inheritDoc} */
-  @Override
-  protected final int serializeBytes1to3() {
-
-    return response.value() << Constants.ONE_BYTE_SHIFT;
-  }
-
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
-  // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
 }

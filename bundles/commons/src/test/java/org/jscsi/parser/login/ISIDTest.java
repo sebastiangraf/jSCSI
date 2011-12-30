@@ -40,42 +40,45 @@ import org.junit.Test;
  */
 public class ISIDTest {
 
-  /**
-   * Valid Test Case with the following expected values. <blockquote> t:
-   * <code>OUI_FORMAT</code><br/> a: <code>0x00</code><br/> b:
-   * <code>0x0000</code><br/> c: <code>0x00</code><br/> d: <code>0xABCD</code>
-   * <br/> </blockquote>
-   */
-  private static final long TEST_CASE = 0x00000000ABCD0000L;
+    /**
+     * Valid Test Case with the following expected values. <blockquote> t:
+     * <code>OUI_FORMAT</code><br/>
+     * a: <code>0x00</code><br/>
+     * b: <code>0x0000</code><br/>
+     * c: <code>0x00</code><br/>
+     * d: <code>0xABCD</code> <br/>
+     * </blockquote>
+     */
+    private static final long TEST_CASE = 0x00000000ABCD0000L;
 
-  /**
-   * This test case validates the parsing process.
-   * 
-   * @throws InternetSCSIException
-   */
-  @Test
-  public void testDeserialize1() throws InternetSCSIException {
+    /**
+     * This test case validates the parsing process.
+     * 
+     * @throws InternetSCSIException
+     */
+    @Test
+    public void testDeserialize1() throws InternetSCSIException {
 
-    ISID isid = new ISID();
-    ISID expectedISID = new ISID(Format.OUI_FORMAT, (byte) 0x00,
-        (short) 0x0000, (byte) 0x00, (short) 0xABCD);
+        ISID isid = new ISID();
+        ISID expectedISID = new ISID(Format.OUI_FORMAT, (byte) 0x00,
+                (short) 0x0000, (byte) 0x00, (short) 0xABCD);
 
-    isid.deserialize(TEST_CASE);
+        isid.deserialize(TEST_CASE);
 
-    assertTrue(expectedISID.equals(isid));
-  }
+        assertTrue(expectedISID.equals(isid));
+    }
 
-  /**
-   * This test case validates the serialization process.
-   * 
-   * @throws InternetSCSIException
-   */
-  @Test
-  public void testSerialize1() throws InternetSCSIException {
+    /**
+     * This test case validates the serialization process.
+     * 
+     * @throws InternetSCSIException
+     */
+    @Test
+    public void testSerialize1() throws InternetSCSIException {
 
-    ISID isid = new ISID(Format.OUI_FORMAT, (byte) 0x00, (short) 0x0000,
-        (byte) 0x00, (short) 0xABCD);
+        ISID isid = new ISID(Format.OUI_FORMAT, (byte) 0x00, (short) 0x0000,
+                (byte) 0x00, (short) 0xABCD);
 
-    assertEquals(TEST_CASE, isid.serialize());
-  }
+        assertEquals(TEST_CASE, isid.serialize());
+    }
 }

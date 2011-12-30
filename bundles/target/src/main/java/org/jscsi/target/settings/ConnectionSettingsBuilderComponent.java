@@ -14,74 +14,75 @@ import javax.naming.OperationNotSupportedException;
  * {@link ConnectionSettingsNegotiator}.
  * 
  * @see Settings#Settings(ConnectionSettingsBuilderComponent,
- * SessionSettingsBuilderComponent)
+ *      SessionSettingsBuilderComponent)
  * @author Andreas Ergenzinger
  */
 final class ConnectionSettingsBuilderComponent {
-	
-	/**
-	 * The <code>DataDigest</code> parameter.
-	 */
-	String dataDigest;
-	
-	/**
-	 * The <code>HeaderDigest</code> parameter.
-	 */
-	String headerDigest;
-	
-	/**
-	 * The <code>IFMarker</code> parameter.
-	 */
-	Boolean ifMarker;
-	
-	/**
-	 * The <code>IFMarkInt</code> parameter.
-	 */
-	Integer ifMarkInt;
-	
-	/**
-	 * The <code>MaxRecvDataSegmentLength</code> parameter.
-	 */
-	Integer maxRecvDataSegmentLength;
-	
-	/**
-	 * The <code>OFMarker</code> parameter.
-	 */
-	Boolean ofMarker;
-	
-	/**
-	 * The <code>OFMarkInt</code> parameter.
-	 */
-	Integer ofMarkInt;
-	
-	/**
-	 * The {@link ConnectionSettingsBuilderComponent} constructor.
-	 * The passed {@link Collection} must contain all connection-specific
-	 * {@link Entry} objects, since the constructor will try to locate
-	 * a specific {@link Entry} for each member variable and copy
-	 * its current value.
-	 * @param entries a {@link Collection} containing all connection-specific
-	 * {@link Entry} objects
-	 */
-	ConnectionSettingsBuilderComponent(final Collection<Entry> entries) {
-		try {
-			dataDigest = SettingsNegotiator.
-				getEntry(TextKeyword.DATA_DIGEST, entries).getStringValue();
-			headerDigest = SettingsNegotiator.
-				getEntry(TextKeyword.HEADER_DIGEST, entries).getStringValue();
-			ifMarker = SettingsNegotiator.
-				getEntry(TextKeyword.IF_MARKER, entries).getBooleanValue();
-			ifMarkInt = SettingsNegotiator.
-				getEntry(TextKeyword.IF_MARK_INT, entries).getIntegerValue();
-			maxRecvDataSegmentLength = SettingsNegotiator.
-				getEntry(TextKeyword.MAX_RECV_DATA_SEGMENT_LENGTH, entries).
-				getIntegerValue();
-			ofMarker = SettingsNegotiator.
-				getEntry(TextKeyword.OF_MARKER, entries).getBooleanValue();
-			ofMarkInt = SettingsNegotiator.
-				getEntry(TextKeyword.OF_MARK_INT, entries).getIntegerValue();
-		} catch (OperationNotSupportedException e) {
-			e.printStackTrace();
-		}
-	}
+
+    /**
+     * The <code>DataDigest</code> parameter.
+     */
+    String dataDigest;
+
+    /**
+     * The <code>HeaderDigest</code> parameter.
+     */
+    String headerDigest;
+
+    /**
+     * The <code>IFMarker</code> parameter.
+     */
+    Boolean ifMarker;
+
+    /**
+     * The <code>IFMarkInt</code> parameter.
+     */
+    Integer ifMarkInt;
+
+    /**
+     * The <code>MaxRecvDataSegmentLength</code> parameter.
+     */
+    Integer maxRecvDataSegmentLength;
+
+    /**
+     * The <code>OFMarker</code> parameter.
+     */
+    Boolean ofMarker;
+
+    /**
+     * The <code>OFMarkInt</code> parameter.
+     */
+    Integer ofMarkInt;
+
+    /**
+     * The {@link ConnectionSettingsBuilderComponent} constructor. The passed
+     * {@link Collection} must contain all connection-specific {@link Entry}
+     * objects, since the constructor will try to locate a specific
+     * {@link Entry} for each member variable and copy its current value.
+     * 
+     * @param entries
+     *            a {@link Collection} containing all connection-specific
+     *            {@link Entry} objects
+     */
+    ConnectionSettingsBuilderComponent(final Collection<Entry> entries) {
+        try {
+            dataDigest = SettingsNegotiator.getEntry(TextKeyword.DATA_DIGEST,
+                    entries).getStringValue();
+            headerDigest = SettingsNegotiator.getEntry(
+                    TextKeyword.HEADER_DIGEST, entries).getStringValue();
+            ifMarker = SettingsNegotiator.getEntry(TextKeyword.IF_MARKER,
+                    entries).getBooleanValue();
+            ifMarkInt = SettingsNegotiator.getEntry(TextKeyword.IF_MARK_INT,
+                    entries).getIntegerValue();
+            maxRecvDataSegmentLength = SettingsNegotiator.getEntry(
+                    TextKeyword.MAX_RECV_DATA_SEGMENT_LENGTH, entries)
+                    .getIntegerValue();
+            ofMarker = SettingsNegotiator.getEntry(TextKeyword.OF_MARKER,
+                    entries).getBooleanValue();
+            ofMarkInt = SettingsNegotiator.getEntry(TextKeyword.OF_MARK_INT,
+                    entries).getIntegerValue();
+        } catch (OperationNotSupportedException e) {
+            e.printStackTrace();
+        }
+    }
 }
