@@ -39,6 +39,7 @@ http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84424
 A TechReport describes the second iteration of the framework: http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84511
 
 The following thesis' were concluded:
+
 * Target 1.0 (english): TO FOLLOW
 * Initiator 2.0 (german only): http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-130096
 * Storage Pool (german only): http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-58078
