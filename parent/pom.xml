@@ -234,6 +234,11 @@
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
+	<scm>
+		<url>https://github.com/disy/jSCSI</url>
+		<connection>scm:git:git://github.com/disy/jSCSI.git</connection>
+		<developerConnection>scm:git:git@github.com:disy/jSCSI.git</developerConnection>
+	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
