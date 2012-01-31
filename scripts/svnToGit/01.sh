@@ -32,7 +32,7 @@
 ###FIRST STEP, GETTING THE DATA
 set +e
 #getting the github data
-git pull
+git pull origin master
 #getting disy data
 git svn fetch
 exit 0
