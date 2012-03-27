@@ -132,6 +132,11 @@ public class TargetConfiguration {
      * The path leading the the file used as the storage medium.
      */
     private String storageFilePath;
+    
+    /**
+     * The size of the storage medium if it needs to be created.
+     */
+    private long storageFileLength;
 
     /**
      * This variable toggles the strictness with which the parameters
@@ -214,7 +219,14 @@ public class TargetConfiguration {
         return storageFilePath;
     }
 
-    public boolean getAllowSloppyNegotiation() {
+    /**
+	 * @return the storageFileLength
+	 */
+	public long getStorageFileLength() {
+		return storageFileLength;
+	}
+
+	public boolean getAllowSloppyNegotiation() {
         return allowSloppyNegotiation;
     }
 
@@ -337,11 +349,14 @@ public class TargetConfiguration {
                     .getTextContent());
         else
             port = 3260;
-        final NodeList fileProperties = root
-                .getElementsByTagName("StorageFile").item(0).getChildNodes();
+        
+        final NodeList fileProperties = root.getElementsByTagName("StorageFile").item(0).getChildNodes();
         for (int i = 0; i < fileProperties.getLength(); ++i) {
-            if ("FilePath".equals(fileProperties.item(i).getNodeName()))
+            if ("FilePath".equals(fileProperties.item(i).getNodeName())){
                 storageFilePath = fileProperties.item(i).getTextContent();
+            } else if("FileLength".equals(fileProperties.item(i).getNodeName())){
+            	this.storageFileLength = (long)((Float.valueOf(fileProperties.item(i).getTextContent())) *Math.pow(1024, 3));
+            }
         }
         if (storageFilePath == null)
             storageFilePath = "storage.dat";
