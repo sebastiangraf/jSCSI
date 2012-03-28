@@ -127,7 +127,7 @@ public final class Target {
         // open the storage medium
         final File storageFile = new File(config.getStorageFilePath());
         if (!storageFile.exists()) {
-            System.out.print("Create Storage volume[Y/n]?");
+            System.out.print("File not existing (even if it advised to do so beforehand).\nCreate Storage volume[Y/n]?");
             final int c = System.in.read();
             if ("y".indexOf(Character.toLowerCase(c)) == 0) {
                 createStorageVolume();
@@ -206,6 +206,7 @@ public final class Target {
 
     /**
      * Creating a new file if not existing at the path defined in the config.
+     * Note that it is advised to create the file beforehand.
      * 
      * @return true if creation successful, false if file already exists.
      * @throws IOException
