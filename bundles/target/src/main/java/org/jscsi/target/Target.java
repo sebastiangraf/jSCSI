@@ -2,8 +2,10 @@ package org.jscsi.target;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.channels.FileChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.security.DigestException;
@@ -25,7 +27,8 @@ import org.jscsi.parser.login.LoginRequestParser;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.settings.TargetConfiguration;
-import org.jscsi.target.storage.*;
+import org.jscsi.target.storage.AbstractStorageModule;
+import org.jscsi.target.storage.SynchronizedRandomAccessStorageModule;
 import org.xml.sax.SAXException;
 
 /**
@@ -106,7 +109,7 @@ public final class Target {
      * @param args
      *            all command line arguments are ignored
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Throwable{
 
         // initialize loggers based on settings from file
         readLog4jConfigurationFile();
@@ -123,9 +126,16 @@ public final class Target {
         }
 
         // open the storage medium
+        final File storageFile = new File (config.getStorageFilePath());
+        if (!storageFile.exists()){
+        	System.out.print("Create Storage volume[Y/n]?");
+        	final int c = System.in.read();
+        	if ("y".indexOf(Character.toLowerCase(c)) == 0){
+        		createStorageVolume();
+        	}
+        }
         try {
-            storageModule = SynchronizedRandomAccessStorageModule.open(config
-                    .getStorageFilePath());
+            storageModule = SynchronizedRandomAccessStorageModule.open(config.getStorageFilePath());
         } catch (FileNotFoundException e) {
             LOGGER.fatal(e.toString());
             return;
@@ -201,6 +211,35 @@ public final class Target {
             // this block is entered if the desired port is already in use
             LOGGER.fatal(e);
         }
+    }
+    
+    private static void createStorageVolume() throws IOException{
+		FileOutputStream outStream = null;
+        final File storageFile = new File (config.getStorageFilePath());
+		try {
+			final File parent = storageFile.getCanonicalFile().getParentFile();
+			if (!parent.exists() && !parent.mkdirs()){
+				throw new FileNotFoundException("Unable to create directory: " + parent.getAbsolutePath());
+			}
+			storageFile.createNewFile();
+			outStream = new FileOutputStream(storageFile);
+            final FileChannel fcout = outStream.getChannel();
+            fcout.position(config.getStorageFileLength());
+            outStream.write(26); //Write EOF (not normally needed)
+            fcout.force(true);
+		} catch (IOException e) {
+			LOGGER.fatal("Exception creating storage volume " + storageFile.getAbsolutePath() + ": " + e.getMessage(), e);
+			throw e;
+		} finally {
+			if (outStream != null){
+				try {
+					outStream.close();
+				} catch (IOException e) {
+					LOGGER.error("Exception closing storage volume: " + e.getMessage(), e);
+				}
+			}
+		}
+    	
     }
 
     /**
