@@ -9,7 +9,7 @@
 	<Port>3260</Port>
 	<StorageFile>
 		<FilePath>storage.dat</FilePath>
-		<FileLength>0.5</FileLength>
+		 <FileLength>0.75</FileLength>
 	</StorageFile>
 	<AllowSloppyNegotiation>true</AllowSloppyNegotiation>
 </configuration>
