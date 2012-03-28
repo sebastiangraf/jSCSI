@@ -32,8 +32,8 @@ import org.jscsi.target.storage.SynchronizedRandomAccessStorageModule;
 import org.xml.sax.SAXException;
 
 /**
- * The central class of the jSCSI Target, which keeps track of all active
- * {@link TargetSession}s, stores target-wide parameters and variables, and
+ * The central class of the jSCSI Target, which keeps track of all active {@link TargetSession}s, stores
+ * target-wide parameters and variables, and
  * which contains the {@link #main(String[])} method for starting the program.
  * 
  * @author Andreas Ergenzinger
@@ -50,8 +50,8 @@ public final class Target {
     private static final String LOG4J_PROPERTIES_XML = "log4j.xml";
 
     /**
-     * The relative path to <code>src/main/resources/</code>. The
-     * {@link #LOG4J_PROPERTIES_XML} file may be located there.
+     * The relative path to <code>src/main/resources/</code>. The {@link #LOG4J_PROPERTIES_XML} file may be
+     * located there.
      * 
      * @see #readLog4jConfigurationFile()
      */
@@ -79,15 +79,15 @@ public final class Target {
     public static AbstractStorageModule storageModule;
 
     /**
-     * A target-wide counter used for providing the value of sent
-     * {@link ProtocolDataUnit}s' <code>Target Transfer Tag</code> field, unless
+     * A target-wide counter used for providing the value of sent {@link ProtocolDataUnit}s'
+     * <code>Target Transfer Tag</code> field, unless
      * that field is reserved.
      */
     private static final AtomicInteger nextTargetTransferTag = new AtomicInteger();
 
     /**
-     * Gets and increments the value to use in the next unreserved
-     * <code>Target Transfer Tag</code> field of the next PDU to be sent by the
+     * Gets and increments the value to use in the next unreserved <code>Target Transfer Tag</code> field of
+     * the next PDU to be sent by the
      * jSCSI Target.
      * 
      * @see #nextTargetTransferTag
@@ -109,7 +109,7 @@ public final class Target {
      * @param args
      *            all command line arguments are ignored
      */
-    public static void main(String[] args) throws Throwable{
+    public static void main(String[] args) throws Throwable {
 
         // initialize loggers based on settings from file
         readLog4jConfigurationFile();
@@ -120,19 +120,18 @@ public final class Target {
         // exit if there is a problem
         if (!readConfig()) {
             LOGGER.fatal("Error while trying to read settings from "
-                    + TargetConfiguration.CONFIGURATION_FILE_NAME
-                    + ".\nShutting down.");
+                + TargetConfiguration.CONFIGURATION_FILE_NAME + ".\nShutting down.");
             return;
         }
 
         // open the storage medium
-        final File storageFile = new File (config.getStorageFilePath());
-        if (!storageFile.exists()){
-        	System.out.print("Create Storage volume[Y/n]?");
-        	final int c = System.in.read();
-        	if ("y".indexOf(Character.toLowerCase(c)) == 0){
-        		createStorageVolume();
-        	}
+        final File storageFile = new File(config.getStorageFilePath());
+        if (!storageFile.exists()) {
+            System.out.print("Create Storage volume[Y/n]?");
+            final int c = System.in.read();
+            if ("y".indexOf(Character.toLowerCase(c)) == 0) {
+                createStorageVolume();
+            }
         }
         try {
             storageModule = SynchronizedRandomAccessStorageModule.open(config.getStorageFilePath());
@@ -145,8 +144,7 @@ public final class Target {
         System.out.println("   target name:    " + config.getTargetName());
         System.out.println("   port:           " + config.getPort());
         System.out.println("   storage file:   " + config.getStorageFilePath());
-        System.out.println("   file size:      "
-                + storageModule.getHumanFriendlyMediumSize());
+        System.out.println("   file size:      " + storageModule.getHumanFriendlyMediumSize());
 
         ExecutorService threadPool = Executors.newFixedThreadPool(4);
         // Create a blocking server socket and check for connections
@@ -155,29 +153,25 @@ public final class Target {
             // port
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.configureBlocking(true);
-            serverSocketChannel.socket().bind(
-                    new InetSocketAddress(config.getPort()));
+            serverSocketChannel.socket().bind(new InetSocketAddress(config.getPort()));
 
             while (true) {
                 // Accept the connection request.
                 // If serverSocketChannel is blocking, this method blocks.
                 // The returned channel is in blocking mode.
-                final SocketChannel socketChannel = serverSocketChannel
-                        .accept();
+                final SocketChannel socketChannel = serverSocketChannel.accept();
 
                 // deactivate Nagle algorithm
                 socketChannel.socket().setTcpNoDelay(true);
 
-                final TargetConnection connection = new TargetConnection(
-                        socketChannel, true);
+                final TargetConnection connection = new TargetConnection(socketChannel, true);
                 try {
                     final ProtocolDataUnit pdu = connection.receivePdu();
                     // confirm OpCode
                     if (pdu.getBasicHeaderSegment().getOpCode() != OperationCode.LOGIN_REQUEST)
                         throw new InternetSCSIException();
                     // get initiatorSessionID
-                    LoginRequestParser parser = (LoginRequestParser) pdu
-                            .getBasicHeaderSegment().getParser();
+                    LoginRequestParser parser = (LoginRequestParser)pdu.getBasicHeaderSegment().getParser();
                     ISID initiatorSessionID = parser.getInitiatorSessionID();
 
                     /*
@@ -185,12 +179,9 @@ public final class Target {
                      * since we don't do session reinstatement and
                      * MaxConnections=1, we can just create a new one.
                      */
-                    TargetSession session = new TargetSession(connection,
-                            initiatorSessionID,
-                            parser.getCommandSequenceNumber(),// set ExpCmdSN
-                                                              // (PDU is
-                                                              // immediate,
-                                                              // hence no ++)
+                    // set ExpCmdSN(PDU is immediate, hence no ++)
+                    TargetSession session =
+                        new TargetSession(connection, initiatorSessionID, parser.getCommandSequenceNumber(),
                             parser.getExpectedStatusSequenceNumber());
 
                     sessions.add(session);
@@ -212,39 +203,53 @@ public final class Target {
             LOGGER.fatal(e);
         }
     }
-    
-    private static void createStorageVolume() throws IOException{
-		FileOutputStream outStream = null;
-        final File storageFile = new File (config.getStorageFilePath());
-		try {
-			final File parent = storageFile.getCanonicalFile().getParentFile();
-			if (!parent.exists() && !parent.mkdirs()){
-				throw new FileNotFoundException("Unable to create directory: " + parent.getAbsolutePath());
-			}
-			storageFile.createNewFile();
-			outStream = new FileOutputStream(storageFile);
+
+    /**
+     * Creating a new file if not existing at the path defined in the config.
+     * 
+     * @return true if creation successful, false if file already exists.
+     * @throws IOException
+     *             if anything weird happens
+     */
+    private static boolean createStorageVolume() throws IOException {
+        FileOutputStream outStream = null;
+        final File storageFile = new File(config.getStorageFilePath());
+        try {
+            final File parent = storageFile.getCanonicalFile().getParentFile();
+            if (!parent.exists() && !parent.mkdirs()) {
+                throw new FileNotFoundException("Unable to create directory: " + parent.getAbsolutePath());
+            }
+            // if file exists, do not override it
+            if (storageFile.exists()) {
+                return false;
+            }
+
+            storageFile.createNewFile();
+            outStream = new FileOutputStream(storageFile);
             final FileChannel fcout = outStream.getChannel();
             fcout.position(config.getStorageFileLength());
-            outStream.write(26); //Write EOF (not normally needed)
+            outStream.write(26); // Write EOF (not normally needed)
             fcout.force(true);
-		} catch (IOException e) {
-			LOGGER.fatal("Exception creating storage volume " + storageFile.getAbsolutePath() + ": " + e.getMessage(), e);
-			throw e;
-		} finally {
-			if (outStream != null){
-				try {
-					outStream.close();
-				} catch (IOException e) {
-					LOGGER.error("Exception closing storage volume: " + e.getMessage(), e);
-				}
-			}
-		}
-    	
+            return true;
+        } catch (IOException e) {
+            LOGGER.fatal("Exception creating storage volume " + storageFile.getAbsolutePath() + ": "
+                + e.getMessage(), e);
+            throw e;
+        } finally {
+            if (outStream != null) {
+                try {
+                    outStream.close();
+                } catch (IOException e) {
+                    LOGGER.error("Exception closing storage volume: " + e.getMessage(), e);
+                }
+            }
+        }
+
     }
 
     /**
-     * Reads target settings from configuration file and stores them in the
-     * {@link #config} object. Returns <code>false</code> if the operation could
+     * Reads target settings from configuration file and stores them in the {@link #config} object. Returns
+     * <code>false</code> if the operation could
      * not be completed successfully, else it returns <code>true</code>.
      * 
      * @return <code>true</code> if the target settings were read from the
@@ -278,11 +283,10 @@ public final class Target {
     }
 
     /**
-     * Reads the <i>log4j</i> properties from the file <code>log4j.xml</code>
-     * located either in the base directory or <code>src/main/resources/</code>.
+     * Reads the <i>log4j</i> properties from the file <code>log4j.xml</code> located either in the base
+     * directory or <code>src/main/resources/</code>.
      * <p>
-     * The logging properties will be read just once, changing them during
-     * runtime will have no effect.
+     * The logging properties will be read just once, changing them during runtime will have no effect.
      * <p>
      * If <code>log4j.xml</code> cannot be found, then there will be no logging.
      */

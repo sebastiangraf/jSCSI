@@ -17,7 +17,7 @@
 	<xs:complexType name="FileDeviceType">
     	<xs:sequence>
       		<xs:element name="FilePath" type="xs:string" default="storage.dat" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="FileLength" type="xs:string" default="0.5" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="FileLength" type="xs:float" default="0.5" minOccurs="0" maxOccurs="1"/>
     	</xs:sequence>
   	</xs:complexType>
 	
