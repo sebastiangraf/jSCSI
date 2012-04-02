@@ -7,6 +7,7 @@ import javax.naming.OperationNotSupportedException;
 import org.apache.log4j.Logger;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.LoginStage;
+import org.jscsi.target.TargetServer;
 
 /**
  * {@link Entry} objects are used by instances {@link SettingsNegotiator} during
@@ -116,7 +117,7 @@ public abstract class Entry {
      * @return sub-class-specific {@link Object} or <code>null</code> if the
      *         parameter violated the expected format
      */
-    protected abstract Object parseOffer(String values);
+    protected abstract Object parseOffer(TargetServer target, String values);
 
     /**
      * This method is used for negotiating or declaring the {@link Entry}'s
@@ -142,7 +143,7 @@ public abstract class Entry {
      * @return <code>true</code> if everything went fine, <code>false</code> if
      *         errors occured
      */
-    public final boolean negotiate(final LoginStage loginStage,
+    public final boolean negotiate(TargetServer target, final LoginStage loginStage,
             final boolean leadingConnection, final boolean initialPdu,
             final String key, final String values,
             final Collection<String> responseKeyValuePairs) {
@@ -169,7 +170,7 @@ public abstract class Entry {
         }
 
         // transform values to appropriate type
-        final Object offer = parseOffer(values);
+        final Object offer = parseOffer(target, values);
 
         if (offer == null) {
             fail("value format error: " + values);

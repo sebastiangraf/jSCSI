@@ -61,6 +61,12 @@ public final class Settings {
     Integer ofMarkInt;
 
     // session parameters
+    
+    /**
+     * The <code>TargetName</code> parameter
+     */
+    String targetName;
+    
     /**
      * The <code>DataPDUInOrder</code> parameter.
      */
@@ -165,7 +171,9 @@ public final class Settings {
         maxRecvDataSegmentLength = c.maxRecvDataSegmentLength;
         ofMarker = c.ofMarker;
         ofMarkInt = c.ofMarkInt;
+        targetName = c.targetName;
         // session parameters
+
         dataPduInOrder = s.dataPduInOrder;
         dataSequenceInOrder = s.dataSequenceInOrder;
         defaultTime2Retain = s.defaultTime2Retain;
@@ -462,5 +470,9 @@ public final class Settings {
     public String getSessionType() throws SettingsException {
         checkIfNull(maxOutstandingR2T);
         return sessionType;
+    }
+    
+    public String getTargetName() throws SettingsException {
+        return targetName;
     }
 }

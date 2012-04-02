@@ -10,7 +10,7 @@ import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.parser.scsi.SCSIStatus;
 import org.jscsi.parser.scsi.SCSIResponseParser.ServiceResponse;
-import org.jscsi.target.Target;
+import org.jscsi.target.TargetServer;
 import org.jscsi.target.connection.TargetPduFactory;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.scsi.ScsiResponseDataSegment;
@@ -87,7 +87,7 @@ public class ReadStage extends ReadOrWriteStage {
             return;
         }
 
-        final int blockSize = Target.storageModule.getBlockSizeInBytes();
+        final int blockSize = session.getStorageModule().getBlockSizeInBytes();
         final int totalTransferLength = blockSize * cdb.getTransferLength();
         final long storageOffset = blockSize * cdb.getLogicalBlockAddress();
 
@@ -124,7 +124,7 @@ public class ReadStage extends ReadOrWriteStage {
         while (bytesSent < totalTransferLength - maxRecvDataSegmentLength) {
 
             // get data and prepare data segment
-            Target.storageModule.read(dataSegmentArray, 0,
+            session.getStorageModule().read(dataSegmentArray, 0,
                     maxRecvDataSegmentLength, storageOffset + bytesSent);
 
             // create and send PDU
@@ -165,7 +165,7 @@ public class ReadStage extends ReadOrWriteStage {
         // get data and prepare data segment
         final int bytesRemaining = totalTransferLength - bytesSent;
         dataSegmentArray = connection.getDataInArray(bytesRemaining);
-        Target.storageModule.read(dataSegmentArray, storageOffset + bytesSent);
+        session.getStorageModule().read(dataSegmentArray, storageOffset + bytesSent);
         dataSegment = ByteBuffer.wrap(dataSegmentArray);
 
         // create and send PDU (with or without status)

@@ -8,7 +8,7 @@ import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSICommandParser;
-import org.jscsi.target.Target;
+import org.jscsi.target.TargetServer;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.scsi.cdb.ReportLunsCDB;
 import org.jscsi.target.scsi.cdb.SelectReport;
@@ -71,7 +71,7 @@ public class ReportLunsStage extends TargetFullFeatureStage {
             case WELL_KNOWN_LUNS_ONLY:
             case ALL:
                 reportLunsParameterData = new ReportLunsParameterData(
-                        Target.config.getLogicalUnitNumber());
+                        session.getTargetServer().getConfig().getLogicalUnitNumber());
                 break;
             default:
                 throw new InternetSCSIException();

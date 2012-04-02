@@ -1,5 +1,6 @@
 package org.jscsi.target;
 
+import java.awt.Cursor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.security.DigestException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,8 +26,14 @@ import org.jscsi.parser.login.ISID;
 import org.jscsi.parser.login.LoginRequestParser;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
+import org.jscsi.target.scsi.inquiry.DeviceIdentificationVpdPage;
+import org.jscsi.target.settings.StorageFileTargetInfo;
 import org.jscsi.target.settings.TargetConfiguration;
-import org.jscsi.target.storage.*;
+import org.jscsi.target.settings.TargetConfigurationXMLParser;
+import org.jscsi.target.settings.TargetInfo;
+import org.jscsi.target.storage.AbstractStorageModule;
+import org.jscsi.target.storage.RandomAccessStorageModule;
+import org.jscsi.target.storage.SynchronizedRandomAccessStorageModule;
 import org.xml.sax.SAXException;
 
 /**
@@ -35,9 +43,9 @@ import org.xml.sax.SAXException;
  * 
  * @author Andreas Ergenzinger
  */
-public final class Target {
+public final class TargetServer {
 
-    private static final Logger LOGGER = Logger.getLogger(Target.class);
+    private static final Logger LOGGER = Logger.getLogger(TargetServer.class);
 
     /**
      * The name of the <i>log4j</i> properties file.
@@ -57,24 +65,28 @@ public final class Target {
     /**
      * A {@link SocketChannel} used for listening to incoming connections.
      */
-    static ServerSocketChannel serverSocketChannel;
+    private ServerSocketChannel serverSocketChannel;
 
     /**
      * Contains all active {@link TargetSession}s.
      */
-    static Collection<TargetSession> sessions = new Vector<TargetSession>();
+    private Collection<TargetSession> sessions = new Vector<TargetSession>();
 
     /**
      * The jSCSI Target's global parameters.
      */
-    public static TargetConfiguration config;
+    private TargetConfiguration config;
 
     /**
-     * The {@link AbstractStorageModule} granting access to the target's storage
-     * medium.
+     * 
      */
-    public static AbstractStorageModule storageModule;
-
+    private DeviceIdentificationVpdPage deviceIdentificationVpdPage;
+    
+    /**
+     * The table of targets
+     */
+    private HashMap<String, Target>targets = new HashMap<String, Target>();
+    
     /**
      * A target-wide counter used for providing the value of sent
      * {@link ProtocolDataUnit}s' <code>Target Transfer Tag</code> field, unless
@@ -106,8 +118,14 @@ public final class Target {
      * @param args
      *            all command line arguments are ignored
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
+        TargetServer target = new TargetServer();
+        target.start();
+    }
 
+    public void start()
+    {
         // initialize loggers based on settings from file
         readLog4jConfigurationFile();
 
@@ -117,27 +135,37 @@ public final class Target {
         // exit if there is a problem
         if (!readConfig()) {
             LOGGER.fatal("Error while trying to read settings from "
-                    + TargetConfiguration.CONFIGURATION_FILE_NAME
+                    + TargetConfigurationXMLParser.CONFIGURATION_FILE_NAME
                     + ".\nShutting down.");
             return;
         }
-
+        System.out.println("   port:           " + getConfig().getPort());
         // open the storage medium
         try {
-            storageModule = SynchronizedRandomAccessStorageModule.open(config
+            TargetInfo [] targetInfo = getConfig().getTargetInfo();
+            for (TargetInfo curTargetInfo:targetInfo)
+            {
+                StorageFileTargetInfo curStorageFileTargetInfo = (StorageFileTargetInfo)curTargetInfo;
+                RandomAccessStorageModule curStorageModule = SynchronizedRandomAccessStorageModule.open(curStorageFileTargetInfo
                     .getStorageFilePath());
+                addStorageModule(curStorageFileTargetInfo.getTargetName(), curStorageFileTargetInfo.getTargetAlias(),
+                        curStorageModule);
+                // print configuration and medium details
+                System.out.println("   target name:    " + curStorageFileTargetInfo.getTargetName());
+
+                System.out.println("   storage file:   " + curStorageFileTargetInfo.getStorageFilePath());
+                System.out.println("   file size:      "
+                        + curStorageModule.getHumanFriendlyMediumSize());
+            }
         } catch (FileNotFoundException e) {
             LOGGER.fatal(e.toString());
             return;
         }
+        mainLoop();
+    }
 
-        // print configuration and medium details
-        System.out.println("   target name:    " + config.getTargetName());
-        System.out.println("   port:           " + config.getPort());
-        System.out.println("   storage file:   " + config.getStorageFilePath());
-        System.out.println("   file size:      "
-                + storageModule.getHumanFriendlyMediumSize());
-
+    public void mainLoop()
+    {
         ExecutorService threadPool = Executors.newFixedThreadPool(4);
         // Create a blocking server socket and check for connections
         try {
@@ -146,7 +174,7 @@ public final class Target {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.configureBlocking(true);
             serverSocketChannel.socket().bind(
-                    new InetSocketAddress(config.getPort()));
+                    new InetSocketAddress(getConfig().getPort()));
 
             while (true) {
                 // Accept the connection request.
@@ -175,7 +203,7 @@ public final class Target {
                      * since we don't do session reinstatement and
                      * MaxConnections=1, we can just create a new one.
                      */
-                    TargetSession session = new TargetSession(connection,
+                    TargetSession session = new TargetSession(this, connection,
                             initiatorSessionID,
                             parser.getCommandSequenceNumber(),// set ExpCmdSN
                                                               // (PDU is
@@ -212,9 +240,9 @@ public final class Target {
      *         configuration file, <code>false</code> otherwise. {@see
      *         TargetConfiguration}
      */
-    private static boolean readConfig() {
+    private boolean readConfig() {
         try {
-            config = TargetConfiguration.create();
+            setConfig(new TargetConfigurationXMLParser().parseSettings());
         } catch (SAXException e) {
             LOGGER.fatal(e);
             return false;
@@ -234,7 +262,7 @@ public final class Target {
      * @param session
      *            the session to remove from the list of active sessions
      */
-    public synchronized static void removeTargetSession(TargetSession session) {
+    public synchronized void removeTargetSession(TargetSession session) {
         sessions.remove(session);
     }
 
@@ -258,5 +286,65 @@ public final class Target {
             path = RESOURCES_DIRECTORY + LOG4J_PROPERTIES_XML;
         // configure
         DOMConfigurator.configure(path);
+    }
+
+    public TargetConfiguration getConfig()
+    {
+        return config;
+    }
+
+    public void setConfig(TargetConfiguration config)
+    {
+        this.config = config;
+        deviceIdentificationVpdPage = new DeviceIdentificationVpdPage(this);
+    }
+
+    public DeviceIdentificationVpdPage getDeviceIdentificationVpdPage()
+    {
+        return deviceIdentificationVpdPage;
+    }
+
+    public Target getTarget(String targetName)
+    {
+        synchronized(targets)
+        {
+            return targets.get(targetName);
+        }
+    }
+
+    public String [] getTargetNames()
+    {
+        String [] returnNames = new String[targets.size()];
+        returnNames = targets.keySet().toArray(returnNames);
+        return returnNames;
+    }
+    
+    public void addStorageModule(String targetName, String targetAlias, AbstractStorageModule storageModule)
+    {
+        Target addTarget = new Target(targetName, targetAlias, storageModule);
+        synchronized(targets)
+        {
+            targets.put(targetName, addTarget);
+        }
+    }
+    
+    /**
+     * Checks to see if this target name is valid.
+     * 
+     * @param checkTargetName
+     * @return true if the the target name is configured
+     */
+    public boolean isValidTargetName(String checkTargetName)
+    {
+        return targets.containsKey(checkTargetName);
+    }
+
+    public void removeStorageModule(String exportTargetName)
+    {
+        // TODO - check for logins
+        synchronized(targets)
+        {
+            targets.remove(exportTargetName);
+        }
     }
 }

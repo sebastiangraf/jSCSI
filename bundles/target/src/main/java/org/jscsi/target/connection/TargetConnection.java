@@ -205,7 +205,7 @@ public final class TargetConnection implements Callable<Void> {
                 if (isLeadingConnection)
                     targetSession.setSessionType(SessionType
                             .getSessionType(settings.getSessionType()));
-
+                targetSession.setTargetName(settings.getTargetName());
                 // *** full feature phase ***
                 phase = new TargetFullFeaturePhase(this);
                 phase.execute();
@@ -213,10 +213,12 @@ public final class TargetConnection implements Callable<Void> {
         } catch (OperationNotSupportedException e) {
             LOGGER.error(e);
         } catch (IOException e) {
+        	e.printStackTrace();
             LOGGER.error(e);
         } catch (InterruptedException e) {
             LOGGER.error(e);
         } catch (InternetSCSIException e) {
+        	e.printStackTrace();
             LOGGER.error(e);
         } catch (DigestException e) {
             LOGGER.error(e);

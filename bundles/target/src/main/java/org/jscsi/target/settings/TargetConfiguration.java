@@ -3,6 +3,8 @@ package org.jscsi.target.settings;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -32,87 +34,9 @@ import org.xml.sax.SAXException;
  */
 public class TargetConfiguration {
 
-    /**
-     * The file name of the configuration file.
-     */
-    public static final String CONFIGURATION_FILE_NAME = "jscsi-target.xml";
 
-    /**
-     * The name of the schema file describing the format of the configuration
-     * file.
-     */
-    public static final String SCHEMA_FILE_NAME = "jscsi-target.xsd";
-
-    /**
-     * The primary folder containing all configuration files.
-     */
-    public static final File RELEASE_CONFIGURATION_DIRECTORY = new File(
-            new StringBuilder(System.getProperty("user.dir")).append(
-                    File.separator).toString());
-
-    /**
-     * The back-up folder which will be searched for the <code>xsd</code> and
-     * <code>xml</code>files if they cannot be found in the
-     * {@link #RELEASE_CONFIGURATION_DIRECTORY}.
-     */
-    public static final File DEVELOPMENT_CONFIGURATION_DIRECTORY = new File(
-            new StringBuilder(System.getProperty("user.dir"))
-                    .append(File.separator).append("src")
-                    .append(File.separator).append("main")
-                    .append(File.separator).append("resources")
-                    .append(File.separator).toString());
-
-    /**
-     * The <code>xsd</code> file containing the schema information for all
-     * target-specific settings.
-     */
-    public static final File CONFIGURATION_FILE = getFile(
-            RELEASE_CONFIGURATION_DIRECTORY,
-            DEVELOPMENT_CONFIGURATION_DIRECTORY, CONFIGURATION_FILE_NAME);
-
-    /**
-     * The <code>xml</code> file containing all target-specific settings.
-     */
-    public static final File SCHEMA_FILE = getFile(
-            RELEASE_CONFIGURATION_DIRECTORY,
-            DEVELOPMENT_CONFIGURATION_DIRECTORY, SCHEMA_FILE_NAME);
-
-    /**
-     * Searches and tries to return a {@link File} with the specified
-     * <i>fileName</i> from the given <i>mainDirectory</i>. If this {@link File}
-     * does not exist, a {@link File} with the specified <i>fileName</i> from
-     * the given <i>backUpDirectory</i> will be returned.
-     * 
-     * @param mainDirectory
-     *            the first directory to search
-     * @param backUpDirectory
-     *            the folder to use if the first search fails
-     * @param fileName
-     *            the name of the file without path information
-     * @return a {@link File} that may or may not exist
-     */
-    private static File getFile(final File mainDirectory,
-            final File backUpDirectory, String fileName) {
-        final File file = new File(mainDirectory, fileName);
-        if (file.exists())
-            return file;
-        return new File(backUpDirectory, fileName);
-    }
-
-    /**
-     * The <code>TargetName</code> parameter.
-     * <p>
-     * This parameter must be provided in the configuration file.
-     */
-    private String targetName;
-
-    /**
-     * The <code>TargetAlias</code> parameter or <code>null</code>.
-     * <p>
-     * This parameter may be provided in the configuration file.
-     */
-    private String targetAlias;
-
+    protected ArrayList<TargetInfo>targets = new ArrayList<TargetInfo>();
+    
     /**
      * The <code>TargetAddress</code> parameter (the jSCSI Target's IP address).
      * <p>
@@ -126,12 +50,7 @@ public class TargetConfiguration {
      * The default port number is 3260. This value may be overridden by
      * specifying a different value in the configuration file.
      */
-    private int port;
-
-    /**
-     * The path leading the the file used as the storage medium.
-     */
-    private String storageFilePath;
+    protected int port;
 
     /**
      * This variable toggles the strictness with which the parameters
@@ -145,7 +64,7 @@ public class TargetConfiguration {
      * <code>true</code> in the configuration file. The default is
      * <code>false</code>.
      */
-    private boolean allowSloppyNegotiation;// TODO fix in jSCSI Initiator and
+    protected boolean allowSloppyNegotiation;// TODO fix in jSCSI Initiator and
                                            // remove
 
     /**
@@ -194,24 +113,20 @@ public class TargetConfiguration {
         return outMaxRecvDataSegmentLength;
     }
 
-    public String getTargetName() {
-        return targetName;
-    }
-
     public String getTargetAddress() {
         return targetAddress;
     }
 
-    public String getTargetAlias() {
-        return targetAlias;
+    public void setPort(int port) {
+        this.port = port;
     }
-
     public int getPort() {
         return port;
     }
 
-    public String getStorageFilePath() {
-        return storageFilePath;
+    public void setAllowSloppyNegotiation(boolean allowSloppyNegotiation)
+    {
+        this.allowSloppyNegotiation = allowSloppyNegotiation;
     }
 
     public boolean getAllowSloppyNegotiation() {
@@ -226,23 +141,10 @@ public class TargetConfiguration {
         return logicalUnitNumber;
     }
 
-    /**
-     * Creates a instance of a {@link TargetConfiguration} object, which is
-     * initialized with the settings from the configuration file.
-     * 
-     * @return A <code>TargetConfiguration</code> instance with all settings.
-     * @throws SAXException
-     *             If this operation is supported but failed for some reason.
-     * @throws ParserConfigurationException
-     *             If a {@link DocumentBuilder} cannot be created which
-     *             satisfies the configuration requested.
-     * @throws IOException
-     *             If any IO errors occur.
-     */
-    public static final TargetConfiguration create() throws SAXException,
-            ParserConfigurationException, IOException {
-
-        return create(SCHEMA_FILE, CONFIGURATION_FILE);
+    public TargetConfiguration() throws IOException
+    {
+        port = 3260;
+        targetAddress = InetAddress.getLocalHost().getHostAddress();
     }
 
     /**
@@ -263,20 +165,28 @@ public class TargetConfiguration {
      * @throws IOException
      *             If any IO errors occur.
      */
-    public static final TargetConfiguration create(
+    public TargetConfiguration(
             final File configSchemaFileName, final File configFileName)
             throws SAXException, ParserConfigurationException, IOException {
 
-        final TargetConfiguration config = new TargetConfiguration();
+        targetAddress = InetAddress.getLocalHost().getHostAddress();
 
-        config.targetAddress = InetAddress.getLocalHost().getHostAddress();
-
-        final Document doc = config.parse(configSchemaFileName, configFileName);
-        config.parseSettings(doc.getDocumentElement());
-
-        return config;
+        final Document doc = parse(configSchemaFileName, configFileName);
+        parseSettings(doc.getDocumentElement());
     }
 
+    /**
+     * /**
+     * Creates a instance of a {@link TargetConfiguration} object, which is
+     * initialized with the settings from the DOM element.
+     * 
+     * @param parseElement - root of the settings tree
+     */
+    public TargetConfiguration(Element parseElement)
+    {
+        parseSettings(parseElement);
+    }
+    
     /**
      * Reads the given configuration file in memory and creates a DOM
      * representation.
@@ -289,7 +199,7 @@ public class TargetConfiguration {
      * @throws IOException
      *             If any IO errors occur.
      */
-    private final Document parse(final File schemaLocation,
+    protected Document parse(final File schemaLocation,
             final File configFile) throws SAXException,
             ParserConfigurationException, IOException {
 
@@ -319,16 +229,17 @@ public class TargetConfiguration {
      * @param root
      *            The root element of the configuration.
      */
-    private final void parseSettings(final Element root) {
+    protected void parseSettings(final Element root) {
         // TargetName
-        targetName = root.getElementsByTagName(TextKeyword.TARGET_NAME).item(0)
-                .getTextContent();
+        
+        Element targetListNode = (Element) root.getElementsByTagName("TargetList").item(0);
+        NodeList targetList = targetListNode.getElementsByTagName("Target");
+        for (int curTargetNum = 0; curTargetNum < targetList.getLength(); curTargetNum++)
+        {
+            TargetInfo curTargetInfo = parseTargetElement((Element) targetList.item(curTargetNum));
+            targets.add(curTargetInfo);
+        }
 
-        // TargetAlias (optional)
-        final Node targetAliasNode = root.getElementsByTagName(
-                TextKeyword.TARGET_ALIAS).item(0);
-        if (targetAliasNode != null)
-            targetAlias = targetAliasNode.getTextContent();
         // else it is null
 
         // port
@@ -337,14 +248,7 @@ public class TargetConfiguration {
                     .getTextContent());
         else
             port = 3260;
-        final NodeList fileProperties = root
-                .getElementsByTagName("StorageFile").item(0).getChildNodes();
-        for (int i = 0; i < fileProperties.getLength(); ++i) {
-            if ("FilePath".equals(fileProperties.item(i).getNodeName()))
-                storageFilePath = fileProperties.item(i).getTextContent();
-        }
-        if (storageFilePath == null)
-            storageFilePath = "storage.dat";
+
 
         // support sloppy text parameter negotiation (i.e. the jSCSI Initiator)?
         final Node allowSloppyNegotiationNode = root.getElementsByTagName(
@@ -354,5 +258,68 @@ public class TargetConfiguration {
         else
             allowSloppyNegotiation = Boolean
                     .parseBoolean(allowSloppyNegotiationNode.getTextContent());
+    }
+        
+    public TargetInfo parseTargetElement(Element targetElement)
+    {
+        String targetName = targetElement.getElementsByTagName(TextKeyword.TARGET_NAME).item(0)
+                .getTextContent();
+        // TargetAlias (optional)
+        Node targetAliasNode = targetElement.getElementsByTagName(
+                TextKeyword.TARGET_ALIAS).item(0);
+        String targetAlias = null;
+        if (targetAliasNode != null)
+            targetAlias = targetAliasNode.getTextContent();
+        NodeList fileProperties = targetElement
+                .getElementsByTagName("StorageFile").item(0).getChildNodes();
+        String storageFilePath = null;
+        for (int i = 0; i < fileProperties.getLength(); ++i) {
+            if ("FilePath".equals(fileProperties.item(i).getNodeName()))
+                storageFilePath = fileProperties.item(i).getTextContent();
+        }
+        if (storageFilePath == null)
+            storageFilePath = "storage.dat";
+        
+        StorageFileTargetInfo returnInfo = new StorageFileTargetInfo(targetName, targetAlias, storageFilePath);
+        return returnInfo;
+    }
+    
+    public TargetInfo [] getTargetInfo()
+    {
+        synchronized(targets)
+        {
+            TargetInfo [] returnInfo = new TargetInfo[targets.size()];
+            returnInfo = targets.toArray(returnInfo);
+            return returnInfo;
+        }
+    }
+
+    public void addTargetInfo(TargetInfo targetInfo)
+    {
+        synchronized(targets)
+        {
+            targets.add(targetInfo);
+        }
+    }
+    
+    public boolean removeTargetInfo(TargetInfo removeInfo)
+    {
+        synchronized(targets)
+        {
+            return targets.remove(removeInfo);
+        }
+    }
+    
+    public boolean removeTargetInfo(String targetName)
+    {
+        for (TargetInfo checkTargetInfo:targets)
+        {
+            if (checkTargetInfo.getTargetName().equals(targetName))
+            {
+                targets.remove(targetName);
+                return true;
+            }
+        }
+        return false;
     }
 }

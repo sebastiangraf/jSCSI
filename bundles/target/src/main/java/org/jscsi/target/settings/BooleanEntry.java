@@ -1,5 +1,7 @@
 package org.jscsi.target.settings;
 
+import org.jscsi.target.TargetServer;
+
 /**
  * An {@link Entry} sub-class for boolean parameters.
  * <p>
@@ -49,7 +51,7 @@ public final class BooleanEntry extends Entry {
     }
 
     @Override
-    protected Object parseOffer(final String values) {
+    protected Object parseOffer(TargetServer target, final String values) {
         return TextParameter.parseBooleanValue(values);
     }
 

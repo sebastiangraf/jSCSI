@@ -53,7 +53,7 @@ public final class LoginOperationalParameterNegotiationStage extends
         final Vector<String> requestKeyValuePairs = TextParameter
                 .tokenizeKeyValuePairs(keyValuePairProposal);
         final Vector<String> responseKeyValuePairs = new Vector<String>();
-        if (!negotiator.negotiate(stageNumber,
+        if (!negotiator.negotiate(session.getTargetServer(), stageNumber,
                 connection.isLeadingConnection(),
                 ((TargetLoginPhase) targetPhase).getFirstPduAndSetToFalse(),
                 requestKeyValuePairs, responseKeyValuePairs)) {

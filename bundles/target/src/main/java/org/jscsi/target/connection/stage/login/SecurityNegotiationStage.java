@@ -116,7 +116,7 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
                                                                               // sent
                                                                               // back
             if (!negotiator
-                    .negotiate(stageNumber, connection.isLeadingConnection(),
+                    .negotiate(session.getTargetServer(), stageNumber, connection.isLeadingConnection(),
                             ((TargetLoginPhase) targetPhase)
                                     .getFirstPduAndSetToFalse(),
                             requestKeyValuePairs, responseKeyValuePairs)) {

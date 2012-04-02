@@ -100,7 +100,7 @@ public class InquiryStage extends TargetFullFeatureStage {
                     responseData = SupportedVpdPages.getInstance();
                     break;
                 case DEVICE_IDENTIFICATION:
-                    responseData = DeviceIdentificationVpdPage.getInstance();
+                    responseData = session.getTargetServer().getDeviceIdentificationVpdPage();
                     break;
                 default:
                     // The initiator must not request unsupported mode pages.

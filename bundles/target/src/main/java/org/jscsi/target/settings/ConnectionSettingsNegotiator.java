@@ -4,7 +4,7 @@ import java.util.Vector;
 
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.LoginStage;
-import org.jscsi.target.Target;
+import org.jscsi.target.TargetServer;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 
@@ -143,7 +143,7 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
      * @return <code>true</code> if everything went fine and <code>false</code>
      *         if there was an irreconcilable problem
      */
-    public boolean negotiate(final LoginStage loginStage,
+    public boolean negotiate(TargetServer target, final LoginStage loginStage,
             final boolean leadingConnection, final boolean initialPdu,
             final Vector<String> requestKeyValuePairs,
             final Vector<String> responseKeyValuePairs) {
@@ -175,7 +175,7 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
                         keys.get(0), TextKeyword.NOT_UNDERSTOOD));
             } else {// appropriate entry was found
                 // process key=value pair and remember if there is any trouble
-                everythingOkay &= entry.negotiate(loginStage,
+                everythingOkay &= entry.negotiate(target, loginStage,
                         leadingConnection, initialPdu, keys.get(0),
                         values.get(0), responseKeyValuePairs);
             }
@@ -202,12 +202,13 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
                 final Entry targetNameEntry = getEntry(TextKeyword.TARGET_NAME);
                 final String targetName = (String) targetNameEntry.value;
                 if (targetName == null || // not declared
-                        !targetName.equals(Target.config.getTargetName()))// wrong
-                                                                          // name
+                        !target.isValidTargetName(targetName))// wrong name
                     everythingOkay = false;
 
                 // send TargetAlias
-                final String targetAlias = Target.config.getTargetAlias();// might
+                String targetAlias = null;
+                if (everythingOkay)
+                    targetAlias = target.getTarget(targetName).getTargetAlias();// might
                                                                           // be
                                                                           // undefined
                 if (targetAlias != null) {
@@ -220,7 +221,7 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
                         .add(TextParameter.toKeyValuePair(
                                 TextKeyword.TARGET_PORTAL_GROUP_TAG,
                                 Integer.valueOf(
-                                        Target.config.getTargetPortalGroupTag())
+                                        target.getConfig().getTargetPortalGroupTag())
                                         .toString()));
             }
         }
