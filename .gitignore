@@ -1,11 +1,9 @@
 .DS_Store
-target
 .settings
 .project
 .classpath
 
 syntax: regexp
-^perfidix/target$
 ^perfidix/.settings$
 ^perfidix/.project
 ^perfidix/.classpath
