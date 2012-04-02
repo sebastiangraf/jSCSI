@@ -16,20 +16,36 @@
 	
 	<xs:complexType name="FileDeviceType">
     	<xs:sequence>
+    	    <xs:element name="VolumeID" type="xs:string" default="storage.dat" minOccurs="1" maxOccurs="1"/>
       		<xs:element name="FilePath" type="xs:string" default="storage.dat" minOccurs="0" maxOccurs="1"/>
     	</xs:sequence>
   	</xs:complexType>
-	
-	
 	<xs:element name="configuration">
 		<xs:complexType>
 			<xs:all>
-				<xs:element name="TargetName" type="TargetNameType" minOccurs="1" maxOccurs="1" />
-				<xs:element name="TargetAlias" type="xs:string" minOccurs="0" maxOccurs="1" />
-				<xs:element name="Port" type="TargetPortType" default="3260" minOccurs="0" maxOccurs="1" />
-				<xs:element name="StorageFile" type="FileDeviceType" maxOccurs="1" />
-				<xs:element name="AllowSloppyNegotiation" type="xs:boolean" default="false" minOccurs="0" maxOccurs="1" />	
+				<xs:element name="TargetList" type="TargetList" minOccurs="1" />
+				<xs:element name="GlobalConfig" type="GlobalConfig" minOccurs="1" />
 			</xs:all>
 		</xs:complexType>
 	</xs:element>
+	<xs:complexType name="TargetList">
+		<xs:sequence  minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="Target"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="GlobalConfig">
+		<xs:all>
+			<xs:element name="AllowSloppyNegotiation" type="xs:boolean" default="false" minOccurs="0" maxOccurs="1" />
+			<xs:element name="Port" type="TargetPortType" default="3260" minOccurs="0" maxOccurs="1" />
+		</xs:all>
+	</xs:complexType>
+	
+	<xs:complexType name="Target">
+		<xs:all>
+			<xs:element name="TargetName" type="TargetNameType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="TargetAlias" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="StorageFile" type="FileDeviceType" maxOccurs="1" />
+		</xs:all>
+	</xs:complexType>
 </xs:schema>
