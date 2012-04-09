@@ -15,7 +15,7 @@ bundles					bundles
 scripts					bash scripts for syncing against disy-internal repo.
 pom.xml					Simple pom (yes we do use Maven)
 
-[![Build Status](https://secure.travis-ci.org/disy/jscsi.png)](http://travis-ci.org/disy/jscsi)
+[![Build Status](https://secure.travis-ci.org/disy/jSCSI.png)](http://travis-ci.org/disy/jSCSI)
 
 License
 -------
