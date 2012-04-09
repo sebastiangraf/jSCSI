@@ -47,12 +47,16 @@ Involved People
 
 jSCSI is maintained by:
 
-* Sebastian Graf (Intiator & Current Project Lead)
+* Sebastian Graf (Current Project Lead)
+* Nuray Gürler (Websites Refactoring)
+* Andreas Rain (Testing)
 
 Former people include:
 
 * Andreas Ergenzinger (jSCSI 2.0, target)
 * Patrice Brend'amour (jSCSI 2.0, initiator)
+* Marcus Specht (jSCSI target evaluation)
+* Halddor Janetzko (Whiskas Block Visualization)
 * Marc Kramis (Project Lead until 2007)
 * Bastian Lemke (Storage Pool)
 * Volker Wildi (jSCSI 1.0, initiator)
