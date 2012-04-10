@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>jSCSI</groupId>
-    <artifactId>pom</artifactId>
+	<groupId>org.jscsi</groupId>
+	<artifactId>pom</artifactId>
 	<packaging>pom</packaging>
-    <version>2.2-SNAPSHOT</version>
+	<version>2.2-SNAPSHOT</version>
 
-	<!-- just the parent project with all settings-->
-	<name>jSCSI-pom</name>
-    <description>The parent project for jSCSI</description>
-	<url>http://www.jscsi.org</url>
-	<ciManagement>
-		<system>jenkins</system>
-		<url>http://ci.disy.inf.uni-konstanz.de</url>
-	</ciManagement>
-	<organization>
-		<name>University of Konstanz, Distributed Systems Group</name>
-		<url>http://www.informatik.uni-konstanz.de/ags/disy</url>
-	</organization>
+	<!-- just the parent project with all settings -->
+	<name>jscsi-pom</name>
+	<description>The parent project for jSCSI</description>
+
+	<url>https://github.com/disy/jSCSI</url>
+	<issueManagement>
+		<url>https://github.com/disy/jSCSI/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
 	<licenses>
 		<license>
 			<name>New BSD</name>
-			<url>http://www.opensource.org/licenses/bsd-license.php</url>
+			<url>http://www.opensource.org/licenses/BSD-3-Clause</url>
 			<comments>3-clause BSD License</comments>
 		</license>
 	</licenses>
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>http://travis-ci.org/#!/disy/jSCSI</url>
+	</ciManagement>
+	<scm>
+		<url>git@github.com:disy/jSCSI.git</url>
+		<connection>scm:git:git@github.com:disy/jSCSI.git</connection>
+		<developerConnection>scm:git:git@github.com:disy/jSCSI.git</developerConnection>
+	</scm>
 	<developers>
 		<developer>
 			<name>Sebastian Graf</name>
@@ -44,108 +51,9 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
-	<repositories>
-		<repository>
-			<id>disyInternal</id>
-			<name>Internal Repository for the Distributed System Group</name>
-			<url>http://mavenrepo.disy.inf.uni-konstanz.de/repository/disyInternal</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>disyInternalSnapshot</id>
-			<name>Internal Snapshot Repository for the Distributed System Group</name>
-			<url>http://mavenrepo.disy.inf.uni-konstanz.de/repository/disyInternalSnapshot</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>disyThirdParty</id>
-			<name>Repository for third party jar used by disy</name>
-			<url>http://mavenrepo.disy.inf.uni-konstanz.de/repository/disyThirdParty</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.4</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.6</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-pmd-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<sourceEncoding>utf-8</sourceEncoding>
-					<minimumTokens>100</minimumTokens>
-					<targetJdk>${compileSource}</targetJdk>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jxr-plugin</artifactId>
-				<version>2.2</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.4</version>
-			</plugin>
-			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.2</version>
-					<configuration>
-					<artifactItems />
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.6</version>
-			</plugin>
-		</plugins>
-	</reporting>
+
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.8</version>
-				<configuration>
-					<threadCount>10</threadCount>
-					<perCoreThreadCount>true</perCoreThreadCount>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
-				<version>1.9.0</version>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -164,28 +72,23 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-			<plugin> <groupId>org.apache.maven.plugins</groupId> 
-			<artifactId>maven-source-plugin</artifactId> 
-				<version>2.1.2</version> <executions> <execution> <id>attach-sources</id> 
-				<goals> <goal>test-jar</goal> <goal>jar</goal> </goals> </execution> </executions> 
-				</plugin>
-<!--			<plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.1</version>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
 				<executions>
 					<execution>
+						<id>attach-sources</id>
 						<goals>
 							<goal>test-jar</goal>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
-			</plugin>-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0</version>
 			</plugin>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId> 
+				<version>2.3.1</version> <executions> <execution> <goals> <goal>test-jar</goal> 
+				</goals> </execution> </executions> </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -216,29 +119,35 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>perfidix</groupId>
+			<groupId>org.perfidix</groupId>
 			<artifactId>perfidix</artifactId>
-			<version>3.6.3</version>
+			<version>3.6.5-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
-			</dependencies>
+	</dependencies>
+	<repositories>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
 	<distributionManagement>
 		<repository>
-			<id>disyInternal</id>
-			<url>http://mavenrepo.disy.inf.uni-konstanz.de/repository/disyInternal</url>
+			<id>sonatype-nexus-staging</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 			<uniqueVersion>false</uniqueVersion>
 		</repository>
 		<snapshotRepository>
-			<id>disyInternalSnapshot</id>
-			<url>http://mavenrepo.disy.inf.uni-konstanz.de/repository/disyInternalSnapshot</url>
+			<id>sonatype-nexus-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
+		<site>
+			<id>github</id>
+			<url>gitsite:git@github.com/disy/jSCSI.git</url>
+		</site>
 	</distributionManagement>
-	<scm>
-		<url>https://github.com/disy/jSCSI</url>
-		<connection>scm:git:git://github.com/disy/jSCSI.git</connection>
-		<developerConnection>scm:git:git@github.com:disy/jSCSI.git</developerConnection>
-	</scm>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
