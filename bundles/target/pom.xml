@@ -5,6 +5,7 @@
 		<groupId>org.jscsi</groupId>
 		<artifactId>pom</artifactId>
 		<version>2.2-SNAPSHOT</version>
+		<relativePath>../../parent/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>target</artifactId>
