@@ -28,11 +28,13 @@ Further information
 The project is currently under refactoring, the documentation will be under http://jscsi.org (pointing to http://disy.github.com/jscsi/) and a mailinglist has been set up:
 https://mailman.uni-konstanz.de/mailman/listinfo/jscsi
 
-The framework was presented at the Jazoon '07 as work in progress: [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84424)
+###Publications
 
-A TechReport describes the second iteration of the framework: [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84511)
+* A TechReport describes the second iteration of the framework: [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84511)
+* The framework was presented at the Jazoon '07 as work in progress: [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84424)
+* jSCSI acted as backend for a block visualization presented at the InfoVis 2006: [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-69096)
 
-The following thesis' were concluded:
+###Concluded Thesis
 
 * Target 1.0 (english): TO FOLLOW
 * Initiator 2.0 (german only): [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-130096)
