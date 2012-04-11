@@ -7,10 +7,16 @@
 	<artifactId>pom</artifactId>
 	<packaging>pom</packaging>
 	<version>2.2-SNAPSHOT</version>
-
-	<!-- just the parent project with all settings -->
 	<name>jscsi-pom</name>
-	<description>jSCSI is the first Java iSCSI initiator continuously developed since 2006. Entirely written in Java, it allows easy access to iSCSI as block-accessing protocol from both sides, server(target) and client(initiator).</description>
+	<parent>
+    	<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+
+
+	<description>jSCSI is a feature-complete iSCSI implementation in Java only. Platform-independent and fast, jSCSI represents a premium example how low-level protocols can be pushed to higher levels. jSCSI contains a server (target), a client (initiator) and common classes to work with the protocol.</description>
 
 	<url>https://github.com/disy/jSCSI</url>
 	<issueManagement>

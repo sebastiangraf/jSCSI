@@ -3,17 +3,17 @@ jSCSI - A Java iSCSI Framework
 
 jSCSI is a feature-complete iSCSI implementation in Java only.
 Platform-independent and fast, jSCSI represents a premium example how low-level protocols can be pushed to higher levels.
-jSCSI consists out of a target-implementation mapping to a File and an initiator.
+jSCSI contains a server (target), a client (initiator) and common classes to work with the protocol.
 
 Content
 -------
 
-README					this readme file
-LICENSE	 				license file
-parent					parent pom with global settings
-bundles					bundles
-scripts					bash scripts for syncing against disy-internal repo.
-pom.xml					Simple pom (yes we do use Maven)
+* README					this readme file
+* LICENSE	 				license file
+* parent					parent pom with global settings
+* bundles					bundles
+* scripts					bash scripts for syncing against disy-internal repo.
+* pom.xml					Simple pom (yes we do use Maven)
 
 [![Build Status](https://secure.travis-ci.org/disy/jSCSI.png)](http://travis-ci.org/disy/jSCSI)
 

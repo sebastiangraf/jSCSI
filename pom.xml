@@ -13,13 +13,16 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.jscsi</groupId>
 	<artifactId>complete</artifactId>
 	<packaging>pom</packaging>
-	<version>2.2-SNAPSHOT</version>
-
-	<name>jSCSI</name>
-	<description>Pseudo project to build the complete jSCSI project</description>
+	<name>jSCSI-builder</name>
+		
+	<parent>
+		<groupId>org.jscsi</groupId>
+		<artifactId>pom</artifactId>
+		<version>2.2-SNAPSHOT</version>
+		<relativePath>parent/pom.xml</relativePath>
+	</parent>
 
 	<modules>
 		<module>bundles/commons</module>
@@ -27,20 +30,4 @@
 		<module>bundles/target</module>
 		<module>bundles/initiatorExtensions/storagePool</module>
 	</modules>
-	<distributionManagement>
-		<repository>
-			<id>sonatype-nexus-staging</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-			<uniqueVersion>false</uniqueVersion>
-		</repository>
-		<snapshotRepository>
-			<id>sonatype-nexus-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-		<site>
-			<id>github</id>
-			<url>gitsite:git@github.com/disy/jSCSI.git</url>
-		</site>
-	</distributionManagement>
 </project>
