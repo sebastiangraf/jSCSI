@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2011, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -37,7 +37,7 @@ import org.jscsi.initiator.connection.phase.IPhase;
  * <p/>
  * This interface defines all methods, which a task has to support.
  * 
- * @author Volker Wildi
+ * @author Sebastian Graf, University of Konstanz
  */
 public interface ITask {
 
@@ -219,7 +219,7 @@ final class LogoutTask extends AbstractTask {
  * <p/>
  * This defines a IOTask.
  * 
- * @author Volker Wildi
+ * @author Sebastian Graf, University of Konstanz
  */
 abstract class IOTask extends AbstractTask implements Callable<Void> {
 
@@ -251,11 +251,10 @@ abstract class IOTask extends AbstractTask implements Callable<Void> {
      * @param initLogicalBlockAddress
      *            Initial logical Block Address.
      * @param initLength
-     *            //TODO
+     *            length of buffer
      */
-    IOTask(final Object initCaller, final Session referenceSession,
-            final ByteBuffer dst, final int initLogicalBlockAddress,
-            final long initLength) {
+    IOTask(final Object initCaller, final Session referenceSession, final ByteBuffer dst,
+        final int initLogicalBlockAddress, final long initLength) {
 
         super(initCaller, referenceSession);
         buffer = dst;
@@ -293,14 +292,12 @@ final class ReadTask extends IOTask {
      * @param initLogicalBlockAddress
      *            Initial logical Block Address.
      * @param initLength
-     *            //TODO
+     *            length of buffer
      */
-    ReadTask(final Object initCaller, final Session referenceSession,
-            final ByteBuffer dst, final int initLogicalBlockAddress,
-            final long initLength) {
+    ReadTask(final Object initCaller, final Session referenceSession, final ByteBuffer dst,
+        final int initLogicalBlockAddress, final long initLength) {
 
-        super(initCaller, referenceSession, dst, initLogicalBlockAddress,
-                initLength);
+        super(initCaller, referenceSession, dst, initLogicalBlockAddress, initLength);
     }
 
     // --------------------------------------------------------------------------
@@ -345,14 +342,12 @@ final class WriteTask extends IOTask {
      * @param initLogicalBlockAddress
      *            Initial logical Block Address.
      * @param initLength
-     *            //TODO
+     *            length of buffer
      */
-    WriteTask(final Object initCaller, final Session referenceSession,
-            final ByteBuffer src, final int initLogicalBlockAddress,
-            final long initLength) {
+    WriteTask(final Object initCaller, final Session referenceSession, final ByteBuffer src,
+        final int initLogicalBlockAddress, final long initLength) {
 
-        super(initCaller, referenceSession, src, initLogicalBlockAddress,
-                initLength);
+        super(initCaller, referenceSession, src, initLogicalBlockAddress, initLength);
     }
 
     // --------------------------------------------------------------------------

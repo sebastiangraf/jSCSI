@@ -43,7 +43,8 @@ import org.jscsi.parser.exception.NoSuchSessionException;
  * This class represents an initiator, which request messages to a target
  * defined by the iSCSI Protocol (RFC3720).
  * 
- * @author Volker Wildi
+ * @author Volker Wildi, University of Konstanz
+ * @author Sebastian Graf, University of Konstanz
  */
 public final class Initiator {
 
