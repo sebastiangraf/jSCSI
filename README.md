@@ -28,16 +28,15 @@ Further information
 The project is currently under refactoring, the documentation will be under http://jscsi.org (pointing to http://disy.github.com/jscsi/) and a mailinglist has been set up:
 https://mailman.uni-konstanz.de/mailman/listinfo/jscsi
 
-The framework was presented at the Jazoon '07 as work in progress:
-http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84424
+The framework was presented at the Jazoon '07 as work in progress: [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84424)
 
-A TechReport describes the second iteration of the framework: http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84511
+A TechReport describes the second iteration of the framework: [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84511)
 
 The following thesis' were concluded:
 
 * Target 1.0 (english): TO FOLLOW
-* Initiator 2.0 (german only): http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-130096
-* Storage Pool (german only): http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-58078
+* Initiator 2.0 (german only): [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-130096)
+* Storage Pool (german only): [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-58078)
 * Initiator 1.0 (english): TO FOLLOW
 
 Any questions, just contact sebastian.graf AT uni-konstanz.de
