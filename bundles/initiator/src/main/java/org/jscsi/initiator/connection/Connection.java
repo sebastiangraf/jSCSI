@@ -50,8 +50,9 @@ import org.jscsi.utils.SerialArithmeticNumber;
  * Standard (RFC3720). Such a connection is directed from the initiator to the
  * target. It is used in Sessions.
  * 
- * @author Volker Wildi, Patrice Matthias Brend'amour
- * @see org.jscsi.connection.Connection
+ * @author Volker Wildi, University of Konstanz
+ * @author Patrice Matthias Brend'amour, University of Konstanz
+ * @author Sebastian Graf, University of Konstanz
  */
 public final class Connection {
 
