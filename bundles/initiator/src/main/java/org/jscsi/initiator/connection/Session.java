@@ -55,7 +55,7 @@ import org.jscsi.parser.login.LoginStage;
 import org.jscsi.utils.SerialArithmeticNumber;
 
 /**
- * <h1>AbsSession</h1>
+ * <h1>Session</h1>
  * <p/>
  * A session or Initiator Target Nexus is a directed communication from an iSCSI
  * Initiator to an iSCSI Target. Each session can contain several connections.
@@ -63,7 +63,9 @@ import org.jscsi.utils.SerialArithmeticNumber;
  * Abstract Class is used to implement serveral single- and multithreaded
  * variants of Sessions
  * 
- * @author Volker Wildi, Patrice Matthias Brend'amour
+ * @author Volker Wildi, University of Konstanz
+ * @author Patrice Matthias Brend'amour, University of Kontanz
+ * @author Sebastian Graf, University of Kontanz
  */
 public final class Session {
 
