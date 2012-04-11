@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2011, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,58 +29,52 @@ package org.jscsi.parser.tmf;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jscsi.core.utils.Utils;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.Constants;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.utils.Utils;
 
 /**
  * This class parses a Task Management Function Response message defined in the
  * iSCSI Standard (RFC3720).
  * <p>
- * <h4>Task Management Actions on Task Sets</h4> The execution of ABORT TASK SET
- * and CLEAR TASK SET Task Management function requests consists of the
- * following sequence of events in the specified order on each of the entities.
+ * <h4>Task Management Actions on Task Sets</h4> The execution of ABORT TASK SET and CLEAR TASK SET Task
+ * Management function requests consists of the following sequence of events in the specified order on each of
+ * the entities.
  * <p>
  * The initiator:
  * <p>
  * <ol type="a">
  * <li>Issues ABORT TASK SET/CLEAR TASK SET request.</li>
- * <li>Continues to respond to each target transfer tag received for the
- * affected task set.</li>
- * <li>Receives any responses for the tasks in the affected task set (may
- * process them as usual because they are guaranteed to be valid).</li>
- * <li>Receives the task set management response, thus concluding all the tasks
- * in the affected task set.</li>
+ * <li>Continues to respond to each target transfer tag received for the affected task set.</li>
+ * <li>Receives any responses for the tasks in the affected task set (may process them as usual because they
+ * are guaranteed to be valid).</li>
+ * <li>Receives the task set management response, thus concluding all the tasks in the affected task set.</li>
  * </ol>
  * <p>
  * The target:
  * <p>
  * <ol type="a">
  * <li>Receives the ABORT TASK SET/CLEAR TASK SET request.</li>
- * <li>Waits for all target transfer tags to be responded to and for all
- * affected tasks in the task set to be received.</li>
- * <li>Propagates the command to and receives the response from the target SCSI
- * layer.</li>
- * <li>Takes note of last-sent StatSN on each of the connections in the iSCSI
- * sessions (one or more) sharing the affected task set, and waits for
- * acknowledgement of each StatSN (may solicit for acknowledgement by way of a
- * NOP-In). If some tasks originate from non-iSCSI I_T_L nexi then the means by
- * which the target insures that all affected tasks have returned their status
- * to the initiator are defined by the specific protocol.</li>
+ * <li>Waits for all target transfer tags to be responded to and for all affected tasks in the task set to be
+ * received.</li>
+ * <li>Propagates the command to and receives the response from the target SCSI layer.</li>
+ * <li>Takes note of last-sent StatSN on each of the connections in the iSCSI sessions (one or more) sharing
+ * the affected task set, and waits for acknowledgement of each StatSN (may solicit for acknowledgement by way
+ * of a NOP-In). If some tasks originate from non-iSCSI I_T_L nexi then the means by which the target insures
+ * that all affected tasks have returned their status to the initiator are defined by the specific protocol.</li>
  * <li>Sends the task set management response to the issuing initiator.</li>
  * </ol>
  * <p>
- * <h4>TotalAHSLength and DataSegmentLength</h4> For this PDU TotalAHSLength and
- * DataSegmentLength MUST be <code>0</code>.
+ * <h4>TotalAHSLength and DataSegmentLength</h4> For this PDU TotalAHSLength and DataSegmentLength MUST be
+ * <code>0</code>.
  * 
  * @author Volker Wildi
  */
-public final class TaskManagementFunctionResponseParser extends
-        TargetMessageParser {
+public final class TaskManagementFunctionResponseParser extends TargetMessageParser {
 
     /**
      * This enumeration defines all valid response code, which are defined in
@@ -91,21 +85,21 @@ public final class TaskManagementFunctionResponseParser extends
     public static enum ResponseCode {
 
         /** Function complete. */
-        FUNCTION_COMPLETE((byte) 0),
+        FUNCTION_COMPLETE((byte)0),
         /** Task does not exist. */
-        TASK_DOES_NOT_EXIST((byte) 1),
+        TASK_DOES_NOT_EXIST((byte)1),
         /** LUN does not exist. */
-        LUN_DOES_NOT_EXIST((byte) 2),
+        LUN_DOES_NOT_EXIST((byte)2),
         /** Task still allegiant. */
-        TASK_STILL_ALLEGIANT((byte) 3),
+        TASK_STILL_ALLEGIANT((byte)3),
         /** Task allegiance reassignment not supported. */
-        TASK_ALLEGIANCE_REASSIGNMENT_NOT_SUPPORTED((byte) 4),
+        TASK_ALLEGIANCE_REASSIGNMENT_NOT_SUPPORTED((byte)4),
         /** Task management function not supported. */
-        TASK_MANAGEMENT_FUNCTION_NOT_SUPPORTED((byte) 5),
+        TASK_MANAGEMENT_FUNCTION_NOT_SUPPORTED((byte)5),
         /** Function authorization failed. */
-        FUNCTION_AUTHORIZATION_FAILED((byte) 6),
+        FUNCTION_AUTHORIZATION_FAILED((byte)6),
         /** Function rejected. */
-        FUNCTION_REJECTED((byte) 255);
+        FUNCTION_REJECTED((byte)255);
 
         private byte value;
 
@@ -138,8 +132,8 @@ public final class TaskManagementFunctionResponseParser extends
          * 
          * @param value
          *            The value to search for.
-         * @return The constant defined for the given <code>value</code>. Or
-         *         <code>null</code>, if this value is not defined by this
+         * @return The constant defined for the given <code>value</code>. Or <code>null</code>, if this value
+         *         is not defined by this
          *         enumeration.
          */
         public static final ResponseCode valueOf(final byte value) {
@@ -158,17 +152,14 @@ public final class TaskManagementFunctionResponseParser extends
     // --------------------------------------------------------------------------
 
     /**
-     * Default constructor, creates a new, empty
-     * <code>TaskManagementFunctionResponseParser</code> object.
+     * Default constructor, creates a new, empty <code>TaskManagementFunctionResponseParser</code> object.
      * 
      * @param initProtocolDataUnit
      *            The reference <code>ProtocolDataUnit</code> instance, which
-     *            contains this
-     *            <code>TaskManagementFunctionResponseParser</code> subclass
+     *            contains this <code>TaskManagementFunctionResponseParser</code> subclass
      *            object.
      */
-    public TaskManagementFunctionResponseParser(
-            final ProtocolDataUnit initProtocolDataUnit) {
+    public TaskManagementFunctionResponseParser(final ProtocolDataUnit initProtocolDataUnit) {
 
         super(initProtocolDataUnit);
     }
@@ -251,8 +242,8 @@ public final class TaskManagementFunctionResponseParser extends
      * <br/>
      * All other values are reserved. <br/>
      * <br/>
-     * For a discussion on usage of response codes <code>3</code> and
-     * <code>4</code>, see Section 6.2.2 Allegiance Reassignment.<br/>
+     * For a discussion on usage of response codes <code>3</code> and <code>4</code>, see Section 6.2.2
+     * Allegiance Reassignment.<br/>
      * <br/>
      * For the TARGET COLD RESET and TARGET WARM RESET functions, the target
      * cancels all pending operations across all Logical Units known to the
@@ -279,22 +270,18 @@ public final class TaskManagementFunctionResponseParser extends
      * <br/>
      * For the ABORT TASK function,
      * <ol type="a">
-     * <li>If the Referenced Task Tag identifies a valid task leading to a
-     * successful termination, then targets must return the "Function complete"
-     * response.</li>
-     * <li>If the Referenced Task Tag does not identify an existing task, but if
-     * the CmdSN indicated by the RefCmdSN field in the Task Management function
-     * request is within the valid CmdSN window and less than the CmdSN of the
-     * Task Management function request itself, then targets must consider the
-     * CmdSN received and return the "Function complete" response.</li>
-     * <li>If the Referenced Task Tag does not identify an existing task and if
-     * the CmdSN indicated by the RefCmdSN field in the Task Management function
-     * request is outside the valid CmdSN window, then targets must return the
-     * "Task does not exist" response.</li>
+     * <li>If the Referenced Task Tag identifies a valid task leading to a successful termination, then
+     * targets must return the "Function complete" response.</li>
+     * <li>If the Referenced Task Tag does not identify an existing task, but if the CmdSN indicated by the
+     * RefCmdSN field in the Task Management function request is within the valid CmdSN window and less than
+     * the CmdSN of the Task Management function request itself, then targets must consider the CmdSN received
+     * and return the "Function complete" response.</li>
+     * <li>If the Referenced Task Tag does not identify an existing task and if the CmdSN indicated by the
+     * RefCmdSN field in the Task Management function request is outside the valid CmdSN window, then targets
+     * must return the "Task does not exist" response.</li>
      * </ol>
      * 
-     * @return The response code of this
-     *         <code>TaskManagementFunctionResponseParser</code> object.
+     * @return The response code of this <code>TaskManagementFunctionResponseParser</code> object.
      */
     public final ResponseCode getResponse() {
 
@@ -306,19 +293,16 @@ public final class TaskManagementFunctionResponseParser extends
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes1to3(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes1to3(final int line) throws InternetSCSIException {
 
         Utils.isReserved(line & Constants.SECOND_BYTE_MASK);
-        response = ResponseCode
-                .valueOf((byte) (line & Constants.THIRD_BYTE_MASK));
+        response = ResponseCode.valueOf((byte)(line & Constants.THIRD_BYTE_MASK));
         Utils.isReserved(line & Constants.FOURTH_BYTE_MASK);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes20to23(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes20to23(final int line) throws InternetSCSIException {
 
         Utils.isReserved(line);
     }

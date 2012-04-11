@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2011, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,28 +26,26 @@
  */
 package org.jscsi.parser.logout;
 
-import org.jscsi.core.utils.Utils;
 import org.jscsi.parser.Constants;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.utils.Utils;
 
 /**
  * <h1>LogoutResponseParser</h1>
  * <p>
- * This class parses a Logout Response message defined in the iSCSI Standard
- * (RFC3720).
+ * This class parses a Logout Response message defined in the iSCSI Standard (RFC3720).
  * <p>
- * The Logout Response is used by the target to indicate if the cleanup
- * operation for the connection(s) has completed.
+ * The Logout Response is used by the target to indicate if the cleanup operation for the connection(s) has
+ * completed.
  * <p>
- * After Logout, the TCP connection referred by the CID MUST be closed at both
- * ends (or all connections must be closed if the logout reason was session
- * close).
+ * After Logout, the TCP connection referred by the CID MUST be closed at both ends (or all connections must
+ * be closed if the logout reason was session close).
  * <p>
- * <h4>TotalAHSLength and DataSegmentLength</h4> For this PDU TotalAHSLength and
- * DataSegmentLength MUST be <code>0</code>.
+ * <h4>TotalAHSLength and DataSegmentLength</h4> For this PDU TotalAHSLength and DataSegmentLength MUST be
+ * <code>0</code>.
  * <p>
  * 
  * @author Volker Wildi
@@ -70,8 +68,7 @@ public final class LogoutResponseParser extends TargetMessageParser {
     // --------------------------------------------------------------------------
 
     /**
-     * Default constructor, creates a new, empty
-     * <code>LogoutResponseParser</code> object.
+     * Default constructor, creates a new, empty <code>LogoutResponseParser</code> object.
      * 
      * @param initProtocolDataUnit
      *            The reference <code>ProtocolDataUnit</code> instance, which
@@ -122,11 +119,9 @@ public final class LogoutResponseParser extends TargetMessageParser {
     // --------------------------------------------------------------------------
 
     /**
-     * Returns the Logout Response of this <code>LogoutResponseParser</code>
-     * object.
+     * Returns the Logout Response of this <code>LogoutResponseParser</code> object.
      * 
-     * @return The Logout Response of this <code>LogoutResponseParser</code>
-     *         object.
+     * @return The Logout Response of this <code>LogoutResponseParser</code> object.
      * @see LogoutResponse
      */
     public final LogoutResponse getResponse() {
@@ -145,16 +140,15 @@ public final class LogoutResponseParser extends TargetMessageParser {
      * <p>
      * This field is invalid if the Logout response code is <code>1</code>.
      * <p>
-     * If the Logout response code is <code>2</code> or <code>3</code>, this
-     * field specifies the maximum amount of time, in seconds, after the initial
-     * wait (Time2Wait), the target waits for a new implicit or explicit logout.
+     * If the Logout response code is <code>2</code> or <code>3</code>, this field specifies the maximum
+     * amount of time, in seconds, after the initial wait (Time2Wait), the target waits for a new implicit or
+     * explicit logout.
      * <p>
-     * If it is the last connection of a session, the whole session state is
-     * discarded after Time2Retain.
+     * If it is the last connection of a session, the whole session state is discarded after Time2Retain.
      * <p>
-     * If <code>Time2Retain</code> is <code>0</code>, the target has already
-     * discarded the connection (and possibly the session) state along with the
-     * task states. No reassignment or Logout is required in this case.
+     * If <code>Time2Retain</code> is <code>0</code>, the target has already discarded the connection (and
+     * possibly the session) state along with the task states. No reassignment or Logout is required in this
+     * case.
      * 
      * @return The Time2Retain of this <code>LogoutResponseParser</code> object.
      */
@@ -172,12 +166,11 @@ public final class LogoutResponseParser extends TargetMessageParser {
      * <p>
      * This field is invalid if the Logout Response code is <code>1</code>.
      * <p>
-     * If the Logout response code is <code>2</code> or <code>3</code>, this
-     * field specifies the minimum time to wait before attempting a new implicit
-     * or explicit logout.
+     * If the Logout response code is <code>2</code> or <code>3</code>, this field specifies the minimum time
+     * to wait before attempting a new implicit or explicit logout.
      * <p>
-     * If <code>Time2Wait</code> is <code>0</code>, the reassignment or a new
-     * Logout may be attempted immediately.
+     * If <code>Time2Wait</code> is <code>0</code>, the reassignment or a new Logout may be attempted
+     * immediately.
      * 
      * @return The Time2Wait of this <code>LogoutResponseParser</code> object.
      */
@@ -203,22 +196,19 @@ public final class LogoutResponseParser extends TargetMessageParser {
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes1to3(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes1to3(final int line) throws InternetSCSIException {
 
         Utils.isReserved(line & Constants.SECOND_BYTE_MASK);
-        response = LogoutResponse
-                .valueOf((byte) (line & Constants.THIRD_BYTE_MASK));
+        response = LogoutResponse.valueOf((byte)(line & Constants.THIRD_BYTE_MASK));
         Utils.isReserved(line & Constants.FOURTH_BYTE_MASK);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes40to43(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes40to43(final int line) throws InternetSCSIException {
 
-        time2Wait = (short) ((line & Constants.FIRST_TWO_BYTES_MASK) >>> Constants.TWO_BYTES_SHIFT);
-        time2Retain = (short) (line & Constants.LAST_TWO_BYTES_MASK);
+        time2Wait = (short)((line & Constants.FIRST_TWO_BYTES_MASK) >>> Constants.TWO_BYTES_SHIFT);
+        time2Retain = (short)(line & Constants.LAST_TWO_BYTES_MASK);
     }
 
     // --------------------------------------------------------------------------

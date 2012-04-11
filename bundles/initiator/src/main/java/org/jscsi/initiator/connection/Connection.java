@@ -33,7 +33,6 @@ import java.util.Queue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.core.utils.SerialArithmeticNumber;
 import org.jscsi.initiator.Configuration;
 import org.jscsi.initiator.connection.state.IState;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -42,6 +41,7 @@ import org.jscsi.parser.datasegment.SettingsMap;
 import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.exception.NoSuchSessionException;
 import org.jscsi.parser.exception.OperationalTextKeyException;
+import org.jscsi.utils.SerialArithmeticNumber;
 
 /**
  * <h1>AbsConnection</h1>

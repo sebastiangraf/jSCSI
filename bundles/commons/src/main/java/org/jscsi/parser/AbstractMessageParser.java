@@ -28,9 +28,9 @@ package org.jscsi.parser;
 
 import java.nio.ByteBuffer;
 
-import org.jscsi.core.utils.Utils;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.utils.Utils;
 
 /**
  * <h1>AbstractMessageParser</h1>

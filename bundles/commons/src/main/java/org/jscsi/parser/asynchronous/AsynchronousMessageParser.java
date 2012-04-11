@@ -29,12 +29,12 @@ package org.jscsi.parser.asynchronous;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jscsi.core.utils.Utils;
 import org.jscsi.parser.Constants;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.utils.Utils;
 
 /**
  * <h1>AsynchronousMessageParser</h1>

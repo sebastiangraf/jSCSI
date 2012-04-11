@@ -26,8 +26,8 @@
  */
 package org.jscsi.parser;
 
-import org.jscsi.core.utils.Utils;
 import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.utils.Utils;
 
 /**
  * <h1>InitiatorMessageParser</h1>

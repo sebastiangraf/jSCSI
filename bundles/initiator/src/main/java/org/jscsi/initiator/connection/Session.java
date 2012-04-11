@@ -41,7 +41,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jscsi.core.utils.SerialArithmeticNumber;
 import org.jscsi.initiator.Configuration;
 import org.jscsi.initiator.LinkFactory;
 import org.jscsi.initiator.connection.phase.IPhase;
@@ -53,6 +52,7 @@ import org.jscsi.parser.datasegment.OperationalTextKey;
 import org.jscsi.parser.datasegment.SettingsMap;
 import org.jscsi.parser.exception.NoSuchConnectionException;
 import org.jscsi.parser.login.LoginStage;
+import org.jscsi.utils.SerialArithmeticNumber;
 
 /**
  * <h1>AbsSession</h1>

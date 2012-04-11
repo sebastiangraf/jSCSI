@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2011, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,12 +26,12 @@
  */
 package org.jscsi.parser.r2t;
 
-import org.jscsi.core.utils.Utils;
 import org.jscsi.parser.Constants;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.utils.Utils;
 
 /**
  * This class parses a Ready2Transfer message defined in the iSCSI Standard
@@ -62,8 +62,7 @@ public final class Ready2TransferParser extends TargetMessageParser {
     // --------------------------------------------------------------------------
 
     /**
-     * Default constructor, creates a new, empty
-     * <code>Ready2TransferParser</code> object.
+     * Default constructor, creates a new, empty <code>Ready2TransferParser</code> object.
      * 
      * @param initProtocolDataUnit
      *            The reference <code>ProtocolDataUnit</code> instance, which
@@ -89,8 +88,7 @@ public final class Ready2TransferParser extends TargetMessageParser {
         sb.append(super.toString());
         Utils.printField(sb, "R2TSN", ready2TransferSequenceNumber, 1);
         Utils.printField(sb, "Buffer Offset", bufferOffset, 1);
-        Utils.printField(sb, "Desired Data Transfer Length",
-                desiredDataTransferLength, 1);
+        Utils.printField(sb, "Desired Data Transfer Length", desiredDataTransferLength, 1);
 
         return sb.toString();
     }
@@ -172,8 +170,8 @@ public final class Ready2TransferParser extends TargetMessageParser {
      * initiator. This tag can be used by the target to easily identify the data
      * it receives. The Target Transfer Tag and LUN are copied in the outgoing
      * data PDUs and are only used by the target. There is no protocol rule
-     * about the Target Transfer Tag except that the value
-     * <code>0xffffffff</code> is reserved and MUST NOT be sent by a target in
+     * about the Target Transfer Tag except that the value <code>0xffffffff</code> is reserved and MUST NOT be
+     * sent by a target in
      * an R2T.
      * 
      * @return The target transfer tag of this object.
@@ -187,8 +185,7 @@ public final class Ready2TransferParser extends TargetMessageParser {
         this.targetTransferTag = targetTransferTag;
     }
 
-    public final void setReady2TransferSequenceNumber(
-            int ready2TransferSequenceNumber) {
+    public final void setReady2TransferSequenceNumber(int ready2TransferSequenceNumber) {
         this.ready2TransferSequenceNumber = ready2TransferSequenceNumber;
     }
 
@@ -205,40 +202,35 @@ public final class Ready2TransferParser extends TargetMessageParser {
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes1to3(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes1to3(final int line) throws InternetSCSIException {
 
         Utils.isReserved(line & Constants.LAST_THREE_BYTES_MASK);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes20to23(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes20to23(final int line) throws InternetSCSIException {
 
         targetTransferTag = line;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes36to39(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes36to39(final int line) throws InternetSCSIException {
 
         ready2TransferSequenceNumber = line;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes40to43(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes40to43(final int line) throws InternetSCSIException {
 
         bufferOffset = line;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes44to47(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes44to47(final int line) throws InternetSCSIException {
 
         desiredDataTransferLength = line;
     }
@@ -253,10 +245,8 @@ public final class Ready2TransferParser extends TargetMessageParser {
         String exceptionMessage;
 
         do {
-            Utils.isReserved(protocolDataUnit.getBasicHeaderSegment()
-                    .getDataSegmentLength());
-            Utils.isReserved(protocolDataUnit.getBasicHeaderSegment()
-                    .getTotalAHSLength());
+            Utils.isReserved(protocolDataUnit.getBasicHeaderSegment().getDataSegmentLength());
+            Utils.isReserved(protocolDataUnit.getBasicHeaderSegment().getTotalAHSLength());
 
             if (desiredDataTransferLength == 0) {
                 exceptionMessage = "The DesiredDataTransferLength must not be equal than 0.";

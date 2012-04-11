@@ -73,16 +73,16 @@ public enum ServiceResponse
    /**
     * A logical unit response indicating that the task has ended. The
     * {@link org.jscsi.scsi.tasks.Status} argument shall have one of the values specified in 5.3
-    * [SAM3] other than {@link org.jscsi.scsi.tasks.Status#INTERMEDIATE} or
-    * {@link org.jscsi.scsi.tasks.Status#INTERMEDIATE_CONDITION_MET}.
+    * [SAM3] other than {@link org.jscsi.core.scsi.Status#INTERMEDIATE} or
+    * {@link org.jscsi.core.scsi.Status#INTERMEDIATE_CONDITION_MET}.
     */
    TASK_COMPLETE,
 
    /**
     * Logical unit responses indicating that the task has not ended and that a linked command
     * has completed successfully. As specified in 5.3 [SAM3], the {@link org.jscsi.scsi.tasks.Status}
-    * argument shall have a value of {@link org.jscsi.scsi.tasks.Status#INTERMEDIATE} or
-    * {@link org.jscsi.scsi.tasks.Status#INTERMEDIATE_CONDITION_MET}.
+    * argument shall have a value of {@link org.jscsi.core.scsi.Status#INTERMEDIATE} or
+    * {@link org.jscsi.core.scsi.Status#INTERMEDIATE_CONDITION_MET}.
     */
    LINKED_COMMAND_COMPLETE,
 

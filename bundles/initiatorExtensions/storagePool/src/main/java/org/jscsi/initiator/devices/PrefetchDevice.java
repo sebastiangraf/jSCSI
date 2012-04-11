@@ -29,7 +29,7 @@ package org.jscsi.initiator.devices;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.jscsi.core.utils.SoftHashMap;
+import org.jscsi.utils.SoftHashMap;
 
 /**
  * <h1>Prefetcher</h1>

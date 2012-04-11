@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2011, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,13 +26,13 @@
  */
 package org.jscsi.parser.data;
 
-import org.jscsi.core.utils.Utils;
 import org.jscsi.parser.Constants;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSIStatus;
+import org.jscsi.utils.Utils;
 
 /**
  * This class parses a Data-In message defined in the iSCSI Standard (RFC3720).
@@ -111,8 +111,7 @@ public class DataInParser extends TargetMessageParser {
     @Override
     public String getShortInfo() {
 
-        return super.getShortInfo() + ", dataSN: " + dataSequenceNumber
-                + ", bufferOffset: " + bufferOffset;
+        return super.getShortInfo() + ", dataSN: " + dataSequenceNumber + ", bufferOffset: " + bufferOffset;
     }
 
     /** {@inheritDoc} */
@@ -257,33 +256,27 @@ public class DataInParser extends TargetMessageParser {
      * For sessions with ErrorRecoveryLevel <code>1</code> or higher, the target
      * sets this bit to <code>1</code> to indicate that it requests a positive
      * acknowledgement from the initiator for the data received. The target
-     * should use the A bit moderately; it MAY only set the A bit to
-     * <code>1</code> once every MaxBurstLength bytes, or on the last Data-In
+     * should use the A bit moderately; it MAY only set the A bit to <code>1</code> once every MaxBurstLength
+     * bytes, or on the last Data-In
      * PDU that concludes the entire requested read data transfer for the task
      * from the target’s perspective, and it MUST NOT do so more frequently. The
      * target MUST NOT set to <code>1</code> the <code>A</code> bit for sessions
      * with ErrorRecoveryLevel=<code>0</code>. The initiator MUST ignore the A
      * bit <br/>
      * <p>
-     * On receiving a Data-In PDU with the A bit set to <code>1</code> on a
-     * session with ErrorRecoveryLevel greater than <code>0</code>, if there are
-     * no holes in the read data until that Data-In PDU, the initiator MUST
-     * issue a SNACK of type DataACK except when it is able to acknowledge the
-     * status for the task immediately via ExpStatSN on other outbound PDUs if
-     * the status for the task is also received. In the latter case
-     * (acknowledgement through ExpStatSN), sending a SNACK of type DataACK in
-     * response to the A bit is OPTIONAL, but if it is done, it must not be sent
-     * after the status acknowledgement through ExpStatSN. If the initiator has
-     * detected holes in the read data prior to that Data-In PDU, it MUST
-     * postpone issuing the SNACK of type DataACK until the holes are filled. An
-     * initiator also MUST NOT acknowledge the status for the task before those
-     * holes are filled. A status acknowledgement for a task that generated the
-     * Data-In PDUs is considered by the target as an implicit acknowledgement
-     * of the Data-In PDUs if such an acknowledgement was requested by the
-     * target.
+     * On receiving a Data-In PDU with the A bit set to <code>1</code> on a session with ErrorRecoveryLevel
+     * greater than <code>0</code>, if there are no holes in the read data until that Data-In PDU, the
+     * initiator MUST issue a SNACK of type DataACK except when it is able to acknowledge the status for the
+     * task immediately via ExpStatSN on other outbound PDUs if the status for the task is also received. In
+     * the latter case (acknowledgement through ExpStatSN), sending a SNACK of type DataACK in response to the
+     * A bit is OPTIONAL, but if it is done, it must not be sent after the status acknowledgement through
+     * ExpStatSN. If the initiator has detected holes in the read data prior to that Data-In PDU, it MUST
+     * postpone issuing the SNACK of type DataACK until the holes are filled. An initiator also MUST NOT
+     * acknowledge the status for the task before those holes are filled. A status acknowledgement for a task
+     * that generated the Data-In PDUs is considered by the target as an implicit acknowledgement of the
+     * Data-In PDUs if such an acknowledgement was requested by the target.
      * 
-     * @return Returns <code>true</code>, if the AcknowledgeBit is set. Else
-     *         <code>false</code>.
+     * @return Returns <code>true</code>, if the AcknowledgeBit is set. Else <code>false</code>.
      */
     public boolean isAcknowledgeFlag() {
 
@@ -350,11 +343,10 @@ public class DataInParser extends TargetMessageParser {
      * specified in [SAM2]) and is only valid if the Response Code is Command
      * Completed at target.
      * <p>
-     * If a SCSI device error is detected while data from the initiator is still
-     * expected (the command PDU did not contain all the data and the target has
-     * not received a Data PDU with the final bit Set), the target MUST wait
-     * until it receives a Data PDU with the F bit set in the last expected
-     * sequence before sending the Response PDU.
+     * If a SCSI device error is detected while data from the initiator is still expected (the command PDU did
+     * not contain all the data and the target has not received a Data PDU with the final bit Set), the target
+     * MUST wait until it receives a Data PDU with the F bit set in the last expected sequence before sending
+     * the Response PDU.
      * 
      * @return The status code of this object.
      * @see SCSIStatus
@@ -372,8 +364,7 @@ public class DataInParser extends TargetMessageParser {
      * content if the S bit is set to <code>1</code> and their values are
      * defined in Section 10.4 SCSI Response.
      * 
-     * @return <code>True</code>, if the Status-Flag of this object is set. Else
-     *         <code>false</code>.
+     * @return <code>True</code>, if the Status-Flag of this object is set. Else <code>false</code>.
      */
     public boolean isStatusFlag() {
 
@@ -421,48 +412,41 @@ public class DataInParser extends TargetMessageParser {
 
     /** {@inheritDoc} */
     @Override
-    protected void deserializeBytes1to3(final int line)
-            throws InternetSCSIException {
+    protected void deserializeBytes1to3(final int line) throws InternetSCSIException {
 
         acknowledgeFlag = Utils.isBitSet(line & ACKNOWLEDGE_FLAG_MASK);
-        residualOverflow = Utils.isBitSet(line
-                & Constants.RESIDUAL_OVERFLOW_FLAG_MASK);
-        residualUnderflow = Utils.isBitSet(line
-                & Constants.RESIDUAL_UNDERFLOW_FLAG_MASK);
+        residualOverflow = Utils.isBitSet(line & Constants.RESIDUAL_OVERFLOW_FLAG_MASK);
+        residualUnderflow = Utils.isBitSet(line & Constants.RESIDUAL_UNDERFLOW_FLAG_MASK);
         statusFlag = Utils.isBitSet(line & STATUS_FLAG_MASK);
 
         Utils.isReserved(line & BIT_11_TO_13_FLAG_MASK);
         Utils.isReserved(line & Constants.THIRD_BYTE_MASK);
-        status = SCSIStatus.valueOf((byte) (line & Constants.FOURTH_BYTE_MASK));
+        status = SCSIStatus.valueOf((byte)(line & Constants.FOURTH_BYTE_MASK));
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void deserializeBytes20to23(final int line)
-            throws InternetSCSIException {
+    protected void deserializeBytes20to23(final int line) throws InternetSCSIException {
 
         targetTransferTag = line;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void deserializeBytes36to39(final int line)
-            throws InternetSCSIException {
+    protected void deserializeBytes36to39(final int line) throws InternetSCSIException {
         dataSequenceNumber = line;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void deserializeBytes40to43(final int line)
-            throws InternetSCSIException {
+    protected void deserializeBytes40to43(final int line) throws InternetSCSIException {
 
         bufferOffset = line;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void deserializeBytes44to47(final int line)
-            throws InternetSCSIException {
+    protected void deserializeBytes44to47(final int line) throws InternetSCSIException {
 
         residualCount = line;
     }
@@ -476,29 +460,27 @@ public class DataInParser extends TargetMessageParser {
 
         String exceptionMessage;
         do {
-            if (statusFlag
-                    && !protocolDataUnit.getBasicHeaderSegment().isFinalFlag()) {
+            if (statusFlag && !protocolDataUnit.getBasicHeaderSegment().isFinalFlag()) {
                 exceptionMessage = "FinalFlag must also be set, if the StatusFlag is set.";
                 break;
             }
 
-            if (!statusFlag
-                    && (bidirectionalReadResidualOverflow || bidirectionalReadResidualUnderflow)
-                    && (residualOverflow || residualUnderflow)) {
+            if (!statusFlag && (bidirectionalReadResidualOverflow || bidirectionalReadResidualUnderflow)
+                && (residualOverflow || residualUnderflow)) {
                 exceptionMessage = "The StatusFlag must be set, if any flags are set.";
                 break;
             }
 
-            if (acknowledgeFlag
-                    && (targetTransferTag == 0 && logicalUnitNumber == 0)) {
-                exceptionMessage = "If the AcknowledgeFlag is set, the TargetTaskTag"
+            if (acknowledgeFlag && (targetTransferTag == 0 && logicalUnitNumber == 0)) {
+                exceptionMessage =
+                    "If the AcknowledgeFlag is set, the TargetTaskTag"
                         + " and the LogicalUnitNumber must be unequal 0.";
                 break;
             }
 
-            if (!acknowledgeFlag
-                    && (targetTransferTag != 0 && logicalUnitNumber != 0)) {
-                exceptionMessage = "The TargetTransferTag and LogicalUnitNumber must"
+            if (!acknowledgeFlag && (targetTransferTag != 0 && logicalUnitNumber != 0)) {
+                exceptionMessage =
+                    "The TargetTransferTag and LogicalUnitNumber must"
                         + " be reserved, because the AcknowledgeFlag is not set.";
                 break;
             }

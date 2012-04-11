@@ -28,8 +28,8 @@ package org.jscsi.parser;
 
 import java.nio.ByteBuffer;
 
-import org.jscsi.core.utils.Utils;
 import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.utils.Utils;
 
 /**
  * <h1>BasicHeaderSegment</h1>
@@ -41,7 +41,7 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * <p>
  * The BHS has a fixed size, which is stored in the variable
  * <code>BHS_FIXED_SIZE</code>. And these must the first bytes in a valid iSCSI
- * Protocol Data Unit (PDU). org.jscsi.core.utils
+ * Protocol Data Unit (PDU). org.jscsi.utils
  * 
  * @author Volker Wildi
  */

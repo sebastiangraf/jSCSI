@@ -55,7 +55,7 @@ import org.jscsi.parser.tmf.TaskManagementFunctionResponseParser;
  * this kind. With this technique it minimizes the object creation process and
  * affect the execution speed, too.
  * 
- * @author Volker Wildi
+ * @author Volker Wildi, University of Konstanz
  */
 public final class MessageParserFactory {
 
@@ -87,7 +87,7 @@ public final class MessageParserFactory {
      *            The operation code of the requested
      *            <code>AbstractMessageParser</code>.
      * @return The instance of the requested <code>AbstractMessageParser</code>.
-     * @see OperatorCode
+     * @see org.jscsi.parser.OperationCode
      */
     public static final AbstractMessageParser getParser(
             final ProtocolDataUnit protocolDataUnit,
@@ -107,7 +107,7 @@ public final class MessageParserFactory {
      *            The operation code of the requested
      *            <code>AbstractMessageParser</code>.
      * @return The instance of the requested <code>AbstractMessageParser</code>.
-     * @see OperationCode
+     * @see org.jscsi.parser.OperationCode
      */
     private static final AbstractMessageParser createParser(
             final ProtocolDataUnit protocolDataUnit,

@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2011, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -30,16 +30,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.jscsi.core.utils.Utils;
 import org.jscsi.parser.Constants;
 import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.utils.Utils;
 
 /**
  * <h1>ISID</h1>
  * <p>
- * This is an initiator-defined component of the session identifier and is
- * structured as follows (see [RFC3721] and Section 9.1.1 Conservative Reuse of
- * ISIDs for details):
+ * This is an initiator-defined component of the session identifier and is structured as follows (see
+ * [RFC3721] and Section 9.1.1 Conservative Reuse of ISIDs for details):
  * <p>
  * <table border="1">
  * <tr>
@@ -98,8 +97,7 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * </tr>
  * </table>
  * <p>
- * The T field identifies the format and usage of A, B, C, and D as indicated
- * below:
+ * The T field identifies the format and usage of A, B, C, and D as indicated below:
  * <p>
  * <table border="1">
  * <tr>
@@ -132,36 +130,30 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * </tr>
  * </table>
  * <p>
- * For the <code>T</code> field values <code>00b</code> and <code>01b</code>, a
- * combination of <code>A</code> and <code>B</code> (for <code>00b</code>) or
- * <code>B</code> and <code>C</code> (for <code>01b</code>) identifies the
- * vendor or organization whose component (software or hardware) generates this
- * ISID. A vendor or organization with one or more OUIs, or one or more
- * Enterprise Numbers, MUST use at least one of these numbers and select the
- * appropriate value for the <code>T</code> field when its components generate
- * ISIDs. An <code>OUI</code> or <code>EN</code> MUST be set in the
- * corresponding fields in network byte order (byte big-endian).
+ * For the <code>T</code> field values <code>00b</code> and <code>01b</code>, a combination of <code>A</code>
+ * and <code>B</code> (for <code>00b</code>) or <code>B</code> and <code>C</code> (for <code>01b</code>)
+ * identifies the vendor or organization whose component (software or hardware) generates this ISID. A vendor
+ * or organization with one or more OUIs, or one or more Enterprise Numbers, MUST use at least one of these
+ * numbers and select the appropriate value for the <code>T</code> field when its components generate ISIDs.
+ * An <code>OUI</code> or <code>EN</code> MUST be set in the corresponding fields in network byte order (byte
+ * big-endian).
  * <p>
- * If the <code>T</code> field is <code>10b</code>, <code>B</code> and
- * <code>C</code> are set to a random <code>24</code>-bit unsigned integer value
- * in network byte order (byte big-endian). See [RFC3721] for how this affects
- * the principle of "conservative reuse".
+ * If the <code>T</code> field is <code>10b</code>, <code>B</code> and <code>C</code> are set to a random
+ * <code>24</code>-bit unsigned integer value in network byte order (byte big-endian). See [RFC3721] for how
+ * this affects the principle of "conservative reuse".
  * <p>
- * The Qualifier field is a <code>16</code> or <code>24</code>-bit unsigned
- * integer value that provides a range of possible values for the ISID within
- * the selected namespace. It may be set to any value within the constraints
- * specified in the iSCSI protocol (see Section 3.4.3 Consequences of the Model
- * and Section 9.1.1 Conservative Reuse of ISIDs).
+ * The Qualifier field is a <code>16</code> or <code>24</code>-bit unsigned integer value that provides a
+ * range of possible values for the ISID within the selected namespace. It may be set to any value within the
+ * constraints specified in the iSCSI protocol (see Section 3.4.3 Consequences of the Model and Section 9.1.1
+ * Conservative Reuse of ISIDs).
  * <p>
  * The <code>T</code> field value of <code>11b</code> is reserved.
  * <p>
- * If the ISID is derived from something assigned to a hardware adapter or
- * interface by a vendor, as a preset default value, it MUST be configurable to
- * a value assigned according to the SCSI port behavior desired by the system in
- * which it is installed (see Section 9.1.1 Conservative Reuse of ISIDs and
- * Section 9.1.2 iSCSI Name, ISID, and TPGT Use). The resultant ISID MUST also
- * be persistent over power cycles, reboot, card swap, etc. For details have a
- * look in the [RFC3721].
+ * If the ISID is derived from something assigned to a hardware adapter or interface by a vendor, as a preset
+ * default value, it MUST be configurable to a value assigned according to the SCSI port behavior desired by
+ * the system in which it is installed (see Section 9.1.1 Conservative Reuse of ISIDs and Section 9.1.2 iSCSI
+ * Name, ISID, and TPGT Use). The resultant ISID MUST also be persistent over power cycles, reboot, card swap,
+ * etc. For details have a look in the [RFC3721].
  * 
  * @author Volker Wildi
  */
@@ -175,13 +167,13 @@ public final class ISID {
      */
     static enum Format {
         /** ISID is in the Organization Unique Identifier Format. */
-        OUI_FORMAT((byte) 0),
+        OUI_FORMAT((byte)0),
         /** ISID is in the EN-Format (IANA Enterprise Number). */
-        IANA_ENTERPRISE_NUMBER((byte) 1),
+        IANA_ENTERPRISE_NUMBER((byte)1),
         /** ISID is in the "Random" Format. */
-        RANDOM((byte) 2),
+        RANDOM((byte)2),
         /** ISID is in the Reserved. */
-        RESERVED((byte) 3);
+        RESERVED((byte)3);
 
         private final byte value;
 
@@ -214,8 +206,8 @@ public final class ISID {
          * 
          * @param value
          *            The value to search for.
-         * @return The constant defined for the given <code>value</code>. Or
-         *         <code>null</code>, if this value is not defined by this
+         * @return The constant defined for the given <code>value</code>. Or <code>null</code>, if this value
+         *         is not defined by this
          *         enumeration.
          */
         public static final Format valueOf(final byte value) {
@@ -276,8 +268,7 @@ public final class ISID {
      * @param initD
      *            The new D-Value.
      */
-    public ISID(final Format initT, final byte initA, final short initB,
-            final byte initC, final short initD) {
+    public ISID(final Format initT, final byte initA, final short initB, final byte initC, final short initD) {
 
         t = initT;
         a = initA;
@@ -287,8 +278,8 @@ public final class ISID {
     }
 
     /**
-     * This method creates an Initiator Session ID of the <code>Random</code>
-     * format defined in the iSCSI Standard (RFC3720).
+     * This method creates an Initiator Session ID of the <code>Random</code> format defined in the iSCSI
+     * Standard (RFC3720).
      * 
      * @param seed
      *            The initialization seed for random generator.
@@ -299,8 +290,9 @@ public final class ISID {
         // TODO: Implement Qualifier
         final Random rand = new Random(seed);
 
-        final ISID isid = new ISID(Format.RANDOM, Constants.RESERVED_BYTE,
-                (short) rand.nextInt(), (byte) rand.nextInt(), (short) 0);
+        final ISID isid =
+            new ISID(Format.RANDOM, Constants.RESERVED_BYTE, (short)rand.nextInt(), (byte)rand.nextInt(),
+                (short)0);
 
         return isid;
     }
@@ -342,15 +334,15 @@ public final class ISID {
      */
     final void deserialize(final long isid) throws InternetSCSIException {
 
-        int line = (int) ((isid & FIRST_LINE_FLAG_MASK) >>> Constants.FOUR_BYTES_SHIFT);
+        int line = (int)((isid & FIRST_LINE_FLAG_MASK) >>> Constants.FOUR_BYTES_SHIFT);
 
-        t = Format.valueOf((byte) (line >>> T_FIELD_SHIFT));
-        a = (byte) (line & A_FIELD_FLAG_MASK >>> Constants.THREE_BYTES_SHIFT);
-        b = (short) ((line & Constants.MIDDLE_TWO_BYTES_SHIFT) >>> Constants.ONE_BYTE_SHIFT);
-        c = (byte) (line & Constants.FOURTH_BYTE_MASK);
+        t = Format.valueOf((byte)(line >>> T_FIELD_SHIFT));
+        a = (byte)(line & A_FIELD_FLAG_MASK >>> Constants.THREE_BYTES_SHIFT);
+        b = (short)((line & Constants.MIDDLE_TWO_BYTES_SHIFT) >>> Constants.ONE_BYTE_SHIFT);
+        c = (byte)(line & Constants.FOURTH_BYTE_MASK);
 
-        line = (int) (isid & Constants.LAST_FOUR_BYTES_MASK);
-        d = (short) ((line & Constants.FIRST_TWO_BYTES_MASK) >>> Constants.TWO_BYTES_SHIFT);
+        line = (int)(isid & Constants.LAST_FOUR_BYTES_MASK);
+        d = (short)((line & Constants.FIRST_TWO_BYTES_MASK) >>> Constants.TWO_BYTES_SHIFT);
 
         checkIntegrity();
     }

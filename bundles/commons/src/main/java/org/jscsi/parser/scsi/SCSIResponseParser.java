@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2011, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,51 +29,42 @@ package org.jscsi.parser.scsi;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jscsi.core.scsi.Status;
-import org.jscsi.core.utils.Utils;
 import org.jscsi.parser.Constants;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.utils.Utils;
 
 /**
  * <h1>SCSIResponseParser</h1>
  * <p>
- * This class parses a SCSI Response message defined in the iSCSI Standard
- * (RFC3720).
+ * This class parses a SCSI Response message defined in the iSCSI Standard (RFC3720).
  * <p>
- * <h4>StatSN - Status Sequence Number</h4> StatSN is a Sequence Number that the
- * target iSCSI layer generates per connection and that in turn, enables the
- * initiator to acknowledge status reception. StatSN is incremented by
- * <code>1</code> for every response/status sent on a connection except for
- * responses sent as a result of a retry or SNACK. In the case of responses sent
- * due to a retransmission request, the StatSN MUST be the same as the first
- * time the PDU was sent unless the connection has since been restarted.
+ * <h4>StatSN - Status Sequence Number</h4> StatSN is a Sequence Number that the target iSCSI layer generates
+ * per connection and that in turn, enables the initiator to acknowledge status reception. StatSN is
+ * incremented by <code>1</code> for every response/status sent on a connection except for responses sent as a
+ * result of a retry or SNACK. In the case of responses sent due to a retransmission request, the StatSN MUST
+ * be the same as the first time the PDU was sent unless the connection has since been restarted.
  * <p>
- * <h4>ExpCmdSN - Next Expected CmdSN from this Initiator</h4> ExpCmdSN is a
- * Sequence Number that the target iSCSI returns to the initiator to acknowledge
- * command reception. It is used to update a local variable with the same name.
- * An ExpCmdSN equal to <code>MaxCmdSN + 1</code> indicates that the target
- * cannot accept new commands.
+ * <h4>ExpCmdSN - Next Expected CmdSN from this Initiator</h4> ExpCmdSN is a Sequence Number that the target
+ * iSCSI returns to the initiator to acknowledge command reception. It is used to update a local variable with
+ * the same name. An ExpCmdSN equal to <code>MaxCmdSN + 1</code> indicates that the target cannot accept new
+ * commands.
  * <p>
- * <h4>MaxCmdSN - Maximum CmdSN from this Initiator</h4> MaxCmdSN is a Sequence
- * Number that the target iSCSI returns to the initiator to indicate the maximum
- * CmdSN the initiator can send. It is used to update a local variable with the
- * same name. If MaxCmdSN is equal to <code>ExpCmdSN - 1</code>, this indicates
- * to the initiator that the target cannot receive any additional commands. When
- * MaxCmdSN changes at the target while the target has no pending PDUs to convey
- * this information to the initiator, it MUST generate a NOP-IN to carry the new
- * MaxCmdSN.
+ * <h4>MaxCmdSN - Maximum CmdSN from this Initiator</h4> MaxCmdSN is a Sequence Number that the target iSCSI
+ * returns to the initiator to indicate the maximum CmdSN the initiator can send. It is used to update a local
+ * variable with the same name. If MaxCmdSN is equal to <code>ExpCmdSN - 1</code>, this indicates to the
+ * initiator that the target cannot receive any additional commands. When MaxCmdSN changes at the target while
+ * the target has no pending PDUs to convey this information to the initiator, it MUST generate a NOP-IN to
+ * carry the new MaxCmdSN.
  * <p/>
- * iSCSI targets MUST support and enable autosense. If Status is CHECK CONDITION
- * (<code>0x02</code>), then the Data Segment MUST contain sense data for the
- * failed command. <br/>
- * For some iSCSI responses, the response data segment MAY contain some response
- * related information, (e.g., for a target failure, it may contain a vendor
- * specific detailed description of the failure).
+ * iSCSI targets MUST support and enable autosense. If Status is CHECK CONDITION (<code>0x02</code>), then the
+ * Data Segment MUST contain sense data for the failed command. <br/>
+ * For some iSCSI responses, the response data segment MAY contain some response related information, (e.g.,
+ * for a target failure, it may contain a vendor specific detailed description of the failure).
  * 
- * @author Volker Wildi
+ * @author Volker Wildi, University of Konstanz
  */
 public class SCSIResponseParser extends TargetMessageParser {
 
@@ -88,9 +79,9 @@ public class SCSIResponseParser extends TargetMessageParser {
      */
     public static enum ServiceResponse {
         /** Command completed at target. */
-        COMMAND_COMPLETED_AT_TARGET((byte) 0x00),
+        COMMAND_COMPLETED_AT_TARGET((byte)0x00),
         /** Target Failure. */
-        TARGET_FAILURE((byte) 0x01);
+        TARGET_FAILURE((byte)0x01);
 
         private final byte value;
 
@@ -123,8 +114,8 @@ public class SCSIResponseParser extends TargetMessageParser {
          * 
          * @param value
          *            The value to search for.
-         * @return The constant defined for the given <code>value</code>. Or
-         *         <code>null</code>, if this value is not defined by this
+         * @return The constant defined for the given <code>value</code>. Or <code>null</code>, if this value
+         *         is not defined by this
          *         enumeration.
          */
         public static final ServiceResponse valueOf(final byte value) {
@@ -173,8 +164,7 @@ public class SCSIResponseParser extends TargetMessageParser {
     // --------------------------------------------------------------------------
 
     /**
-     * Default constructor, creates a new, empty <code>SCSIResponseParser</code>
-     * object.
+     * Default constructor, creates a new, empty <code>SCSIResponseParser</code> object.
      * 
      * @param initProtocolDataUnit
      *            The reference <code>ProtocolDataUnit</code> instance, which
@@ -198,8 +188,7 @@ public class SCSIResponseParser extends TargetMessageParser {
         Utils.printField(sb, "SNACK TAG", snackTag, 1);
         sb.append(super.toString());
         Utils.printField(sb, "ExpDataSN", expectedDataSequenceNumber, 1);
-        Utils.printField(sb, "Bidirectional Read Residual Count",
-                bidirectionalReadResidualCount, 1);
+        Utils.printField(sb, "Bidirectional Read Residual Count", bidirectionalReadResidualCount, 1);
 
         return sb.toString();
     }
@@ -247,8 +236,7 @@ public class SCSIResponseParser extends TargetMessageParser {
      * that were not transferred to the initiator out of the number of bytes
      * expected to be transferred.
      * 
-     * @return The bidirectional read residual count of this
-     *         <code>SCSIResponseParser</code> object.
+     * @return The bidirectional read residual count of this <code>SCSIResponseParser</code> object.
      */
     public final int getBidirectionalReadResidualCount() {
 
@@ -259,11 +247,10 @@ public class SCSIResponseParser extends TargetMessageParser {
      * The number of R2T and Data-In (read) PDUs the target has sent for the
      * command.
      * <p>
-     * This field MUST be <code>0</code> if the response code is not Command
-     * Completed at Target or the target sent no Data-In PDUs for the command.
+     * This field MUST be <code>0</code> if the response code is not Command Completed at Target or the target
+     * sent no Data-In PDUs for the command.
      * 
-     * @return The expected data sequence number of this
-     *         <code>SCSIResponseParser</code> object.
+     * @return The expected data sequence number of this <code>SCSIResponseParser</code> object.
      */
     public final int getExpectedDataSequenceNumber() {
 
@@ -307,8 +294,7 @@ public class SCSIResponseParser extends TargetMessageParser {
      * the Residual Count indicates the number of bytes that were not
      * transferred out of the number of bytes expected to be transferred.
      * 
-     * @return The residual count of this <code>SCSIResponseParser</code>
-     *         object.
+     * @return The residual count of this <code>SCSIResponseParser</code> object.
      */
     public final int getResidualCount() {
 
@@ -348,21 +334,18 @@ public class SCSIResponseParser extends TargetMessageParser {
      * <p>
      * All other response codes are reserved.
      * <p>
-     * The Response is used to report a Service Response. The mapping of the
-     * response code into a SCSI service response code value, if needed, is
-     * outside the scope of this document. However, in symbolic terms response
-     * value 0x00 maps to the SCSI service response (see [SAM2] and [SPC3]) of
-     * TASK COMPLETE or LINKED COMMAND COMPLETE. All other Response values map
-     * to the SCSI service response of SERVICE DELIVERY OR TARGET FAILURE.
+     * The Response is used to report a Service Response. The mapping of the response code into a SCSI service
+     * response code value, if needed, is outside the scope of this document. However, in symbolic terms
+     * response value 0x00 maps to the SCSI service response (see [SAM2] and [SPC3]) of TASK COMPLETE or
+     * LINKED COMMAND COMPLETE. All other Response values map to the SCSI service response of SERVICE DELIVERY
+     * OR TARGET FAILURE.
      * <p>
-     * If a PDU that includes SCSI status (Response PDU or Data-In PDU including
-     * status) does not arrive before the session is terminated, the SCSI
-     * service response is SERVICE DELIVERY OR TARGET FAILURE. A non-zero
-     * Response field indicates a failure to execute the command in which case
-     * the Status and Flag fields are undefined.
+     * If a PDU that includes SCSI status (Response PDU or Data-In PDU including status) does not arrive
+     * before the session is terminated, the SCSI service response is SERVICE DELIVERY OR TARGET FAILURE. A
+     * non-zero Response field indicates a failure to execute the command in which case the Status and Flag
+     * fields are undefined.
      * 
-     * @return The service response of this <code>SCSIResponseParser</code>
-     *         object.
+     * @return The service response of this <code>SCSIResponseParser</code> object.
      * @see ServiceResponse
      */
     public final ServiceResponse getResponse() {
@@ -376,13 +359,11 @@ public class SCSIResponseParser extends TargetMessageParser {
      * which the response is issued. Otherwise it is reserved and should be set
      * to <code>0</code>.
      * <p>
-     * After issuing a R-Data SNACK the initiator must discard any SCSI status
-     * unless contained in an SCSI Response PDU carrying the same SNACK Tag as
-     * the last issued R-Data SNACK for the SCSI command on the current
-     * connection.
+     * After issuing a R-Data SNACK the initiator must discard any SCSI status unless contained in an SCSI
+     * Response PDU carrying the same SNACK Tag as the last issued R-Data SNACK for the SCSI command on the
+     * current connection.
      * <p>
-     * For a detailed discussion on R-Data SNACK see Section 10.16 SNACK
-     * Request.
+     * For a detailed discussion on R-Data SNACK see Section 10.16 SNACK Request.
      * 
      * @return The SNACK Tag of this <code>SCSIResponseParser</code> object.
      */
@@ -397,30 +378,26 @@ public class SCSIResponseParser extends TargetMessageParser {
      * Completed at target.
      * 
      * @return The status field of this <code>SCSIResponseParser</code> object.
-     * @see Status
+     * @see org.jscsi.parser.scsi.SCSIStatus
      */
     public final SCSIStatus getStatus() {
 
         return status;
     }
 
-    public final void setBidirectionalReadResidualCount(
-            int bidirectionalReadResidualCount) {
+    public final void setBidirectionalReadResidualCount(int bidirectionalReadResidualCount) {
         this.bidirectionalReadResidualCount = bidirectionalReadResidualCount;
     }
 
-    public final void setBidirectionalReadResidualOverflow(
-            boolean bidirectionalReadResidualOverflow) {
+    public final void setBidirectionalReadResidualOverflow(boolean bidirectionalReadResidualOverflow) {
         this.bidirectionalReadResidualOverflow = bidirectionalReadResidualOverflow;
     }
 
-    public final void setBidirectionalReadResidualUnderflow(
-            boolean bidirectionalReadResidualUnderflow) {
+    public final void setBidirectionalReadResidualUnderflow(boolean bidirectionalReadResidualUnderflow) {
         this.bidirectionalReadResidualUnderflow = bidirectionalReadResidualUnderflow;
     }
 
-    public final void setExpectedDataSequenceNumber(
-            int expectedDataSequenceNumber) {
+    public final void setExpectedDataSequenceNumber(int expectedDataSequenceNumber) {
         this.expectedDataSequenceNumber = expectedDataSequenceNumber;
     }
 
@@ -453,52 +430,44 @@ public class SCSIResponseParser extends TargetMessageParser {
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes1to3(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes1to3(final int line) throws InternetSCSIException {
 
         Utils.isReserved(line & RESERVED_FLAGS_MASK);
 
-        bidirectionalReadResidualOverflow = Utils.isBitSet(line
-                & Constants.READ_RESIDUAL_OVERFLOW_FLAG_MASK);
-        bidirectionalReadResidualUnderflow = Utils.isBitSet(line
-                & Constants.READ_RESIDUAL_UNDERFLOW_FLAG_MASK);
-        residualOverflow = Utils.isBitSet(line
-                & Constants.RESIDUAL_OVERFLOW_FLAG_MASK);
-        residualUnderflow = Utils.isBitSet(line
-                & Constants.RESIDUAL_UNDERFLOW_FLAG_MASK);
-        response = ServiceResponse
-                .valueOf((byte) ((line & Constants.THIRD_BYTE_MASK) >>> Constants.ONE_BYTE_SHIFT));
-        status = SCSIStatus.valueOf((byte) (line & Constants.FOURTH_BYTE_MASK));
+        bidirectionalReadResidualOverflow = Utils.isBitSet(line & Constants.READ_RESIDUAL_OVERFLOW_FLAG_MASK);
+        bidirectionalReadResidualUnderflow =
+            Utils.isBitSet(line & Constants.READ_RESIDUAL_UNDERFLOW_FLAG_MASK);
+        residualOverflow = Utils.isBitSet(line & Constants.RESIDUAL_OVERFLOW_FLAG_MASK);
+        residualUnderflow = Utils.isBitSet(line & Constants.RESIDUAL_UNDERFLOW_FLAG_MASK);
+        response =
+            ServiceResponse.valueOf((byte)((line & Constants.THIRD_BYTE_MASK) >>> Constants.ONE_BYTE_SHIFT));
+        status = SCSIStatus.valueOf((byte)(line & Constants.FOURTH_BYTE_MASK));
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes20to23(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes20to23(final int line) throws InternetSCSIException {
 
         snackTag = line;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes36to39(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes36to39(final int line) throws InternetSCSIException {
 
         expectedDataSequenceNumber = line;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes40to43(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes40to43(final int line) throws InternetSCSIException {
 
         bidirectionalReadResidualCount = line;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes44to47(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes44to47(final int line) throws InternetSCSIException {
 
         residualCount = line;
     }
@@ -515,21 +484,21 @@ public class SCSIResponseParser extends TargetMessageParser {
             Utils.isReserved(logicalUnitNumber);
 
             if (response != ServiceResponse.COMMAND_COMPLETED_AT_TARGET) {
-                if (bidirectionalReadResidualOverflow
-                        || bidirectionalReadResidualUnderflow
-                        || residualOverflow || residualUnderflow) {
-                    exceptionMessage = "Theses bits must to be 0, because the command is not completed at the target.";
+                if (bidirectionalReadResidualOverflow || bidirectionalReadResidualUnderflow
+                    || residualOverflow || residualUnderflow) {
+                    exceptionMessage =
+                        "Theses bits must to be 0, because the command is not completed at the target.";
                     break;
                 }
 
                 if (status != SCSIStatus.GOOD) {
-                    exceptionMessage = "Status Code is only valid, because the command is not completed at the target.";
+                    exceptionMessage =
+                        "Status Code is only valid, because the command is not completed at the target.";
                     break;
                 }
             }
 
-            if (bidirectionalReadResidualOverflow
-                    && bidirectionalReadResidualUnderflow) {
+            if (bidirectionalReadResidualOverflow && bidirectionalReadResidualUnderflow) {
                 exceptionMessage = "The 'o' and 'u' bits must be set mutal exclusion.";
                 break;
             }
@@ -540,20 +509,22 @@ public class SCSIResponseParser extends TargetMessageParser {
             }
 
             if ((!residualOverflow && !residualUnderflow) && residualCount != 0) {
-                exceptionMessage = "ResidualCount is only valid either the ResidualOverflow or ResidualUnderflow-Flag is set.";
+                exceptionMessage =
+                    "ResidualCount is only valid either the ResidualOverflow or ResidualUnderflow-Flag is set.";
                 break;
             }
 
             if ((!bidirectionalReadResidualOverflow && !bidirectionalReadResidualUnderflow)
-                    && bidirectionalReadResidualCount != 0) {
-                exceptionMessage = "BidirectionalResidualCount is only valid either the "
+                && bidirectionalReadResidualCount != 0) {
+                exceptionMessage =
+                    "BidirectionalResidualCount is only valid either the "
                         + "BidirectionalResidualOverflow or BidirectionalResidualUnderflow-Flag is set.";
                 break;
             }
 
-            if (response != ServiceResponse.COMMAND_COMPLETED_AT_TARGET
-                    && expectedDataSequenceNumber != 0) {
-                exceptionMessage = "The ExpectedDataSequenceNumber is not valid, because the command is not "
+            if (response != ServiceResponse.COMMAND_COMPLETED_AT_TARGET && expectedDataSequenceNumber != 0) {
+                exceptionMessage =
+                    "The ExpectedDataSequenceNumber is not valid, because the command is not "
                         + "completed at the target.";
                 break;
             }

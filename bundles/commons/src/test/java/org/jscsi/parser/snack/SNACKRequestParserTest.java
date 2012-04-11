@@ -33,11 +33,11 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.DigestException;
 
-import org.jscsi.core.utils.WiresharkMessageParser;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnitTest;
 import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.snack.SNACKRequestParser.SNACKType;
+import org.jscsi.utils.WiresharkMessageParser;
 import org.junit.Test;
 
 /**

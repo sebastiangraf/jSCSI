@@ -32,9 +32,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.jscsi.core.utils.WiresharkMessageParser;
 import org.jscsi.parser.AdditionalHeaderSegment.AdditionalHeaderSegmentType;
 import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.utils.WiresharkMessageParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

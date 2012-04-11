@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2011, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,77 +29,61 @@ package org.jscsi.parser.logout;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jscsi.core.utils.Utils;
 import org.jscsi.parser.Constants;
 import org.jscsi.parser.InitiatorMessageParser;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.utils.Utils;
 
 /**
  * <h1>LogoutRequestParser</h1>
  * <p>
- * This class parses a Logout Request message defined in the iSCSI Standard
- * (RFC3720).
+ * This class parses a Logout Request message defined in the iSCSI Standard (RFC3720).
  * <p>
  * The Logout Request is used to perform a controlled closing of a connection.
  * <p>
- * An initiator MAY use a Logout Request to remove a connection from a session
- * or to close an entire session.
+ * An initiator MAY use a Logout Request to remove a connection from a session or to close an entire session.
  * <p>
- * After sending the Logout Request PDU, an initiator MUST NOT send any new
- * iSCSI requests on the closing connection. If the Logout Request is intended
- * to close the session, new iSCSI requests MUST NOT be sent on any of the
- * connections participating in the session.
+ * After sending the Logout Request PDU, an initiator MUST NOT send any new iSCSI requests on the closing
+ * connection. If the Logout Request is intended to close the session, new iSCSI requests MUST NOT be sent on
+ * any of the connections participating in the session.
  * <p>
- * When receiving a Logout Request with the reason code of "close the
- * connection" or "close the session", the target MUST terminate all pending
- * commands, whether acknowledged via ExpCmdSN or not, on that connection or
+ * When receiving a Logout Request with the reason code of "close the connection" or "close the session", the
+ * target MUST terminate all pending commands, whether acknowledged via ExpCmdSN or not, on that connection or
  * session respectively.
  * <p>
- * When receiving a Logout Request with the reason code "remove connection for
- * recovery", the target MUST discard all requests not yet acknowledged via
- * ExpCmdSN that were issued on the specified connection, and suspend all
- * data/status/R2T transfers on behalf of pending commands on the specified
- * connection.
+ * When receiving a Logout Request with the reason code "remove connection for recovery", the target MUST
+ * discard all requests not yet acknowledged via ExpCmdSN that were issued on the specified connection, and
+ * suspend all data/status/R2T transfers on behalf of pending commands on the specified connection.
  * <p>
- * The target then issues the Logout Response and half-closes the TCP connection
- * (sends FIN). After receiving the Logout Response and attempting to receive
- * the FIN (if still possible), the initiator MUST completely close the
- * logging-out connection. For the terminated commands, no additional responses
- * should be expected.
+ * The target then issues the Logout Response and half-closes the TCP connection (sends FIN). After receiving
+ * the Logout Response and attempting to receive the FIN (if still possible), the initiator MUST completely
+ * close the logging-out connection. For the terminated commands, no additional responses should be expected.
  * <p>
- * A Logout for a CID may be performed on a different transport connection when
- * the TCP connection for the CID has already been terminated. In such a case,
- * only a logical "closing" of the iSCSI connection for the CID is implied with
- * a Logout.
+ * A Logout for a CID may be performed on a different transport connection when the TCP connection for the CID
+ * has already been terminated. In such a case, only a logical "closing" of the iSCSI connection for the CID
+ * is implied with a Logout.
  * <p>
- * All commands that were not terminated or not completed (with status) and
- * acknowledged when the connection is closed completely can be reassigned to a
- * new connection if the target supports connection recovery.
+ * All commands that were not terminated or not completed (with status) and acknowledged when the connection
+ * is closed completely can be reassigned to a new connection if the target supports connection recovery.
  * <p>
- * If an initiator intends to start recovery for a failing connection, it MUST
- * use the Logout Request to "clean-up" the target end of a failing connection
- * and enable recovery to start, or the Login Request with a non-zero TSIH and
- * the same CID on a new connection for the same effect (see Section 10.14.3
- * CID). In sessions with a single connection, the connection can be closed and
- * then a new connection reopened. A connection reinstatement login can be used
- * for recovery (see Section 5.3.4 Connection Reinstatement).
+ * If an initiator intends to start recovery for a failing connection, it MUST use the Logout Request to
+ * "clean-up" the target end of a failing connection and enable recovery to start, or the Login Request with a
+ * non-zero TSIH and the same CID on a new connection for the same effect (see Section 10.14.3 CID). In
+ * sessions with a single connection, the connection can be closed and then a new connection reopened. A
+ * connection reinstatement login can be used for recovery (see Section 5.3.4 Connection Reinstatement).
  * <p>
- * A successful completion of a Logout Request with the reason code of "close
- * the connection" or "remove the connection for recovery" results at the target
- * in the discarding of unacknowledged commands received on the connection being
- * logged out. These are commands that have arrived on the connection being
- * logged out, but have not been delivered to SCSI because one or more commands
- * with a smaller CmdSN has not been received by iSCSI. See Section 3.2.2.1
- * Command Numbering and Acknowledging. The resulting holes the in command
- * sequence numbers will have to be handled by appropriate recovery (see Chapter
- * 6) unless the session is also closed.
+ * A successful completion of a Logout Request with the reason code of "close the connection" or "remove the
+ * connection for recovery" results at the target in the discarding of unacknowledged commands received on the
+ * connection being logged out. These are commands that have arrived on the connection being logged out, but
+ * have not been delivered to SCSI because one or more commands with a smaller CmdSN has not been received by
+ * iSCSI. See Section 3.2.2.1 Command Numbering and Acknowledging. The resulting holes the in command sequence
+ * numbers will have to be handled by appropriate recovery (see Chapter 6) unless the session is also closed.
  * <p>
- * The entire logout discussion in this section is also applicable for an
- * implicit Logout realized via a connection reinstatement or session
- * reinstatement. When a Login Request performs an implicit Logout, the implicit
- * Logout is performed as if having the reason codes specified below:
+ * The entire logout discussion in this section is also applicable for an implicit Logout realized via a
+ * connection reinstatement or session reinstatement. When a Login Request performs an implicit Logout, the
+ * implicit Logout is performed as if having the reason codes specified below:
  * <p>
  * <table border="1">
  * <tr>
@@ -120,41 +104,35 @@ import org.jscsi.parser.exception.InternetSCSIException;
  * </tr>
  * </table>
  * <p>
- * <h4>TotalAHSLength and DataSegmentLength</h4> For this PDU TotalAHSLength and
- * DataSegmentLength MUST be <code>0</code>.
+ * <h4>TotalAHSLength and DataSegmentLength</h4> For this PDU TotalAHSLength and DataSegmentLength MUST be
+ * <code>0</code>.
  * <p>
- * <h4>ExpStatSN</h4> This is the last ExpStatSN value for the connection to be
- * closed.
+ * <h4>ExpStatSN</h4> This is the last ExpStatSN value for the connection to be closed.
  * <p>
- * <h4>Implicit termination of tasks</h4> A target implicitly terminates the
- * active tasks due to the iSCSI protocol in the following cases:
+ * <h4>Implicit termination of tasks</h4> A target implicitly terminates the active tasks due to the iSCSI
+ * protocol in the following cases:
  * <p>
  * <ol type="a">
- * <li>When a connection is implicitly or explicitly logged out with the reason
- * code of "Close the connection" and there are active tasks allegiant to that
- * connection.</li>
- * <li>When a connection fails and eventually the connection state times out
- * (state transition M1 in Section 7.2.2 State Transition Descriptions for
- * Initiators and Targets) and there are active tasks allegiant to that
- * connection.</li>
- * <li>When a successful recovery Logout is performed while there are active
- * tasks allegiant to that connection, and those tasks eventually time out after
- * the Time2Wait and Time2Retain periods without allegiance reassignment.</li>
- * <li>When a connection is implicitly or explicitly logged out with the reason
- * code of "Close the session" and there are active tasks in that session.</li>
+ * <li>When a connection is implicitly or explicitly logged out with the reason code of "Close the connection"
+ * and there are active tasks allegiant to that connection.</li>
+ * <li>When a connection fails and eventually the connection state times out (state transition M1 in Section
+ * 7.2.2 State Transition Descriptions for Initiators and Targets) and there are active tasks allegiant to
+ * that connection.</li>
+ * <li>When a successful recovery Logout is performed while there are active tasks allegiant to that
+ * connection, and those tasks eventually time out after the Time2Wait and Time2Retain periods without
+ * allegiance reassignment.</li>
+ * <li>When a connection is implicitly or explicitly logged out with the reason code of "Close the session"
+ * and there are active tasks in that session.</li>
  * </ol>
- * If the tasks terminated in any of the above cases are SCSI tasks, they must
- * be internally terminated as if with CHECK CONDITION status. This status is
- * only meaningful for appropriately handling the internal SCSI state and SCSI
- * side effects with respect to ordering because this status is never
- * communicated back as a terminating status to the initiator. However
- * additional actions may have to be taken at SCSI level depending on the SCSI
- * context as defined by the SCSI standards (e.g., queued commands and ACA, in
- * cases a), b), and c), after the tasks are terminated, the target MUST report
- * a Unit Attention condition on the next command processed on any connection
- * for each affected I_T_L nexus with the status of CHECK CONDITION, and the
- * ASC/ASCQ value of 47h/7Fh - "SOME COMMANDS CLEARED BY ISCSI PROTOCOL EVENT" -
- * etc. - see [SAM2] and [SPC3]).
+ * If the tasks terminated in any of the above cases are SCSI tasks, they must be internally terminated as if
+ * with CHECK CONDITION status. This status is only meaningful for appropriately handling the internal SCSI
+ * state and SCSI side effects with respect to ordering because this status is never communicated back as a
+ * terminating status to the initiator. However additional actions may have to be taken at SCSI level
+ * depending on the SCSI context as defined by the SCSI standards (e.g., queued commands and ACA, in cases a),
+ * b), and c), after the tasks are terminated, the target MUST report a Unit Attention condition on the next
+ * command processed on any connection for each affected I_T_L nexus with the status of CHECK CONDITION, and
+ * the ASC/ASCQ value of 47h/7Fh - "SOME COMMANDS CLEARED BY ISCSI PROTOCOL EVENT" - etc. - see [SAM2] and
+ * [SPC3]).
  * <p>
  * 
  * @author Volker Wildi
@@ -178,20 +156,20 @@ public final class LogoutRequestParser extends InitiatorMessageParser {
          * Close the session. All commands associated with the session (if any)
          * are terminated.
          */
-        CLOSE_SESSION((byte) 0),
+        CLOSE_SESSION((byte)0),
 
         /**
          * Close the connection. All commands associated with connection (if
          * any) are terminated.
          */
-        CLOSE_CONNECTION((byte) 1),
+        CLOSE_CONNECTION((byte)1),
 
         /**
          * Remove the connection for recovery. Connection is closed and all
          * commands associated with it, if any, are to be prepared for a new
          * allegiance.
          */
-        CONNECTION_RECOVERY((byte) 2);
+        CONNECTION_RECOVERY((byte)2);
 
         private final byte value;
 
@@ -224,8 +202,8 @@ public final class LogoutRequestParser extends InitiatorMessageParser {
          * 
          * @param value
          *            The value to search for.
-         * @return The constant defined for the given <code>value</code>. Or
-         *         <code>null</code>, if this value is not defined by this
+         * @return The constant defined for the given <code>value</code>. Or <code>null</code>, if this value
+         *         is not defined by this
          *         enumeration.
          */
         public static final LogoutReasonCode valueOf(final byte value) {
@@ -248,8 +226,7 @@ public final class LogoutRequestParser extends InitiatorMessageParser {
     // --------------------------------------------------------------------------
 
     /**
-     * Default constructor, creates a new, empty
-     * <code>LogoutRequestParser</code> object.
+     * Default constructor, creates a new, empty <code>LogoutRequestParser</code> object.
      * 
      * @param initProtocolDataUnit
      *            The reference <code>ProtocolDataUnit</code> instance, which
@@ -302,8 +279,7 @@ public final class LogoutRequestParser extends InitiatorMessageParser {
      * (including closing the TCP stream). This field is only valid if the
      * reason code is not "close the session".
      * 
-     * @return The <em>Connection ID</em> of this
-     *         <code>LogoutRequestParser</code> object.
+     * @return The <em>Connection ID</em> of this <code>LogoutRequestParser</code> object.
      */
     public final short getConnectionID() {
 
@@ -322,8 +298,7 @@ public final class LogoutRequestParser extends InitiatorMessageParser {
     }
 
     /**
-     * Sets the new <code>Connection ID</code> of this
-     * <code>LogoutRequestParser</code> object.
+     * Sets the new <code>Connection ID</code> of this <code>LogoutRequestParser</code> object.
      * 
      * @param newCID
      *            The new <code>Connection ID</code>.
@@ -334,8 +309,7 @@ public final class LogoutRequestParser extends InitiatorMessageParser {
     }
 
     /**
-     * Sets the <code>Reason Code</code> of this
-     * <code>LogoutRequestParser</code> object.
+     * Sets the <code>Reason Code</code> of this <code>LogoutRequestParser</code> object.
      * 
      * @param newReasonCode
      *            The new <code> Reason Code</code>.
@@ -350,20 +324,19 @@ public final class LogoutRequestParser extends InitiatorMessageParser {
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes1to3(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes1to3(final int line) throws InternetSCSIException {
 
-        reasonCode = LogoutReasonCode
-                .valueOf((byte) ((line & Constants.SECOND_BYTE_MASK) >>> Constants.TWO_BYTES_SHIFT));
+        reasonCode =
+            LogoutReasonCode
+                .valueOf((byte)((line & Constants.SECOND_BYTE_MASK) >>> Constants.TWO_BYTES_SHIFT));
         Utils.isReserved(line & Constants.LAST_TWO_BYTES_MASK);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes20to23(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes20to23(final int line) throws InternetSCSIException {
 
-        connectionID = (short) ((line & Constants.FIRST_TWO_BYTES_MASK) >>> Constants.TWO_BYTES_SHIFT);
+        connectionID = (short)((line & Constants.FIRST_TWO_BYTES_MASK) >>> Constants.TWO_BYTES_SHIFT);
         Utils.isReserved(line & Constants.LAST_TWO_BYTES_MASK);
     }
 
@@ -378,8 +351,7 @@ public final class LogoutRequestParser extends InitiatorMessageParser {
         do {
             Utils.isReserved(logicalUnitNumber);
 
-            if (reasonCode == LogoutReasonCode.CLOSE_SESSION
-                    && connectionID != 0) {
+            if (reasonCode == LogoutReasonCode.CLOSE_SESSION && connectionID != 0) {
                 exceptionMessage = "The CID field must be zero, if close session is requested.";
                 break;
             }
