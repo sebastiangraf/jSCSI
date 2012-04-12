@@ -29,6 +29,7 @@ package org.jscsi.initiator;
 import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.Ignore;
@@ -78,6 +79,9 @@ public class InitiatorBug {
             }
             // System.out.println("Finished." + i);
             // }
+            if(!Arrays.equals(writeData.array(),readData.array())){
+                throw new IllegalStateException("Data read must be equal to the data written");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             fail();
