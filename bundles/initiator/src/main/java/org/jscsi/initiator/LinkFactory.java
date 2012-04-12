@@ -31,9 +31,9 @@ import java.util.concurrent.Executors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.exception.NoSuchSessionException;
 import org.jscsi.initiator.connection.Connection;
 import org.jscsi.initiator.connection.Session;
-import org.jscsi.parser.exception.NoSuchSessionException;
 
 /**
  * <h1>LinkFactory</h1>

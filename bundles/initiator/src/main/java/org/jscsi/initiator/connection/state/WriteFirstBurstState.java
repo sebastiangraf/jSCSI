@@ -29,6 +29,7 @@ package org.jscsi.initiator.connection.state;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.initiator.connection.Connection;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -36,7 +37,6 @@ import org.jscsi.parser.data.DataOutParser;
 import org.jscsi.parser.datasegment.IDataSegmentIterator;
 import org.jscsi.parser.datasegment.OperationalTextKey;
 import org.jscsi.parser.datasegment.IDataSegmentIterator.IDataSegmentChunk;
-import org.jscsi.parser.exception.InternetSCSIException;
 
 /**
  * <h1>WriteFirstBurstState</h1>

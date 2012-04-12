@@ -34,12 +34,12 @@ import java.security.DigestException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.InitiatorMessageParser;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.ProtocolDataUnitFactory;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.datasegment.OperationalTextKey;
-import org.jscsi.parser.exception.InternetSCSIException;
 
 /**
  * <h1>SenderWorker</h1>

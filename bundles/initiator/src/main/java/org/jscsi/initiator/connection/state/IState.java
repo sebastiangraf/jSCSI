@@ -28,10 +28,10 @@ package org.jscsi.initiator.connection.state;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.initiator.connection.Connection;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.ProtocolDataUnitFactory;
-import org.jscsi.parser.exception.InternetSCSIException;
 
 /**
  * <h1>IState</h1>

@@ -24,16 +24,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.jscsi.parser.exception;
+package org.jscsi.exception;
 
 /**
- * <h1>NoSuchSessionException</h1>
+ * <h1>OperationalTextKeyException</h1>
  * <p/>
- * This exception is thrown when no session is open.
+ * This exception is thrown when an error with an
+ * <code>OperationalTextKey</code> occurs.
  * 
  * @author Volker Wildi
  */
-public class NoSuchSessionException extends InternetSCSIException {
+public class OperationalTextKeyException extends InternetSCSIException {
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -47,7 +48,7 @@ public class NoSuchSessionException extends InternetSCSIException {
     /**
      * Constructs a new exception with null as its detail message.
      */
-    public NoSuchSessionException() {
+    public OperationalTextKeyException() {
 
         super();
     }
@@ -59,14 +60,24 @@ public class NoSuchSessionException extends InternetSCSIException {
      *            the detail message. The detail message is saved for later
      *            retrieval by the Throwable.getMessage() method.
      */
-    public NoSuchSessionException(final String msg) {
+    public OperationalTextKeyException(final String msg) {
 
         super(msg);
+    }
+
+    /**
+     * Constructs a new exception with the specified exception.
+     * 
+     * @param e
+     *            the detail exception.
+     */
+    public OperationalTextKeyException(final Exception e) {
+
+        super(e);
     }
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
-
 }

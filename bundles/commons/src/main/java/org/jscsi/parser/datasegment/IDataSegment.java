@@ -28,7 +28,7 @@ package org.jscsi.parser.datasegment;
 
 import java.nio.ByteBuffer;
 
-import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.exception.InternetSCSIException;
 
 /**
  * <h1>IDataSegment</h1>

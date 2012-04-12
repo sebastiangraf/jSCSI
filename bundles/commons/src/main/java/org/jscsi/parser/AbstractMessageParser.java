@@ -28,8 +28,8 @@ package org.jscsi.parser;
 
 import java.nio.ByteBuffer;
 
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.utils.Utils;
 
 /**

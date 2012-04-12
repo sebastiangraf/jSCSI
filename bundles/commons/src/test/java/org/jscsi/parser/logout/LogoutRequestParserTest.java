@@ -31,8 +31,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.security.DigestException;
 
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.ProtocolDataUnitTest;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.junit.Test;
 
 /**

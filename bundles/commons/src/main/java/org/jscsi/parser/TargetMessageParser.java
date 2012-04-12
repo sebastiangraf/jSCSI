@@ -26,7 +26,7 @@
  */
 package org.jscsi.parser;
 
-import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.utils.Utils;
 
 /**

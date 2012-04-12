@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2011, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -30,19 +30,20 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.exception.NoSuchSessionException;
 import org.jscsi.exception.TaskExecutionException;
 import org.jscsi.initiator.connection.Session;
-import org.jscsi.parser.exception.NoSuchSessionException;
 
 /**
  * <h1>Initiator</h1>
  * <p>
- * This class represents an initiator, which request messages to a target
- * defined by the iSCSI Protocol (RFC3720).
+ * This class represents an initiator, which request messages to a target defined by the iSCSI Protocol
+ * (RFC3720).
  * 
  * @author Volker Wildi, University of Konstanz
  * @author Sebastian Graf, University of Konstanz
@@ -94,8 +95,7 @@ public final class Initiator {
      *             if no session was found
      * 
      */
-    public final void createSession(final String targetName)
-            throws NoSuchSessionException {
+    public final void createSession(final String targetName) throws NoSuchSessionException {
 
         createSession(configuration.getTargetAddress(targetName), targetName);
     }
@@ -111,15 +111,12 @@ public final class Initiator {
      * @throws Exception
      *             if any error occurs.
      */
-    public final void createSession(final InetSocketAddress targetAddress,
-            final String targetName) {
+    public final void createSession(final InetSocketAddress targetAddress, final String targetName) {
 
-        final Session session = factory.getSession(configuration, targetName,
-                targetAddress);
+        final Session session = factory.getSession(configuration, targetName, targetAddress);
         sessions.put(session.getTargetName(), session);
-        LOGGER.info("Created the session with iSCSI Target '" + targetName
-                + "' at " + targetAddress.getHostName() + " on port "
-                + targetAddress.getPort() + ".");
+        LOGGER.info("Created the session with iSCSI Target '" + targetName + "' at "
+            + targetAddress.getHostName() + " on port " + targetAddress.getPort() + ".");
     }
 
     /**
@@ -132,15 +129,14 @@ public final class Initiator {
      * @throws TaskExecutionException
      *             if logout fails.
      */
-    public final void closeSession(final String targetName)
-            throws NoSuchSessionException, TaskExecutionException {
+    public final void closeSession(final String targetName) throws NoSuchSessionException,
+        TaskExecutionException {
 
-        getSession(targetName).logout(this);
+        getSession(targetName).logout();
         // TODO Test the removal from the map.
         sessions.remove(targetName);
 
-        LOGGER.info("Closed the session to the iSCSI Target '" + targetName
-                + "'.");
+        LOGGER.info("Closed the session to the iSCSI Target '" + targetName + "'.");
     }
 
     // --------------------------------------------------------------------------
@@ -151,8 +147,7 @@ public final class Initiator {
      * store the read bytes in the buffer <code>dst</code>. Start reading at the
      * logical block address and request <code>transferLength</code> blocks.
      * 
-     * @param caller
-     *            The pointer to the calling instance of this method.
+     * 
      * @param targetName
      *            The name of the session to invoke this read operation.
      * @param dst
@@ -165,14 +160,16 @@ public final class Initiator {
      *             if any error occurs.
      * 
      * @return FutureObject for MultiThreadedReads
+     * @throws TaskExecutionException
+     *             if execution fails
+     * @throws NoSuchSessionException
+     *             if session is not found
      */
-    public final Future<Void> multiThreadedRead(final Object caller,
-            final String targetName, final ByteBuffer dst,
-            final int logicalBlockAddress, final long transferLength)
-            throws Exception {
+    public final Future<Void> multiThreadedRead(final String targetName, final ByteBuffer dst,
+        final int logicalBlockAddress, final long transferLength) throws NoSuchSessionException,
+        TaskExecutionException {
 
-        final Future<Void> returnVal = getSession(targetName).read(caller, dst,
-                logicalBlockAddress, transferLength);
+        final Future<Void> returnVal = getSession(targetName).read(dst, logicalBlockAddress, transferLength);
         return returnVal;
     }
 
@@ -181,8 +178,7 @@ public final class Initiator {
      * store the read bytes in the buffer <code>dst</code>. Start reading at the
      * logical block address and request <code>transferLength</code> blocks.
      * 
-     * @param caller
-     *            The pointer to the calling instance of this method.
+     * 
      * @param targetName
      *            The name of the session to invoke this read operation.
      * @param dst
@@ -191,16 +187,20 @@ public final class Initiator {
      *            The logical block address of the beginning.
      * @param transferLength
      *            Number of bytes to read.
-     * @throws Exception
-     *             if any error occurs.
+     * @throws TaskExecutionException
+     *             if execution fails
+     * @throws NoSuchSessionException
+     *             if session is not found
      */
-    public final void read(final Object caller, final String targetName,
-            final ByteBuffer dst, final int logicalBlockAddress,
-            final long transferLength) throws Exception {
-
-        multiThreadedRead(caller, targetName, dst, logicalBlockAddress,
-                transferLength).get();
-
+    public final void read(final String targetName, final ByteBuffer dst, final int logicalBlockAddress,
+        final long transferLength) throws NoSuchSessionException, TaskExecutionException {
+        try {
+            multiThreadedRead(targetName, dst, logicalBlockAddress, transferLength).get();
+        } catch (final InterruptedException exc) {
+            throw new TaskExecutionException(exc);
+        } catch (final ExecutionException exc) {
+            throw new TaskExecutionException(exc);
+        }
     }
 
     /**
@@ -208,8 +208,7 @@ public final class Initiator {
      * transmits the bytes in the buffer <code>dst</code>. Start writing at the
      * logical block address and transmit <code>transferLength</code> blocks.
      * 
-     * @param caller
-     *            The pointer to the calling instance of this method.
+     * 
      * @param targetName
      *            The name of the session to invoke this write operation.
      * @param src
@@ -221,14 +220,16 @@ public final class Initiator {
      * @throws Exception
      *             if any error occurs.
      * @return FutureObject for the multi-threaded write operation
+     * @throws TaskExecutionException
+     *             if execution fails
+     * @throws NoSuchSessionException
+     *             if session is not found
      */
-    public final Future<Void> multiThreadedWrite(final Object caller,
-            final String targetName, final ByteBuffer src,
-            final int logicalBlockAddress, final long transferLength)
-            throws Exception {
+    public final Future<Void> multiThreadedWrite(final String targetName, final ByteBuffer src,
+        final int logicalBlockAddress, final long transferLength) throws NoSuchSessionException,
+        TaskExecutionException {
 
-        return getSession(targetName).write(caller, src, logicalBlockAddress,
-                transferLength);
+        return getSession(targetName).write(src, logicalBlockAddress, transferLength);
     }
 
     /**
@@ -236,8 +237,7 @@ public final class Initiator {
      * transmits the bytes in the buffer <code>dst</code>. Start writing at the
      * logical block address and transmit <code>transferLength</code> blocks.
      * 
-     * @param caller
-     *            The pointer to the calling instance of this method.
+     * 
      * @param targetName
      *            The name of the session to invoke this write operation.
      * @param src
@@ -246,15 +246,21 @@ public final class Initiator {
      *            The logical block address of the beginning.
      * @param transferLength
      *            Number of bytes to write.
-     * @throws Exception
-     *             if any error occurs.
+     * @throws TaskExecutionException
+     *             if execution fails
+     * @throws NoSuchSessionException
+     *             if session is not found
      */
-    public final void write(final Object caller, final String targetName,
-            final ByteBuffer src, final int logicalBlockAddress,
-            final long transferLength) throws Exception {
+    public final void write(final String targetName, final ByteBuffer src, final int logicalBlockAddress,
+        final long transferLength) throws NoSuchSessionException, TaskExecutionException {
 
-        multiThreadedWrite(caller, targetName, src, logicalBlockAddress,
-                transferLength).get();
+        try {
+            multiThreadedWrite(targetName, src, logicalBlockAddress, transferLength).get();
+        } catch (final InterruptedException exc) {
+            throw new TaskExecutionException(exc);
+        } catch (final ExecutionException exc) {
+            throw new TaskExecutionException(exc);
+        }
     }
 
     // --------------------------------------------------------------------------
@@ -269,8 +275,7 @@ public final class Initiator {
      * @throws NoSuchSessionException
      *             if the session connected to the target is yet not open.
      */
-    public final long getBlockSize(final String targetName)
-            throws NoSuchSessionException {
+    public final long getBlockSize(final String targetName) throws NoSuchSessionException {
 
         return getSession(targetName).getBlockSize();
     }
@@ -284,8 +289,7 @@ public final class Initiator {
      * @throws NoSuchSessionException
      *             if the session connected to the target is yet not open.
      */
-    public final long getCapacity(final String targetName)
-            throws NoSuchSessionException {
+    public final long getCapacity(final String targetName) throws NoSuchSessionException {
 
         return getSession(targetName).getCapacity();
     }
@@ -301,16 +305,14 @@ public final class Initiator {
      *            The name of the session, which instance you want.
      * @return The requested <code>Session</code> instance.
      */
-    private final Session getSession(final String targetName)
-            throws NoSuchSessionException {
+    private final Session getSession(final String targetName) throws NoSuchSessionException {
 
         final Session session = sessions.get(targetName);
 
         if (session != null) {
             return session;
         } else {
-            throw new NoSuchSessionException("Session " + targetName
-                    + " not found!");
+            throw new NoSuchSessionException("Session " + targetName + " not found!");
         }
     }
 
@@ -322,16 +324,14 @@ public final class Initiator {
      * @throws NoSuchSessionException
      *             if the Session does not exist in the Map
      */
-    public final void removeSession(final Session sessionReq)
-            throws NoSuchSessionException {
+    public final void removeSession(final Session sessionReq) throws NoSuchSessionException {
 
         final Session session = sessions.get(sessionReq.getTargetName());
 
         if (session != null) {
             sessions.remove(sessionReq.getTargetName());
         } else {
-            throw new NoSuchSessionException("Session "
-                    + sessionReq.getTargetName() + " not found!");
+            throw new NoSuchSessionException("Session " + sessionReq.getTargetName() + " not found!");
         }
     }
 

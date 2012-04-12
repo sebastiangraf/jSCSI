@@ -26,8 +26,8 @@
  */
 package org.jscsi.initiator.taskbalancer;
 
+import org.jscsi.exception.NoSuchConnectionException;
 import org.jscsi.initiator.connection.Connection;
-import org.jscsi.parser.exception.NoSuchConnectionException;
 
 /**
  * <h1>ILoadBalancer</h1>

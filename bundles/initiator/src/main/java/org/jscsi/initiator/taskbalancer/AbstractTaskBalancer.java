@@ -31,9 +31,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.exception.NoSuchConnectionException;
 import org.jscsi.initiator.connection.Connection;
 import org.jscsi.initiator.connection.Session;
-import org.jscsi.parser.exception.NoSuchConnectionException;
 
 /**
  * <h1>AbstractLoadBalancer</h1>

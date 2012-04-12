@@ -29,7 +29,7 @@ package org.jscsi.parser.login;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.login.ISID.Format;
 import org.junit.Test;
 

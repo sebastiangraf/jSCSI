@@ -26,12 +26,12 @@
  */
 package org.jscsi.initiator.connection.state;
 
+import org.jscsi.exception.InternetSCSIException;
+import org.jscsi.exception.OperationalTextKeyException;
 import org.jscsi.initiator.connection.Connection;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.datasegment.IDataSegmentIterator;
 import org.jscsi.parser.datasegment.OperationalTextKey;
-import org.jscsi.parser.exception.InternetSCSIException;
-import org.jscsi.parser.exception.OperationalTextKeyException;
 import org.jscsi.parser.r2t.Ready2TransferParser;
 import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIStatus;

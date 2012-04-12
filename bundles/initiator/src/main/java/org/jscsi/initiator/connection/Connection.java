@@ -33,14 +33,14 @@ import java.util.Queue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.exception.InternetSCSIException;
+import org.jscsi.exception.NoSuchSessionException;
+import org.jscsi.exception.OperationalTextKeyException;
 import org.jscsi.initiator.Configuration;
 import org.jscsi.initiator.connection.state.IState;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.datasegment.OperationalTextKey;
 import org.jscsi.parser.datasegment.SettingsMap;
-import org.jscsi.parser.exception.InternetSCSIException;
-import org.jscsi.parser.exception.NoSuchSessionException;
-import org.jscsi.parser.exception.OperationalTextKeyException;
 import org.jscsi.utils.SerialArithmeticNumber;
 
 /**

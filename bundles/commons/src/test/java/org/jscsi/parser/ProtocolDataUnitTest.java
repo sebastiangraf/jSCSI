@@ -33,10 +33,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.DigestException;
 
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.datasegment.DataSegmentFactory;
 import org.jscsi.parser.datasegment.IDataSegment;
 import org.jscsi.parser.datasegment.SettingsMap;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.utils.WiresharkMessageParser;
 import org.junit.After;
 

@@ -28,6 +28,7 @@ package org.jscsi.initiator.connection.state;
 
 import java.nio.ByteBuffer;
 
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.initiator.connection.Connection;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -36,7 +37,6 @@ import org.jscsi.parser.datasegment.IDataSegment;
 import org.jscsi.parser.datasegment.IDataSegmentIterator;
 import org.jscsi.parser.datasegment.OperationalTextKey;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSICommandDescriptorBlockParser;
 import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.parser.scsi.SCSICommandParser.TaskAttributes;

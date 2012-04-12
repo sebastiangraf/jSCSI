@@ -37,10 +37,10 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.datasegment.AbstractDataSegment;
 import org.jscsi.parser.datasegment.IDataSegmentIterator.IDataSegmentChunk;
 import org.jscsi.parser.digest.IDigest;
-import org.jscsi.parser.exception.InternetSCSIException;
 
 /**
  * <h1>ProtocolDataUnit</h1>

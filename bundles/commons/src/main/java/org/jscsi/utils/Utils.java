@@ -28,7 +28,7 @@ package org.jscsi.utils;
 
 import java.nio.ByteBuffer;
 
-import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.exception.InternetSCSIException;
 
 /**
  * This class encapsulate all the needed common constants and methods with are

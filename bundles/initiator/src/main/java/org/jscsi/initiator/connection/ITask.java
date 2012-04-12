@@ -51,12 +51,6 @@ public interface ITask {
      */
     public Void call() throws Exception;
 
-    /**
-     * Returns the instance to the calling thread of this task.
-     * 
-     * @return the instance of the calling object.
-     */
-    public Object getCaller();
 }
 
 // --------------------------------------------------------------------------
@@ -76,9 +70,6 @@ abstract class AbstractTask implements ITask {
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
 
-    /** The invoking caller of this task. */
-    protected final Object caller;
-
     /** The <code>Session</code> instance of this task. */
     protected final Session session;
 
@@ -97,21 +88,14 @@ abstract class AbstractTask implements ITask {
      * @param referenceSession
      *            The session, where this task is executed in.
      */
-    AbstractTask(final Object initCaller, final Session referenceSession) {
+    AbstractTask(final Session referenceSession) {
 
-        caller = initCaller;
         session = referenceSession;
         phase = referenceSession.phase;
     }
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
-
-    /** {@inheritDoc} */
-    public final Object getCaller() {
-
-        return caller;
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -143,14 +127,13 @@ final class LoginTask extends AbstractTask {
      * Constructor to create a new, empty <code>LoginTask</code> instance, which
      * is initialized with the given values.
      * 
-     * @param initCaller
-     *            The invoking caller of this task.
+     * 
      * @param referenceSession
      *            The session, where this task is executed in.
      */
-    LoginTask(final Object initCaller, final Session referenceSession) {
+    LoginTask(final Session referenceSession) {
 
-        super(initCaller, referenceSession);
+        super(referenceSession);
     }
 
     // --------------------------------------------------------------------------
@@ -187,14 +170,13 @@ final class LogoutTask extends AbstractTask {
      * Constructor to create a new, empty <code>LogoutTask</code> instance,
      * which is initialized with the given values.
      * 
-     * @param initCaller
-     *            The invoking caller of this task.
+     * 
      * @param referenceSession
      *            The session, where this task is executed in.
      */
-    LogoutTask(final Object initCaller, final Session referenceSession) {
+    LogoutTask(final Session referenceSession) {
 
-        super(initCaller, referenceSession);
+        super(referenceSession);
     }
 
     // --------------------------------------------------------------------------
@@ -242,8 +224,7 @@ abstract class IOTask extends AbstractTask implements Callable<Void> {
      * Constructor to create a new, empty <code>IOTask</code> instance, which is
      * initialized with the given values.
      * 
-     * @param initCaller
-     *            The invoking caller of this task.
+     * 
      * @param referenceSession
      *            The session, where this task is executed in.
      * @param dst
@@ -253,10 +234,10 @@ abstract class IOTask extends AbstractTask implements Callable<Void> {
      * @param initLength
      *            length of buffer
      */
-    IOTask(final Object initCaller, final Session referenceSession, final ByteBuffer dst,
-        final int initLogicalBlockAddress, final long initLength) {
+    IOTask(final Session referenceSession, final ByteBuffer dst, final int initLogicalBlockAddress,
+        final long initLength) {
 
-        super(initCaller, referenceSession);
+        super(referenceSession);
         buffer = dst;
         logicalBlockAddress = initLogicalBlockAddress;
         length = initLength;
@@ -283,8 +264,6 @@ final class ReadTask extends IOTask {
      * Constructor to create a new, empty <code>ReadTask</code> instance, which
      * is initialized with the given values.
      * 
-     * @param initCaller
-     *            The invoking caller of this task.
      * @param referenceSession
      *            The session, where this task is executed in.
      * @param dst
@@ -294,10 +273,10 @@ final class ReadTask extends IOTask {
      * @param initLength
      *            length of buffer
      */
-    ReadTask(final Object initCaller, final Session referenceSession, final ByteBuffer dst,
-        final int initLogicalBlockAddress, final long initLength) {
+    ReadTask(final Session referenceSession, final ByteBuffer dst, final int initLogicalBlockAddress,
+        final long initLength) {
 
-        super(initCaller, referenceSession, dst, initLogicalBlockAddress, initLength);
+        super(referenceSession, dst, initLogicalBlockAddress, initLength);
     }
 
     // --------------------------------------------------------------------------
@@ -333,8 +312,7 @@ final class WriteTask extends IOTask {
      * Constructor to create a new, empty <code>WriteTask</code> instance, which
      * is initialized with the given values.
      * 
-     * @param initCaller
-     *            The invoking caller of this task.
+     * 
      * @param referenceSession
      *            The session, where this task is executed in.
      * @param src
@@ -344,10 +322,10 @@ final class WriteTask extends IOTask {
      * @param initLength
      *            length of buffer
      */
-    WriteTask(final Object initCaller, final Session referenceSession, final ByteBuffer src,
-        final int initLogicalBlockAddress, final long initLength) {
+    WriteTask(final Session referenceSession, final ByteBuffer src, final int initLogicalBlockAddress,
+        final long initLength) {
 
-        super(initCaller, referenceSession, src, initLogicalBlockAddress, initLength);
+        super(referenceSession, src, initLogicalBlockAddress, initLength);
     }
 
     // --------------------------------------------------------------------------

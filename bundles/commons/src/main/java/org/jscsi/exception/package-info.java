@@ -26,7 +26,7 @@
  */
 
 /**
- * Handling exception within jSCSI in a centralized manner.
+ * This package contains all exceptions, which can occur by this iSCSI (RFC 3720) implementation.
  * 
  * @author Sebastian Graf, University of Konstanz
  */

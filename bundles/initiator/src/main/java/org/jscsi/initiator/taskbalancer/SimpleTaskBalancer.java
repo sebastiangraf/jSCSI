@@ -27,8 +27,9 @@
 package org.jscsi.initiator.taskbalancer;
 
 import java.util.concurrent.LinkedBlockingQueue;
+
+import org.jscsi.exception.NoSuchConnectionException;
 import org.jscsi.initiator.connection.Connection;
-import org.jscsi.parser.exception.NoSuchConnectionException;
 
 /**
  * <h1>SimpleLoadBalancer</h1>

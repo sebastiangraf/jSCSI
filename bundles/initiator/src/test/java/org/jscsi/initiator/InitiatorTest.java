@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2011, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,13 +28,14 @@ package org.jscsi.initiator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.nio.ByteBuffer;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-import org.jscsi.initiator.Configuration;
-import org.jscsi.initiator.Initiator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -109,8 +110,8 @@ public final class InitiatorTest {
     @Ignore("Not working on real xen1, size differs")
     public final void testReadCapacity() throws Exception {
 
-        assertEquals((long) 53372737, initiator.getCapacity(TARGET_DRIVE_NAME));
-        assertEquals((long) 512, initiator.getBlockSize(TARGET_DRIVE_NAME));
+        assertEquals((long)53372737, initiator.getCapacity(TARGET_DRIVE_NAME));
+        assertEquals((long)512, initiator.getBlockSize(TARGET_DRIVE_NAME));
     }
 
     /**
@@ -123,12 +124,10 @@ public final class InitiatorTest {
     @Test
     public final void testClearing() throws Exception {
 
-        initiator.write(this, TARGET_DRIVE_NAME, writeBuffer,
-                LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
+        initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
         writeBuffer.flip();
 
-        initiator.read(this, TARGET_DRIVE_NAME, readBuffer,
-                LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
+        initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
         readBuffer.flip();
 
         assertTrue(writeBuffer.equals(readBuffer));
@@ -144,10 +143,8 @@ public final class InitiatorTest {
     @Test
     public final void testWriteRead() throws Exception {
 
-        initiator.write(this, TARGET_DRIVE_NAME, writeBuffer,
-                LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
-        initiator.read(this, TARGET_DRIVE_NAME, readBuffer,
-                LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
+        initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
+        initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
 
         writeBuffer.flip();
         readBuffer.flip();
@@ -165,13 +162,10 @@ public final class InitiatorTest {
     @Test
     public final void testMultipleReads() throws Exception {
 
-        initiator.read(this, TARGET_DRIVE_NAME, readBuffer,
-                LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
+        initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
 
-        final ByteBuffer readBuffer2 = ByteBuffer.allocate(readBuffer
-                .capacity());
-        initiator.read(this, TARGET_DRIVE_NAME, readBuffer2,
-                LOGICAL_BLOCK_ADDRESS, readBuffer2.remaining());
+        final ByteBuffer readBuffer2 = ByteBuffer.allocate(readBuffer.capacity());
+        initiator.read(TARGET_DRIVE_NAME, readBuffer2, LOGICAL_BLOCK_ADDRESS, readBuffer2.remaining());
 
         readBuffer.flip();
         readBuffer2.flip();
@@ -190,10 +184,8 @@ public final class InitiatorTest {
     public final void testPartialRead() throws Exception {
 
         // FIXME: implement test case
-        initiator
-                .read(this, TARGET_DRIVE_NAME, readBuffer,
-                        LOGICAL_BLOCK_ADDRESS,
-                        Math.min(1, readBuffer.remaining() / 10));
+        initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, Math.min(1, readBuffer
+            .remaining() / 10));
     }
 
     /**
@@ -223,19 +215,22 @@ public final class InitiatorTest {
     public final void testMultipleWrites() throws Exception {
 
         // FIXME: Useful test case?
-        initiator.write(this, TARGET_DRIVE_NAME, writeBuffer,
-                LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
+        initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
 
         writeBuffer.clear();
-        initiator.write(this, TARGET_DRIVE_NAME, writeBuffer,
-                LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
+        initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
     }
 
     @Ignore
     public final void testMultiThreading() throws Exception {
 
-        new Thread(new MultiThreadingTest(initiator)).start();
-        new Thread(new MultiThreadingTest(initiator)).start();
+        final ExecutorService service = Executors.newCachedThreadPool();
+        final Future<Void> get1 = service.submit(new MultiThreadingTest(initiator));
+        final Future<Void> get2 = service.submit(new MultiThreadingTest(initiator));
+        service.shutdown();
+
+        get1.get();
+        get2.get();
 
     }
 
@@ -244,7 +239,7 @@ public final class InitiatorTest {
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
 
-    private final class MultiThreadingTest implements Runnable {
+    private final class MultiThreadingTest implements Callable<Void> {
 
         // --------------------------------------------------------------------------
         // --------------------------------------------------------------------------
@@ -268,22 +263,17 @@ public final class InitiatorTest {
         // --------------------------------------------------------------------------
 
         /** {@inheritDoc} */
-        public void run() {
+        public Void call() throws Exception {
 
-            try {
-                final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-                Random randomGenerator = new Random();
-                randomGenerator.nextBytes(buffer.array());
+            final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+            Random randomGenerator = new Random();
+            randomGenerator.nextBytes(buffer.array());
 
-                for (int i = 0; i < NUMBER_OF_ITERATIONS; i++) {
-                    MTInitiator.write(InitiatorTest.MultiThreadingTest.this,
-                            TARGET_DRIVE_NAME, buffer,
-                            randomGenerator.nextInt(), buffer.remaining());
-                    buffer.rewind();
-                }
-            } catch (Exception e) {
-                fail();
+            for (int i = 0; i < NUMBER_OF_ITERATIONS; i++) {
+                MTInitiator.write(TARGET_DRIVE_NAME, buffer, randomGenerator.nextInt(), buffer.remaining());
+                buffer.rewind();
             }
+            return null;
         }
 
     }

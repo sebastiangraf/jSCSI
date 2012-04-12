@@ -28,9 +28,9 @@ package org.jscsi.initiator.connection.state;
 
 import java.io.IOException;
 
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.initiator.connection.Connection;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.logout.LogoutResponse;
 import org.jscsi.parser.logout.LogoutResponseParser;
 

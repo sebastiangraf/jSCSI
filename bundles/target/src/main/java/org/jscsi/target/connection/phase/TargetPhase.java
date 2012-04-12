@@ -5,8 +5,8 @@ import java.security.DigestException;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.settings.SettingsException;
 

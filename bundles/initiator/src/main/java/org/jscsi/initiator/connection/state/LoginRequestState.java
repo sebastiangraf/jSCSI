@@ -29,6 +29,7 @@ package org.jscsi.initiator.connection.state;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.initiator.connection.Connection;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -39,7 +40,6 @@ import org.jscsi.parser.datasegment.OperationalTextKey;
 import org.jscsi.parser.datasegment.SettingsMap;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.parser.datasegment.IDataSegmentIterator.IDataSegmentChunk;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.login.ISID;
 import org.jscsi.parser.login.LoginRequestParser;
 import org.jscsi.parser.login.LoginStage;

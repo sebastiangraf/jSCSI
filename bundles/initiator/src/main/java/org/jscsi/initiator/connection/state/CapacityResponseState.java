@@ -26,12 +26,12 @@
  */
 package org.jscsi.initiator.connection.state;
 
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.initiator.connection.Connection;
 import org.jscsi.initiator.connection.TargetCapacityInformations;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.data.DataInParser;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIStatus;
 

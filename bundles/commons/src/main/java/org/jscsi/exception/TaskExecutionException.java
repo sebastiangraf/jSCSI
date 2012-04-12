@@ -19,7 +19,7 @@ public class TaskExecutionException extends Exception {
     private static final long serialVersionUID = -4387318563121826377L;
 
     /**
-     * Simple constructor.
+     * Simple constructor to handle {@link ExecutionException}s.
      * 
      * @param exc
      *            to be encapsulated
@@ -27,4 +27,15 @@ public class TaskExecutionException extends Exception {
     public TaskExecutionException(final ExecutionException exc) {
         super(exc);
     }
+
+    /**
+     * Simple constructor to handle {@link InterruptedException}s.
+     * 
+     * @param exc
+     *            to be encapsulated
+     */
+    public TaskExecutionException(final InterruptedException exc) {
+        super(exc);
+    }
+
 }

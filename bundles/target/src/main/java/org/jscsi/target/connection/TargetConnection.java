@@ -8,8 +8,8 @@ import java.util.concurrent.Callable;
 import javax.naming.OperationNotSupportedException;
 
 import org.apache.log4j.Logger;
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.connection.phase.TargetLoginPhase;
 import org.jscsi.target.connection.phase.TargetPhase;

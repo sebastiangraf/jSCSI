@@ -24,17 +24,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.jscsi.parser.exception;
+package org.jscsi.exception;
 
 /**
- * <h1>OperationalTextKeyException</h1>
+ * <h1>NoSuchConnectionException</h1>
  * <p/>
- * This exception is thrown when an error with an
- * <code>OperationalTextKey</code> occurs.
+ * This exception is thrown when no connection is open.
  * 
  * @author Volker Wildi
  */
-public class OperationalTextKeyException extends InternetSCSIException {
+public final class NoSuchConnectionException extends InternetSCSIException {
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -48,7 +47,7 @@ public class OperationalTextKeyException extends InternetSCSIException {
     /**
      * Constructs a new exception with null as its detail message.
      */
-    public OperationalTextKeyException() {
+    public NoSuchConnectionException() {
 
         super();
     }
@@ -60,18 +59,18 @@ public class OperationalTextKeyException extends InternetSCSIException {
      *            the detail message. The detail message is saved for later
      *            retrieval by the Throwable.getMessage() method.
      */
-    public OperationalTextKeyException(final String msg) {
+    public NoSuchConnectionException(final String msg) {
 
         super(msg);
     }
 
     /**
-     * Constructs a new exception with the specified exception.
+     * Constructs a new exception with the specified detail message.
      * 
      * @param e
-     *            the detail exception.
+     *            the Exception to be wrappteed
      */
-    public OperationalTextKeyException(final Exception e) {
+    public NoSuchConnectionException(final Exception e) {
 
         super(e);
     }
@@ -80,4 +79,5 @@ public class OperationalTextKeyException extends InternetSCSIException {
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
+
 }

@@ -30,7 +30,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.utils.Utils;
 
 /**

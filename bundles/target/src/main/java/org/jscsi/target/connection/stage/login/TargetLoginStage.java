@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.DigestException;
 
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.login.LoginRequestParser;
 import org.jscsi.parser.login.LoginStage;
 import org.jscsi.parser.login.LoginStatus;

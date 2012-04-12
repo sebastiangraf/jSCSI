@@ -6,9 +6,9 @@ import java.security.DigestException;
 import javax.naming.OperationNotSupportedException;
 
 import org.apache.log4j.Logger;
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.stage.fullfeature.FormatUnitStage;

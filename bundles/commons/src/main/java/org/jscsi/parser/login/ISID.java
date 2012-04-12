@@ -30,8 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.Constants;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.utils.Utils;
 
 /**
