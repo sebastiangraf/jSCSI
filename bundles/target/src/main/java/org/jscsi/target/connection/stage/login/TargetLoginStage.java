@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.DigestException;
 
-import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.login.LoginRequestParser;
 import org.jscsi.parser.login.LoginStage;
 import org.jscsi.parser.login.LoginStatus;
-import org.jscsi.target.Target;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetPduFactory;
 import org.jscsi.target.connection.phase.TargetLoginPhase;
@@ -84,9 +83,7 @@ public abstract class TargetLoginStage extends TargetStage {
      *            the stage number used for describing this stage in Login
      *            Request PDUs
      */
-    public TargetLoginStage(
-
-    final TargetLoginPhase targetLoginPhase, final LoginStage stageNumber) {
+    public TargetLoginStage(final TargetLoginPhase targetLoginPhase, final LoginStage stageNumber) {
         super(targetLoginPhase);
         this.stageNumber = stageNumber;
         negotiator = connection.getConnectionSettingsNegotiator();
@@ -156,7 +153,7 @@ public abstract class TargetLoginStage extends TargetStage {
 
         // begin sequence
         int sequenceLength = 1;
-        while (sequenceLength <= Target.config
+        while (sequenceLength <= session.getTargetServer().getConfig()
                 .getInMaxRecvTextPduSequenceLength()) {
             bhs = pdu.getBasicHeaderSegment();
             parser = (LoginRequestParser) bhs.getParser();

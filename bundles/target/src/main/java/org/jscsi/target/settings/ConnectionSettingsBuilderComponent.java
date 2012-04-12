@@ -20,6 +20,11 @@ import javax.naming.OperationNotSupportedException;
 final class ConnectionSettingsBuilderComponent {
 
     /**
+     * The <code>TargetName</code> parameter.
+     */
+    String targetName;
+    
+    /**
      * The <code>DataDigest</code> parameter.
      */
     String dataDigest;
@@ -53,7 +58,7 @@ final class ConnectionSettingsBuilderComponent {
      * The <code>OFMarkInt</code> parameter.
      */
     Integer ofMarkInt;
-
+    
     /**
      * The {@link ConnectionSettingsBuilderComponent} constructor. The passed
      * {@link Collection} must contain all connection-specific {@link Entry}
@@ -66,6 +71,8 @@ final class ConnectionSettingsBuilderComponent {
      */
     ConnectionSettingsBuilderComponent(final Collection<Entry> entries) {
         try {
+            targetName = SettingsNegotiator.getEntry(TextKeyword.TARGET_NAME, 
+                    entries).getStringValue();
             dataDigest = SettingsNegotiator.getEntry(TextKeyword.DATA_DIGEST,
                     entries).getStringValue();
             headerDigest = SettingsNegotiator.getEntry(

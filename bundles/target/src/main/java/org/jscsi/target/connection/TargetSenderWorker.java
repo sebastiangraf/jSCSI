@@ -6,12 +6,12 @@ import java.nio.channels.SocketChannel;
 import java.security.DigestException;
 
 import org.apache.log4j.Logger;
-import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.InitiatorMessageParser;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.ProtocolDataUnitFactory;
 import org.jscsi.parser.TargetMessageParser;
+import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.target.settings.Settings;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.settings.TextKeyword;

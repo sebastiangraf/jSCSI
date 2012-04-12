@@ -3,8 +3,8 @@ package org.jscsi.target.connection.stage;
 import java.io.IOException;
 import java.security.DigestException;
 
-import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.connection.phase.TargetPhase;

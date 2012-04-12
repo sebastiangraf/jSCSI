@@ -4,17 +4,16 @@ import java.io.IOException;
 import java.security.DigestException;
 
 import org.apache.log4j.Logger;
-import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.scsi.IResponseData;
 import org.jscsi.target.scsi.cdb.InquiryCDB;
-import org.jscsi.target.scsi.inquiry.DeviceIdentificationVpdPage;
+import org.jscsi.target.scsi.inquiry.PageCode.VitalProductDataPageName;
 import org.jscsi.target.scsi.inquiry.StandardInquiryData;
 import org.jscsi.target.scsi.inquiry.SupportedVpdPages;
-import org.jscsi.target.scsi.inquiry.PageCode.VitalProductDataPageName;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.util.Debug;
@@ -100,7 +99,7 @@ public class InquiryStage extends TargetFullFeatureStage {
                     responseData = SupportedVpdPages.getInstance();
                     break;
                 case DEVICE_IDENTIFICATION:
-                    responseData = DeviceIdentificationVpdPage.getInstance();
+                    responseData = session.getTargetServer().getDeviceIdentificationVpdPage();
                     break;
                 default:
                     // The initiator must not request unsupported mode pages.

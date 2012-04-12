@@ -1,6 +1,6 @@
 package org.jscsi.target.settings;
 
-import org.jscsi.target.Target;
+import org.jscsi.target.TargetServer;
 
 /**
  * An {@link Entry} sub-class used for negotiating integer parameters which
@@ -75,12 +75,12 @@ public final class NumericalRangeEntry extends Entry {
     }
 
     @Override
-    protected Object parseOffer(String values) {
+    protected Object parseOffer(TargetServer target, String values) {
         // expected format: "1234~5678"
 
         NumericalValueRange range = NumericalValueRange
                 .parseNumericalValueRange(values);
-        if (range == null && Target.config.getAllowSloppyNegotiation()) {
+        if (range == null && target.getConfig().getAllowSloppyNegotiation()) {
             /*
              * The format was violated.
              * 

@@ -2,6 +2,7 @@ package org.jscsi.target.scsi.inquiry;
 
 import java.nio.ByteBuffer;
 
+import org.jscsi.target.TargetServer;
 import org.jscsi.target.scsi.IResponseData;
 import org.jscsi.target.util.ReadWrite;
 
@@ -45,16 +46,6 @@ public class DeviceIdentificationVpdPage implements IResponseData {
     private static final int PAGE_LENGTH_FIELD_INDEX = 2;
 
     /**
-     * A list of all contained IDENTIFICATION DESCRIPTORs.
-     */
-    private IdentificationDescriptor[] identificationDescriptors;
-
-    /**
-     * The {@link DeviceIdentificationVpdPage} singleton.
-     */
-    private static DeviceIdentificationVpdPage instance;
-
-    /**
      * The joint content of the PERIPHERAL QUALIFIER and the PERIPHERAL DEVICE
      * TYPE fields with a total length of one byte.
      * <p>
@@ -76,38 +67,14 @@ public class DeviceIdentificationVpdPage implements IResponseData {
      */
     private final byte pageCode = (byte) 0x83;
 
-    private DeviceIdentificationVpdPage() {
-        /*
-         * For each logical unit that is not a well known logical unit, the
-         * Device Identification VPD page shall include at least one
-         * identification descriptor in which a logical unit name (see SAM-3) is
-         * indicated.
-         */
-        final ProtocolIdentifier protocolIdentifier = ProtocolIdentifier.INTERNET_SCSI;
-        final CodeSet codeSet = CodeSet.UTF8_CODES;
-        final boolean protocolIdentifierValid = true;
-        final Association association = Association.SCSI_TARGET_DEVICE;
-        final IdentifierType identifierType = IdentifierType.SCSI_NAME_STRING;
+    private TargetServer target;
+    private IdentificationDescriptor[] identificationDescriptors = new IdentificationDescriptor[0];
+    
+    public DeviceIdentificationVpdPage(TargetServer target) {
+        this.target = target;
 
-        final IdentificationDescriptor identDescriptor = new IdentificationDescriptor(
-                protocolIdentifier, codeSet, protocolIdentifierValid,
-                association, identifierType,
-                ScsiNameStringIdentifier.getInstance());
-
-        identificationDescriptors = new IdentificationDescriptor[1];
-        identificationDescriptors[0] = identDescriptor;
     }
 
-    /**
-     * Returns the singleton.
-     * 
-     * @return the one and only {@link DeviceIdentificationVpdPage} object.
-     */
-    public static DeviceIdentificationVpdPage getInstance() {
-        if (instance == null)
-            instance = new DeviceIdentificationVpdPage();
-        return instance;
-    }
 
     /**
      * Returns the combined length of all contained IDENTIFICATION DESCRIPTORs.
@@ -127,6 +94,31 @@ public class DeviceIdentificationVpdPage implements IResponseData {
         byteBuffer.position(index);
         byteBuffer.put(peripheralQualifierAndPeripheralDeviceType);
         byteBuffer.put(pageCode);
+        
+        /*
+         * For each logical unit that is not a well known logical unit, the
+         * Device Identification VPD page shall include at least one
+         * identification descriptor in which a logical unit name (see SAM-3) is
+         * indicated.
+         */
+        final ProtocolIdentifier protocolIdentifier = ProtocolIdentifier.INTERNET_SCSI;
+        final CodeSet codeSet = CodeSet.UTF8_CODES;
+        final boolean protocolIdentifierValid = true;
+        final Association association = Association.SCSI_TARGET_DEVICE;
+        final IdentifierType identifierType = IdentifierType.SCSI_NAME_STRING;
+
+        String [] targetNames = target.getTargetNames();
+        identificationDescriptors = new IdentificationDescriptor[targetNames.length];
+        for (int curTargetNum = 0; curTargetNum < targetNames.length; curTargetNum++)
+        {
+            final IdentificationDescriptor identDescriptor = new IdentificationDescriptor(
+                    protocolIdentifier, codeSet, protocolIdentifierValid,
+                    association, identifierType,
+                    new ScsiNameStringIdentifier(targetNames[curTargetNum]));
+
+
+            identificationDescriptors[curTargetNum] = identDescriptor;
+        }
         ReadWrite.writeInt(getPageLength(),// value
                 byteBuffer,// buffer
                 index + PAGE_LENGTH_FIELD_INDEX);// index

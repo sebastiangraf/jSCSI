@@ -1,5 +1,7 @@
 package org.jscsi.target.settings;
 
+import org.jscsi.target.TargetServer;
+
 /**
  * This {@link Entry} sub-class is used for managing and negotiation String
  * parameters. The <i>value</i> part of the corresponding <i>key-value</i> pairs
@@ -57,7 +59,7 @@ public final class StringEntry extends Entry {
     }
 
     @Override
-    protected Object parseOffer(String values) {
+    protected Object parseOffer(TargetServer target, String values) {
 
         // receives a comma-separated list of string values (or a single value)
         // enforce that declaration consists of exactly one value

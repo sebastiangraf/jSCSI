@@ -4,15 +4,15 @@ import java.io.IOException;
 import java.security.DigestException;
 
 import org.apache.log4j.Logger;
-import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.AbstractMessageParser;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.data.DataOutParser;
+import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIStatus;
-import org.jscsi.target.Target;
+import org.jscsi.target.TargetServer;
 import org.jscsi.target.connection.TargetPduFactory;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.scsi.ScsiResponseDataSegment;
@@ -103,7 +103,7 @@ public final class WriteStage extends ReadOrWriteStage {
         final long logicalBlockAddress = cdb.getLogicalBlockAddress();
 
         // transform to from block units to byte units
-        final int blockSize = Target.storageModule.getBlockSizeInBytes();
+        final int blockSize = session.getStorageModule().getBlockSizeInBytes();
         final int transferLengthInBytes = transferLength * blockSize;
         long storageIndex = logicalBlockAddress * blockSize;
 
@@ -134,7 +134,7 @@ public final class WriteStage extends ReadOrWriteStage {
         if (immediateData && bhs.getDataSegmentLength() > 0) {
             final byte[] immediateDataArray = pdu.getDataSegment().array();
 
-            Target.storageModule.write(immediateDataArray, storageIndex);
+            session.getStorageModule().write(immediateDataArray, storageIndex);
             bytesReceived = immediateDataArray.length;
 
             if (LOGGER.isDebugEnabled())
@@ -160,7 +160,7 @@ public final class WriteStage extends ReadOrWriteStage {
                 final DataOutParser dataOutParser = (DataOutParser) bhs
                         .getParser();
 
-                Target.storageModule.write(pdu.getDataSegment().array(),// source
+                session.getStorageModule().write(pdu.getDataSegment().array(),// source
                         storageIndex + dataOutParser.getBufferOffset());// destination
                                                                         // index
                 bytesReceived += bhs.getDataSegmentLength();
@@ -185,7 +185,7 @@ public final class WriteStage extends ReadOrWriteStage {
 
                 // send R2T
                 pdu = TargetPduFactory.createReadyToTransferPdu(0,// logicalUnitNumber
-                        initiatorTaskTag, Target.getNextTargetTransferTag(),// targetTransferTag
+                        initiatorTaskTag, TargetServer.getNextTargetTransferTag(),// targetTransferTag
                         readyToTransferSequenceNumber++, bytesReceived,// bufferOffset
                         desiredDataTransferLength);
 
@@ -206,7 +206,7 @@ public final class WriteStage extends ReadOrWriteStage {
                     final DataOutParser dataOutParser = (DataOutParser) bhs
                             .getParser();
 
-                    Target.storageModule.write(pdu.getDataSegment().array(),// source
+                    session.getStorageModule().write(pdu.getDataSegment().array(),// source
                             storageIndex + dataOutParser.getBufferOffset());// destination
                                                                             // index
                     bytesReceivedThisCycle += bhs.getDataSegmentLength();

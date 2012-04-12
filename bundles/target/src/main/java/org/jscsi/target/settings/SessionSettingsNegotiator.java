@@ -1,6 +1,7 @@
 package org.jscsi.target.settings;
 
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
 
 import javax.naming.OperationNotSupportedException;
 

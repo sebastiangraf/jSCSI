@@ -1,6 +1,5 @@
 package org.jscsi.target.connection.stage.fullfeature;
 
-import org.jscsi.target.Target;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.scsi.cdb.CommandDescriptorBlock;
 import org.jscsi.target.scsi.cdb.ReadOrWriteCdb;
@@ -31,7 +30,7 @@ public abstract class ReadOrWriteStage extends TargetFullFeatureStage {
      */
     protected void checkOverAndUnderflow(final ReadOrWriteCdb cdb) {
         // check if requested blocks are out of bounds
-        final int boundsCheck = Target.storageModule.checkBounds(
+        final int boundsCheck = session.getStorageModule().checkBounds(
                 cdb.getLogicalBlockAddress(), cdb.getTransferLength());
         // add illegal field pointer, or not
         if (boundsCheck == 1)

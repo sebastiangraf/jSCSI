@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.security.DigestException;
 
 import org.apache.log4j.Logger;
-import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSICommandParser;
-import org.jscsi.target.Target;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.scsi.cdb.ReadCapacity10Cdb;
 import org.jscsi.target.scsi.cdb.ReadCapacity16Cdb;
@@ -63,7 +62,7 @@ public final class ReadCapacityStage extends TargetFullFeatureStage {
 
         // make sure that the LOGICAL BLOCK ADDRESS field is valid and send
         // appropriate response
-        if (Target.storageModule.checkBounds(cdb.getLogicalBlockAddress(), 0) != 0) {
+        if (session.getStorageModule().checkBounds(cdb.getLogicalBlockAddress(), 0) != 0) {
             // invalid, log error, send error PDU, and return
             LOGGER.error("encountered " + cdb.getClass()
                     + " in ReadCapacityStage with "
@@ -88,12 +87,12 @@ public final class ReadCapacityStage extends TargetFullFeatureStage {
             ReadCapacityParameterData parameterData;
             if (cdb instanceof ReadCapacity10Cdb)
                 parameterData = new ReadCapacity10ParameterData(
-                        Target.storageModule.getSizeInBlocks(),// returnedLogicalBlockAddress
-                        Target.storageModule.getBlockSizeInBytes());// logicalBlockLengthInBytes
+                        session.getStorageModule().getSizeInBlocks(),// returnedLogicalBlockAddress
+                        session.getStorageModule().getBlockSizeInBytes());// logicalBlockLengthInBytes
             else
                 parameterData = new ReadCapacity16ParameterData(
-                        Target.storageModule.getSizeInBlocks(),// returnedLogicalBlockAddress
-                        Target.storageModule.getBlockSizeInBytes());// logicalBlockLengthInBytes
+                        session.getStorageModule().getSizeInBlocks(),// returnedLogicalBlockAddress
+                        session.getStorageModule().getBlockSizeInBytes());// logicalBlockLengthInBytes
 
             sendResponse(bhs.getInitiatorTaskTag(),// initiatorTaskTag,
                     parser.getExpectedDataTransferLength(),// expectedDataTransferLength,

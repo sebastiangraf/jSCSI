@@ -3,11 +3,11 @@ package org.jscsi.target.connection.stage.fullfeature;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSIResponseParser;
-import org.jscsi.parser.scsi.SCSIStatus;
 import org.jscsi.parser.scsi.SCSIResponseParser.ServiceResponse;
+import org.jscsi.parser.scsi.SCSIStatus;
 import org.jscsi.target.connection.TargetPduFactory;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.connection.stage.TargetStage;
@@ -20,7 +20,6 @@ import org.jscsi.target.scsi.sense.FixedFormatSenseData;
 import org.jscsi.target.scsi.sense.SenseKey;
 import org.jscsi.target.scsi.sense.information.FourByteInformation;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
-import org.jscsi.target.settings.SettingsException;
 
 /**
  * This class is an abstract super-class for stages of the

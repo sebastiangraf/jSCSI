@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.security.DigestException;
 
 import org.apache.log4j.Logger;
-import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSICommandParser;
-import org.jscsi.target.Target;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.scsi.cdb.ModeSense6Cdb;
 import org.jscsi.target.scsi.modeSense.CachingModePage;
@@ -85,8 +84,8 @@ public final class ModeSenseStage extends TargetFullFeatureStage {
             final ModeParameterListBuilder builder = new ModeParameterListBuilder(
                     HeaderType.MODE_PARAMETER_HEADER_6);
             builder.setLogicalBlockDescriptors(new ShortLogicalBlockDescriptor(
-                    Target.storageModule.getSizeInBlocks(),// numberOfLogicalBlocks
-                    Target.storageModule.getBlockSizeInBytes()));// logicalBlockLength
+                    session.getStorageModule().getSizeInBlocks(),// numberOfLogicalBlocks
+                    session.getStorageModule().getBlockSizeInBytes()));// logicalBlockLength
             builder.setModePages(modePages);
             ModeParameterList modeParameterList = ModeParameterList
                     .build(builder);

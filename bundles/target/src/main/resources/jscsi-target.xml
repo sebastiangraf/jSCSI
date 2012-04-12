@@ -3,13 +3,26 @@
 <configuration xmlns="http://www.jscsi.org/2010-04"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.jscsi.org/2010-04 jscsi-target.xsd">
-	
-	<TargetName>iqn.2010-04.local-test:disk-1</TargetName>
-	<TargetAlias>jSCSI Target</TargetAlias>
-	<Port>3260</Port>
-	<StorageFile>
-		<FilePath>storage.dat</FilePath>
-		 <FileLength>0.75</FileLength>
-	</StorageFile>
-	<AllowSloppyNegotiation>true</AllowSloppyNegotiation>
+
+	<TargetList>
+		<Target>
+			<TargetName>iqn.2010-04.local-test:disk-1</TargetName>
+			<TargetAlias>jSCSI Target</TargetAlias>
+			<StorageFile>
+				<FilePath>storage1.dat</FilePath>
+			</StorageFile>
+		</Target>
+		<Target>
+			<TargetName>iqn.2010-04.local-test:disk-2</TargetName>
+			<TargetAlias>jSCSI Target</TargetAlias>
+			<StorageFile>
+				<FilePath>storage2.dat</FilePath>
+			</StorageFile>
+		</Target>
+	</TargetList>
+	<GlobalConfig>
+		<Port>3260</Port>
+		<AllowSloppyNegotiation>true</AllowSloppyNegotiation>
+	</GlobalConfig>
 </configuration>
+

@@ -2,16 +2,11 @@ package org.jscsi.target.scsi.inquiry;
 
 import java.nio.ByteBuffer;
 
-import org.jscsi.target.Target;
-
 /**
  * The null-terminated, null-padded (see 4.4.2) SCSI NAME STRING field contains
  * a UTF-8 format string. The number of bytes in the SCSI NAME STRING field
  * (i.e., the value in the IDENTIFIER LENGTH field) shall be no larger than 256
  * and shall be a multiple of four.
- * <p>
- * This class uses the singleton pattern, since the SCSI NAME STRING identifier
- * will never change.
  * 
  * @author Andreas Ergenzinger
  */
@@ -21,11 +16,6 @@ public class ScsiNameStringIdentifier extends Identifier {
      * The maximum {@link #size()} of this {@link Identifier}.
      */
     private static final int MAX_SIZE = 256;
-
-    /**
-     * The singleton.
-     */
-    private static ScsiNameStringIdentifier instance;
 
     /**
      * The identifying string.
@@ -43,7 +33,7 @@ public class ScsiNameStringIdentifier extends Identifier {
      */
     private static final String logicalUnitNameExtension = "493f51ba986f9800";
 
-    private ScsiNameStringIdentifier() {
+    public ScsiNameStringIdentifier(String targetName) {
 
         /*
          * The SCSI NAME STRING field starts with either:<br> ...<br> c) The
@@ -56,19 +46,8 @@ public class ScsiNameStringIdentifier extends Identifier {
          * ",L,0x" concatenated with 16 hexadecimal digits for the logical unit
          * name extension.
          */
-        nameString = Target.config.getTargetName() + ",L,0x"
+        nameString = targetName + ",L,0x"
                 + logicalUnitNameExtension;
-    }
-
-    /**
-     * Returns the one and only {@link ScsiNameStringIdentifier} object.
-     * 
-     * @return the one and only {@link ScsiNameStringIdentifier} object
-     */
-    public static ScsiNameStringIdentifier getInstance() {
-        if (instance == null)
-            instance = new ScsiNameStringIdentifier();
-        return instance;
     }
 
     public void serialize(ByteBuffer byteBuffer, int index) {

@@ -6,10 +6,10 @@ import java.security.DigestException;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.target.Target;
+import org.jscsi.parser.exception.InternetSCSIException;
+import org.jscsi.target.TargetServer;
 import org.jscsi.target.connection.TargetPduFactory;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.settings.SettingsException;
@@ -95,38 +95,51 @@ public final class TextNegotiationStage extends TargetFullFeatureStage {
                  */
                 final boolean normal = session.isNormalSession();
                 final boolean sendTargetName = // see upper table
-                !normal && sendTargetsValue.equals(TextKeyword.ALL);
+                        !normal && sendTargetsValue.equals(TextKeyword.ALL);
                 final boolean sendTargetAddress = // see upper table
-                (!normal && sendTargetsValue.equals(TextKeyword.ALL))
-                        || (sendTargetsValue.equals(Target.config
-                                .getTargetName()))
-                        || (normal && sendTargetsValue.length() == 0);
+                        (!normal && sendTargetsValue.equals(TextKeyword.ALL))
+                            || (session.getTargetServer().isValidTargetName(sendTargetsValue))
+                            || (normal && sendTargetsValue.length() == 0);
 
                 /*
                  * A target record consists of a TargetName key-value pair
                  * followed by one or more TargetAddress key-value pairs for
                  * that TargetName.
                  * 
-                 * Since there is just one target, there will only be one target
-                 * record.
-                 * 
                  * (table above takes precedence to these definitions)
                  */
 
                 // add TargetName
                 if (sendTargetName)
-                    responseKeyValuePairs.add(TextParameter.toKeyValuePair(
-                            TextKeyword.TARGET_NAME,
-                            Target.config.getTargetName()));
-                // add TargetAddress
-                if (sendTargetAddress)
-                    responseKeyValuePairs.add(TextParameter.toKeyValuePair(
-                            TextKeyword.TARGET_ADDRESS,
-                            Target.config.getTargetAddress() + // domain
-                                    TextKeyword.COLON + // :
-                                    Target.config.getPort() + // port
-                                    TextKeyword.COMMA + // ,
-                                    Target.config.getTargetPortalGroupTag())); // groupTag)
+                {
+                    for (String curTargetName:session.getTargetServer().getTargetNames())
+                    {
+                        responseKeyValuePairs.add(TextParameter.toKeyValuePair(
+                                TextKeyword.TARGET_NAME,curTargetName));
+                        // add TargetAddress
+                        if (sendTargetAddress)
+                            responseKeyValuePairs.add(TextParameter.toKeyValuePair(
+                                    TextKeyword.TARGET_ADDRESS,
+                                    session.getTargetServer().getConfig().getTargetAddress() + // domain
+                                            TextKeyword.COLON + // :
+                                            session.getTargetServer().getConfig().getPort() + // port
+                                            TextKeyword.COMMA + // ,
+                                            session.getTargetServer().getConfig().getTargetPortalGroupTag())); // groupTag)
+                    }
+                }
+                else
+                {
+                    // We're here if they sent us a target name and are asking for the address (I think)
+                    if (sendTargetAddress)
+                        responseKeyValuePairs.add(TextParameter.toKeyValuePair(
+                                TextKeyword.TARGET_ADDRESS,
+                                session.getTargetServer().getConfig().getTargetAddress() + // domain
+                                        TextKeyword.COLON + // :
+                                        session.getTargetServer().getConfig().getPort() + // port
+                                        TextKeyword.COMMA + // ,
+                                        session.getTargetServer().getConfig().getTargetPortalGroupTag())); // groupTag)
+                }
+
 
             } else {
                 // initiator wants to negotiate or declare parameters
@@ -150,7 +163,7 @@ public final class TextNegotiationStage extends TargetFullFeatureStage {
                 .createTextResponsePdu(true,// finalFlag
                         false,// continueFlag
                         0,// logicalUnitNumber
-                        initiatorTaskTag, Target.getNextTargetTransferTag(),// targetTransferTag
+                        initiatorTaskTag, TargetServer.getNextTargetTransferTag(),// targetTransferTag
                         replyDataSegment);// dataSegment
 
         connection.sendPdu(responsePdu);

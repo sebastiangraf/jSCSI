@@ -8,8 +8,9 @@ import java.util.concurrent.Callable;
 import javax.naming.OperationNotSupportedException;
 
 import org.apache.log4j.Logger;
-import org.jscsi.exception.InternetSCSIException;
+import org.jscsi.core.scsi.Status;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.connection.phase.TargetLoginPhase;
 import org.jscsi.target.connection.phase.TargetPhase;
@@ -204,7 +205,7 @@ public final class TargetConnection implements Callable<Void> {
                 if (isLeadingConnection)
                     targetSession.setSessionType(SessionType
                             .getSessionType(settings.getSessionType()));
-
+                targetSession.setTargetName(settings.getTargetName());
                 // *** full feature phase ***
                 phase = new TargetFullFeaturePhase(this);
                 phase.execute();
@@ -212,10 +213,12 @@ public final class TargetConnection implements Callable<Void> {
         } catch (OperationNotSupportedException e) {
             LOGGER.error(e);
         } catch (IOException e) {
+        	e.printStackTrace();
             LOGGER.error(e);
         } catch (InterruptedException e) {
             LOGGER.error(e);
         } catch (InternetSCSIException e) {
+        	e.printStackTrace();
             LOGGER.error(e);
         } catch (DigestException e) {
             LOGGER.error(e);

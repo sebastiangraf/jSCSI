@@ -3,8 +3,8 @@ package org.jscsi.target.scsi.cdb;
 import java.nio.ByteBuffer;
 
 import org.jscsi.target.scsi.inquiry.PageCode;
-import org.jscsi.target.scsi.inquiry.SupportedVpdPages;
 import org.jscsi.target.scsi.inquiry.PageCode.VitalProductDataPageName;
+import org.jscsi.target.scsi.inquiry.SupportedVpdPages;
 import org.jscsi.target.util.BitManip;
 import org.jscsi.target.util.ReadWrite;
 

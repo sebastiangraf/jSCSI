@@ -1,5 +1,7 @@
 package org.jscsi.target.settings;
 
+import org.jscsi.target.TargetServer;
+
 /**
  * An {@link Entry} sub-class for boolean parameters.
  * <p>
@@ -102,7 +104,7 @@ public final class NumericalEntry extends Entry {
     }
 
     @Override
-    protected Object parseOffer(final String values) {
+    protected Object parseOffer(final TargetServer target, final String values) {
         // return an Integer
         return SingleNumericalValue.parseSingleNumericValue(values).getValue();
     }
