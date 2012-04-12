@@ -41,6 +41,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.exception.TaskExecutionException;
 import org.jscsi.initiator.Configuration;
 import org.jscsi.initiator.LinkFactory;
 import org.jscsi.initiator.connection.phase.IPhase;
@@ -528,10 +529,10 @@ public final class Session {
      * 
      * @param caller
      *            The pointer to the calling instance of this method.
-     * @throws Exception
+     * @throws TaskExecutionException
      *             if any error occurs.
      */
-    public final void logout(final Object caller) throws Exception {
+    public final void logout(final Object caller) throws TaskExecutionException {
 
         executeTask(new LogoutTask(caller, this));
     }
@@ -632,20 +633,21 @@ public final class Session {
      *             interrupted status of the current thread is cleared when this
      *             exception is thrown.
      * @throws ExecutionException
+     *             if anything happens while execution
      */
     private final Future<Void> executeTask(final ITask task)
-            throws InterruptedException, ExecutionException {
+            throws TaskExecutionException {
 
-        try {
-            if (task instanceof IOTask) {
-                final Future<Void> returnVal = executor.submit((IOTask) task);
-                return returnVal;
-            } else {
+        if (task instanceof IOTask) {
+            final Future<Void> returnVal = executor.submit((IOTask) task);
+            return returnVal;
+        } else {
+            try {
                 task.call();
-                return null;
+            } catch (final Exception exc) {
+                throw new TaskExecutionException(new ExecutionException(exc));
             }
-        } catch (Exception e) {
-            throw new ExecutionException(e);
+            return null;
         }
         // LOGGER.info("Added a " + task + " to the TaskQueue");
     }

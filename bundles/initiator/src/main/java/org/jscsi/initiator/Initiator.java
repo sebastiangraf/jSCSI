@@ -34,6 +34,7 @@ import java.util.concurrent.Future;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jscsi.exception.TaskExecutionException;
 import org.jscsi.initiator.connection.Session;
 import org.jscsi.parser.exception.NoSuchSessionException;
 
@@ -89,10 +90,12 @@ public final class Initiator {
      * 
      * @param targetName
      *            The name of the iSCSI Target to connect.
-     * @throws Exception
-     *             if any error occurs.
+     * @throws NoSuchSessionException
+     *             if no session was found
+     * 
      */
-    public final void createSession(final String targetName) throws Exception {
+    public final void createSession(final String targetName)
+            throws NoSuchSessionException {
 
         createSession(configuration.getTargetAddress(targetName), targetName);
     }
@@ -109,7 +112,7 @@ public final class Initiator {
      *             if any error occurs.
      */
     public final void createSession(final InetSocketAddress targetAddress,
-            final String targetName) throws Exception {
+            final String targetName) {
 
         final Session session = factory.getSession(configuration, targetName,
                 targetAddress);
@@ -124,10 +127,13 @@ public final class Initiator {
      * 
      * @param targetName
      *            The name of the target, which connection should be closed.
-     * @throws Exception
-     *             if any error occurs.
+     * @throws NoSuchSessionException
+     *             if no session is accessible
+     * @throws TaskExecutionException
+     *             if logout fails.
      */
-    public final void closeSession(final String targetName) throws Exception {
+    public final void closeSession(final String targetName)
+            throws NoSuchSessionException, TaskExecutionException {
 
         getSession(targetName).logout(this);
         // TODO Test the removal from the map.
