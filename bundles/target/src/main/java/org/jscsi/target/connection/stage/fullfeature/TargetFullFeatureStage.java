@@ -3,8 +3,8 @@ package org.jscsi.target.connection.stage.fullfeature;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIResponseParser.ServiceResponse;
 import org.jscsi.parser.scsi.SCSIStatus;

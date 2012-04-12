@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.security.DigestException;
 
 import org.apache.log4j.Logger;
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.parser.exception.InternetSCSIException;
 import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.scsi.cdb.ReadCapacity10Cdb;
