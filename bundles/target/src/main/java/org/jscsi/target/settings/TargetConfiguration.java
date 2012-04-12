@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -17,9 +18,6 @@ import javax.xml.validation.Validator;
 
 import org.jscsi.target.scsi.lun.LogicalUnitNumber;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -29,11 +27,11 @@ import org.xml.sax.SAXException;
  * parameter negotiation. Some of these parameters are provided or can be
  * overridden by the content of an XML file - <code>jscsi-target.xml</code>.
  * 
- * @author Andreas Ergenzinger
+ * @author Andreas Ergenzinger, University of Konstanz
  */
 public class TargetConfiguration {
 
-    protected ArrayList<TargetInfo> targets = new ArrayList<TargetInfo>();
+    protected List<TargetInfo> targets;
 
     /**
      * The <code>TargetAddress</code> parameter (the jSCSI Target's IP address).
@@ -137,44 +135,7 @@ public class TargetConfiguration {
     public TargetConfiguration() throws IOException {
         port = 3260;
         targetAddress = InetAddress.getLocalHost().getHostAddress();
-    }
-
-    /**
-     * Creates a instance of a {@link TargetConfiguration} object, which is
-     * initialized with the settings from the system-wide configuration file.
-     * 
-     * @param configSchemaFileName
-     *            The file name of the schema to check the configuration file
-     *            against.s
-     * @param configFileName
-     *            The file name of the configuration file to use.
-     * @throws SAXException
-     *             If this operation is supported but failed for some reason.
-     * @throws ParserConfigurationException
-     *             If a {@link DocumentBuilder} cannot be created which
-     *             satisfies the configuration requested.
-     * @throws IOException
-     *             If any IO errors occur.
-     */
-    public TargetConfiguration(final File configSchemaFileName, final File configFileName)
-        throws SAXException, ParserConfigurationException, IOException {
-
-        targetAddress = InetAddress.getLocalHost().getHostAddress();
-
-        final Document doc = parse(configSchemaFileName, configFileName);
-        parseSettings(doc.getDocumentElement());
-    }
-
-    /**
-     * /**
-     * Creates a instance of a {@link TargetConfiguration} object, which is
-     * initialized with the settings from the DOM element.
-     * 
-     * @param parseElement
-     *            - root of the settings tree
-     */
-    public TargetConfiguration(Element parseElement) {
-        parseSettings(parseElement);
+        targets = new ArrayList<TargetInfo>();
     }
 
     /**
@@ -208,60 +169,6 @@ public class TargetConfiguration {
 
         validator.validate(source, result);
         return (Document)result.getNode();
-    }
-
-    /**
-     * Parses all settings form the main configuration file.
-     * 
-     * @param root
-     *            The root element of the configuration.
-     */
-    protected void parseSettings(final Element root) {
-        // TargetName
-
-        Element targetListNode = (Element)root.getElementsByTagName("TargetList").item(0);
-        NodeList targetList = targetListNode.getElementsByTagName("Target");
-        for (int curTargetNum = 0; curTargetNum < targetList.getLength(); curTargetNum++) {
-            TargetInfo curTargetInfo = parseTargetElement((Element)targetList.item(curTargetNum));
-            targets.add(curTargetInfo);
-        }
-
-        // else it is null
-
-        // port
-        if (root.getElementsByTagName("Port").getLength() > 0)
-            port = Integer.parseInt(root.getElementsByTagName("Port").item(0).getTextContent());
-        else
-            port = 3260;
-
-        // support sloppy text parameter negotiation (i.e. the jSCSI Initiator)?
-        final Node allowSloppyNegotiationNode = root.getElementsByTagName("AllowSloppyNegotiation").item(0);
-        if (allowSloppyNegotiationNode == null)
-            allowSloppyNegotiation = false;
-        else
-            allowSloppyNegotiation = Boolean.parseBoolean(allowSloppyNegotiationNode.getTextContent());
-    }
-
-    public TargetInfo parseTargetElement(Element targetElement) {
-        String targetName =
-            targetElement.getElementsByTagName(TextKeyword.TARGET_NAME).item(0).getTextContent();
-        // TargetAlias (optional)
-        Node targetAliasNode = targetElement.getElementsByTagName(TextKeyword.TARGET_ALIAS).item(0);
-        String targetAlias = null;
-        if (targetAliasNode != null)
-            targetAlias = targetAliasNode.getTextContent();
-        NodeList fileProperties = targetElement.getElementsByTagName("StorageFile").item(0).getChildNodes();
-        String storageFilePath = null;
-        for (int i = 0; i < fileProperties.getLength(); ++i) {
-            if ("FilePath".equals(fileProperties.item(i).getNodeName()))
-                storageFilePath = fileProperties.item(i).getTextContent();
-        }
-        if (storageFilePath == null)
-            storageFilePath = "storage.dat";
-
-        StorageFileTargetInfo returnInfo =
-            new StorageFileTargetInfo(targetName, targetAlias, storageFilePath);
-        return returnInfo;
     }
 
     public TargetInfo[] getTargetInfo() {

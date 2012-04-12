@@ -10,6 +10,7 @@
 			<TargetAlias>jSCSI Target</TargetAlias>
 			<StorageFile>
 				<FilePath>storage1.dat</FilePath>
+				<FileLength>0.75</FileLength>
 			</StorageFile>
 		</Target>
 		<Target>
@@ -17,6 +18,7 @@
 			<TargetAlias>jSCSI Target</TargetAlias>
 			<StorageFile>
 				<FilePath>storage2.dat</FilePath>
+				<FileLength>0.75</FileLength>
 			</StorageFile>
 		</Target>
 	</TargetList>

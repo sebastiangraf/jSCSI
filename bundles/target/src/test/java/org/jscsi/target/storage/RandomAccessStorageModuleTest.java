@@ -29,7 +29,7 @@ public class RandomAccessStorageModuleTest {
         RandomAccessFile raf = new RandomAccessFile(file, "rw");
         raf.setLength(TEST_FILE_SIZE);
         raf.close();
-        module = RandomAccessStorageModule.open(TEST_FILE_NAME);
+        module = RandomAccessStorageModule.open(file);
     }
 
     @AfterClass

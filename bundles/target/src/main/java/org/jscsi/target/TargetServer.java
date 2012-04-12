@@ -2,8 +2,10 @@ package org.jscsi.target;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.channels.FileChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.security.DigestException;
@@ -17,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -31,7 +32,6 @@ import org.jscsi.target.settings.TargetConfiguration;
 import org.jscsi.target.settings.TargetConfigurationXMLParser;
 import org.jscsi.target.settings.TargetInfo;
 import org.jscsi.target.storage.AbstractStorageModule;
-import org.jscsi.target.storage.RandomAccessStorageModule;
 import org.jscsi.target.storage.SynchronizedRandomAccessStorageModule;
 import org.xml.sax.SAXException;
 
@@ -40,26 +40,11 @@ import org.xml.sax.SAXException;
  * target-wide parameters and variables, and
  * which contains the {@link #main(String[])} method for starting the program.
  * 
- * @author Andreas Ergenzinger
+ * @author Andreas Ergenzinger, University of Konstanz
  */
 public final class TargetServer {
 
     private static final Logger LOGGER = Logger.getLogger(TargetServer.class);
-
-    /**
-     * The name of the <i>log4j</i> properties file.
-     * 
-     * @see #readLog4jConfigurationFile()
-     */
-    private static final String LOG4J_PROPERTIES_XML = "log4j.xml";
-
-    /**
-     * The relative path to <code>src/main/resources/</code>. The {@link #LOG4J_PROPERTIES_XML} file may be
-     * located there.
-     * 
-     * @see #readLog4jConfigurationFile()
-     */
-    private static final String RESOURCES_DIRECTORY = "src/main/resources/";
 
     /**
      * A {@link SocketChannel} used for listening to incoming connections.
@@ -116,15 +101,14 @@ public final class TargetServer {
      * 
      * @param args
      *            all command line arguments are ignored
+     * @throws IOException
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         TargetServer target = new TargetServer();
         target.start();
     }
 
-    public void start() {
-        // initialize loggers based on settings from file
-        readLog4jConfigurationFile();
+    public void start() throws IOException {
 
         System.out.println("jSCSI Target");
 
@@ -140,16 +124,25 @@ public final class TargetServer {
         try {
             TargetInfo[] targetInfo = getConfig().getTargetInfo();
             for (TargetInfo curTargetInfo : targetInfo) {
-                StorageFileTargetInfo curStorageFileTargetInfo = (StorageFileTargetInfo)curTargetInfo;
-                RandomAccessStorageModule curStorageModule =
-                    SynchronizedRandomAccessStorageModule.open(curStorageFileTargetInfo.getStorageFilePath());
-                addStorageModule(curStorageFileTargetInfo.getTargetName(), curStorageFileTargetInfo
-                    .getTargetAlias(), curStorageModule);
-                // print configuration and medium details
-                System.out.println("   target name:    " + curStorageFileTargetInfo.getTargetName());
 
-                System.out.println("   storage file:   " + curStorageFileTargetInfo.getStorageFilePath());
-                System.out.println("   file size:      " + curStorageModule.getHumanFriendlyMediumSize());
+                if (curTargetInfo instanceof StorageFileTargetInfo) {
+                    final StorageFileTargetInfo storageFileInfo = (StorageFileTargetInfo)curTargetInfo;
+                    if (!storageFileInfo.getStorageFilePath().exists()) {
+                        createStorageVolume(storageFileInfo.getStorageFilePath(), storageFileInfo
+                            .getTargetLength());
+                    }
+
+                    final AbstractStorageModule curStorageModule =
+                        SynchronizedRandomAccessStorageModule.open(storageFileInfo.getStorageFilePath());
+                    addStorageModule(storageFileInfo.getTargetName(), storageFileInfo.getTargetAlias(),
+                        curStorageModule);
+                    // print configuration and medium details
+                    System.out.println("   target name:    " + storageFileInfo.getTargetName());
+
+                    System.out.println("   storage file:   " + storageFileInfo.getStorageFilePath());
+                    System.out.println("   file size:      " + curStorageModule.getHumanFriendlyMediumSize());
+                }
+                // TODO Hook for other targets like proxies, etc.
             }
         } catch (FileNotFoundException e) {
             LOGGER.fatal(e.toString());
@@ -255,27 +248,6 @@ public final class TargetServer {
         sessions.remove(session);
     }
 
-    /**
-     * Reads the <i>log4j</i> properties from the file <code>log4j.xml</code> located either in the base
-     * directory or <code>src/main/resources/</code>.
-     * <p>
-     * The logging properties will be read just once, changing them during runtime will have no effect.
-     * <p>
-     * If <code>log4j.xml</code> cannot be found, then there will be no logging.
-     */
-    private static final void readLog4jConfigurationFile() {
-        // look in base directory
-        String path;
-        File file = new File(LOG4J_PROPERTIES_XML);
-        if (file.exists())
-            path = LOG4J_PROPERTIES_XML;// for release versions
-        else
-            // use resources directory (location used during development)
-            path = RESOURCES_DIRECTORY + LOG4J_PROPERTIES_XML;
-        // configure
-        DOMConfigurator.configure(path);
-    }
-
     public TargetConfiguration getConfig() {
         return config;
     }
@@ -324,4 +296,50 @@ public final class TargetServer {
             targets.remove(exportTargetName);
         }
     }
+
+    /**
+     * Creating a new file if not existing at the path defined in the config.
+     * Note that it is advised to create the file beforehand.
+     * 
+     * @param pConf
+     *            configuration to be updated
+     * @return true if creation successful, false if file already exists.
+     * @throws IOException
+     *             if anything weird happens
+     */
+    private static boolean createStorageVolume(final File pToCreate, final long pLength) throws IOException {
+        FileOutputStream outStream = null;
+        try {
+            final File parent = pToCreate.getCanonicalFile().getParentFile();
+            if (!parent.exists() && !parent.mkdirs()) {
+                throw new FileNotFoundException("Unable to create directory: " + parent.getAbsolutePath());
+            }
+            // if file exists, do not override it
+            if (pToCreate.exists()) {
+                return false;
+            }
+
+            pToCreate.createNewFile();
+            outStream = new FileOutputStream(pToCreate);
+            final FileChannel fcout = outStream.getChannel();
+            fcout.position(pLength);
+            outStream.write(26); // Write EOF (not normally needed)
+            fcout.force(true);
+            return true;
+        } catch (IOException e) {
+            LOGGER.fatal("Exception creating storage volume " + pToCreate.getAbsolutePath() + ": "
+                + e.getMessage(), e);
+            throw e;
+        } finally {
+            if (outStream != null) {
+                try {
+                    outStream.close();
+                } catch (IOException e) {
+                    LOGGER.error("Exception closing storage volume: " + e.getMessage(), e);
+                }
+            }
+        }
+
+    }
+
 }

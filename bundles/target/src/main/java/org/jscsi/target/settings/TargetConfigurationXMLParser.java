@@ -26,6 +26,7 @@ public class TargetConfigurationXMLParser {
     public static final String TARGET_ELEMENT_NAME = "Target"; // Name for nodes that contain a target
     // Target configuration elements
     private static final String FILE_PATH_ELEMENT_NAME = "FilePath";
+    private static final String FILE_LENGTH_ELEMENT_NAME = "FileLength";
     public static final String STORAGE_FILE_ELEMENT_NAME = "StorageFile";
 
     public static final String GLOBAL_CONFIG_ELEMENT_NAME = "GlobalConfig"; // Name of node that contains
@@ -177,21 +178,24 @@ public class TargetConfigurationXMLParser {
             targetElement.getElementsByTagName(TextKeyword.TARGET_NAME).item(0).getTextContent();
         // TargetAlias (optional)
         Node targetAliasNode = targetElement.getElementsByTagName(TextKeyword.TARGET_ALIAS).item(0);
-        String targetAlias = null;
+        String targetAlias = "";
         if (targetAliasNode != null)
             targetAlias = targetAliasNode.getTextContent();
+
         NodeList fileProperties =
             targetElement.getElementsByTagName(STORAGE_FILE_ELEMENT_NAME).item(0).getChildNodes();
         String storageFilePath = null;
-        for (int i = 0; i < fileProperties.getLength(); ++i) {
-            if (FILE_PATH_ELEMENT_NAME.equals(fileProperties.item(i).getNodeName()))
-                storageFilePath = fileProperties.item(i).getTextContent();
-        }
-        if (storageFilePath == null)
-            storageFilePath = "storage.dat";
+        long storageLength = -1;
 
-        StorageFileTargetInfo returnInfo =
-            new StorageFileTargetInfo(targetName, targetAlias, storageFilePath);
-        return returnInfo;
+        for (int i = 0; i < fileProperties.getLength(); ++i) {
+            if (FILE_PATH_ELEMENT_NAME.equals(fileProperties.item(i).getNodeName())) {
+                storageFilePath = fileProperties.item(i).getTextContent();
+            } else if (FILE_LENGTH_ELEMENT_NAME.equals(fileProperties.item(i).getNodeName())) {
+                storageLength =
+                    Math.round(((Double.valueOf(fileProperties.item(i).getTextContent())) * Math.pow(1024, 3)));
+            }
+        }
+
+        return new StorageFileTargetInfo(targetName, targetAlias, new File(storageFilePath), storageLength);
     }
 }

@@ -37,18 +37,18 @@ public class RandomAccessStorageModule extends AbstractStorageModule {
      * file to be found at the
      * specified <code>filePath</code>, then a {@link FileNotFoundException} will be thrown.
      * 
-     * @param filePath
+     * @param file
      *            a path leading to the file serving as storage medium
      * @return a new instance of {@link RandomAccessStorageModule}
      * @throws FileNotFoundException
      *             if the specified file does not exist
      */
-    public static final RandomAccessStorageModule open(final String filePath) throws FileNotFoundException {
-        final File file = new File(filePath);
+    public static synchronized final SynchronizedRandomAccessStorageModule open(final File file)
+        throws FileNotFoundException {
         final long sizeInBlocks = file.length() / VIRTUAL_BLOCK_SIZE;
         final RandomAccessFile randomAccessFile = new RandomAccessFile(file, MODE);// throws exc. if
                                                                                    // !file.exists()
-        return new RandomAccessStorageModule(sizeInBlocks, randomAccessFile);
+        return new SynchronizedRandomAccessStorageModule(sizeInBlocks, randomAccessFile);
     }
 
     /**

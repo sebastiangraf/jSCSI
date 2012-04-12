@@ -12,12 +12,14 @@ package org.jscsi.target.settings;
  *         Copyright (C) 2009 iGeek, Inc. All Rights Reserved
  */
 public class TargetInfo {
-    private String targetName;
-    private String targetAlias;
+    private final String targetName;
+    private final String targetAlias;
+    private final long targetLength;
 
-    public TargetInfo(String targetName, String targetAlias) {
+    public TargetInfo(final String targetName, final String targetAlias, final long targetLength) {
         this.targetName = targetName;
         this.targetAlias = targetAlias;
+        this.targetLength = targetLength;
     }
 
     public String getTargetName() {
@@ -26,5 +28,9 @@ public class TargetInfo {
 
     public String getTargetAlias() {
         return targetAlias;
+    }
+
+    public long getTargetLength() {
+        return targetLength;
     }
 }
