@@ -148,7 +148,6 @@ public class TargetConfiguration {
      *            against.s
      * @param configFileName
      *            The file name of the configuration file to use.
-     * @return A {@link TargetConfiguration} instance with all settings.
      * @throws SAXException
      *             If this operation is supported but failed for some reason.
      * @throws ParserConfigurationException

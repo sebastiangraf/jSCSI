@@ -29,7 +29,7 @@ public abstract class TargetStage {
     protected final TargetPhase targetPhase;
 
     /**
-     * The connection the {@link #TargetFullFeaturePhase} is a part of
+     * The connection the {@link org.jscsi.target.connection.phase.TargetFullFeaturePhase} is a part of
      */
     protected final TargetConnection connection;
 

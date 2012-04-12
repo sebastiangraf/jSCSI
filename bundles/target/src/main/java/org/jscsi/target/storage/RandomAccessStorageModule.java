@@ -56,7 +56,9 @@ public class RandomAccessStorageModule extends AbstractStorageModule {
      * file. If no such file exists, a {@link FileNotFoundException} will be
      * thrown.
      * 
-     * @param filePath
+     * @param sizeInBlocks
+     *            blocksize for this module
+     * @param randomAccessFile
      *            the path to the file serving as storage medium
      * @throws FileNotFoundException
      *             if the specified file does not exist

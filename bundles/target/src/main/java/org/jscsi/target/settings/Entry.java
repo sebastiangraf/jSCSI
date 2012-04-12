@@ -20,7 +20,7 @@ import org.jscsi.target.TargetServer;
  * For brevity, the term "negotiated" will be used in the following in a way that can either mean
  * "declared or negotiated", unless the distinction is evident by context.
  * 
- * @author Andreas Ergenzinger
+ * @author Andreas Ergenzinger, University of Konstanz
  */
 public abstract class Entry {
 
@@ -38,7 +38,7 @@ public abstract class Entry {
     protected final NegotiationType negotiationType;
 
     /**
-     * Determines during which stages this {@Entry}'s parameters may be
+     * Determines during which stages this {@link Entry}'s parameters may be
      * negotiated.
      */
     protected final Use use;

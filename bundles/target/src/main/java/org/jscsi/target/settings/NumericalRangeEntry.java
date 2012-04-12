@@ -16,7 +16,7 @@ import org.jscsi.target.TargetServer;
  * <code>IFMarker=No</code> and <code>OFMarker=No</code>), the correct response value to
  * <code>IFMarkInt</code> and <code>OFMarkInt</code> <i>keys</i> must be <code>Irrelevant</code>. This
  * behavior is part of the
- * {@link Entry#negotiate(org.jscsi.parser.login.LoginStage, boolean, boolean, String, String, java.util.Collection)}
+ * {@link Entry#negotiate(org.jscsi.target.TargetServer, org.jscsi.parser.login.LoginStage, boolean, boolean, String, String, java.util.Collection)}
  * method, which will lead to correct responses without having to check for additional constraints (the
  * presence and <i>value</i> of <code>IFMarker</code> and <code>OFMarker</code> <i>key=value</i> pairs.
  * 

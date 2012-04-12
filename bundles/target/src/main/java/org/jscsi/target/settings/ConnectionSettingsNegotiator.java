@@ -23,14 +23,14 @@ import org.jscsi.target.connection.TargetSession;
  * <ol>
  * <li>Call {@link #beginNegotiation()} until it returns <code>true</code>.</li>
  * <li>One or, if the initiator is using multiple PDU sequences, multiple calls of
- * {@link #negotiate(LoginStage, boolean, boolean, Vector, Vector)}. The method will return <code>false</code>
+ * {@link #negotiate(TargetServer, LoginStage, boolean, boolean, Vector, Vector)}. The method will return <code>false</code>
  * if there was a problem.</li>
  * <li>Call {@link #checkConstraints()} to check more complex requirements. The method will return
  * <code>false</code> if there was a problem.</li>
  * <li>Call {@link #finishNegotiation(boolean)} with the appropriate parameter. This step is mandatory.</li>
  * </ol>
  * 
- * @author Andreas Ergenzinger
+ * @author Andreas Ergenzinger, University of Konstanz
  */
 public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
 
@@ -380,7 +380,7 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
     }
 
     /**
-     * Updates {@link #ConnectionSettingBuilderComponent} with the currently
+     * Updates {@link ConnectionSettingsBuilderComponent} with the currently
      * valid parameters retrieved from the elements of {@link SettingsNegotiator#entries}.
      */
     protected void updateSettingsBuilderComponent() {
