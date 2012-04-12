@@ -58,8 +58,7 @@ public final class TextKeyword {
     // last but not least
     public static final String EQUALS = "=";
     public static final String COMMA = ",";
-    public static final String NULL_CHAR = Character.valueOf((char) 0)
-            .toString();
+    public static final String NULL_CHAR = Character.valueOf((char)0).toString();
     public static final String COLON = ":";
 
 }

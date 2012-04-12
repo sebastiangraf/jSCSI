@@ -35,20 +35,19 @@ public final class TargetLoginPhase extends TargetPhase {
      * authenticated, i.e. if it has given sufficient proof of its identity to
      * proceed to the next (Target Full Feature) phase.
      * <p>
-     * Currently the jSCSI Target does not support any authentication methods
-     * and this value is initialized to <code>true</code> for all initiators.
+     * Currently the jSCSI Target does not support any authentication methods and this value is initialized to
+     * <code>true</code> for all initiators.
      */
     private boolean authenticated = true;// TODO false if authentication
                                          // required
 
     /**
-     * This variable will be <code>true</code> until the first call of
-     * {@link #getFirstPduAndSetToFalse()} has happened.
+     * This variable will be <code>true</code> until the first call of {@link #getFirstPduAndSetToFalse()} has
+     * happened.
      * <p>
-     * This value will be <code>true</code> if the currently processed PDU is
-     * the first PDU sent by the initiator over this phase's connection. This
-     * means that it must contain all text parameters necessary for either
-     * starting a discovery session or a normal session.
+     * This value will be <code>true</code> if the currently processed PDU is the first PDU sent by the
+     * initiator over this phase's connection. This means that it must contain all text parameters necessary
+     * for either starting a discovery session or a normal session.
      */
     private boolean firstPdu = true;
 
@@ -82,13 +81,11 @@ public final class TargetLoginPhase extends TargetPhase {
      *             {@inheritDoc}
      */
     @Override
-    public boolean execute(ProtocolDataUnit pdu) throws IOException,
-            InterruptedException, InternetSCSIException, DigestException,
-            SettingsException {
+    public boolean execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
+        InternetSCSIException, DigestException, SettingsException {
 
         // begin login negotiation
-        final ConnectionSettingsNegotiator negotiator = connection
-                .getConnectionSettingsNegotiator();
+        final ConnectionSettingsNegotiator negotiator = connection.getConnectionSettingsNegotiator();
         while (!negotiator.beginNegotiation()) {
             // do nothing, just wait for permission to begin, method is blocking
         }
@@ -99,7 +96,7 @@ public final class TargetLoginPhase extends TargetPhase {
         try {
             // if possible, enter LOPN Stage
             BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-            LoginRequestParser parser = (LoginRequestParser) bhs.getParser();
+            LoginRequestParser parser = (LoginRequestParser)bhs.getParser();
 
             LoginStage nextStageNumber;// will store return value from the last
                                        // login stage
@@ -122,7 +119,7 @@ public final class TargetLoginPhase extends TargetPhase {
                     // receive first PDU from LOPNS
                     pdu = connection.receivePdu();
                     bhs = pdu.getBasicHeaderSegment();
-                    parser = (LoginRequestParser) bhs.getParser();
+                    parser = (LoginRequestParser)bhs.getParser();
                 } else if (nextStageNumber == LoginStage.FULL_FEATURE_PHASE) {
                     // we are done here
                     return true;
@@ -135,8 +132,7 @@ public final class TargetLoginPhase extends TargetPhase {
 
             // Login Operational Parameter Negotiation Stage (also optional, but
             // either SNS or LOPNS must be passed before proceeding to FFP)
-            if (authenticated
-                    && parser.getCurrentStageNumber() == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION) {
+            if (authenticated && parser.getCurrentStageNumber() == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION) {
                 stage = new LoginOperationalParameterNegotiationStage(this);
                 stage.execute(pdu);
                 nextStageNumber = stage.getNextStageNumber();

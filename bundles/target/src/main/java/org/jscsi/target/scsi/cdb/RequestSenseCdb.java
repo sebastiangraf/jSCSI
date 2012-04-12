@@ -5,8 +5,8 @@ import java.nio.ByteBuffer;
 import org.jscsi.target.util.BitManip;
 
 /**
- * This class represents Command Descriptor Blocks for the
- * <code>REQUEST SENSE</code> SCSI command, which requests that the device
+ * This class represents Command Descriptor Blocks for the <code>REQUEST SENSE</code> SCSI command, which
+ * requests that the device
  * server transfers sense data to the application client.
  * 
  * @author Andreas Ergenzinger

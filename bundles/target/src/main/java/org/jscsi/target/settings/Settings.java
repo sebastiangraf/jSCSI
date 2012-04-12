@@ -10,14 +10,12 @@ package org.jscsi.target.settings;
 public final class Settings {
 
     /**
-     * The {@link #settingsId} variable allows to compare the age of different
-     * {@link Settings} objects - newer instances have a higher
-     * {@link #settingsId}.
+     * The {@link #settingsId} variable allows to compare the age of different {@link Settings} objects -
+     * newer instances have a higher {@link #settingsId}.
      * <p>
-     * What it is really used for, however, is for determining if the buffered
-     * {@link Settings} object, which can be accessed via
-     * {@link ConnectionSettingsNegotiator#getSettings()} is up to date or if it
-     * has to be replaced.
+     * What it is really used for, however, is for determining if the buffered {@link Settings} object, which
+     * can be accessed via {@link ConnectionSettingsNegotiator#getSettings()} is up to date or if it has to be
+     * replaced.
      * 
      * @see ConnectionSettingsNegotiator#getSettings()
      * @see SessionSettingsNegotiator#getCurrentSettingsId()
@@ -61,12 +59,12 @@ public final class Settings {
     Integer ofMarkInt;
 
     // session parameters
-    
+
     /**
      * The <code>TargetName</code> parameter
      */
     String targetName;
-    
+
     /**
      * The <code>DataPDUInOrder</code> parameter.
      */
@@ -160,8 +158,7 @@ public final class Settings {
      *            {@link SessionSettingsBuilderComponent} with the current
      *            session-wide parameters
      */
-    Settings(final ConnectionSettingsBuilderComponent c,
-            final SessionSettingsBuilderComponent s) {
+    Settings(final ConnectionSettingsBuilderComponent c, final SessionSettingsBuilderComponent s) {
         settingsId = s.settingsId;
         // connection parameters
         dataDigest = c.dataDigest;
@@ -471,7 +468,7 @@ public final class Settings {
         checkIfNull(maxOutstandingR2T);
         return sessionType;
     }
-    
+
     public String getTargetName() throws SettingsException {
         return targetName;
     }

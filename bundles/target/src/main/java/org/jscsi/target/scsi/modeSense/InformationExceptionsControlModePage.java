@@ -30,10 +30,9 @@ public class InformationExceptionsControlModePage extends Page_0FormatModePage {
      * functions. If the EBF bit is set to zero, the device server shall disable
      * the functions.
      * <p>
-     * For the purposes of the EBF bit, background functions are defined as idle
-     * time functions that may impact performance that are performed by a device
-     * server operating without errors but do not impact the reliability of the
-     * logical unit (e.g., read scan).
+     * For the purposes of the EBF bit, background functions are defined as idle time functions that may
+     * impact performance that are performed by a device server operating without errors but do not impact the
+     * reliability of the logical unit (e.g., read scan).
      */
     private final boolean enableBackgroundFunction;
 
@@ -98,9 +97,8 @@ public class InformationExceptionsControlModePage extends Page_0FormatModePage {
      * field has elapsed. After the informational exception condition has been
      * reported the interval timer shall be restarted.
      * <p>
-     * A value of zero or FFFF FFFFh in the INTERVAL TIMER field indicates that
-     * the period for reporting an informational exception condition is vendor
-     * specific.
+     * A value of zero or FFFF FFFFh in the INTERVAL TIMER field indicates that the period for reporting an
+     * informational exception condition is vendor specific.
      */
     private final int intervalTimer;
 
@@ -112,22 +110,22 @@ public class InformationExceptionsControlModePage extends Page_0FormatModePage {
      */
     private final int reportCount;
 
-    public InformationExceptionsControlModePage(boolean parametersSaveable,
-            final boolean performance, final boolean enableBackgroundFunction,
-            final boolean enableWarning, final boolean disableExceptionControl,
-            final boolean test, final boolean logErrors,
-            final int methodOfReportingInformationalExceptionConditions,
-            final int intervalTimer, final int reportCount) {
+    public InformationExceptionsControlModePage(boolean parametersSaveable, final boolean performance,
+        final boolean enableBackgroundFunction, final boolean enableWarning,
+        final boolean disableExceptionControl, final boolean test, final boolean logErrors,
+        final int methodOfReportingInformationalExceptionConditions, final int intervalTimer,
+        final int reportCount) {
         super(parametersSaveable,// PS
-                0x1c,// page code
-                0x0a);// page length
+            0x1c,// page code
+            0x0a);// page length
         this.performance = performance;
         this.enableBackgroundFunction = enableBackgroundFunction;
         this.enableWarning = enableWarning;
         this.disableExceptionControl = disableExceptionControl;
         this.test = test;
         this.logErrors = logErrors;
-        this.methodOfReportingInformationalExceptionConditions = methodOfReportingInformationalExceptionConditions;
+        this.methodOfReportingInformationalExceptionConditions =
+            methodOfReportingInformationalExceptionConditions;
         this.intervalTimer = intervalTimer;
         this.reportCount = reportCount;
 
@@ -148,16 +146,16 @@ public class InformationExceptionsControlModePage extends Page_0FormatModePage {
         buffer.put(b);
 
         // byte 3
-        b = (byte) (methodOfReportingInformationalExceptionConditions & 31);// MRIE
+        b = (byte)(methodOfReportingInformationalExceptionConditions & 31);// MRIE
         buffer.put(b);
 
         // INTERVAL TIMER and REPORT COUNT
         ReadWrite.writeInt(intervalTimer,// value
-                buffer,// buffer
-                index + 4);// start index
+            buffer,// buffer
+            index + 4);// start index
         ReadWrite.writeInt(reportCount,// value
-                buffer,// buffer
-                index + 8);// start index
+            buffer,// buffer
+            index + 8);// start index
     }
 
 }

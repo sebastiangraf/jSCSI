@@ -41,26 +41,25 @@ public abstract class SubPageFormatModePage extends ModePage {
      * @param pageLength
      *            the value of the PAGE LENGTH field
      */
-    public SubPageFormatModePage(boolean parametersSaveable, int pageCode,
-            final int subPageCode, int pageLength) {
+    public SubPageFormatModePage(boolean parametersSaveable, int pageCode, final int subPageCode,
+        int pageLength) {
         super(parametersSaveable, true,// subPageFormat
-                pageCode, pageLength);
+            pageCode, pageLength);
         this.subPageCode = subPageCode;
     }
 
     @Override
-    protected final void serializeSubPageCode(final ByteBuffer buffer,
-            final int index) {
+    protected final void serializeSubPageCode(final ByteBuffer buffer, final int index) {
         buffer.position(index + SUB_PAGE_CODE_INDEX);
-        buffer.put((byte) subPageCode);
+        buffer.put((byte)subPageCode);
     }
 
     @Override
     protected final void serializePageLength(ByteBuffer buffer, int index) {
         buffer.position(index + PAGE_LENGTH_INDEX);
         ReadWrite.writeTwoByteInt(buffer,// buffer
-                pageLength,// value
-                index + PAGE_LENGTH_INDEX);// index
+            pageLength,// value
+            index + PAGE_LENGTH_INDEX);// index
     }
 
 }

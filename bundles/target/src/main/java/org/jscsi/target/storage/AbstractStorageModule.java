@@ -8,9 +8,9 @@ import org.jscsi.target.scsi.cdb.CommandDescriptorBlock;
  * This is an abstract super class offering methods for storage and retrieval of
  * data, as well as emulating some properties of block storage devices.
  * <p>
- * All index and length parameters used by the read and write methods are
- * referring to bytes, unlike the values sent in {@link CommandDescriptorBlock}
- * s, which are based on the value reported by {@link #getBlockSizeInBytes()}.
+ * All index and length parameters used by the read and write methods are referring to bytes, unlike the
+ * values sent in {@link CommandDescriptorBlock} s, which are based on the value reported by
+ * {@link #getBlockSizeInBytes()}.
  * 
  * @author Andreas Ergenzinger
  */
@@ -29,8 +29,7 @@ public abstract class AbstractStorageModule {
     protected long sizeInBlocks;
 
     /**
-     * The abstract constructor that makes sure that the {@link #sizeInBlocks}
-     * variable is initialized.
+     * The abstract constructor that makes sure that the {@link #sizeInBlocks} variable is initialized.
      * 
      * @param sizeInBlocks
      *            the size of the medium in blocks
@@ -49,8 +48,7 @@ public abstract class AbstractStorageModule {
     }
 
     /**
-     * Returns the storage space size in bytes divided by
-     * {@link #getBlockSizeInBytes()} (rounded down).
+     * Returns the storage space size in bytes divided by {@link #getBlockSizeInBytes()} (rounded down).
      * 
      * @return the virtual amount of storage blocks available
      */
@@ -72,12 +70,11 @@ public abstract class AbstractStorageModule {
      *            the position of the first byte to be copied
      * @throws IOException
      */
-    public abstract void read(byte[] bytes, int bytesOffset, int length,
-            long storageIndex) throws IOException;
+    public abstract void read(byte[] bytes, int bytesOffset, int length, long storageIndex)
+        throws IOException;
 
     /**
-     * Copies bytes from storage to the passed byte array.
-     * <code>bytes.length</code> bytes will be copied.
+     * Copies bytes from storage to the passed byte array. <code>bytes.length</code> bytes will be copied.
      * 
      * @param bytes
      *            the array into which the data will be copied
@@ -101,8 +98,8 @@ public abstract class AbstractStorageModule {
      *            byte offset in the storage area
      * @throws IOException
      */
-    public abstract void write(byte[] bytes, int bytesOffset, int length,
-            long storageIndex) throws IOException;
+    public abstract void write(byte[] bytes, int bytesOffset, int length, long storageIndex)
+        throws IOException;
 
     /**
      * Saves the whole content of the passed byte array.
@@ -122,8 +119,7 @@ public abstract class AbstractStorageModule {
      * medium's size.
      * <p>
      * Subclasses that do not enforce <code>MEDIUM SIZE %
-     * {@link #VIRTUAL_BLOCK_SIZE} == 0</code> should overwrite this method to
-     * report unused bytes, if any.
+     * {@link #VIRTUAL_BLOCK_SIZE} == 0</code> should overwrite this method to report unused bytes, if any.
      * 
      * @return a human-friendly representation of the medium's size
      */
@@ -136,13 +132,12 @@ public abstract class AbstractStorageModule {
      * result in an {@link IOException} due to trying to access blocks outside
      * the medium's boundaries.
      * <p>
-     * The SCSI standard requires checking for these boundary violations right
-     * after receiving a read or write command, so that an appropriate error
-     * message can be returned to the initiator. Therefore this method must be
-     * called prior to each read or write sequence.
+     * The SCSI standard requires checking for these boundary violations right after receiving a read or write
+     * command, so that an appropriate error message can be returned to the initiator. Therefore this method
+     * must be called prior to each read or write sequence.
      * <p>
-     * The values returned by this method and their meaning with regard to the
-     * interval [0, {@link #sizeInBlocks} - 1] are shown in the following table:
+     * The values returned by this method and their meaning with regard to the interval [0,
+     * {@link #sizeInBlocks} - 1] are shown in the following table:
      * <p>
      * <table border="1">
      * <tr>
@@ -155,20 +150,17 @@ public abstract class AbstractStorageModule {
      * </tr>
      * <tr>
      * <td>1</td>
-     * <td>the <i>logicalBlockAddress</i> parameter lies outside of the interval
-     * </td>
+     * <td>the <i>logicalBlockAddress</i> parameter lies outside of the interval</td>
      * </tr>
      * <tr>
      * <td>2</td>
-     * <td>the interval [<i>logicalBlockAddress</i>, <i>logicalBlockAddress</i>
-     * + <i>transferLengthInBlocks</i>]<br/>
-     * lies outside of the interval, or <i>transferLengthInBlocks</i> is
-     * negative</td>
+     * <td>the interval [<i>logicalBlockAddress</i>, <i>logicalBlockAddress</i> +
+     * <i>transferLengthInBlocks</i>]<br/>
+     * lies outside of the interval, or <i>transferLengthInBlocks</i> is negative</td>
      * </tr>
      * </table>
      * <p>
-     * Note that the parameters of this method are referring to blocks, not to
-     * byte indices.
+     * Note that the parameters of this method are referring to blocks, not to byte indices.
      * 
      * @param logicalBlockAddress
      *            the index of the first block of data to be read or written
@@ -177,12 +169,10 @@ public abstract class AbstractStorageModule {
      *            written
      * @return see table in description
      */
-    public final int checkBounds(final long logicalBlockAddress,
-            final int transferLengthInBlocks) {
+    public final int checkBounds(final long logicalBlockAddress, final int transferLengthInBlocks) {
         if (logicalBlockAddress < 0 || logicalBlockAddress >= sizeInBlocks)
             return 1;
-        if (transferLengthInBlocks < 0
-                || logicalBlockAddress + transferLengthInBlocks > sizeInBlocks)
+        if (transferLengthInBlocks < 0 || logicalBlockAddress + transferLengthInBlocks > sizeInBlocks)
             return 2;
         return 0;
     }
@@ -199,7 +189,9 @@ public abstract class AbstractStorageModule {
 
         // some stuff we will need
         final long factor = 1024;
-        final String[] byteUnits = { "B", "KiB", "MiB", "GiB", "TiB" };
+        final String[] byteUnits = {
+            "B", "KiB", "MiB", "GiB", "TiB"
+        };
         final StringBuilder sb = new StringBuilder();
 
         // begin building output

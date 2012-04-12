@@ -29,8 +29,7 @@ public class CommandSpecificSenseDataDescriptor extends SenseDataDescriptor {
      *            {@link EightByteInformation} which should contain
      *            command-specific information.
      */
-    public CommandSpecificSenseDataDescriptor(
-            final EightByteInformation commandSpecificInformation) {
+    public CommandSpecificSenseDataDescriptor(final EightByteInformation commandSpecificInformation) {
         super(SenseDataDescriptorType.COMMAND_SPECIFIC_INFORMATION, 0x0a);// additional
                                                                           // length
         this.commandSpecificInformation = commandSpecificInformation;
@@ -38,8 +37,7 @@ public class CommandSpecificSenseDataDescriptor extends SenseDataDescriptor {
 
     @Override
     protected void serializeSpecificFields(ByteBuffer byteBuffer, int index) {
-        commandSpecificInformation.serialize(byteBuffer, index
-                + COMMAND_SPECIFIC_INFORMATION_INDEX);
+        commandSpecificInformation.serialize(byteBuffer, index + COMMAND_SPECIFIC_INFORMATION_INDEX);
     }
 
 }

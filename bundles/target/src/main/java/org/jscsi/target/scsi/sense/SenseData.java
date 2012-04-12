@@ -7,12 +7,11 @@ import org.jscsi.target.scsi.ISerializable;
  * CONDITION status and as parameter data in response to the REQUEST SENSE
  * command.
  * <p>
- * Sense data returned in the same I_T_L_Q nexus transaction as a CHECK
- * CONDITION status shall be either fixed or descriptor format sense data format
- * based on the value of the D_SENSE bit in the Control mode page.
+ * Sense data returned in the same I_T_L_Q nexus transaction as a CHECK CONDITION status shall be either fixed
+ * or descriptor format sense data format based on the value of the D_SENSE bit in the Control mode page.
  * <p>
- * The REQUEST SENSE command may be used to request either the fixed format
- * sense data or the descriptor format sense data.
+ * The REQUEST SENSE command may be used to request either the fixed format sense data or the descriptor
+ * format sense data.
  * 
  * @author Andreas Ergenzinger
  */
@@ -28,14 +27,12 @@ public abstract class SenseData implements ISerializable {
     protected final int responseCode;
 
     /**
-     * The error type of the sense data as determined by the
-     * {@link #responseCode} variable.
+     * The error type of the sense data as determined by the {@link #responseCode} variable.
      */
     protected final ErrorType errorType;
 
     /**
-     * The format of the sense data as determined by the {@link #responseCode}
-     * variable.
+     * The format of the sense data as determined by the {@link #responseCode} variable.
      */
     protected final SenseDataFormat senseDataFormat;
 
@@ -68,11 +65,8 @@ public abstract class SenseData implements ISerializable {
      * @param additionalSenseCodeAndQualifier
      *            a more specific description of the error
      */
-    public SenseData(
-            final ErrorType errorType,
-            final SenseDataFormat senseDataFormat,
-            final SenseKey senseKey,
-            final AdditionalSenseCodeAndQualifier additionalSenseCodeAndQualifier) {
+    public SenseData(final ErrorType errorType, final SenseDataFormat senseDataFormat,
+        final SenseKey senseKey, final AdditionalSenseCodeAndQualifier additionalSenseCodeAndQualifier) {
         this.errorType = errorType;
         this.senseDataFormat = senseDataFormat;
         responseCode = getReponseCodeFor(errorType, senseDataFormat);
@@ -90,8 +84,8 @@ public abstract class SenseData implements ISerializable {
      *            a sense data format
      * @return the proper response code
      */
-    public static final int getReponseCodeFor(final ErrorType errorType,
-            final SenseDataFormat senseDataFormat) {
+    public static final int
+        getReponseCodeFor(final ErrorType errorType, final SenseDataFormat senseDataFormat) {
         if (senseDataFormat == SenseDataFormat.FIXED) {
             if (errorType == ErrorType.CURRENT)
                 return 0x70;

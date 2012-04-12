@@ -13,8 +13,7 @@ import org.jscsi.target.util.ReadWrite;
  * @see CommandDescriptorBlock
  * @author Andreas Ergenzinger
  */
-public final class FieldPointerSenseKeySpecificData extends
-        SenseKeySpecificData {
+public final class FieldPointerSenseKeySpecificData extends SenseKeySpecificData {
 
     /**
      * A command data (C/D) bit set to one indicates that the illegal parameter
@@ -49,20 +48,17 @@ public final class FieldPointerSenseKeySpecificData extends
      */
     private final short fieldPointer;
 
-    public FieldPointerSenseKeySpecificData(
-            final boolean senseKeySpecificDataValid, final boolean commandData,
-            final boolean bitPointerValid, final int bitPointer,
-            final int fieldPointer) {
+    public FieldPointerSenseKeySpecificData(final boolean senseKeySpecificDataValid,
+        final boolean commandData, final boolean bitPointerValid, final int bitPointer, final int fieldPointer) {
         super(senseKeySpecificDataValid);
         this.commandData = commandData;
         this.bitPointerValid = bitPointerValid;
         this.bitPointer = bitPointer;
-        this.fieldPointer = (short) fieldPointer;
+        this.fieldPointer = (short)fieldPointer;
     }
 
     @Override
-    protected void serializeSpecificFields(final ByteBuffer byteBuffer,
-            final int index) {
+    protected void serializeSpecificFields(final ByteBuffer byteBuffer, final int index) {
 
         byte b = byteBuffer.get(index);// SKSV bit has already been set and has
                                        // to be preserved
@@ -80,7 +76,6 @@ public final class FieldPointerSenseKeySpecificData extends
         byteBuffer.put(index, b);
 
         // field pointer
-        ReadWrite.writeTwoByteInt(byteBuffer, fieldPointer,
-                byteBuffer.position());
+        ReadWrite.writeTwoByteInt(byteBuffer, fieldPointer, byteBuffer.position());
     }
 }

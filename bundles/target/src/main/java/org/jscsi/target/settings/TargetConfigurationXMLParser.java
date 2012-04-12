@@ -19,23 +19,21 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class TargetConfigurationXMLParser
-{
-    public static final String TARGET_LIST_ELEMENT_NAME = "TargetList"; // Name of node that contains list of targets
-    
-    public static final String TARGET_ELEMENT_NAME = "Target";  // Name for nodes that contain a target
+public class TargetConfigurationXMLParser {
+    public static final String TARGET_LIST_ELEMENT_NAME = "TargetList"; // Name of node that contains list of
+                                                                        // targets
+
+    public static final String TARGET_ELEMENT_NAME = "Target"; // Name for nodes that contain a target
     // Target configuration elements
     private static final String FILE_PATH_ELEMENT_NAME = "FilePath";
     public static final String STORAGE_FILE_ELEMENT_NAME = "StorageFile";
-    
-    public static final String GLOBAL_CONFIG_ELEMENT_NAME = "GlobalConfig"; // Name of node that contains global configuration
-    
+
+    public static final String GLOBAL_CONFIG_ELEMENT_NAME = "GlobalConfig"; // Name of node that contains
+                                                                            // global configuration
+
     // Global configuration elements
     public static final String ALLOW_SLOPPY_NEGOTIATION_ELEMENT_NAME = "AllowSloppyNegotiation";
     public static final String PORT_ELEMENT_NAME = "Port";
-
-
-
 
     /**
      * The file name of the configuration file.
@@ -51,41 +49,34 @@ public class TargetConfigurationXMLParser
     /**
      * The primary folder containing all configuration files.
      */
-    public static final File RELEASE_CONFIGURATION_DIRECTORY = new File(
-            new StringBuilder(System.getProperty("user.dir")).append(
-                    File.separator).toString());
+    public static final File RELEASE_CONFIGURATION_DIRECTORY = new File(new StringBuilder(System
+        .getProperty("user.dir")).append(File.separator).toString());
 
     /**
-     * The back-up folder which will be searched for the <code>xsd</code> and
-     * <code>xml</code>files if they cannot be found in the
-     * {@link #RELEASE_CONFIGURATION_DIRECTORY}.
+     * The back-up folder which will be searched for the <code>xsd</code> and <code>xml</code>files if they
+     * cannot be found in the {@link #RELEASE_CONFIGURATION_DIRECTORY}.
      */
-    public static final File DEVELOPMENT_CONFIGURATION_DIRECTORY = new File(
-            new StringBuilder(System.getProperty("user.dir"))
-                    .append(File.separator).append("src")
-                    .append(File.separator).append("main")
-                    .append(File.separator).append("resources")
-                    .append(File.separator).toString());
+    public static final File DEVELOPMENT_CONFIGURATION_DIRECTORY = new File(new StringBuilder(System
+        .getProperty("user.dir")).append(File.separator).append("src").append(File.separator).append("main")
+        .append(File.separator).append("resources").append(File.separator).toString());
 
     /**
      * The <code>xsd</code> file containing the schema information for all
      * target-specific settings.
      */
-    public static final File CONFIGURATION_FILE = getFile(
-            RELEASE_CONFIGURATION_DIRECTORY,
-            DEVELOPMENT_CONFIGURATION_DIRECTORY, CONFIGURATION_FILE_NAME);
+    public static final File CONFIGURATION_FILE = getFile(RELEASE_CONFIGURATION_DIRECTORY,
+        DEVELOPMENT_CONFIGURATION_DIRECTORY, CONFIGURATION_FILE_NAME);
 
     /**
      * The <code>xml</code> file containing all target-specific settings.
      */
-    public static final File SCHEMA_FILE = getFile(
-            RELEASE_CONFIGURATION_DIRECTORY,
-            DEVELOPMENT_CONFIGURATION_DIRECTORY, SCHEMA_FILE_NAME);
+    public static final File SCHEMA_FILE = getFile(RELEASE_CONFIGURATION_DIRECTORY,
+        DEVELOPMENT_CONFIGURATION_DIRECTORY, SCHEMA_FILE_NAME);
 
     /**
      * Searches and tries to return a {@link File} with the specified
-     * <i>fileName</i> from the given <i>mainDirectory</i>. If this {@link File}
-     * does not exist, a {@link File} with the specified <i>fileName</i> from
+     * <i>fileName</i> from the given <i>mainDirectory</i>. If this {@link File} does not exist, a
+     * {@link File} with the specified <i>fileName</i> from
      * the given <i>backUpDirectory</i> will be returned.
      * 
      * @param mainDirectory
@@ -96,19 +87,17 @@ public class TargetConfigurationXMLParser
      *            the name of the file without path information
      * @return a {@link File} that may or may not exist
      */
-    private static File getFile(final File mainDirectory,
-            final File backUpDirectory, String fileName) {
+    private static File getFile(final File mainDirectory, final File backUpDirectory, String fileName) {
         final File file = new File(mainDirectory, fileName);
         if (file.exists())
             return file;
         return new File(backUpDirectory, fileName);
     }
 
-    public Document parse() throws SAXException, ParserConfigurationException, IOException
-    {
+    public Document parse() throws SAXException, ParserConfigurationException, IOException {
         return parse(SCHEMA_FILE, CONFIGURATION_FILE);
     }
-    
+
     /**
      * Reads the given configuration file in memory and creates a DOM
      * representation.
@@ -121,19 +110,16 @@ public class TargetConfigurationXMLParser
      * @throws IOException
      *             If any IO errors occur.
      */
-    public Document parse(final File schemaLocation,
-            final File configFile) throws SAXException,
-            ParserConfigurationException, IOException {
+    public Document parse(final File schemaLocation, final File configFile) throws SAXException,
+        ParserConfigurationException, IOException {
 
-        final SchemaFactory schemaFactory = SchemaFactory
-                .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         final Schema schema = schemaFactory.newSchema(schemaLocation);
 
         // create a validator for the document
         final Validator validator = schema.newValidator();
 
-        final DocumentBuilderFactory domFactory = DocumentBuilderFactory
-                .newInstance();
+        final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
         domFactory.setNamespaceAware(true); // never forget this
         final DocumentBuilder builder = domFactory.newDocumentBuilder();
         final Document doc = builder.parse(configFile);
@@ -142,13 +128,13 @@ public class TargetConfigurationXMLParser
         final DOMResult result = new DOMResult();
 
         validator.validate(source, result);
-        return (Document) result.getNode();
+        return (Document)result.getNode();
     }
-    
-    public TargetConfiguration parseSettings() throws SAXException, ParserConfigurationException, IOException
-    {
+
+    public TargetConfiguration parseSettings() throws SAXException, ParserConfigurationException, IOException {
         return parseSettings(parse().getDocumentElement());
     }
+
     /**
      * Parses all settings form the main configuration file.
      * 
@@ -158,11 +144,10 @@ public class TargetConfigurationXMLParser
     public TargetConfiguration parseSettings(final Element root) throws IOException {
         // TargetName
         TargetConfiguration returnConfiguration = new TargetConfiguration();
-        Element targetListNode = (Element) root.getElementsByTagName(TARGET_LIST_ELEMENT_NAME).item(0);
+        Element targetListNode = (Element)root.getElementsByTagName(TARGET_LIST_ELEMENT_NAME).item(0);
         NodeList targetList = targetListNode.getElementsByTagName(TARGET_ELEMENT_NAME);
-        for (int curTargetNum = 0; curTargetNum < targetList.getLength(); curTargetNum++)
-        {
-            TargetInfo curTargetInfo = parseTargetElement((Element) targetList.item(curTargetNum));
+        for (int curTargetNum = 0; curTargetNum < targetList.getLength(); curTargetNum++) {
+            TargetInfo curTargetInfo = parseTargetElement((Element)targetList.item(curTargetNum));
             returnConfiguration.addTargetInfo(curTargetInfo);
         }
 
@@ -171,35 +156,32 @@ public class TargetConfigurationXMLParser
         // port
         if (root.getElementsByTagName(PORT_ELEMENT_NAME).getLength() > 0)
             returnConfiguration.setPort(Integer.parseInt(root.getElementsByTagName(PORT_ELEMENT_NAME).item(0)
-                    .getTextContent()));
+                .getTextContent()));
         else
             returnConfiguration.setPort(3260);
 
-
         // support sloppy text parameter negotiation (i.e. the jSCSI Initiator)?
-        final Node allowSloppyNegotiationNode = root.getElementsByTagName(
-                ALLOW_SLOPPY_NEGOTIATION_ELEMENT_NAME).item(0);
+        final Node allowSloppyNegotiationNode =
+            root.getElementsByTagName(ALLOW_SLOPPY_NEGOTIATION_ELEMENT_NAME).item(0);
         if (allowSloppyNegotiationNode == null)
             returnConfiguration.setAllowSloppyNegotiation(false);
         else
-            returnConfiguration.setAllowSloppyNegotiation(Boolean
-                    .parseBoolean(allowSloppyNegotiationNode.getTextContent()));
-        
+            returnConfiguration.setAllowSloppyNegotiation(Boolean.parseBoolean(allowSloppyNegotiationNode
+                .getTextContent()));
+
         return returnConfiguration;
     }
-        
-    public TargetInfo parseTargetElement(Element targetElement)
-    {
-        String targetName = targetElement.getElementsByTagName(TextKeyword.TARGET_NAME).item(0)
-                .getTextContent();
+
+    public TargetInfo parseTargetElement(Element targetElement) {
+        String targetName =
+            targetElement.getElementsByTagName(TextKeyword.TARGET_NAME).item(0).getTextContent();
         // TargetAlias (optional)
-        Node targetAliasNode = targetElement.getElementsByTagName(
-                TextKeyword.TARGET_ALIAS).item(0);
+        Node targetAliasNode = targetElement.getElementsByTagName(TextKeyword.TARGET_ALIAS).item(0);
         String targetAlias = null;
         if (targetAliasNode != null)
             targetAlias = targetAliasNode.getTextContent();
-        NodeList fileProperties = targetElement
-                .getElementsByTagName(STORAGE_FILE_ELEMENT_NAME).item(0).getChildNodes();
+        NodeList fileProperties =
+            targetElement.getElementsByTagName(STORAGE_FILE_ELEMENT_NAME).item(0).getChildNodes();
         String storageFilePath = null;
         for (int i = 0; i < fileProperties.getLength(); ++i) {
             if (FILE_PATH_ELEMENT_NAME.equals(fileProperties.item(i).getNodeName()))
@@ -207,8 +189,9 @@ public class TargetConfigurationXMLParser
         }
         if (storageFilePath == null)
             storageFilePath = "storage.dat";
-        
-        StorageFileTargetInfo returnInfo = new StorageFileTargetInfo(targetName, targetAlias, storageFilePath);
+
+        StorageFileTargetInfo returnInfo =
+            new StorageFileTargetInfo(targetName, targetAlias, storageFilePath);
         return returnInfo;
     }
 }

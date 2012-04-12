@@ -11,12 +11,11 @@ import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.settings.SettingsException;
 
 /**
- * Instances of this class represent a connection's phase (see
- * {@link TargetConnection} for a description of the relationship between
+ * Instances of this class represent a connection's phase (see {@link TargetConnection} for a description of
+ * the relationship between
  * stages, phases, connections, and sessions).
  * <p>
- * To start a phase, one of the <i>execute</i> methods must be called, which one
- * is sub-class-specific.
+ * To start a phase, one of the <i>execute</i> methods must be called, which one is sub-class-specific.
  * 
  * @author Andreas Ergenzinger
  */
@@ -58,10 +57,8 @@ public abstract class TargetPhase {
      *             if the target tries to access a parameter that has not been
      *             declared or negotiated and that has no default value
      */
-    public boolean execute(ProtocolDataUnit pdu)
-            throws OperationNotSupportedException, IOException,
-            InterruptedException, InternetSCSIException, DigestException,
-            SettingsException {
+    public boolean execute(ProtocolDataUnit pdu) throws OperationNotSupportedException, IOException,
+        InterruptedException, InternetSCSIException, DigestException, SettingsException {
         throw new OperationNotSupportedException();
     }
 
@@ -84,9 +81,8 @@ public abstract class TargetPhase {
      *             if the target tries to access a parameter that has not been
      *             declared or negotiated and that has no default value
      */
-    public boolean execute() throws OperationNotSupportedException,
-            InternetSCSIException, DigestException, IOException,
-            InterruptedException, SettingsException {
+    public boolean execute() throws OperationNotSupportedException, InternetSCSIException, DigestException,
+        IOException, InterruptedException, SettingsException {
         throw new OperationNotSupportedException();
     }
 

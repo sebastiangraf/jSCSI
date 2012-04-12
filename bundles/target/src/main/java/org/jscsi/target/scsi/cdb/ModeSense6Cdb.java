@@ -8,8 +8,7 @@ import org.jscsi.target.util.BitManip;
 import org.jscsi.target.util.ReadWrite;
 
 /**
- * This class represents Command Descriptor Blocks for the
- * <code>MODE SENSE (6)</code> SCSI command.
+ * This class represents Command Descriptor Blocks for the <code>MODE SENSE (6)</code> SCSI command.
  * 
  * @author Andreas Ergenzinger
  */
@@ -58,7 +57,7 @@ public final class ModeSense6Cdb extends CommandDescriptorBlock {
 
         // DBD
         disableBlockDescriptors = BitManip.getBit(buffer.get(1),// byte
-                3);// bit number
+            3);// bit number
 
         // PC
         int i = (buffer.get(2) >> 6) & 3;

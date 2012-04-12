@@ -60,12 +60,10 @@ public final class DescriptorFormatSenseData extends SenseData {
      * @param senseDataDescriptors
      *            more specific error information
      */
-    public DescriptorFormatSenseData(final ErrorType errorType,
-            final SenseKey senseKey,
-            AdditionalSenseCodeAndQualifier additionalSenseCodeAndQualifier,
-            SenseDataDescriptor... senseDataDescriptors) {
-        super(errorType, SenseDataFormat.DESCRIPTOR, senseKey,
-                additionalSenseCodeAndQualifier);
+    public DescriptorFormatSenseData(final ErrorType errorType, final SenseKey senseKey,
+        AdditionalSenseCodeAndQualifier additionalSenseCodeAndQualifier,
+        SenseDataDescriptor... senseDataDescriptors) {
+        super(errorType, SenseDataFormat.DESCRIPTOR, senseKey, additionalSenseCodeAndQualifier);
         this.senseDataDescriptors = senseDataDescriptors;
     }
 
@@ -74,27 +72,24 @@ public final class DescriptorFormatSenseData extends SenseData {
         byteBuffer.position(index);
 
         // response code and valid
-        byte b = (byte) getReponseCodeFor(errorType, SenseDataFormat.DESCRIPTOR);
+        byte b = (byte)getReponseCodeFor(errorType, SenseDataFormat.DESCRIPTOR);
         b = BitManip.getByteWithBitSet(b, 7, false);// bit 7 is reserved
         byteBuffer.put(b);// index
 
         // sense key
-        b = (byte) (senseKey.getValue() & 15);
+        b = (byte)(senseKey.getValue() & 15);
         byteBuffer.put(b);// index + 1
 
         // additional sense code and additional sense code qualifier
-        ReadWrite.writeTwoByteInt(byteBuffer,
-                additionalSenseCodeAndQualifier.getValue(), index
-                        + ADDITIONAL_SENSE_CODE_INDEX);
+        ReadWrite.writeTwoByteInt(byteBuffer, additionalSenseCodeAndQualifier.getValue(), index
+            + ADDITIONAL_SENSE_CODE_INDEX);
 
         // bytes 4-6 are reserved
-        for (int i = index + RESERVED_BYTES_MIN_INDEX; i < index
-                + RESERVED_BYTES_MAX_INDEX; ++i)
-            byteBuffer.put(i, (byte) 0);
+        for (int i = index + RESERVED_BYTES_MIN_INDEX; i < index + RESERVED_BYTES_MAX_INDEX; ++i)
+            byteBuffer.put(i, (byte)0);
 
         // additional sense length
-        byteBuffer.put(index + ADDITIONAL_SENSE_LENGTH_INDEX,
-                (byte) getAdditionalSenseLength());
+        byteBuffer.put(index + ADDITIONAL_SENSE_LENGTH_INDEX, (byte)getAdditionalSenseLength());
 
         // sense data descriptors
         int descriptorIndex = HEADER_LENGTH;
@@ -109,8 +104,7 @@ public final class DescriptorFormatSenseData extends SenseData {
     /**
      * Returns the value of the ADDITIONAL SENSE LENGTH field.
      * <p>
-     * This is the total length of all included {@link SenseDataDescriptor}
-     * objects.
+     * This is the total length of all included {@link SenseDataDescriptor} objects.
      * 
      * @return the value of the ADDITIONAL SENSE LENGTH field
      */
@@ -126,7 +120,7 @@ public final class DescriptorFormatSenseData extends SenseData {
 
     public int size() {
         return getAdditionalSenseLength()// is never negative
-                + HEADER_LENGTH;
+            + HEADER_LENGTH;
     }
 
 }

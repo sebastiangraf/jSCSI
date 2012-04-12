@@ -3,8 +3,7 @@ package org.jscsi.target.scsi.cdb;
 import java.nio.ByteBuffer;
 
 /**
- * This class represents Command Descriptor Blocks for the
- * <code>TEST UNIT READY</code> SCSI command.
+ * This class represents Command Descriptor Blocks for the <code>TEST UNIT READY</code> SCSI command.
  * 
  * @author Andreas Ergenzinger
  */

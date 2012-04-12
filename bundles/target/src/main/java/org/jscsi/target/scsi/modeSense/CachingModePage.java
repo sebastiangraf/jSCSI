@@ -152,8 +152,7 @@ public final class CachingModePage extends Page_0FormatModePage {
      * <td>0x1</td>
      * <td>The device server should replace data put into the cache during a<br/>
      * WRITE command or a WRITE AND VERIFY command sooner (i.e., has lower<br/>
-     * priority) than data placed into the cache by other means (e.g.,
-     * pre-fetch).</td>
+     * priority) than data placed into the cache by other means (e.g., pre-fetch).</td>
      * </tr>
      * <tr>
      * <td>0x2 to 0xE</td>
@@ -164,8 +163,7 @@ public final class CachingModePage extends Page_0FormatModePage {
      * <td>0xF</td>
      * <td>The device server should not replace data put into the cache during<br/>
      * a WRITE command or a WRITE AND VERIFY command if there is other data in<br/>
-     * the cache that was placed into the cache by other means (e.g., pre-fetch)
-     * <br/>
+     * the cache that was placed into the cache by other means (e.g., pre-fetch) <br/>
      * and the data in the cache may be replaced.</td>
      * </tr>
      * </table>
@@ -183,16 +181,13 @@ public final class CachingModePage extends Page_0FormatModePage {
      * then all anticipatory pre-fetching is disabled for any request for data,
      * including those with a transfer length of zero.
      * <p>
-     * An anticipatory pre-fetch occurs when data is placed in the cache that
-     * has not been requested. This may happen in conjunction with the reading
-     * of data that has been requested. The DISABLE PRE-FETCH TRANSFER LENGTH
-     * field, the MINIMUM PRE-FETCH field, the MAXIMUM PRE-FETCH field, and the
-     * MAXIMUM PRE-FETCH CEILING field give an indication to the device server
-     * how it should manage the cache based on the most recent READ command. An
-     * anticipatory pre-fetch may occur based on other information. These fields
-     * are only recommendations to the device server and should not cause a
-     * CHECK CONDITION to occur if the device server is not able to satisfy the
-     * request.
+     * An anticipatory pre-fetch occurs when data is placed in the cache that has not been requested. This may
+     * happen in conjunction with the reading of data that has been requested. The DISABLE PRE-FETCH TRANSFER
+     * LENGTH field, the MINIMUM PRE-FETCH field, the MAXIMUM PRE-FETCH field, and the MAXIMUM PRE-FETCH
+     * CEILING field give an indication to the device server how it should manage the cache based on the most
+     * recent READ command. An anticipatory pre-fetch may occur based on other information. These fields are
+     * only recommendations to the device server and should not cause a CHECK CONDITION to occur if the device
+     * server is not able to satisfy the request.
      */
     private final int disablePrefetchTransferLength;
 
@@ -202,26 +197,21 @@ public final class CachingModePage extends Page_0FormatModePage {
      * subsequent commands. The field contains either:
      * <ol>
      * <li>a number of logical blocks, if the MF bit is set to zero; or</li>
-     * <li>a scalar multiplier of the value in the TRANSFER LENGTH field, if the
-     * MF bit is set to one.</li>
+     * <li>a scalar multiplier of the value in the TRANSFER LENGTH field, if the MF bit is set to one.</li>
      * </ol>
      * The pre-fetching operation begins at the logical block after the last
      * logical block of a READ command.
      * <p>
-     * Pre-fetching shall always halt when it reaches the last logical block on
-     * the medium. Errors that occur during the pre-fetching operation shall not
-     * be reported to the application client unless the device server is unable
-     * to process subsequent commands correctly as a result of the error. In
-     * this case the error may be reported either as an error for that
-     * subsequent command, or as a deferred error, at the discretion of the
-     * device server and according to the rules for reporting deferred errors
-     * (see SPC-4).
+     * Pre-fetching shall always halt when it reaches the last logical block on the medium. Errors that occur
+     * during the pre-fetching operation shall not be reported to the application client unless the device
+     * server is unable to process subsequent commands correctly as a result of the error. In this case the
+     * error may be reported either as an error for that subsequent command, or as a deferred error, at the
+     * discretion of the device server and according to the rules for reporting deferred errors (see SPC-4).
      * <p>
-     * If the pre-fetch has read more than the amount of data specified by the
-     * MINIMUM PRE-FETCH field, then pre-fetching should be terminated whenever
-     * another command enters the enabled state (see SAM-4). This requirement is
-     * ignored when the MINIMUM PRE-FETCH field value is equal to the MAXIMUM
-     * PRE-FETCH field value.
+     * If the pre-fetch has read more than the amount of data specified by the MINIMUM PRE-FETCH field, then
+     * pre-fetching should be terminated whenever another command enters the enabled state (see SAM-4). This
+     * requirement is ignored when the MINIMUM PRE-FETCH field value is equal to the MAXIMUM PRE-FETCH field
+     * value.
      * 
      * @see #disablePrefetchTransferLength
      */
@@ -300,8 +290,8 @@ public final class CachingModePage extends Page_0FormatModePage {
     /**
      * The constructor.
      * <p>
-     * The meaning of all parameters is described in the member descriptions of
-     * the variables with the same name.
+     * The meaning of all parameters is described in the member descriptions of the variables with the same
+     * name.
      * 
      * @param parametersSaveable
      * @param initiatorControl
@@ -325,24 +315,17 @@ public final class CachingModePage extends Page_0FormatModePage {
      * @param numberOfCacheSegments
      * @param cacheSegmentSize
      */
-    public CachingModePage(final boolean parametersSaveable,
-            final boolean initiatorControl, final boolean abortPrefetch,
-            final boolean cachingAnalysisPermitted,
-            final boolean discontinuity, final boolean sizeEnable,
-            final boolean writebackCacheEnable,
-            final boolean multiplicationFactor, final boolean readCacheDisable,
-            final int demandReadRetentionPriority,
-            final int writeRetentionPriority,
-            final int disablePrefetchTransferLength, final int minimumPrefetch,
-            final int maximumPrefetch, final int maximumPrefetchCeiling,
-            final boolean forceSequentialWrite,
-            final boolean logicalBlockCacheSegmentSize,
-            final boolean disableReadAhead,
-            final boolean nonVolatileCacheDisabled,
-            final int numberOfCacheSegments, final int cacheSegmentSize) {
+    public CachingModePage(final boolean parametersSaveable, final boolean initiatorControl,
+        final boolean abortPrefetch, final boolean cachingAnalysisPermitted, final boolean discontinuity,
+        final boolean sizeEnable, final boolean writebackCacheEnable, final boolean multiplicationFactor,
+        final boolean readCacheDisable, final int demandReadRetentionPriority,
+        final int writeRetentionPriority, final int disablePrefetchTransferLength, final int minimumPrefetch,
+        final int maximumPrefetch, final int maximumPrefetchCeiling, final boolean forceSequentialWrite,
+        final boolean logicalBlockCacheSegmentSize, final boolean disableReadAhead,
+        final boolean nonVolatileCacheDisabled, final int numberOfCacheSegments, final int cacheSegmentSize) {
         super(parametersSaveable,// PS
-                0x08,// pageCode
-                0x12);// pageLength
+            0x08,// pageCode
+            0x12);// pageLength
         this.initiatorControl = initiatorControl;
         this.abortPrefetch = abortPrefetch;
         this.cachingAnalysisPermitted = cachingAnalysisPermitted;
@@ -351,8 +334,8 @@ public final class CachingModePage extends Page_0FormatModePage {
         this.writebackCacheEnable = writebackCacheEnable;
         this.multiplicationFactor = multiplicationFactor;
         this.readCacheDisable = readCacheDisable;
-        this.demandReadRetentionPriority = (byte) (demandReadRetentionPriority & 0xf);
-        this.writeRetentionPriority = (byte) (writeRetentionPriority & 0xf);
+        this.demandReadRetentionPriority = (byte)(demandReadRetentionPriority & 0xf);
+        this.writeRetentionPriority = (byte)(writeRetentionPriority & 0xf);
         this.disablePrefetchTransferLength = disablePrefetchTransferLength & 0xffff;
         this.minimumPrefetch = minimumPrefetch & 0xffff;
         this.maximumPrefetch = maximumPrefetch & 0xffff;
@@ -361,7 +344,7 @@ public final class CachingModePage extends Page_0FormatModePage {
         this.logicalBlockCacheSegmentSize = logicalBlockCacheSegmentSize;
         this.disableReadAhead = disableReadAhead;
         this.nonVolatileCacheDisabled = nonVolatileCacheDisabled;
-        this.numberOfCacheSegments = (short) (numberOfCacheSegments & 0xff);
+        this.numberOfCacheSegments = (short)(numberOfCacheSegments & 0xff);
         this.cacheSegmentSize = cacheSegmentSize & 0xffff;
     }
 
@@ -380,21 +363,21 @@ public final class CachingModePage extends Page_0FormatModePage {
         b = BitManip.getByteWithBitSet(b, 0, readCacheDisable);
         buffer.put(b);
         // serialize byte 3
-        b = (byte) ((demandReadRetentionPriority << 4) | writeRetentionPriority);
+        b = (byte)((demandReadRetentionPriority << 4) | writeRetentionPriority);
         buffer.put(b);
         // bytes 4 to 11 (unsigned short fields)
         ReadWrite.writeTwoByteInt(buffer,// buffer
-                disablePrefetchTransferLength,// value
-                index + 4);// index
+            disablePrefetchTransferLength,// value
+            index + 4);// index
         ReadWrite.writeTwoByteInt(buffer,// buffer
-                minimumPrefetch,// value
-                index + 6);// index
+            minimumPrefetch,// value
+            index + 6);// index
         ReadWrite.writeTwoByteInt(buffer,// buffer
-                maximumPrefetch,// value
-                index + 8);// index
+            maximumPrefetch,// value
+            index + 8);// index
         ReadWrite.writeTwoByteInt(buffer,// buffer
-                maximumPrefetchCeiling,// value
-                index + 10);// index
+            maximumPrefetchCeiling,// value
+            index + 10);// index
         // byte 12
         b = 0;
         b = BitManip.getByteWithBitSet(b, 7, forceSequentialWrite);
@@ -404,11 +387,11 @@ public final class CachingModePage extends Page_0FormatModePage {
         buffer.position(index + 12);
         buffer.put(b);
         // byte 13
-        buffer.put((byte) numberOfCacheSegments);
+        buffer.put((byte)numberOfCacheSegments);
         // bytes 14 and 15
         ReadWrite.writeTwoByteInt(buffer,// buffer
-                cacheSegmentSize,// value
-                index + 14);// index
+            cacheSegmentSize,// value
+            index + 14);// index
         // the remaining bytes are reserved or obsolete
     }
 

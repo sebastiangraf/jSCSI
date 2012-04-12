@@ -20,8 +20,8 @@ public abstract class ReadOrWriteStage extends TargetFullFeatureStage {
     /**
      * Checks if the <code>LOGICAL BLOCK ADDRESS</code> and <code>TRANSFER
      * LENGTH</code> fields in the passed {@link ReadOrWriteCdb} are acceptable.
-     * If illegal values are detected, an instance of
-     * {@link FieldPointerSenseKeySpecificData} describing the problem will be
+     * If illegal values are detected, an instance of {@link FieldPointerSenseKeySpecificData} describing the
+     * problem will be
      * added to the {@link ReadOrWriteCdb}'s queue-
      * 
      * @param cdb
@@ -30,8 +30,8 @@ public abstract class ReadOrWriteStage extends TargetFullFeatureStage {
      */
     protected void checkOverAndUnderflow(final ReadOrWriteCdb cdb) {
         // check if requested blocks are out of bounds
-        final int boundsCheck = session.getStorageModule().checkBounds(
-                cdb.getLogicalBlockAddress(), cdb.getTransferLength());
+        final int boundsCheck =
+            session.getStorageModule().checkBounds(cdb.getLogicalBlockAddress(), cdb.getTransferLength());
         // add illegal field pointer, or not
         if (boundsCheck == 1)
             cdb.addIllegalFieldPointerForLogicalBlockAddress();

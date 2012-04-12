@@ -18,11 +18,10 @@ import java.io.RandomAccessFile;
 public class RandomAccessStorageModule extends AbstractStorageModule {
 
     /**
-     * The mode {@link String} parameter used during the instantiation of
-     * {@link #randomAccessFile}.
+     * The mode {@link String} parameter used during the instantiation of {@link #randomAccessFile}.
      * <p>
-     * This will create a {@link RandomAccessFile} with both read and write
-     * privileges that will immediately save all written data in the file.
+     * This will create a {@link RandomAccessFile} with both read and write privileges that will immediately
+     * save all written data in the file.
      */
     private static final String MODE = "rwd";
 
@@ -34,10 +33,9 @@ public class RandomAccessStorageModule extends AbstractStorageModule {
     private RandomAccessFile randomAccessFile;
 
     /**
-     * This is the build method for creating instances of
-     * {@link RandomAccessStorageModule}. If there is no file to be found at the
-     * specified <code>filePath</code>, then a {@link FileNotFoundException}
-     * will be thrown.
+     * This is the build method for creating instances of {@link RandomAccessStorageModule}. If there is no
+     * file to be found at the
+     * specified <code>filePath</code>, then a {@link FileNotFoundException} will be thrown.
      * 
      * @param filePath
      *            a path leading to the file serving as storage medium
@@ -45,12 +43,11 @@ public class RandomAccessStorageModule extends AbstractStorageModule {
      * @throws FileNotFoundException
      *             if the specified file does not exist
      */
-    public static final RandomAccessStorageModule open(final String filePath)
-            throws FileNotFoundException {
+    public static final RandomAccessStorageModule open(final String filePath) throws FileNotFoundException {
         final File file = new File(filePath);
         final long sizeInBlocks = file.length() / VIRTUAL_BLOCK_SIZE;
-        final RandomAccessFile randomAccessFile = new RandomAccessFile(file,
-                MODE);// throws exc. if !file.exists()
+        final RandomAccessFile randomAccessFile = new RandomAccessFile(file, MODE);// throws exc. if
+                                                                                   // !file.exists()
         return new RandomAccessStorageModule(sizeInBlocks, randomAccessFile);
     }
 
@@ -64,23 +61,20 @@ public class RandomAccessStorageModule extends AbstractStorageModule {
      * @throws FileNotFoundException
      *             if the specified file does not exist
      */
-    protected RandomAccessStorageModule(final long sizeInBlocks,
-            final RandomAccessFile randomAccessFile)
-            throws FileNotFoundException {
+    protected RandomAccessStorageModule(final long sizeInBlocks, final RandomAccessFile randomAccessFile)
+        throws FileNotFoundException {
         super(sizeInBlocks);
         this.randomAccessFile = randomAccessFile;
     }
 
     @Override
-    public void read(byte[] bytes, int bytesOffset, int length,
-            long storageIndex) throws IOException {
+    public void read(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
         randomAccessFile.seek(storageIndex);
         randomAccessFile.read(bytes, bytesOffset, length);
     }
 
     @Override
-    public void write(byte[] bytes, int bytesOffset, int length,
-            long storageIndex) throws IOException {
+    public void write(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
         randomAccessFile.seek(storageIndex);
         randomAccessFile.write(bytes, bytesOffset, length);
     }

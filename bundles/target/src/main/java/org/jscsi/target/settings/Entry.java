@@ -17,9 +17,8 @@ import org.jscsi.target.TargetServer;
  * the respective <i>key=value</i> pair and returning the negotiated value, if
  * appropriate.
  * <p>
- * For brevity, the term "negotiated" will be used in the following in a way
- * that can either mean "declared or negotiated", unless the distinction is
- * evident by context.
+ * For brevity, the term "negotiated" will be used in the following in a way that can either mean
+ * "declared or negotiated", unless the distinction is evident by context.
  * 
  * @author Andreas Ergenzinger
  */
@@ -59,9 +58,8 @@ public abstract class Entry {
      * This variable is used to detect illegal attempts to renegotiate a
      * previously negotiated or declared text parameter.
      * <p>
-     * This variable will be set back to <code>false</code> after each
-     * negotiation task (login phase, or text parameter negotiation stage).
-     * Renegotiation accross stages/tasks can be prevented by initializing the
+     * This variable will be set back to <code>false</code> after each negotiation task (login phase, or text
+     * parameter negotiation stage). Renegotiation accross stages/tasks can be prevented by initializing the
      * {@link #use} variable accordingly.
      * 
      * @see #resetAlreadyNegotiated()
@@ -84,9 +82,8 @@ public abstract class Entry {
      * @param defaultValue
      *            the default value or <code>null</code>
      */
-    public Entry(final KeySet keySet, final NegotiationType negotiationType,
-            final Use use, final NegotiationStatus negotiationStatus,
-            Object defaultValue) {
+    public Entry(final KeySet keySet, final NegotiationType negotiationType, final Use use,
+        final NegotiationStatus negotiationStatus, Object defaultValue) {
         this.keySet = keySet;
         this.negotiationType = negotiationType;
         this.use = use;
@@ -97,8 +94,7 @@ public abstract class Entry {
     /**
      * Logs an error message containing all {@link #keySet} keys as well as the
      * passed {@link String} parameter and indicates an unsuccessful negotiation
-     * by setting {@link #negotiationStatus} to
-     * {@link NegotiationStatus#REJECTED}.
+     * by setting {@link #negotiationStatus} to {@link NegotiationStatus#REJECTED}.
      * 
      * @param logMessage
      */
@@ -144,9 +140,8 @@ public abstract class Entry {
      *         errors occured
      */
     public final boolean negotiate(TargetServer target, final LoginStage loginStage,
-            final boolean leadingConnection, final boolean initialPdu,
-            final String key, final String values,
-            final Collection<String> responseKeyValuePairs) {
+        final boolean leadingConnection, final boolean initialPdu, final String key, final String values,
+        final Collection<String> responseKeyValuePairs) {
 
         // (re)check key (just in case), this should have been checked before
         // calling this method
@@ -164,8 +159,7 @@ public abstract class Entry {
 
         // check use code
         if (!use.checkUse(loginStage, leadingConnection, initialPdu)) {
-            fail("wrong use: " + use + ", " + loginStage + ", "
-                    + leadingConnection + ", " + initialPdu);
+            fail("wrong use: " + use + ", " + loginStage + ", " + leadingConnection + ", " + initialPdu);
             return false;
         }
 
@@ -223,8 +217,8 @@ public abstract class Entry {
     /**
      * Sets {@link #alreadyNegotiated} back to <code>false</code>.
      * <p>
-     * This method must be used at the end of each negotiation task, i.e. at the
-     * end of the login phase and the FFP text negotiation stage.
+     * This method must be used at the end of each negotiation task, i.e. at the end of the login phase and
+     * the FFP text negotiation stage.
      */
     void resetAlreadyNegotiated() {
         alreadyNegotiated = false;
@@ -284,15 +278,13 @@ public abstract class Entry {
      * @param values
      *            a sub-class-specific {@link Object}, representing a single, a
      *            range, or a list of values sent by the initiator
-     * @return <code>false</code> if the iSCSI standard has been violated,
-     *         <code>true</code> if not
+     * @return <code>false</code> if the iSCSI standard has been violated, <code>true</code> if not
      */
     protected abstract boolean inProtocolValueRange(Object values);
 
     /**
      * Receives a sub-class-specific {@link Object}, representing a legal
-     * parameter value declared by the initiator and accepts it as the new
-     * {@link #value}.
+     * parameter value declared by the initiator and accepts it as the new {@link #value}.
      * 
      * @param values
      *            sub-class-specific representation of a single <i>value</i>
@@ -306,8 +298,7 @@ public abstract class Entry {
      * range, or a single legal parameter value offered by the initiator and
      * tries to select a value from that offer. If none of the offered values is
      * supported by the jSCSI Target, <code>null</code> is returned, otherwise
-     * the selection is accepted as the new {@link #value} and returned as a
-     * {@link String}. {@link #value}.
+     * the selection is accepted as the new {@link #value} and returned as a {@link String}. {@link #value}.
      * 
      * @param values
      *            a sub-class-specific {@link Object}, representing a list, a
@@ -336,11 +327,11 @@ public abstract class Entry {
     public abstract Entry copy();
 
     /**
-     * Returns <code>true</code> if {@link #negotiationStatus} is
-     * {@link NegotiationStatus#ACCEPTED} and <code>false</code> if it is not.
+     * Returns <code>true</code> if {@link #negotiationStatus} is {@link NegotiationStatus#ACCEPTED} and
+     * <code>false</code> if it is not.
      * 
-     * @return <code>true</code> if {@link #negotiationStatus} is
-     *         {@link NegotiationStatus#ACCEPTED}, <code>false</code> if not
+     * @return <code>true</code> if {@link #negotiationStatus} is {@link NegotiationStatus#ACCEPTED},
+     *         <code>false</code> if not
      */
     public boolean checkAccepted() {
         return negotiationStatus == NegotiationStatus.ACCEPTED;

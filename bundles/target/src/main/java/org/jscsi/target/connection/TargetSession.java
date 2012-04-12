@@ -12,19 +12,19 @@ import org.jscsi.target.util.SerialArithmeticNumber;
  * A class for objects representing an iSCSI session with all necessary
  * variables.
  * <p>
- * Currently, a {@link TargetSession} can only have <b>one</b>
- * {@link TargetConnection}, i.e. <code>MaxConnections=1</code>.
+ * Currently, a {@link TargetSession} can only have <b>one</b> {@link TargetConnection}, i.e.
+ * <code>MaxConnections=1</code>.
  * 
  * @author Andreas Ergenzinger
  */
 public class TargetSession {
 
     /**
-     * Returns the value of the next {@link TargetSession} object's
-     * {@link #targetSessionIdentifyingHandle} variable.
+     * Returns the value of the next {@link TargetSession} object's {@link #targetSessionIdentifyingHandle}
+     * variable.
      * 
-     * @return the value of the next {@link TargetSession} object's
-     *         {@link #targetSessionIdentifyingHandle} variable
+     * @return the value of the next {@link TargetSession} object's {@link #targetSessionIdentifyingHandle}
+     *         variable
      */
     private static short getNextTargetSessionIdentifyingHandle() {
         short handle = nextTargetSessionIdentifyingHandle++;// no concurrency
@@ -39,12 +39,12 @@ public class TargetSession {
      * The {@link TargetServer} that this session is associated with
      */
     private TargetServer targetServer;
-    
+
     /**
      * The {@link Target} that this session is associated with
      */
     private Target target;
-    
+
     /**
      * The {@link TargetConnection} used for exchanging messages and data with
      * the session's initiator endpoint.
@@ -67,8 +67,8 @@ public class TargetSession {
      * initiator may send without having the wait for confirmation from the
      * target that the command has finished.
      * <p>
-     * A value of <code>1</code> means that the initiator must wait for each
-     * command to finish before issuing the next one.
+     * A value of <code>1</code> means that the initiator must wait for each command to finish before issuing
+     * the next one.
      * 
      * @see #getExpectedCommandSequenceNumber()
      * @see #getMaximumCommandSequenceNumber()
@@ -109,13 +109,11 @@ public class TargetSession {
      * @param expectedCommandSequenceNumber
      *            initialization value of {@link #expectedCommandSequenceNumber}
      * @param statusSequenceNumber
-     *            the value expected by the initiator in the next
-     *            {@link ProtocolDataUnit}'s <code>StatSN</code> field
+     *            the value expected by the initiator in the next {@link ProtocolDataUnit}'s
+     *            <code>StatSN</code> field
      */
     public TargetSession(final TargetServer target, final TargetConnection connection,
-            final ISID initiatorSessionID,
-            final int expectedCommandSequenceNumber,
-            final int statusSequenceNumber) {
+        final ISID initiatorSessionID, final int expectedCommandSequenceNumber, final int statusSequenceNumber) {
         this.targetServer = target;
         // set connection variables and parameters
         connection.setSession(this);
@@ -125,15 +123,14 @@ public class TargetSession {
         // initialize ConnectionSettingsNegotiator (makes sure that settings are
         // initialized)
         sessionSettingsNegotiator = new SessionSettingsNegotiator();
-        connection
-                .initializeConnectionSettingsNegotiator(sessionSettingsNegotiator);
+        connection.initializeConnectionSettingsNegotiator(sessionSettingsNegotiator);
 
         // set session variables
         this.initiatorSessionID = initiatorSessionID;
         targetSessionIdentifyingHandle = getNextTargetSessionIdentifyingHandle();
-        this.expectedCommandSequenceNumber = new SerialArithmeticNumber(
-                expectedCommandSequenceNumber);
+        this.expectedCommandSequenceNumber = new SerialArithmeticNumber(expectedCommandSequenceNumber);
     }
+
     /**
      * Returns the session's {@link TargetServer}.
      * 
@@ -142,6 +139,7 @@ public class TargetSession {
     public TargetServer getTargetServer() {
         return targetServer;
     }
+
     /**
      * Returns the session's {@link TargetConnection}.
      * 
@@ -153,27 +151,28 @@ public class TargetSession {
 
     /**
      * Returns the session's {@link Target}
+     * 
      * @return the session's {@link Target}
      */
     public Target getTarget() {
         return target;
     }
-    
+
     /**
      * Returns the session's {@link AbstractStorageModule}.
      * 
      * @return the session's {@link AbstractStorageModule}
      */
-    public AbstractStorageModule getStorageModule()
-    {
+    public AbstractStorageModule getStorageModule() {
         return target.getStorageModule();
     }
+
     /**
      * Returns the {@link SerialArithmeticNumber} representing the next expected
      * command sequence number.
      * <p>
-     * This value will be used both during sending (<code>ExpCmdSN</code> field)
-     * and receiving (<code>CmdSN</code>) of {@link ProtocolDataUnit}s.
+     * This value will be used both during sending (<code>ExpCmdSN</code> field) and receiving (
+     * <code>CmdSN</code>) of {@link ProtocolDataUnit}s.
      * 
      * @return the {@link SerialArithmeticNumber} representing the next expected
      *         command sequence number
@@ -196,19 +195,15 @@ public class TargetSession {
      * Returns a {@link SerialArithmeticNumber} representing the maximum command
      * sequence number the target will accept.
      * <p>
-     * This value will be used both during sending (<code>MaxCmdSN</code> field)
-     * and receiving (checking if PDU's <code>CmdSN</code> lies in the command
-     * sequence number window resulting from
-     * {@link #expectedCommandSequenceNumber} and {@link #commandWindowSize}) of
-     * {@link ProtocolDataUnit}s.
+     * This value will be used both during sending (<code>MaxCmdSN</code> field) and receiving (checking if
+     * PDU's <code>CmdSN</code> lies in the command sequence number window resulting from
+     * {@link #expectedCommandSequenceNumber} and {@link #commandWindowSize}) of {@link ProtocolDataUnit}s.
      * 
      * @return the {@link SerialArithmeticNumber} representing the next expected
      *         command sequence number
      */
     SerialArithmeticNumber getMaximumCommandSequenceNumber() {
-        return new SerialArithmeticNumber(
-                expectedCommandSequenceNumber.getValue() + commandWindowSize
-                        - 1);
+        return new SerialArithmeticNumber(expectedCommandSequenceNumber.getValue() + commandWindowSize - 1);
     }
 
     /**
@@ -248,14 +243,12 @@ public class TargetSession {
     /**
      * Sets the session's type (discovery or operational).
      * <p>
-     * The type may and must be set just once. Repeated calls of this method
-     * will fail. <code>true</code> will be returned if the session type was set
-     * successfully, <code>false</code> if not.
+     * The type may and must be set just once. Repeated calls of this method will fail. <code>true</code> will
+     * be returned if the session type was set successfully, <code>false</code> if not.
      * 
      * @param sessionType
      *            the session type
-     * @return <code>true</code> if the session type was set successfully,
-     *         <code>false</code> if not
+     * @return <code>true</code> if the session type was set successfully, <code>false</code> if not
      */
     boolean setSessionType(SessionType sessionType) {
         // allow just once, accept only non-null parameter
@@ -264,20 +257,19 @@ public class TargetSession {
         this.sessionType = sessionType;
         return true;
     }
-    
+
     /**
      * Sets the target name and retrieves the target (if it exists) from the TargetServer
+     * 
      * @param targetName
      */
-    public void setTargetName(String targetName)
-    {
+    public void setTargetName(String targetName) {
         if (targetName == null)
             target = null;
         target = targetServer.getTarget(targetName);
     }
-    
-    public String getTargetName()
-    {
+
+    public String getTargetName() {
         if (target != null)
             return target.getTargetName();
         return null;

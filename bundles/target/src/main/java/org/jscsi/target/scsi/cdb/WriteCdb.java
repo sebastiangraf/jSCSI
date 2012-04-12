@@ -3,8 +3,7 @@ package org.jscsi.target.scsi.cdb;
 import java.nio.ByteBuffer;
 
 /**
- * This abstract class represents Command Descriptor Blocks for
- * <code>WRITE</code> SCSI commands.
+ * This abstract class represents Command Descriptor Blocks for <code>WRITE</code> SCSI commands.
  * 
  * @see Write6Cdb
  * @see Write10Cdb

@@ -43,8 +43,8 @@ public final class IdentificationDescriptor implements ISerializable {
      * a value of 01b or 10b, then a PIV bit set to one indicates the PROTOCOL
      * IDENTIFIER field contains a valid protocol identifier.
      * <p>
-     * If the ASSOCIATION field contains a value other than 01b or 10b, then the
-     * PIV bit contents are reserved.
+     * If the ASSOCIATION field contains a value other than 01b or 10b, then the PIV bit contents are
+     * reserved.
      */
     private final boolean protocolIdentifierValid;
 
@@ -66,11 +66,9 @@ public final class IdentificationDescriptor implements ISerializable {
      */
     private final Identifier identifier;
 
-    public IdentificationDescriptor(
-            final ProtocolIdentifier protocolIdentifier, final CodeSet codeSet,
-            final boolean protocolIdentifierValid,
-            final Association association, final IdentifierType identifierType,
-            final Identifier identifier) {
+    public IdentificationDescriptor(final ProtocolIdentifier protocolIdentifier, final CodeSet codeSet,
+        final boolean protocolIdentifierValid, final Association association,
+        final IdentifierType identifierType, final Identifier identifier) {
         this.protocolIdentifier = protocolIdentifier;
         this.codeSet = codeSet;
         this.protocolIdentifierValid = protocolIdentifierValid;
@@ -83,21 +81,19 @@ public final class IdentificationDescriptor implements ISerializable {
 
         // byte 0
         byteBuffer.position(index);
-        byte b = (byte) (((protocolIdentifier.getValue() & 15) << 4) | (codeSet
-                .getValue() & 15));
+        byte b = (byte)(((protocolIdentifier.getValue() & 15) << 4) | (codeSet.getValue() & 15));
         byteBuffer.put(b);
 
         // byte 1
-        b = (byte) (((association.getValue() & 3) << 4) | (identifierType
-                .getValue() & 15));
+        b = (byte)(((association.getValue() & 3) << 4) | (identifierType.getValue() & 15));
         b = BitManip.getByteWithBitSet(b, 7, protocolIdentifierValid);
         byteBuffer.put(b);
 
         // byte 2 is reserved
-        byteBuffer.put((byte) 0);
+        byteBuffer.put((byte)0);
 
         // byte 3
-        byteBuffer.put((byte) identifier.size());// identifier length
+        byteBuffer.put((byte)identifier.size());// identifier length
 
         // identifier
         identifier.serialize(byteBuffer, index + HEADER_LENGTH);

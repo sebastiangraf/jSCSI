@@ -11,8 +11,8 @@ import org.jscsi.target.util.BitManip;
  * SENSE-KEY-SPECIFIC DATA further defines the reason for a CHECK CONDITION SCSI
  * response status.
  * <p>
- * The definition of the SENSE KEY SPECIFIC field is determined by the value of
- * the enclosing sense data's {@link SenseData#senseKey} field.
+ * The definition of the SENSE KEY SPECIFIC field is determined by the value of the enclosing sense data's
+ * {@link SenseData#senseKey} field.
  * 
  * <table border="1">
  * <tr>
@@ -82,8 +82,7 @@ public abstract class SenseKeySpecificData implements ISerializable {
      *            the position of the first byte of the sense data descriptor in
      *            the {@link ByteBuffer}
      */
-    private final void serializeCommonFields(final ByteBuffer byteBuffer,
-            final int index) {
+    private final void serializeCommonFields(final ByteBuffer byteBuffer, final int index) {
         byteBuffer.position(index);
         byte b = 0;
         if (senseKeySpecificDataValid)
@@ -101,8 +100,7 @@ public abstract class SenseKeySpecificData implements ISerializable {
      *            the position of the first byte of the sense data descriptor in
      *            the {@link ByteBuffer}
      */
-    protected abstract void serializeSpecificFields(ByteBuffer byteBuffer,
-            final int index);
+    protected abstract void serializeSpecificFields(ByteBuffer byteBuffer, final int index);
 
     public void serialize(ByteBuffer byteBuffer, int index) {
         serializeCommonFields(byteBuffer, index);

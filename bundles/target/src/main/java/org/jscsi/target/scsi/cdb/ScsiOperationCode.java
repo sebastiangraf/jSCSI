@@ -4,25 +4,20 @@ package org.jscsi.target.scsi.cdb;
  * The OPERATION CODE of a Command Descriptor Block specifies the type of
  * command the initiator wants the target to perform.
  * <p>
- * The OPERATION CODE of the {@link CommandDescriptorBlock} has a GROUP CODE
- * field and a COMMAND CODE field. The three-bit GROUP CODE field provides for
- * eight groups of command codes. The five-bit COMMAND CODE field provides for
- * thirty-two command codes in each group. A total of 256 possible operation
- * codes exist.
+ * The OPERATION CODE of the {@link CommandDescriptorBlock} has a GROUP CODE field and a COMMAND CODE field.
+ * The three-bit GROUP CODE field provides for eight groups of command codes. The five-bit COMMAND CODE field
+ * provides for thirty-two command codes in each group. A total of 256 possible operation codes exist.
  * <p>
- * The value of the GROUP CODE field specifies the
- * {@link CommandDescriptorBlock}'s length.
+ * The value of the GROUP CODE field specifies the {@link CommandDescriptorBlock}'s length.
  * 
  * @see CdbType
  * @author Andreas Ergenzinger
  */
 public enum ScsiOperationCode {
-    TEST_UNIT_READY((byte) 0x00), REQUEST_SENSE((byte) 0x03), FORMAT_UNIT(
-            (byte) 0x04), READ_6((byte) 0x08), WRITE_6((byte) 0x0a), INQUIRY(
-            (byte) 0x12), MODE_SELECT_6((byte) 0x15), MODE_SENSE_6((byte) 0x1a), SEND_DIAGNOSTIC(
-            (byte) 0x1d), READ_CAPACITY_10((byte) 0x25), READ_10((byte) 0x28), WRITE_10(
-            (byte) 0x2a), READ_CAPACITY_16((byte) 0x9e), REPORT_LUNS(
-            (byte) 0xa0);
+    TEST_UNIT_READY((byte)0x00), REQUEST_SENSE((byte)0x03), FORMAT_UNIT((byte)0x04), READ_6((byte)0x08),
+        WRITE_6((byte)0x0a), INQUIRY((byte)0x12), MODE_SELECT_6((byte)0x15), MODE_SENSE_6((byte)0x1a),
+        SEND_DIAGNOSTIC((byte)0x1d), READ_CAPACITY_10((byte)0x25), READ_10((byte)0x28), WRITE_10((byte)0x2a),
+        READ_CAPACITY_16((byte)0x9e), REPORT_LUNS((byte)0xa0);
 
     /**
      * The serialized value of the operation code.
@@ -48,8 +43,8 @@ public enum ScsiOperationCode {
      * 
      * @param value
      *            the serialized value of a SCSI operation code
-     * @return the corresponding {@link ScsiOperationCode} or <code>null</code>
-     *         if the passed value is not known by the jSCSI Target
+     * @return the corresponding {@link ScsiOperationCode} or <code>null</code> if the passed value is not
+     *         known by the jSCSI Target
      */
     public static final ScsiOperationCode valueOf(final byte value) {
         return mapping[value & 255];

@@ -8,8 +8,8 @@ import org.jscsi.target.scsi.IResponseData;
  * The mode parameter list contains a header, followed by zero or more block
  * descriptors, followed by zero or more variable-length mode pages.
  * <p>
- * This class uses the builder pattern to minimize the number of constructors
- * and to avoid constructor use with a lot of <code>null</code> parameters.
+ * This class uses the builder pattern to minimize the number of constructors and to avoid constructor use
+ * with a lot of <code>null</code> parameters.
  * 
  * @author Andreas Ergenzinger
  */
@@ -36,8 +36,7 @@ public final class ModeParameterList implements IResponseData {
      * then this method will return <code>null</code> instead.
      * 
      * @param builder
-     *            contains all necessary information to create a
-     *            {@link ModeParameterList} object
+     *            contains all necessary information to create a {@link ModeParameterList} object
      * @return a new {@link ModeParameterList} or <code>null</code>
      */
     public static ModeParameterList build(final ModeParameterListBuilder builder) {
@@ -54,19 +53,16 @@ public final class ModeParameterList implements IResponseData {
                 singleLbdLength = LongLogicalBlockDescriptor.SIZE;
             else
                 singleLbdLength = ShortLogicalBlockDescriptor.SIZE;
-            blockDescriptorLength = builder.logicalBlockDescriptors.length
-                    * singleLbdLength;
+            blockDescriptorLength = builder.logicalBlockDescriptors.length * singleLbdLength;
         }
         // - calculate mode data length
         int modeDataLength;
         // -- calculate contribution of the header without bytes of MODE DATA
         // LENGTH field
         if (builder.headerType == HeaderType.MODE_PARAMETER_HEADER_6)
-            modeDataLength = ModeParameterHeader6.SIZE
-                    - ModeParameterHeader6.MODE_DATA_LENGTH_FIELD_SIZE;
+            modeDataLength = ModeParameterHeader6.SIZE - ModeParameterHeader6.MODE_DATA_LENGTH_FIELD_SIZE;
         else
-            modeDataLength = ModeParameterHeader10.SIZE
-                    - ModeParameterHeader10.MODE_DATA_LENGTH_FIELD_SIZE;
+            modeDataLength = ModeParameterHeader10.SIZE - ModeParameterHeader10.MODE_DATA_LENGTH_FIELD_SIZE;
         // -- add length of logical block descriptors
         modeDataLength += blockDescriptorLength;
         // -- add length of mode pages
@@ -82,20 +78,17 @@ public final class ModeParameterList implements IResponseData {
 
         ModeParameterHeader modeParameterHeader;
         if (builder.headerType == HeaderType.MODE_PARAMETER_HEADER_6)
-            modeParameterHeader = new ModeParameterHeader6(modeDataLength,
-                    blockDescriptorLength);
+            modeParameterHeader = new ModeParameterHeader6(modeDataLength, blockDescriptorLength);
         else
-            modeParameterHeader = new ModeParameterHeader10(modeDataLength,
-                    blockDescriptorLength, builder.longLba);
+            modeParameterHeader =
+                new ModeParameterHeader10(modeDataLength, blockDescriptorLength, builder.longLba);
 
         // create and return the ModeParameterList
-        return new ModeParameterList(modeParameterHeader,
-                builder.logicalBlockDescriptors, builder.modePages);
+        return new ModeParameterList(modeParameterHeader, builder.logicalBlockDescriptors, builder.modePages);
     }
 
     private ModeParameterList(final ModeParameterHeader modeParameterHeader,
-            final LogicalBlockDescriptor[] logicalBlockDescriptors,
-            final ModePage[] modePages) {
+        final LogicalBlockDescriptor[] logicalBlockDescriptors, final ModePage[] modePages) {
         this.modeParameterHeader = modeParameterHeader;
         this.logicalBlockDescriptors = logicalBlockDescriptors;
         this.modePages = modePages;
@@ -127,10 +120,9 @@ public final class ModeParameterList implements IResponseData {
     public int size() {
         // size = header + logical block descriptors + mode pages
         int size = modeParameterHeader.size();
-        if (logicalBlockDescriptors != null
-                && logicalBlockDescriptors.length > 0)
-            size += logicalBlockDescriptors[0].size()
-                    * logicalBlockDescriptors.length;// all have the same size
+        if (logicalBlockDescriptors != null && logicalBlockDescriptors.length > 0)
+            size += logicalBlockDescriptors[0].size() * logicalBlockDescriptors.length;// all have the same
+                                                                                       // size
         if (modePages != null)
             for (ModePage mp : modePages)
                 size += mp.size();

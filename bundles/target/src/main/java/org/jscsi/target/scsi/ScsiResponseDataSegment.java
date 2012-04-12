@@ -12,23 +12,20 @@ import org.jscsi.target.util.ReadWrite;
  * Instances of this class represent data that may be sent in a SCSI Command
  * Response PDU.
  * <p>
- * It may contain either {@link SenseData}, {@link IResponseData}, or (rarely)
- * both. Some SCSI commands require that no response data is sent (i.e. data
- * segment length = 0) - in these cases the {@link #EMPTY_DATA_SEGMENT} shall be
- * used.
+ * It may contain either {@link SenseData}, {@link IResponseData}, or (rarely) both. Some SCSI commands
+ * require that no response data is sent (i.e. data segment length = 0) - in these cases the
+ * {@link #EMPTY_DATA_SEGMENT} shall be used.
  * <p>
- * Since the target must honor the buffer size the initiator has allocated for
- * data returned in the data segment, the {@link #serialize()} method will only
- * write as many bytes to the passed {@link ByteBuffer} as specified during
- * initialization.
+ * Since the target must honor the buffer size the initiator has allocated for data returned in the data
+ * segment, the {@link #serialize()} method will only write as many bytes to the passed {@link ByteBuffer} as
+ * specified during initialization.
  * 
  * @see TargetPduFactory
  * @author Andreas Ergenzinger
  */
 public final class ScsiResponseDataSegment {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(ScsiResponseDataSegment.class);
+    private static final Logger LOGGER = Logger.getLogger(ScsiResponseDataSegment.class);
 
     /**
      * A {@link ScsiResponseDataSegment} of length zero.
@@ -83,8 +80,7 @@ public final class ScsiResponseDataSegment {
      *            number of bytes the initiator has allocated for data sent in
      *            the data segment
      */
-    public ScsiResponseDataSegment(final SenseData senseData,
-            final int allocationLength) {
+    public ScsiResponseDataSegment(final SenseData senseData, final int allocationLength) {
         this(senseData, null, allocationLength);
     }
 
@@ -97,14 +93,12 @@ public final class ScsiResponseDataSegment {
      *            number of bytes the initiator has allocated for data sent in
      *            the data segment
      */
-    public ScsiResponseDataSegment(final IResponseData responseData,
-            final int allocationLength) {
+    public ScsiResponseDataSegment(final IResponseData responseData, final int allocationLength) {
         this(null, responseData, allocationLength);
     }
 
     /**
-     * Creates a {@link ScsiResponseDataSegment} with both {@link SenseData} and
-     * {@link IResponseData}.
+     * Creates a {@link ScsiResponseDataSegment} with both {@link SenseData} and {@link IResponseData}.
      * 
      * @param senseData
      *            senseData the sense data sent as the result of SCSI error
@@ -114,8 +108,8 @@ public final class ScsiResponseDataSegment {
      *            number of bytes the initiator has allocated for data sent in
      *            the data segment
      */
-    private ScsiResponseDataSegment(final SenseData senseData,
-            final IResponseData responseData, final int allocationLength) {
+    private ScsiResponseDataSegment(final SenseData senseData, final IResponseData responseData,
+        final int allocationLength) {
         this.senseData = senseData;
         this.responseData = responseData;
         this.allocationLength = allocationLength;
@@ -146,8 +140,8 @@ public final class ScsiResponseDataSegment {
 
         // write sense length field
         ReadWrite.writeTwoByteInt(buffer,// buffer
-                senseLength,// value
-                0);// index
+            senseLength,// value
+            0);// index
 
         // write sense data
         if (senseData != null)
@@ -155,8 +149,7 @@ public final class ScsiResponseDataSegment {
 
         // write and SCSI response data
         if (responseData != null)
-            responseData.serialize(buffer, SENSE_LENGTH_FIELD_LENGTH
-                    + senseLength);
+            responseData.serialize(buffer, SENSE_LENGTH_FIELD_LENGTH + senseLength);
 
         if (allocationLength > 0 && buffer.capacity() > allocationLength) {
             /*
@@ -166,15 +159,13 @@ public final class ScsiResponseDataSegment {
              */
             buffer.position(0);
             buffer.limit(allocationLength);
-            final ByteBuffer croppedBuffer = ByteBuffer
-                    .allocate(allocationLength);
+            final ByteBuffer croppedBuffer = ByteBuffer.allocate(allocationLength);
             croppedBuffer.put(buffer);
             return croppedBuffer;
         }
 
         if (LOGGER.isDebugEnabled())
-            LOGGER.debug("SCSI Response Data Segment:\n"
-                    + Debug.byteBufferToString(buffer));
+            LOGGER.debug("SCSI Response Data Segment:\n" + Debug.byteBufferToString(buffer));
 
         return buffer;
     }
@@ -183,9 +174,8 @@ public final class ScsiResponseDataSegment {
      * The length of the {@link ScsiResponseDataSegment}, without considering
      * any limitations due to {@link #allocationLength}.
      * <p>
-     * The returned value is calculated just once, and then stored in
-     * {@link #uncroppedSize}. This summation is performed only if
-     * {@link #uncroppedSize} is negative.
+     * The returned value is calculated just once, and then stored in {@link #uncroppedSize}. This summation
+     * is performed only if {@link #uncroppedSize} is negative.
      * 
      * @return length of the {@link ScsiResponseDataSegment}, without
      *         considering any limitations due to {@link #allocationLength}
@@ -205,8 +195,8 @@ public final class ScsiResponseDataSegment {
     }
 
     /**
-     * Indicates if any bytes have to be cropped during {@link #serialize()}
-     * calls. The method returns <code>true</code> if and only if the serialized
+     * Indicates if any bytes have to be cropped during {@link #serialize()} calls. The method returns
+     * <code>true</code> if and only if the serialized
      * length of this objects exceeds {@link #allocationLength}.
      * 
      * @return <code>true</code> if and only if the serialized length of this

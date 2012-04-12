@@ -30,17 +30,16 @@ public final class ModeParameterHeader6 extends ModeParameterHeader {
      *            the total length in bytes of all BLOCK DESCRIPTOR list
      *            elements
      */
-    public ModeParameterHeader6(final int modeDataLength,
-            final int blockDescriptorLength) {
+    public ModeParameterHeader6(final int modeDataLength, final int blockDescriptorLength) {
         super(modeDataLength, blockDescriptorLength);
     }
 
     public void serialize(ByteBuffer byteBuffer, int index) {
         byteBuffer.position(index);
-        byteBuffer.put((byte) modeDataLength);
+        byteBuffer.put((byte)modeDataLength);
         byteBuffer.put(mediumType);
         byteBuffer.put(deviceSpecificParameter);
-        byteBuffer.put((byte) blockDescriptorLength);
+        byteBuffer.put((byte)blockDescriptorLength);
     }
 
     public int size() {

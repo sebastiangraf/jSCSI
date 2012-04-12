@@ -10,17 +10,14 @@ import org.jscsi.target.util.ReadWrite;
  * 
  * @author Andreas Ergenzinger
  */
-public final class ReadCapacity10ParameterData extends
-        ReadCapacityParameterData {
+public final class ReadCapacity10ParameterData extends ReadCapacityParameterData {
 
     /**
-     * Specifies the limit to the
-     * {@link ReadCapacityParameterData#returnedLogicalBlockAddress} field for
+     * Specifies the limit to the {@link ReadCapacityParameterData#returnedLogicalBlockAddress} field for
      * READ CAPACITY (10) parameter data.
      * <p>
-     * If the value of the RETURNED LOGICAL BLOCK ADDRESS field does not fit
-     * completely into the available four bytes, then this value will be
-     * inserted instead.
+     * If the value of the RETURNED LOGICAL BLOCK ADDRESS field does not fit completely into the available
+     * four bytes, then this value will be inserted instead.
      */
     private static final long MAX_RETURNED_LOGICAL_BLOCK_ADDRESS = 0xffffffffL;
 
@@ -30,7 +27,7 @@ public final class ReadCapacity10ParameterData extends
     private static final int SIZE = 8;
 
     public ReadCapacity10ParameterData(final long returnedLogicalBlockAddress,
-            final int logicalBlockLengthInBytes) {
+        final int logicalBlockLengthInBytes) {
         super(returnedLogicalBlockAddress, logicalBlockLengthInBytes);
     }
 
@@ -38,8 +35,7 @@ public final class ReadCapacity10ParameterData extends
         // returned logical block address
         // trim to size, and prevent overflow (initiator has to use READ
         // CAPACITY (16))
-        final int rlba = (int) Math.min(returnedLogicalBlockAddress,
-                MAX_RETURNED_LOGICAL_BLOCK_ADDRESS);
+        final int rlba = (int)Math.min(returnedLogicalBlockAddress, MAX_RETURNED_LOGICAL_BLOCK_ADDRESS);
         ReadWrite.writeInt(rlba, byteBuffer, index);
 
         // logical block length in bytes

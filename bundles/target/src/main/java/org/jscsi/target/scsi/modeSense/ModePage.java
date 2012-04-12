@@ -9,8 +9,7 @@ import org.jscsi.target.util.BitManip;
  * MODE PAGEs are sent in response to successful <code>MODE SENSE</code> SCSI
  * commands. There are two different, command-specific formats for MODE PAGEs -
  * the PAGE_0 FORMAT and the SUB-PAGE FORMAT, represented by the non-abstract
- * children of this class, {@link Page_0FormatModePage} and
- * {@link SubPageFormatModePage}, respectively.
+ * children of this class, {@link Page_0FormatModePage} and {@link SubPageFormatModePage}, respectively.
  * 
  * @author Andreas Ergenzinger
  */
@@ -39,8 +38,8 @@ public abstract class ModePage implements ISerializable {
 
     /**
      * A SubPage Format (SPF) bit set to <code>false</code>/zero indicates that
-     * the page_0 mode page format is being used. A SPF bit set to
-     * <code>true</code>/one indicates that the sub_page mode page format is
+     * the page_0 mode page format is being used. A SPF bit set to <code>true</code>/one indicates that the
+     * sub_page mode page format is
      * being used.
      */
     private final boolean subPageFormat;
@@ -75,9 +74,8 @@ public abstract class ModePage implements ISerializable {
      * @param pageLength
      *            the value of the PAGE LENGTH field
      */
-    public ModePage(final boolean parametersSaveable,
-            final boolean subPageFormat, final int pageCode,
-            final int pageLength) {
+    public ModePage(final boolean parametersSaveable, final boolean subPageFormat, final int pageCode,
+        final int pageLength) {
         this.parametersSaveable = parametersSaveable;
         this.subPageFormat = subPageFormat;
         if (subPageFormat)
@@ -92,7 +90,7 @@ public abstract class ModePage implements ISerializable {
         // serialize first byte
         // (for convenience reasons from least significant to most significant
         // field)
-        byte b = (byte) pageCode;// PAGE CODE
+        byte b = (byte)pageCode;// PAGE CODE
         b = BitManip.getByteWithBitSet(b, 6, subPageFormat);// SPF
         b = BitManip.getByteWithBitSet(b, 7, parametersSaveable);// PS
         byteBuffer.position(index);
@@ -110,11 +108,9 @@ public abstract class ModePage implements ISerializable {
      * @param buffer
      *            where to insert the serialized object representation
      * @param index
-     *            the position of the first byte of the serialized object in the
-     *            {@link ByteBuffer}
+     *            the position of the first byte of the serialized object in the {@link ByteBuffer}
      */
-    protected abstract void serializeSubPageCode(final ByteBuffer buffer,
-            final int index);
+    protected abstract void serializeSubPageCode(final ByteBuffer buffer, final int index);
 
     /**
      * Serializes the PAGE LENGTH field.
@@ -122,21 +118,17 @@ public abstract class ModePage implements ISerializable {
      * @param buffer
      *            where to insert the serialized object representation
      * @param index
-     *            the position of the first byte of the serialized object in the
-     *            {@link ByteBuffer}
+     *            the position of the first byte of the serialized object in the {@link ByteBuffer}
      */
-    protected abstract void serializePageLength(final ByteBuffer buffer,
-            final int index);
+    protected abstract void serializePageLength(final ByteBuffer buffer, final int index);
 
     /**
      * @param buffer
      *            where to insert the serialized object representation
      * @param index
-     *            the position of the first byte of the serialized object in the
-     *            {@link ByteBuffer}
+     *            the position of the first byte of the serialized object in the {@link ByteBuffer}
      */
-    protected abstract void serializeModeParameters(final ByteBuffer buffer,
-            final int index);
+    protected abstract void serializeModeParameters(final ByteBuffer buffer, final int index);
 
     public final int size() {
         return pageLength + pageLengthModifier;

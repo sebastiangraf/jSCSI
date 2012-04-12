@@ -25,20 +25,17 @@ import org.jscsi.target.util.SerialArithmeticNumber;
  * A class for objects representing an iSCSI connection with all necessary
  * variables.
  * <p>
- * Each {@link TargetConnection} runs in a separate {@link Thread}. The
- * conceptually most important parts of its behavior can be likened to a finite
- * state machine (FSM), in which the most basic states (stages) are grouped into
- * more general states (phases). Commands send by the initiator are carried out
- * in these stages, usually without transitioning to a different phase. A
- * connection's current phase determines which stages are reachable, limiting
- * the kind of commands the initiator may issue at any given moment.
+ * Each {@link TargetConnection} runs in a separate {@link Thread}. The conceptually most important parts of
+ * its behavior can be likened to a finite state machine (FSM), in which the most basic states (stages) are
+ * grouped into more general states (phases). Commands send by the initiator are carried out in these stages,
+ * usually without transitioning to a different phase. A connection's current phase determines which stages
+ * are reachable, limiting the kind of commands the initiator may issue at any given moment.
  * 
  * @author Andreas Ergenzinger
  */
 public final class TargetConnection implements Callable<Void> {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(TargetConnection.class);
+    private static final Logger LOGGER = Logger.getLogger(TargetConnection.class);
 
     /**
      * The {@link TargetSession} this connection belongs to.
@@ -65,8 +62,8 @@ public final class TargetConnection implements Callable<Void> {
     private TargetPhase phase;
 
     /**
-     * A counter for the <code>StatSN</code> field of sent
-     * {@link ProtocolDataUnit} objects with {@link Status}.
+     * A counter for the <code>StatSN</code> field of sent {@link ProtocolDataUnit} objects with
+     * {@link Status}.
      */
     private SerialArithmeticNumber statusSequenceNumber;
 
@@ -74,15 +71,13 @@ public final class TargetConnection implements Callable<Void> {
      * Will manage and serve as a source of byte arrays to be used for sending
      * Data In PDUs in the {@link ReadStage}.
      */
-    private FastByteArrayProvider dataInArrayProvider = new FastByteArrayProvider(
-            4);
+    private FastByteArrayProvider dataInArrayProvider = new FastByteArrayProvider(4);
 
     /**
      * <code>true</code> if and only if this connection is the first connection
      * to be associated with its parent session.
      * <p>
-     * This distinction is necessary because some parameters may only be
-     * declared over the leading connection.
+     * This distinction is necessary because some parameters may only be declared over the leading connection.
      */
     private final boolean isLeadingConnection;
 
@@ -100,8 +95,7 @@ public final class TargetConnection implements Callable<Void> {
      *            <code>true</code> if and only if this connection is the first
      *            connection associated with its enclosing session
      */
-    public TargetConnection(SocketChannel socketChannel,
-            final boolean isLeadingConnection) {
+    public TargetConnection(SocketChannel socketChannel, final boolean isLeadingConnection) {
         this.isLeadingConnection = isLeadingConnection;
         senderWorker = new TargetSenderWorker(this, socketChannel);
     }
@@ -165,8 +159,8 @@ public final class TargetConnection implements Callable<Void> {
      * @throws SettingsException
      *             will not happen
      */
-    public ProtocolDataUnit receivePdu() throws DigestException,
-            InternetSCSIException, IOException, SettingsException {
+    public ProtocolDataUnit receivePdu() throws DigestException, InternetSCSIException, IOException,
+        SettingsException {
         lastReceivedPDU = senderWorker.receiveFromWire();
         return lastReceivedPDU;
     }
@@ -180,16 +174,15 @@ public final class TargetConnection implements Callable<Void> {
      * @throws IOException
      * @throws InternetSCSIException
      */
-    public void sendPdu(ProtocolDataUnit pdu) throws InterruptedException,
-            IOException, InternetSCSIException {
+    public void sendPdu(ProtocolDataUnit pdu) throws InterruptedException, IOException, InternetSCSIException {
         senderWorker.sendOverWire(pdu);
     }
 
     /**
      * Starts the processing of PDUs by this connection.
      * <p>
-     * For this method to work properly, the leading PDU send by the initiator
-     * over this connection must have been received via {@link #receivePdu()}.
+     * For this method to work properly, the leading PDU send by the initiator over this connection must have
+     * been received via {@link #receivePdu()}.
      */
     public Void call() {
 
@@ -202,8 +195,7 @@ public final class TargetConnection implements Callable<Void> {
                 // if this is the leading connection, set the session type
                 final Settings settings = getSettings();
                 if (isLeadingConnection)
-                    targetSession.setSessionType(SessionType
-                            .getSessionType(settings.getSessionType()));
+                    targetSession.setSessionType(SessionType.getSessionType(settings.getSessionType()));
                 targetSession.setTargetName(settings.getTargetName());
                 // *** full feature phase ***
                 phase = new TargetFullFeaturePhase(this);
@@ -212,12 +204,12 @@ public final class TargetConnection implements Callable<Void> {
         } catch (OperationNotSupportedException e) {
             LOGGER.error(e);
         } catch (IOException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             LOGGER.error(e);
         } catch (InterruptedException e) {
             LOGGER.error(e);
         } catch (InternetSCSIException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             LOGGER.error(e);
         } catch (DigestException e) {
             LOGGER.error(e);
@@ -250,13 +242,10 @@ public final class TargetConnection implements Callable<Void> {
     /**
      * Initializes {@link #connectionSettingsNegotiator}.
      * <p>
-     * This method must be be called after the this connection has been added to
-     * its session.
+     * This method must be be called after the this connection has been added to its session.
      */
-    void initializeConnectionSettingsNegotiator(
-            final SessionSettingsNegotiator sessionSettingsNegotiator) {
-        connectionSettingsNegotiator = new ConnectionSettingsNegotiator(
-                sessionSettingsNegotiator);
+    void initializeConnectionSettingsNegotiator(final SessionSettingsNegotiator sessionSettingsNegotiator) {
+        connectionSettingsNegotiator = new ConnectionSettingsNegotiator(sessionSettingsNegotiator);
     }
 
     /**
@@ -278,7 +267,6 @@ public final class TargetConnection implements Callable<Void> {
     }
 
     void setStatusSequenceNumber(final int statusSequenceNumber) {
-        this.statusSequenceNumber = new SerialArithmeticNumber(
-                statusSequenceNumber);
+        this.statusSequenceNumber = new SerialArithmeticNumber(statusSequenceNumber);
     }
 }

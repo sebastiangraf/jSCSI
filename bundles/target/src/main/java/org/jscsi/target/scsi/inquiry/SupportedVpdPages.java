@@ -9,8 +9,8 @@ import org.jscsi.target.scsi.inquiry.PageCode.VitalProductDataPageName;
  * This Vital Product Data page contains a list of the VPD page codes supported
  * by the logical unit.
  * <p>
- * This class uses the singleton pattern since the list of supported Vital
- * Product Data page requests will never change.
+ * This class uses the singleton pattern since the list of supported Vital Product Data page requests will
+ * never change.
  * 
  * @author Andreas Ergenzinger
  */
@@ -31,9 +31,10 @@ public final class SupportedVpdPages implements IResponseData {
      * determine which pages to support must be in ascending order see
      * PAGECode.VitalProductDataPageName
      */
-    public static final byte[] SUPPORTED_VPD_PAGES = new byte[] { (byte) 0x00,// SUPPORTED_VPD_PAGES,
-                                                                              // mandatory
-            (byte) 0x83,// DECIVE_IDENTIFICATION, mandatory
+    public static final byte[] SUPPORTED_VPD_PAGES = new byte[] {
+        (byte)0x00,// SUPPORTED_VPD_PAGES,
+                   // mandatory
+        (byte)0x83,// DECIVE_IDENTIFICATION, mandatory
     };
 
     /**
@@ -74,7 +75,7 @@ public final class SupportedVpdPages implements IResponseData {
          * direct access block device
          */
         byteBuffer.position(index);
-        byteBuffer.put((byte) 0);
+        byteBuffer.put((byte)0);
 
         // *** byte 1 ***
         /*
@@ -84,11 +85,11 @@ public final class SupportedVpdPages implements IResponseData {
          * 
          * supported VPD pages
          */
-        byteBuffer.put((byte) 0);
+        byteBuffer.put((byte)0);
 
         // *** byte 2 ***
         // RESERVED
-        byteBuffer.put((byte) 0);
+        byteBuffer.put((byte)0);
 
         // *** byte 3 ***
         /*
@@ -96,7 +97,7 @@ public final class SupportedVpdPages implements IResponseData {
          * 
          * n - 3 = 5 - 3 = 2 (for now)
          */
-        byteBuffer.put((byte) SUPPORTED_VPD_PAGES.length);
+        byteBuffer.put((byte)SUPPORTED_VPD_PAGES.length);
 
         // *** bytes 4 and 5 - Supported VPD Pages ***
         for (int i = 0; i < SUPPORTED_VPD_PAGES.length; ++i)
@@ -116,8 +117,7 @@ public final class SupportedVpdPages implements IResponseData {
      * @return <code>true</code> for those and only for those VPD Page Codes
      *         which are supported by the jSCSI Target
      */
-    public static boolean vpdPageCodeSupported(
-            final VitalProductDataPageName vitalProductDataPageName) {
+    public static boolean vpdPageCodeSupported(final VitalProductDataPageName vitalProductDataPageName) {
         for (int i = 0; i < SUPPORTED_VPD_PAGES.length; ++i) {
             PageCode pageCode = new PageCode(SUPPORTED_VPD_PAGES[i]);
             if (pageCode.getVitalProductDataPageName() == vitalProductDataPageName)

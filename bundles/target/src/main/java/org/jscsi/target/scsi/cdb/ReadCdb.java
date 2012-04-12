@@ -3,8 +3,7 @@ package org.jscsi.target.scsi.cdb;
 import java.nio.ByteBuffer;
 
 /**
- * This abstract class represents Command Descriptor Blocks for
- * <code>READ</code> SCSI commands.
+ * This abstract class represents Command Descriptor Blocks for <code>READ</code> SCSI commands.
  * 
  * @see Read6Cdb
  * @see Read10Cdb

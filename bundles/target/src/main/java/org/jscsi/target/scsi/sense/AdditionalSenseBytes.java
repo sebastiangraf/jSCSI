@@ -9,9 +9,8 @@ import org.jscsi.target.scsi.ISerializable;
  * descriptor format sense data, additional data can be included in the optional
  * ADDITIONAL SENSE BYTES field.
  * <p>
- * Since the jSCSI Target currently does not have any additional information to
- * send, the serialized length in bytes of all ADDITTIONAL SENSE BYTES objects
- * is fixed to zero.
+ * Since the jSCSI Target currently does not have any additional information to send, the serialized length in
+ * bytes of all ADDITTIONAL SENSE BYTES objects is fixed to zero.
  * 
  * @author Andreas Ergenzinger
  */

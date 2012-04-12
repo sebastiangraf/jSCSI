@@ -38,8 +38,7 @@ package org.jscsi.target.scsi.inquiry;
  */
 public enum Association {
 
-    LOGICAL_UNIT((byte) 0), TARGET_PORT((byte) 1), SCSI_TARGET_DEVICE((byte) 2), RESERVED(
-            (byte) 3);
+    LOGICAL_UNIT((byte)0), TARGET_PORT((byte)1), SCSI_TARGET_DEVICE((byte)2), RESERVED((byte)3);
 
     /**
      * The serialized value of this object.

@@ -20,11 +20,9 @@ import org.jscsi.target.settings.TextParameter;
  * 
  * @author Andreas Ergenzinger
  */
-public final class LoginOperationalParameterNegotiationStage extends
-        TargetLoginStage {
+public final class LoginOperationalParameterNegotiationStage extends TargetLoginStage {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(LoginOperationalParameterNegotiationStage.class);
+    private static final Logger LOGGER = Logger.getLogger(LoginOperationalParameterNegotiationStage.class);
 
     /**
      * The constructor.
@@ -32,15 +30,13 @@ public final class LoginOperationalParameterNegotiationStage extends
      * @param targetLoginPhase
      *            the login phase this stage is a part of.
      */
-    public LoginOperationalParameterNegotiationStage(
-            TargetLoginPhase targetLoginPhase) {
+    public LoginOperationalParameterNegotiationStage(TargetLoginPhase targetLoginPhase) {
         super(targetLoginPhase, LoginStage.LOGIN_OPERATIONAL_NEGOTIATION);
     }
 
     @Override
-    public void execute(ProtocolDataUnit pdu) throws IOException,
-            InterruptedException, InternetSCSIException, DigestException,
-            IllegalArgumentException, SettingsException {
+    public void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
+        InternetSCSIException, DigestException, IllegalArgumentException, SettingsException {
 
         LOGGER.debug("Entering LOPN Stage");
 
@@ -50,13 +46,11 @@ public final class LoginOperationalParameterNegotiationStage extends
         String keyValuePairProposal = receivePduSequence(pdu);
 
         // negotiate parameters, leave if unsuccessful
-        final Vector<String> requestKeyValuePairs = TextParameter
-                .tokenizeKeyValuePairs(keyValuePairProposal);
+        final Vector<String> requestKeyValuePairs = TextParameter.tokenizeKeyValuePairs(keyValuePairProposal);
         final Vector<String> responseKeyValuePairs = new Vector<String>();
-        if (!negotiator.negotiate(session.getTargetServer(), stageNumber,
-                connection.isLeadingConnection(),
-                ((TargetLoginPhase) targetPhase).getFirstPduAndSetToFalse(),
-                requestKeyValuePairs, responseKeyValuePairs)) {
+        if (!negotiator.negotiate(session.getTargetServer(), stageNumber, connection.isLeadingConnection(),
+            ((TargetLoginPhase)targetPhase).getFirstPduAndSetToFalse(), requestKeyValuePairs,
+            responseKeyValuePairs)) {
             // negotiation failure, no exception
             sendRejectPdu(LoginStatus.INITIATOR_ERROR);
             // nextStageNumber = null;//no change
@@ -87,8 +81,7 @@ public final class LoginOperationalParameterNegotiationStage extends
         }
 
         // concatenate key-value pairs to null char-separated string
-        final String keyValuePairReply = TextParameter
-                .concatenateKeyValuePairs(responseKeyValuePairs);
+        final String keyValuePairReply = TextParameter.concatenateKeyValuePairs(responseKeyValuePairs);
 
         // send reply, finish negotiation, and return successfully
         sendPduSequence(keyValuePairReply, LoginStage.FULL_FEATURE_PHASE);

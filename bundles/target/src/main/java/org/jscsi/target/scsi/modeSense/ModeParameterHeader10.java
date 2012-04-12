@@ -48,16 +48,16 @@ public final class ModeParameterHeader10 extends ModeParameterHeader {
      * @see LongLogicalBlockDescriptor
      * @see ShortLogicalBlockDescriptor
      */
-    public ModeParameterHeader10(final int modeDataLength,
-            final int blockDescriptorLength, final boolean longLba) {
+    public ModeParameterHeader10(final int modeDataLength, final int blockDescriptorLength,
+        final boolean longLba) {
         super(modeDataLength, blockDescriptorLength);
         this.longLba = longLba;
     }
 
     public void serialize(final ByteBuffer byteBuffer, final int index) {
         ReadWrite.writeTwoByteInt(byteBuffer,// buffer
-                modeDataLength,// value
-                index);// index
+            modeDataLength,// value
+            index);// index
         byteBuffer.position(index + 2);
         byteBuffer.put(mediumType);
         byteBuffer.put(deviceSpecificParameter);
@@ -65,8 +65,8 @@ public final class ModeParameterHeader10 extends ModeParameterHeader {
         byteBuffer.put(BitManip.getByteWithBitSet(zeroByte, 0, longLba));
         byteBuffer.put(zeroByte);
         ReadWrite.writeTwoByteInt(byteBuffer,// buffer
-                blockDescriptorLength,// value
-                index + 6);// index
+            blockDescriptorLength,// value
+            index + 6);// index
     }
 
     public int size() {

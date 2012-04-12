@@ -7,8 +7,7 @@ import org.jscsi.target.util.ReadWrite;
 /**
  * A class representing the content of LONG LBA MODE PAREMETER LOGICAL BLOCK
  * DESCRIPTOR fields, which are part of {@link ModeParameterList} objects. This
- * long format must be used if the LONG LBA bit is set in the
- * {@link ModeParameterList} objects's header.
+ * long format must be used if the LONG LBA bit is set in the {@link ModeParameterList} objects's header.
  * 
  * @see ShortLogicalBlockDescriptor
  * @author Andreas Ergenzinger
@@ -29,21 +28,20 @@ public class LongLogicalBlockDescriptor extends LogicalBlockDescriptor {
      * @param logicalBlockLength
      *            the length in bytes of the logical blocks
      */
-    public LongLogicalBlockDescriptor(long numberOfLogicalBlocks,
-            int logicalBlockLength) {
+    public LongLogicalBlockDescriptor(long numberOfLogicalBlocks, int logicalBlockLength) {
         super(numberOfLogicalBlocks, logicalBlockLength);
     }
 
     public void serialize(ByteBuffer byteBuffer, int index) {
         // NUMBER OF LOGICAL BLOCKS
         ReadWrite.writeLong(byteBuffer,// buffer
-                numberOfLogicalBlocks,// value
-                index);// index
+            numberOfLogicalBlocks,// value
+            index);// index
 
         // LOGICAL BLOCK LENGTH
         ReadWrite.writeInt(logicalBlockLength,// value
-                byteBuffer,// buffer
-                index + 12);// index
+            byteBuffer,// buffer
+            index + 12);// index
     }
 
     public int size() {

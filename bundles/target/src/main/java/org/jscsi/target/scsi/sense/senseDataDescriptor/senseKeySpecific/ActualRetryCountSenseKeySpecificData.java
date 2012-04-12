@@ -11,8 +11,7 @@ import org.jscsi.target.util.ReadWrite;
  * 
  * @author Andreas Ergenzinger
  */
-public final class ActualRetryCountSenseKeySpecificData extends
-        SenseKeySpecificData {
+public final class ActualRetryCountSenseKeySpecificData extends SenseKeySpecificData {
 
     /**
      * The byte position of the ACTUAL RETRY COUNT field.
@@ -24,8 +23,8 @@ public final class ActualRetryCountSenseKeySpecificData extends
      * number of retries of the recovery algorithm used in attempting to recover
      * an error or exception condition.
      * <p>
-     * This field should be computed in the same way as the retry count fields
-     * within the Read-Write Error Recovery mode page.
+     * This field should be computed in the same way as the retry count fields within the Read-Write Error
+     * Recovery mode page.
      */
     private final short actualRetryCount;
 
@@ -38,17 +37,15 @@ public final class ActualRetryCountSenseKeySpecificData extends
      * @param actualRetryCount
      *            the number of performed recovery attempts
      */
-    public ActualRetryCountSenseKeySpecificData(
-            final boolean senseKeySpecificDataValid, final int actualRetryCount) {
+    public ActualRetryCountSenseKeySpecificData(final boolean senseKeySpecificDataValid,
+        final int actualRetryCount) {
         super(senseKeySpecificDataValid);
-        this.actualRetryCount = (short) actualRetryCount;
+        this.actualRetryCount = (short)actualRetryCount;
     }
 
     @Override
-    protected void serializeSpecificFields(final ByteBuffer byteBuffer,
-            final int index) {
-        ReadWrite.writeTwoByteInt(byteBuffer, actualRetryCount, index
-                + ACTUAL_RETRY_COUNT_FIELD_INDEX);
+    protected void serializeSpecificFields(final ByteBuffer byteBuffer, final int index) {
+        ReadWrite.writeTwoByteInt(byteBuffer, actualRetryCount, index + ACTUAL_RETRY_COUNT_FIELD_INDEX);
     }
 
 }

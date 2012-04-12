@@ -5,8 +5,7 @@ import java.nio.ByteBuffer;
 import org.jscsi.target.util.BitManip;
 
 /**
- * This class represents Command Descriptor Blocks for the
- * <code>FORMAT UNIT</code> SCSI command.
+ * This class represents Command Descriptor Blocks for the <code>FORMAT UNIT</code> SCSI command.
  * 
  * @author Andreas Ergenzinger
  */
@@ -24,8 +23,7 @@ public final class FormatUnitCDB extends CommandDescriptorBlock {
      * bit set to one specifies that the parameter list, if any, contains a long
      * parameter list header.
      * <p>
-     * If the FMTDATA bit is set to zero, then the LONGLIST bit shall be
-     * ignored.
+     * If the FMTDATA bit is set to zero, then the LONGLIST bit shall be ignored.
      */
     private boolean longList;
 
@@ -55,7 +53,7 @@ public final class FormatUnitCDB extends CommandDescriptorBlock {
         byte b = buffer.get(1);
 
         // format protection information
-        formatProtectionInformation = (byte) (b >>> 6);
+        formatProtectionInformation = (byte)(b >>> 6);
 
         // long list
         longList = BitManip.getBit(b, 5);

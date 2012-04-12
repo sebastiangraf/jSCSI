@@ -17,7 +17,7 @@ public abstract class ReadCapacityParameterData implements IResponseData {
     protected final int logicalBlockLengthInBytes;
 
     public ReadCapacityParameterData(final long returnedLogicalBlockAddress,
-            final int logicalBlockLengthInBytes) {
+        final int logicalBlockLengthInBytes) {
         this.returnedLogicalBlockAddress = returnedLogicalBlockAddress;
         this.logicalBlockLengthInBytes = logicalBlockLengthInBytes;
     }

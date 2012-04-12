@@ -9,28 +9,25 @@ import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 
 /**
- * In addition to offering all methods of their {@link SettingsNegotiator}
- * parent class, {@link ConnectionSettingsNegotiator} instances provide all
- * methods necessary for text parameter negotiation and for creating
- * {@link Settings} objects, which allow access to the current parameters.
+ * In addition to offering all methods of their {@link SettingsNegotiator} parent class,
+ * {@link ConnectionSettingsNegotiator} instances provide all
+ * methods necessary for text parameter negotiation and for creating {@link Settings} objects, which allow
+ * access to the current parameters.
  * <p>
- * Each instance of this class belongs to one {@link TargetConnection}, for
- * which it manages all connection-specific parameters. A similar association
- * exists between the connection's enclosing {@link TargetSession} and the
- * {@link #sessionSettingsNegotiator} member variable.
+ * Each instance of this class belongs to one {@link TargetConnection}, for which it manages all
+ * connection-specific parameters. A similar association exists between the connection's enclosing
+ * {@link TargetSession} and the {@link #sessionSettingsNegotiator} member variable.
  * <p>
- * A negotiation sequence consists of the following steps, performed in the
- * given order:
+ * A negotiation sequence consists of the following steps, performed in the given order:
  * <p>
  * <ol>
  * <li>Call {@link #beginNegotiation()} until it returns <code>true</code>.</li>
- * <li>One or, if the initiator is using multiple PDU sequences, multiple calls
- * of {@link #negotiate(LoginStage, boolean, boolean, Vector, Vector)}. The
- * method will return <code>false</code> if there was a problem.</li>
- * <li>Call {@link #checkConstraints()} to check more complex requirements. The
- * method will return <code>false</code> if there was a problem.</li>
- * <li>Call {@link #finishNegotiation(boolean)} with the appropriate parameter.
- * This step is mandatory.</li>
+ * <li>One or, if the initiator is using multiple PDU sequences, multiple calls of
+ * {@link #negotiate(LoginStage, boolean, boolean, Vector, Vector)}. The method will return <code>false</code>
+ * if there was a problem.</li>
+ * <li>Call {@link #checkConstraints()} to check more complex requirements. The method will return
+ * <code>false</code> if there was a problem.</li>
+ * <li>Call {@link #finishNegotiation(boolean)} with the appropriate parameter. This step is mandatory.</li>
  * </ol>
  * 
  * @author Andreas Ergenzinger
@@ -38,8 +35,8 @@ import org.jscsi.target.connection.TargetSession;
 public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
 
     /**
-     * The {@link SessionSettingsNegotiator} maintaining all {@link Entry}
-     * objects for session-wide parameters.
+     * The {@link SessionSettingsNegotiator} maintaining all {@link Entry} objects for session-wide
+     * parameters.
      */
     private final SessionSettingsNegotiator sessionSettingsNegotiator;
 
@@ -58,11 +55,10 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
      * The {@link ConnectionSettingsNegotiator} constructor.
      * 
      * @param sessionSettingsNegotiator
-     *            the {@link SessionSettingsNegotiator} maintaining all
-     *            {@link Entry} objects for session-wide parameters
+     *            the {@link SessionSettingsNegotiator} maintaining all {@link Entry} objects for session-wide
+     *            parameters
      */
-    public ConnectionSettingsNegotiator(
-            final SessionSettingsNegotiator sessionSettingsNegotiator) {
+    public ConnectionSettingsNegotiator(final SessionSettingsNegotiator sessionSettingsNegotiator) {
         super();// initializes entries
         this.sessionSettingsNegotiator = sessionSettingsNegotiator;
         // initialize settings
@@ -74,10 +70,9 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
      * This method must be called at the beginning of a parameter negotiation
      * sequence.
      * <p>
-     * This method will block until no other
-     * {@link ConnectionSettingsNegotiator} is negotiating and will return
-     * <code>true</code> if negotiations may proceed, or <code>false</code>, if
-     * the request for the permission to negotiate was denied.
+     * This method will block until no other {@link ConnectionSettingsNegotiator} is negotiating and will
+     * return <code>true</code> if negotiations may proceed, or <code>false</code>, if the request for the
+     * permission to negotiate was denied.
      * 
      * @return <code>true</code> if and only if the caller is allowed to
      *         negotiate parameters
@@ -95,10 +90,10 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
 
     /**
      * This method must be called at the end of a negotiation sequence. If there
-     * was a problem during negotiations, all changes to the managed
-     * {@link Entry} objects must be discarded by setting the
-     * <i>commitChanges</i> parameter to <code>false</code>. If it is
-     * <code>true</code>, then the parameter changes will be incorporated into
+     * was a problem during negotiations, all changes to the managed {@link Entry} objects must be discarded
+     * by setting the
+     * <i>commitChanges</i> parameter to <code>false</code>. If it is <code>true</code>, then the parameter
+     * changes will be incorporated into
      * the updated {@link #settings}.
      * <p>
      * Calling this method should be ensured by a <code>try ... catch ...
@@ -123,8 +118,8 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
 
     /**
      * Processes one or more <i>key-value</i> pairs sent by the initiator,
-     * formulates response <i>key-value</i> pairs and changes the involved
-     * {@link Entry} instances accordingly.
+     * formulates response <i>key-value</i> pairs and changes the involved {@link Entry} instances
+     * accordingly.
      * 
      * @param loginStage
      *            specifies the current stage or phase
@@ -140,23 +135,20 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
      *            processed elements will be removed
      * @param responseKeyValuePairs
      *            will contain the <i>key-value</i> pairs from the jSCSI target
-     * @return <code>true</code> if everything went fine and <code>false</code>
-     *         if there was an irreconcilable problem
+     * @return <code>true</code> if everything went fine and <code>false</code> if there was an irreconcilable
+     *         problem
      */
     public boolean negotiate(TargetServer target, final LoginStage loginStage,
-            final boolean leadingConnection, final boolean initialPdu,
-            final Vector<String> requestKeyValuePairs,
-            final Vector<String> responseKeyValuePairs) {
+        final boolean leadingConnection, final boolean initialPdu, final Vector<String> requestKeyValuePairs,
+        final Vector<String> responseKeyValuePairs) {
 
         // split up key=value pairs from requester
         final Vector<String> keys = new Vector<String>();
         final Vector<String> values = new Vector<String>();
         for (String keyValuePair : requestKeyValuePairs) {
-            final String[] split = TextParameter
-                    .splitKeyValuePair(keyValuePair);
+            final String[] split = TextParameter.splitKeyValuePair(keyValuePair);
             if (split == null) {
-                System.err.println("malformatted key=value pair: "
-                        + keyValuePair);
+                System.err.println("malformatted key=value pair: " + keyValuePair);
                 return false;
             }
             keys.add(split[0]);
@@ -171,13 +163,13 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
             entry = getEntry(keys.get(0));
             // respond to unknown keys
             if (entry == null) {
-                responseKeyValuePairs.add(TextParameter.toKeyValuePair(
-                        keys.get(0), TextKeyword.NOT_UNDERSTOOD));
+                responseKeyValuePairs.add(TextParameter.toKeyValuePair(keys.get(0),
+                    TextKeyword.NOT_UNDERSTOOD));
             } else {// appropriate entry was found
                 // process key=value pair and remember if there is any trouble
-                everythingOkay &= entry.negotiate(target, loginStage,
-                        leadingConnection, initialPdu, keys.get(0),
-                        values.get(0), responseKeyValuePairs);
+                everythingOkay &=
+                    entry.negotiate(target, loginStage, leadingConnection, initialPdu, keys.get(0), values
+                        .get(0), responseKeyValuePairs);
             }
             // remove processed key and values
             keys.remove(0);
@@ -189,40 +181,35 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
         if (initialPdu) {
             // initiator must provide the InitiatorName in the first Login PDU
             // (InitiatorAlias is optional)
-            everythingOkay &= getEntry(TextKeyword.INITIATOR_NAME)
-                    .checkAccepted();
+            everythingOkay &= getEntry(TextKeyword.INITIATOR_NAME).checkAccepted();
 
             // in a normal session the initiator must declare TargetName
             // the target must reply with TargetPortalGroupTag and should
             // append TargetAlias
-            boolean normalSession = TextKeyword.NORMAL
-                    .equals((String) getEntry(TextKeyword.SESSION_TYPE).value);
+            boolean normalSession =
+                TextKeyword.NORMAL.equals((String)getEntry(TextKeyword.SESSION_TYPE).value);
             if (normalSession) {
                 // check if proposed TargetName is correct
                 final Entry targetNameEntry = getEntry(TextKeyword.TARGET_NAME);
-                final String targetName = (String) targetNameEntry.value;
+                final String targetName = (String)targetNameEntry.value;
                 if (targetName == null || // not declared
-                        !target.isValidTargetName(targetName))// wrong name
+                    !target.isValidTargetName(targetName))// wrong name
                     everythingOkay = false;
 
                 // send TargetAlias
                 String targetAlias = null;
                 if (everythingOkay)
                     targetAlias = target.getTarget(targetName).getTargetAlias();// might
-                                                                          // be
-                                                                          // undefined
+                // be
+                // undefined
                 if (targetAlias != null) {
-                    responseKeyValuePairs.add(TextParameter.toKeyValuePair(
-                            TextKeyword.TARGET_ALIAS, targetAlias));
+                    responseKeyValuePairs.add(TextParameter.toKeyValuePair(TextKeyword.TARGET_ALIAS,
+                        targetAlias));
                 }
 
                 // send TargetPortalGroupTag
-                responseKeyValuePairs
-                        .add(TextParameter.toKeyValuePair(
-                                TextKeyword.TARGET_PORTAL_GROUP_TAG,
-                                Integer.valueOf(
-                                        target.getConfig().getTargetPortalGroupTag())
-                                        .toString()));
+                responseKeyValuePairs.add(TextParameter.toKeyValuePair(TextKeyword.TARGET_PORTAL_GROUP_TAG,
+                    Integer.valueOf(target.getConfig().getTargetPortalGroupTag()).toString()));
             }
         }
 
@@ -266,8 +253,7 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
      */
     public Settings getSettings() {
         // check if settings are up to date
-        if (sessionSettingsNegotiator.getCurrentSettingsId() > settings
-                .getSettingsId())
+        if (sessionSettingsNegotiator.getCurrentSettingsId() > settings.getSettingsId())
             updateSettings();
         return settings;
     }
@@ -277,8 +263,9 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
      * managed parameters.
      */
     private synchronized void updateSettings() {
-        settings = new Settings(connectionSettingBuilderComponent,
-                sessionSettingsNegotiator.getSessionSettingsBuilderComponent());
+        settings =
+            new Settings(connectionSettingBuilderComponent, sessionSettingsNegotiator
+                .getSessionSettingsBuilderComponent());
     }
 
     @Override
@@ -288,31 +275,35 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
          * Determines type and use of the data digest.
          */
         entries.add(new StringEntry(new KeySet(TextKeyword.DATA_DIGEST),// keySet
-                NegotiationType.NEGOTIATED,// negotiationType
-                Use.LOPNS,// use
-                NegotiationStatus.DEFAULT,// negotiationStatus
-                new String[] { TextKeyword.NONE },// supportedValues,
-                TextKeyword.NONE));// defaultValue
+            NegotiationType.NEGOTIATED,// negotiationType
+            Use.LOPNS,// use
+            NegotiationStatus.DEFAULT,// negotiationStatus
+            new String[] {
+                TextKeyword.NONE
+            },// supportedValues,
+            TextKeyword.NONE));// defaultValue
 
         /*
          * Determines type and use of the header digest.
          */
         entries.add(new StringEntry(new KeySet(TextKeyword.HEADER_DIGEST),// keySet
-                NegotiationType.NEGOTIATED,// negotiationType
-                Use.LOPNS,// use
-                NegotiationStatus.DEFAULT,// negotiationStatus
-                new String[] { TextKeyword.NONE },// supportedValues,
-                TextKeyword.NONE));// defaultValue
+            NegotiationType.NEGOTIATED,// negotiationType
+            Use.LOPNS,// use
+            NegotiationStatus.DEFAULT,// negotiationStatus
+            new String[] {
+                TextKeyword.NONE
+            },// supportedValues,
+            TextKeyword.NONE));// defaultValue
 
         /*
          * Turns the target-to-initiator markers on or off.
          */
         entries.add(new BooleanEntry(new KeySet(TextKeyword.IF_MARKER),// keySet
-                Use.LOPNS,// use
-                NegotiationStatus.DEFAULT,// negotiationStatus
-                false,// negotiationValue
-                BooleanResultFunction.AND,// resultFunction
-                false));// defaultValue
+            Use.LOPNS,// use
+            NegotiationStatus.DEFAULT,// negotiationStatus
+            false,// negotiationValue
+            BooleanResultFunction.AND,// resultFunction
+            false));// defaultValue
 
         /*
          * Interval value (in 4-byte words) for target-to-initiator markers. The
@@ -322,13 +313,12 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
          * 
          * Will always be Irrelevant.
          */
-        entries.add(new NumericalRangeEntry(
-                new KeySet(TextKeyword.IF_MARK_INT),// keySet
-                Use.LOPNS,// use
-                NegotiationStatus.IRRELEVANT,// negotiationStatus
-                2048,// negotiationValue
-                NumericalValueRange.create(1, 65535),// protocolValueRange
-                2048));// defaultValue
+        entries.add(new NumericalRangeEntry(new KeySet(TextKeyword.IF_MARK_INT),// keySet
+            Use.LOPNS,// use
+            NegotiationStatus.IRRELEVANT,// negotiationStatus
+            2048,// negotiationValue
+            NumericalValueRange.create(1, 65535),// protocolValueRange
+            2048));// defaultValue
 
         /*
          * The maximum amount of data that either the initiator or the target
@@ -339,28 +329,27 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
          * data-out data. Min(This value, FirstBurstLength) for unsolicited
          * data.
          */
-        entries.add(new NumericalEntry(new KeySet(
-                TextKeyword.MAX_RECV_DATA_SEGMENT_LENGTH),// keySet
-                NegotiationType.DECLARED,// negotiationType
-                Use.LOPNS_AND_FFP,// use
-                NegotiationStatus.DEFAULT,// negotiationStatus
-                8192,// negotiationValue (default value, will be used if I sends
-                     // 0)
-                NumericalValueRange.create(512, 16777215),// protocolValueRange
-                // 512 to 2^24 - 1
-                NumericalResultFunction.MIN,// resultFunction
-                8192,// defaultValue, 8K
-                true));// zeroMeansDontCare
+        entries.add(new NumericalEntry(new KeySet(TextKeyword.MAX_RECV_DATA_SEGMENT_LENGTH),// keySet
+            NegotiationType.DECLARED,// negotiationType
+            Use.LOPNS_AND_FFP,// use
+            NegotiationStatus.DEFAULT,// negotiationStatus
+            8192,// negotiationValue (default value, will be used if I sends
+                 // 0)
+            NumericalValueRange.create(512, 16777215),// protocolValueRange
+            // 512 to 2^24 - 1
+            NumericalResultFunction.MIN,// resultFunction
+            8192,// defaultValue, 8K
+            true));// zeroMeansDontCare
 
         /*
          * Turns the initiator-to-target markers on or off.
          */
         entries.add(new BooleanEntry(new KeySet(TextKeyword.OF_MARKER),// keySet
-                Use.LOPNS,// use
-                NegotiationStatus.DEFAULT,// negotiationStatus
-                false,// negotiationValue
-                BooleanResultFunction.AND,// resultFunction
-                false));// defaultValue
+            Use.LOPNS,// use
+            NegotiationStatus.DEFAULT,// negotiationStatus
+            false,// negotiationValue
+            BooleanResultFunction.AND,// resultFunction
+            false));// defaultValue
 
         /*
          * Interval value (in 4-byte words) for initiator-to-target markers. The
@@ -370,13 +359,12 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
          * 
          * Will always be Irrelevant.
          */
-        entries.add(new NumericalRangeEntry(
-                new KeySet(TextKeyword.OF_MARK_INT),// keySet
-                Use.LOPNS,// use
-                NegotiationStatus.IRRELEVANT,// negotiationStatus
-                2048,// negotiationValue
-                NumericalValueRange.create(1, 65535),// protocolValueRange
-                2048));// defaultValue
+        entries.add(new NumericalRangeEntry(new KeySet(TextKeyword.OF_MARK_INT),// keySet
+            Use.LOPNS,// use
+            NegotiationStatus.IRRELEVANT,// negotiationStatus
+            2048,// negotiationValue
+            NumericalValueRange.create(1, 65535),// protocolValueRange
+            2048));// defaultValue
 
         /*
          * This entry is not used for Settings initialization, TargetName has a
@@ -384,20 +372,18 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
          * the initiator has to declare at the beginning of normal sessions.
          */
         entries.add(new StringEntry(new KeySet(TextKeyword.TARGET_NAME),// keySet
-                NegotiationType.DECLARED,// negotiationType
-                Use.INITIAL,// use
-                NegotiationStatus.NOT_NEGOTIATED,// negotiationStatus
-                null,// supportedValues, anything goes
-                null));// defaultValue
+            NegotiationType.DECLARED,// negotiationType
+            Use.INITIAL,// use
+            NegotiationStatus.NOT_NEGOTIATED,// negotiationStatus
+            null,// supportedValues, anything goes
+            null));// defaultValue
     }
 
     /**
      * Updates {@link #ConnectionSettingBuilderComponent} with the currently
-     * valid parameters retrieved from the elements of
-     * {@link SettingsNegotiator#entries}.
+     * valid parameters retrieved from the elements of {@link SettingsNegotiator#entries}.
      */
     protected void updateSettingsBuilderComponent() {
-        connectionSettingBuilderComponent = new ConnectionSettingsBuilderComponent(
-                entries);
+        connectionSettingBuilderComponent = new ConnectionSettingsBuilderComponent(entries);
     }
 }

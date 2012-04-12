@@ -12,7 +12,7 @@ public class ReadWriteTest {
         for (int i = 0; i < 65536; ++i)
             if (i != ReadWrite.readTwoByteInt(bytes, 0)) {
                 System.out.println(i + " " + java.util.Arrays.toString(bytes)
-                        + ReadWrite.readTwoByteInt(bytes, 0));
+                    + ReadWrite.readTwoByteInt(bytes, 0));
                 fail("wrong number read");
             } else
                 increment(bytes);
@@ -24,7 +24,7 @@ public class ReadWriteTest {
         for (int i = 0; i < 16777216; ++i)
             if (i != ReadWrite.readThreeByteInt(bytes, 0)) {
                 System.out.println(i + " " + java.util.Arrays.toString(bytes)
-                        + ReadWrite.readThreeByteInt(bytes, 0));
+                    + ReadWrite.readThreeByteInt(bytes, 0));
                 fail("wrong number read");
             } else
                 increment(bytes);
@@ -43,7 +43,7 @@ public class ReadWriteTest {
         while (i != 0) {
             if (i != ReadWrite.readFourByteInt(bytes, 0)) {
                 System.out.println(i + " " + java.util.Arrays.toString(bytes)
-                        + ReadWrite.readFourByteInt(bytes, 0));
+                    + ReadWrite.readFourByteInt(bytes, 0));
                 fail("wrong number read");
             } else
                 increment(bytes);

@@ -42,8 +42,7 @@ public abstract class SenseDataDescriptor implements ISerializable {
      *            the length in bytes of all additional fields
      * @see #COMMON_FIELDS_LENGTH
      */
-    public SenseDataDescriptor(final SenseDataDescriptorType descriptorType,
-            final int additionalLength) {
+    public SenseDataDescriptor(final SenseDataDescriptorType descriptorType, final int additionalLength) {
         this.descriptorType = descriptorType;
         this.additionalLength = additionalLength;
     }
@@ -57,11 +56,10 @@ public abstract class SenseDataDescriptor implements ISerializable {
      *            the position of the first byte of the sense data descriptor in
      *            the {@link ByteBuffer}
      */
-    private final void serializeCommonFields(final ByteBuffer byteBuffer,
-            final int index) {
+    private final void serializeCommonFields(final ByteBuffer byteBuffer, final int index) {
         byteBuffer.position(index);
         byteBuffer.put(descriptorType.getValue());
-        byteBuffer.put((byte) additionalLength);
+        byteBuffer.put((byte)additionalLength);
     }
 
     /**
@@ -74,8 +72,7 @@ public abstract class SenseDataDescriptor implements ISerializable {
      *            the position of the first byte of the sense data descriptor in
      *            the {@link ByteBuffer}
      */
-    protected abstract void serializeSpecificFields(ByteBuffer byteBuffer,
-            final int index);
+    protected abstract void serializeSpecificFields(ByteBuffer byteBuffer, final int index);
 
     private final int getAdditionalLength() {
         return additionalLength;

@@ -1,11 +1,10 @@
 package org.jscsi.target.settings;
 
 /**
- * {@link BooleanResultFunction}s are used by instances of{@link BooleanEntry}
- * during the negotiation of boolean parameters.
+ * {@link BooleanResultFunction}s are used by instances of{@link BooleanEntry} during the negotiation of
+ * boolean parameters.
  * <p>
- * They determine a negotiation outcome based on a logical <code>AND</code> or
- * <code>OR</code> operation.
+ * They determine a negotiation outcome based on a logical <code>AND</code> or <code>OR</code> operation.
  * 
  * @author Andreas Ergenzinger
  */
@@ -30,8 +29,7 @@ public enum BooleanResultFunction {
      *            the first boolean value
      * @param b
      *            the second boolean value
-     * @return the result of a logical <code>AND</code> or <code>OR</code>
-     *         operation.
+     * @return the result of a logical <code>AND</code> or <code>OR</code> operation.
      */
     public final boolean getResult(final boolean a, final boolean b) {
         if (this == AND)

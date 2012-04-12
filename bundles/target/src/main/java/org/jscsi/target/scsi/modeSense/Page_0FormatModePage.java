@@ -25,16 +25,15 @@ public abstract class Page_0FormatModePage extends ModePage {
      * @param pageLength
      *            the value of the PAGE LENGTH field
      */
-    public Page_0FormatModePage(boolean parametersSaveable, int pageCode,
-            int pageLength) {
+    public Page_0FormatModePage(boolean parametersSaveable, int pageCode, int pageLength) {
         super(parametersSaveable, false,// subPageFormat
-                pageCode, pageLength);
+            pageCode, pageLength);
     }
 
     @Override
     protected final void serializePageLength(ByteBuffer buffer, int index) {
         buffer.position(index + PAGE_LENGTH_INDEX);
-        buffer.put((byte) pageLength);
+        buffer.put((byte)pageLength);
     }
 
     @Override

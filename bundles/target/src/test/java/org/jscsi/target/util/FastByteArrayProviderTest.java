@@ -6,8 +6,7 @@ public class FastByteArrayProviderTest {
 
     private static final int CAPACITY = 4;
 
-    private static final FastByteArrayProvider PROVIDER = new FastByteArrayProvider(
-            CAPACITY);
+    private static final FastByteArrayProvider PROVIDER = new FastByteArrayProvider(CAPACITY);
 
     @Test
     public void testFastByteArrayProvider() {

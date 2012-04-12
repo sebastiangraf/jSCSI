@@ -6,14 +6,12 @@ import org.jscsi.target.scsi.IResponseData;
 import org.jscsi.target.scsi.cdb.ScsiOperationCode;
 
 /**
- * The standard inquiry data, sent as a response to an
- * {@link ScsiOperationCode#INQUIRY} command.
+ * The standard inquiry data, sent as a response to an {@link ScsiOperationCode#INQUIRY} command.
  * <p>
- * This class uses the singleton pattern since the returned standard inquiry
- * data will always be the same.
+ * This class uses the singleton pattern since the returned standard inquiry data will always be the same.
  * <p>
- * Not all fields in the serialized form of the singleton have a corresponding
- * member variable, only those fields containing ASCII information.
+ * Not all fields in the serialized form of the singleton have a corresponding member variable, only those
+ * fields containing ASCII information.
  * 
  * @author Andreas Ergenzinger
  */
@@ -80,7 +78,7 @@ public final class StandardInquiryData implements IResponseData {
          * Therefore no need to change anything.
          */
         byteBuffer.position(index);
-        byteBuffer.put((byte) 0);
+        byteBuffer.put((byte)0);
 
         // *** byte 1 ***
         /*
@@ -93,7 +91,7 @@ public final class StandardInquiryData implements IResponseData {
          * 
          * (remaining bits are RESERVED)
          */
-        byteBuffer.put((byte) 0);
+        byteBuffer.put((byte)0);
 
         // *** byte 2 ***
         /*
@@ -103,7 +101,7 @@ public final class StandardInquiryData implements IResponseData {
          * 
          * The device complies to the SPC3 and respective ANSI standard
          */
-        byteBuffer.put((byte) 0x05);
+        byteBuffer.put((byte)0x05);
 
         // *** byte 3 - flags ***
         /*
@@ -131,7 +129,7 @@ public final class StandardInquiryData implements IResponseData {
          * 
          * RESPONSE DATA FORMAT: SPC3
          */
-        byteBuffer.put((byte) 2);// 0000 0010b
+        byteBuffer.put((byte)2);// 0000 0010b
 
         // *** byte 4 ***
         /*
@@ -140,7 +138,7 @@ public final class StandardInquiryData implements IResponseData {
          * The ADDITIONAL LENGTH field indicates the length in bytes of the
          * remaining standard INQUIRY data.
          */
-        byteBuffer.put((byte) 31);
+        byteBuffer.put((byte)31);
 
         // *** byte 5 ***
         /*
@@ -186,7 +184,7 @@ public final class StandardInquiryData implements IResponseData {
          * A PROTECT bit set to zero indicates that the logical unit does not
          * support protection information.
          */
-        byteBuffer.put((byte) 0);
+        byteBuffer.put((byte)0);
 
         // *** byte 6 ***
         /*
@@ -235,7 +233,7 @@ public final class StandardInquiryData implements IResponseData {
          * RESERVED since the SCSI Parallel Interface transport protocol is not
          * used.
          */
-        byteBuffer.put((byte) 128);// 1000 0000b
+        byteBuffer.put((byte)128);// 1000 0000b
 
         // *** byte 7 ***
         /*
@@ -265,7 +263,7 @@ public final class StandardInquiryData implements IResponseData {
          * 
          * (see BQUE ,byte 6)
          */
-        byteBuffer.put((byte) 0);
+        byteBuffer.put((byte)0);
 
         // *** bytes 8 to 15 ***
         /*
@@ -277,8 +275,7 @@ public final class StandardInquiryData implements IResponseData {
          * The T10 vendor identification shall be one assigned by INCITS, but
          * obviously that is not the case here. disyUKon
          */
-        putString(byteBuffer, VENDOR_ID, index + VENDOR_ID_FIELD_POSITION,
-                VENDOR_ID_FIELD_LENGTH);
+        putString(byteBuffer, VENDOR_ID, index + VENDOR_ID_FIELD_POSITION, VENDOR_ID_FIELD_LENGTH);
 
         // *** bytes 16 to 31
         /*
@@ -287,8 +284,7 @@ public final class StandardInquiryData implements IResponseData {
          * The PRODUCT IDENTIFICATION field contains sixteen bytes of
          * left-aligned ASCII data defined by the vendor.
          */
-        putString(byteBuffer, PRODUCT_ID, index + PRODUCT_ID_FIELD_POSITION,
-                PRODUCT_ID_FIELD_LENGTH);
+        putString(byteBuffer, PRODUCT_ID, index + PRODUCT_ID_FIELD_POSITION, PRODUCT_ID_FIELD_LENGTH);
 
         // *** bytes 32 to 35 ***
         /*
@@ -297,14 +293,13 @@ public final class StandardInquiryData implements IResponseData {
          * The PRODUCT REVISION LEVEL field contains four bytes of left-aligned
          * ASCII data defined by the vendor.
          */
-        putString(byteBuffer, PRODUCT_REVISION_LEVEL, index
-                + PRODUCT_REVISION_LEVEL_FIELD_POSITION,
-                PRODUCT_REVISION_LEVEL_FIELD_LENGTH);
+        putString(byteBuffer, PRODUCT_REVISION_LEVEL, index + PRODUCT_REVISION_LEVEL_FIELD_POSITION,
+            PRODUCT_REVISION_LEVEL_FIELD_LENGTH);
     }
 
     /**
-     * Puts up to <i>fieldLength</i> of the passed {@link String} into a
-     * {@link ByteBuffer} and fills the remaining bytes with zeros.
+     * Puts up to <i>fieldLength</i> of the passed {@link String} into a {@link ByteBuffer} and fills the
+     * remaining bytes with zeros.
      * 
      * @param byteBuffer
      *            where the {@link String}'s characters will be copied
@@ -316,17 +311,17 @@ public final class StandardInquiryData implements IResponseData {
      *            the number of bytes in the {@link ByteBuffer} that will be
      *            overwritten
      */
-    private void putString(final ByteBuffer byteBuffer, final String string,
-            final int position, final int fieldLength) {
+    private void putString(final ByteBuffer byteBuffer, final String string, final int position,
+        final int fieldLength) {
         // set position
         byteBuffer.position(position);
         // put string characters
         final int stringLength = Math.min(string.length(), fieldLength);
         for (int i = 0; i < stringLength; ++i)
-            byteBuffer.put((byte) string.charAt(i));
+            byteBuffer.put((byte)string.charAt(i));
         // clear remaining remaining bytes
         for (int i = stringLength; i < fieldLength; ++i)
-            byteBuffer.put((byte) 0);
+            byteBuffer.put((byte)0);
     }
 
     public int size() {

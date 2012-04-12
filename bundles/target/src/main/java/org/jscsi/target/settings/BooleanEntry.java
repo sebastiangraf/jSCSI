@@ -5,12 +5,10 @@ import org.jscsi.target.TargetServer;
 /**
  * An {@link Entry} sub-class for boolean parameters.
  * <p>
- * During text parameter negotiation, boolean values are encoded as
- * <code>Yes</code> and <code>No</code>, meaning <code>true</code> and
- * <code>false</code>, respectively.
+ * During text parameter negotiation, boolean values are encoded as <code>Yes</code> and <code>No</code>,
+ * meaning <code>true</code> and <code>false</code>, respectively.
  * <p>
- * The default or negotiated value can be accessed via the
- * {@link #getBooleanValue()} method.
+ * The default or negotiated value can be accessed via the {@link #getBooleanValue()} method.
  * 
  * @see Entry
  * @author Andreas Ergenzinger
@@ -39,13 +37,9 @@ public final class BooleanEntry extends Entry {
      * @param defaultValue
      *            the default value or <code>null</code>
      */
-    public BooleanEntry(final KeySet keySet, final Use use,
-            final NegotiationStatus negotiationStatus,
-            final boolean negotiationValue,
-            final BooleanResultFunction resultFunction,
-            final Boolean defaultValue) {
-        super(keySet, NegotiationType.NEGOTIATED, use, negotiationStatus,
-                defaultValue);
+    public BooleanEntry(final KeySet keySet, final Use use, final NegotiationStatus negotiationStatus,
+        final boolean negotiationValue, final BooleanResultFunction resultFunction, final Boolean defaultValue) {
+        super(keySet, NegotiationType.NEGOTIATED, use, negotiationStatus, defaultValue);
         this.negotiationValue = negotiationValue;
         this.resultFunction = resultFunction;
     }
@@ -69,22 +63,21 @@ public final class BooleanEntry extends Entry {
 
     @Override
     protected String processNegotiation(final Object values) {
-        final boolean request = (Boolean) values;
-        final boolean result = resultFunction.getResult(request,
-                negotiationValue);
+        final boolean request = (Boolean)values;
+        final boolean result = resultFunction.getResult(request, negotiationValue);
         value = result;
         return TextParameter.booleanToTextValue(result);
     }
 
     @Override
     public Boolean getBooleanValue() {
-        return (Boolean) value;
+        return (Boolean)value;
     }
 
     @Override
     public Entry copy() {
-        final BooleanEntry e = new BooleanEntry(keySet, use, negotiationStatus,
-                negotiationValue, resultFunction, (Boolean) value);
+        final BooleanEntry e =
+            new BooleanEntry(keySet, use, negotiationStatus, negotiationValue, resultFunction, (Boolean)value);
         e.alreadyNegotiated = this.alreadyNegotiated;
         return e;
     }

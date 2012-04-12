@@ -1,11 +1,9 @@
 package org.jscsi.target.scsi.cdb;
 
 /**
- * The {@link CdbType} determines the length of a serialized
- * {@link CommandDescriptorBlock} (CDB) object.
+ * The {@link CdbType} determines the length of a serialized {@link CommandDescriptorBlock} (CDB) object.
  * <p>
- * The first 3 bytes (the group code) of the CDB's {@link ScsiOperationCode}
- * field specify the {@link CdbType}.
+ * The first 3 bytes (the group code) of the CDB's {@link ScsiOperationCode} field specify the {@link CdbType}.
  * 
  * @author Andreas Ergenzinger
  */
@@ -27,8 +25,7 @@ public enum CdbType {
      */
     SIXTEEN_BYTE_COMMANDS,
     /**
-     * The CDB length is not determined by the CDB's {@link ScsiOperationCode}
-     * field.
+     * The CDB length is not determined by the CDB's {@link ScsiOperationCode} field.
      */
     VARIABLE_LENGTH_COMMANDS,
     /**

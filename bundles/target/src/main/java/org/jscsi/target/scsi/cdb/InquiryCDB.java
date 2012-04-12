@@ -9,8 +9,7 @@ import org.jscsi.target.util.BitManip;
 import org.jscsi.target.util.ReadWrite;
 
 /**
- * This class represents Command Descriptor Blocks for the <code>INQUIRY</code>
- * SCSI command.
+ * This class represents Command Descriptor Blocks for the <code>INQUIRY</code> SCSI command.
  * 
  * @author Andreas Ergenzinger
  */
@@ -21,11 +20,10 @@ public class InquiryCDB extends CommandDescriptorBlock {
      * device server shall return the vital product data specified by the PAGE
      * CODE field.
      * <p>
-     * If the EVPD bit is set to zero, the device server shall return the
-     * standard INQUIRY data. If the PAGE CODE field is not set to zero when the
-     * EVPD bit is set to zero, the command shall be terminated with CHECK
-     * CONDITION status, with the sense key set to ILLEGAL REQUEST, and the
-     * additional sense code set to INVALID FIELD IN CDB.
+     * If the EVPD bit is set to zero, the device server shall return the standard INQUIRY data. If the PAGE
+     * CODE field is not set to zero when the EVPD bit is set to zero, the command shall be terminated with
+     * CHECK CONDITION status, with the sense key set to ILLEGAL REQUEST, and the additional sense code set to
+     * INVALID FIELD IN CDB.
      */
     private final boolean enableVitalProductData;
 
@@ -38,25 +36,21 @@ public class InquiryCDB extends CommandDescriptorBlock {
      * specified by the ALLOCATION LENGTH field have been transferred or when
      * all available data have been transferred, whichever is less.
      * <p>
-     * The allocation length is used to limit the maximum amount of variable
-     * length data (e.g., mode data, log data, diagnostic data) returned to an
-     * application client. If the information being transferred to the Data-In
-     * Buffer includes fields containing counts of the number of bytes in some
-     * or all of the data, then the contents of these fields shall not be
-     * altered to reflect the truncation, if any, that results from an
-     * insufficient ALLOCATION LENGTH value, unless the standard that describes
-     * the Data-In Buffer format states otherwise.
+     * The allocation length is used to limit the maximum amount of variable length data (e.g., mode data, log
+     * data, diagnostic data) returned to an application client. If the information being transferred to the
+     * Data-In Buffer includes fields containing counts of the number of bytes in some or all of the data,
+     * then the contents of these fields shall not be altered to reflect the truncation, if any, that results
+     * from an insufficient ALLOCATION LENGTH value, unless the standard that describes the Data-In Buffer
+     * format states otherwise.
      * <p>
-     * If the amount of information to be transferred exceeds the maximum value
-     * that the ALLOCATION LENGTH field is capable of specifying, the device
-     * server shall transfer no data and terminate the command with CHECK
-     * CONDITION status, with the sense key set to ILLEGAL REQUEST, and the
-     * additional sense code set to INVALID FIELD IN CDB.
+     * If the amount of information to be transferred exceeds the maximum value that the ALLOCATION LENGTH
+     * field is capable of specifying, the device server shall transfer no data and terminate the command with
+     * CHECK CONDITION status, with the sense key set to ILLEGAL REQUEST, and the additional sense code set to
+     * INVALID FIELD IN CDB.
      * <p>
-     * If EVPD is set to zero, the allocation length should be at least five, so
-     * that the ADDITIONAL LENGTH field in the parameter data is returned. If
-     * EVPD is set to one, the allocation length should be should be at least
-     * four, so that the PAGE LENGTH field in the parameter data is returned.
+     * If EVPD is set to zero, the allocation length should be at least five, so that the ADDITIONAL LENGTH
+     * field in the parameter data is returned. If EVPD is set to one, the allocation length should be should
+     * be at least four, so that the PAGE LENGTH field in the parameter data is returned.
      */
     private final int allocationLength;
 
@@ -71,7 +65,7 @@ public class InquiryCDB extends CommandDescriptorBlock {
 
         // EVPD
         enableVitalProductData = BitManip.getBit(buffer.get(1),// byte
-                0);// bit number
+            0);// bit number
 
         // page code
         pageCode = new PageCode(buffer.get(2));
@@ -79,8 +73,7 @@ public class InquiryCDB extends CommandDescriptorBlock {
         // allocation length
         allocationLength = ReadWrite.readTwoByteInt(buffer, 3);
 
-        final VitalProductDataPageName vpdpn = pageCode
-                .getVitalProductDataPageName();
+        final VitalProductDataPageName vpdpn = pageCode.getVitalProductDataPageName();
         if (enableVitalProductData) {
             if (!SupportedVpdPages.vpdPageCodeSupported(vpdpn))
                 addIllegalFieldPointer(2);// page code not supported

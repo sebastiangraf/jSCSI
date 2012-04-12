@@ -26,24 +26,21 @@ import org.jscsi.target.settings.SettingsException;
 /**
  * A stage for processing <code>FORMAT UNIT</code> SCSI commands.
  * <p>
- * The <code>FORMAT UNIT</code> command requests that the device server format
- * the medium into application client accessible logical blocks as specified in
- * the number of logical blocks and logical block length values received in the
- * last mode parameter block descriptor in a <code>MODE SELECT</code> command
- * (see SPC-4). In addition, the device server may certify the medium and create
- * control structures for the management of the medium and defects.
+ * The <code>FORMAT UNIT</code> command requests that the device server format the medium into application
+ * client accessible logical blocks as specified in the number of logical blocks and logical block length
+ * values received in the last mode parameter block descriptor in a <code>MODE SELECT</code> command (see
+ * SPC-4). In addition, the device server may certify the medium and create control structures for the
+ * management of the medium and defects.
  * <p>
  * The degree that the medium is altered by this command is vendor specific.
  * <p>
- * If a device server receives a <code>FORMAT UNIT</code> command before
- * receiving a MODE SELECT command with a mode parameter block descriptor, then
- * the device server shall use the number of logical blocks and logical block
- * length at which the logical unit is currently formatted (i.e., no change is
- * made to the number of logical blocks and the logical block length of the
- * logical unit during the format operation).
+ * If a device server receives a <code>FORMAT UNIT</code> command before receiving a MODE SELECT command with
+ * a mode parameter block descriptor, then the device server shall use the number of logical blocks and
+ * logical block length at which the logical unit is currently formatted (i.e., no change is made to the
+ * number of logical blocks and the logical block length of the logical unit during the format operation).
  * <p>
- * <code>FORMAT UNIT</code> commands received by the jSCI Target will not lead
- * to any persistent changes of the virtual logical unit.
+ * <code>FORMAT UNIT</code> commands received by the jSCI Target will not lead to any persistent changes of
+ * the virtual logical unit.
  * 
  * @author Andreas Ergenzinger
  */
@@ -56,59 +53,54 @@ public class FormatUnitStage extends TargetFullFeatureStage {
     }
 
     @Override
-    public void execute(ProtocolDataUnit pdu) throws IOException,
-            InterruptedException, InternetSCSIException, DigestException,
-            SettingsException {
+    public void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
+        InternetSCSIException, DigestException, SettingsException {
 
         LOGGER.debug("Initiator has sent FORMAT UNIT command.");
 
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-        final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
+        final SCSICommandParser parser = (SCSICommandParser)bhs.getParser();
 
         ProtocolDataUnit responsePdu = null;// the response PDU
 
         // get command details in CDB
         final FormatUnitCDB cdb = new FormatUnitCDB(parser.getCDB());
-        final FieldPointerSenseKeySpecificData[] illegalFieldPointers = cdb
-                .getIllegalFieldPointers();
+        final FieldPointerSenseKeySpecificData[] illegalFieldPointers = cdb.getIllegalFieldPointers();
 
         if (illegalFieldPointers != null) {
             // an illegal request has been made
 
             FixedFormatSenseData senseData = new FixedFormatSenseData(false,// valid
-                    ErrorType.CURRENT,// error type
-                    false,// file mark
-                    false,// end of medium
-                    false,// incorrect length indicator
-                    SenseKey.ILLEGAL_REQUEST,// sense key
-                    new FourByteInformation(),// information
-                    new FourByteInformation(),// command specific information
-                    AdditionalSenseCodeAndQualifier.INVALID_FIELD_IN_CDB,// additional
-                                                                         // sense
-                                                                         // code
-                                                                         // and
-                                                                         // qualifier
-                    (byte) 0,// field replaceable unit code
-                    illegalFieldPointers[0],// sense key specific data, only
-                                            // report first problem
-                    new AdditionalSenseBytes());// additional sense bytes
+                ErrorType.CURRENT,// error type
+                false,// file mark
+                false,// end of medium
+                false,// incorrect length indicator
+                SenseKey.ILLEGAL_REQUEST,// sense key
+                new FourByteInformation(),// information
+                new FourByteInformation(),// command specific information
+                AdditionalSenseCodeAndQualifier.INVALID_FIELD_IN_CDB,// additional
+                                                                     // sense
+                                                                     // code
+                                                                     // and
+                                                                     // qualifier
+                (byte)0,// field replaceable unit code
+                illegalFieldPointers[0],// sense key specific data, only
+                                        // report first problem
+                new AdditionalSenseBytes());// additional sense bytes
 
-            responsePdu = TargetPduFactory
-                    .createSCSIResponsePdu(
-                            false,// bidirectionalReadResidualOverflow
-                            false,// bidirectionalReadResidualUnderflow
-                            false,// residualOverflow
-                            false,// residualUnderflow,
-                            SCSIResponseParser.ServiceResponse.COMMAND_COMPLETED_AT_TARGET,// response,
-                            SCSIStatus.CHECK_CONDITION,// status,
-                            bhs.getInitiatorTaskTag(),// initiatorTaskTag,
-                            0,// snackTag
-                            0,// expectedDataSequenceNumber
-                            0,// bidirectionalReadResidualCount
-                            0,// residualCount
-                            new ScsiResponseDataSegment(senseData, parser
-                                    .getExpectedDataTransferLength()));// data
-                                                                       // segment
+            responsePdu = TargetPduFactory.createSCSIResponsePdu(false,// bidirectionalReadResidualOverflow
+                false,// bidirectionalReadResidualUnderflow
+                false,// residualOverflow
+                false,// residualUnderflow,
+                SCSIResponseParser.ServiceResponse.COMMAND_COMPLETED_AT_TARGET,// response,
+                SCSIStatus.CHECK_CONDITION,// status,
+                bhs.getInitiatorTaskTag(),// initiatorTaskTag,
+                0,// snackTag
+                0,// expectedDataSequenceNumber
+                0,// bidirectionalReadResidualCount
+                0,// residualCount
+                new ScsiResponseDataSegment(senseData, parser.getExpectedDataTransferLength()));// data
+                                                                                                // segment
 
         } else {
             // PDU is okay
@@ -126,9 +118,9 @@ public class FormatUnitStage extends TargetFullFeatureStage {
              */
 
             responsePdu = createScsiResponsePdu(SCSIStatus.GOOD,// status
-                    bhs.getInitiatorTaskTag(),// initiatorTaskTag,
-                    parser.getExpectedDataTransferLength(),// expectedDataTransferLength,
-                    0);// responseDataSize
+                bhs.getInitiatorTaskTag(),// initiatorTaskTag,
+                parser.getExpectedDataTransferLength(),// expectedDataTransferLength,
+                0);// responseDataSize
         }
 
         // send response

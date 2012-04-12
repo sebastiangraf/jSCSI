@@ -3,9 +3,8 @@ package org.jscsi.target.scsi.cdb;
 /**
  * The SELF-TEST CODE field is a member of SEND DIAGNOSTIC CDBs.
  * <p>
- * A {@link SendDiagnosticCdb#selfTest} bit set to zero specifies that the
- * device server shall perform the diagnostic operation specified by the
- * {@link SendDiagnosticCdb#selfTestCode} field.
+ * A {@link SendDiagnosticCdb#selfTest} bit set to zero specifies that the device server shall perform the
+ * diagnostic operation specified by the {@link SendDiagnosticCdb#selfTestCode} field.
  * <p>
  * The {@link SelfTestCode} field has a length of three bits.
  * 
@@ -18,19 +17,19 @@ public enum SelfTestCode {
      * is set to one, or when the SELFTEST bit is set to zero and the PF bit is
      * set to one.
      */
-    ALL_ZEROS((byte) 0),
+    ALL_ZEROS((byte)0),
     /**
      * The device server shall start its short self-test in the background mode.
      * The {@link SendDiagnosticCdb#parameterListLength} field shall contain
      * zero.
      */
-    BACKGROUND_SHORT_SELF_TEST((byte) 1),
+    BACKGROUND_SHORT_SELF_TEST((byte)1),
     /**
      * The device server shall start its extended self-test (see 5.5.2) in the
-     * background mode (see 5.5.3.3). The
-     * {@link SendDiagnosticCdb#parameterListLength} field shall contain zero.
+     * background mode (see 5.5.3.3). The {@link SendDiagnosticCdb#parameterListLength} field shall contain
+     * zero.
      */
-    BACKGROUND_EXTENDED_SELF_TEST((byte) 2),
+    BACKGROUND_EXTENDED_SELF_TEST((byte)2),
     /**
      * The device server shall abort the current self-test running in background
      * mode. The {@link SendDiagnosticCdb#parameterListLength} field shall
@@ -41,19 +40,19 @@ public enum SelfTestCode {
      * to ILLEGAL REQUEST, and the additional sense code set to INVALID FIELD IN
      * CDB.
      */
-    ABORT_BACKGROUND_SELF_TEST((byte) 4),
+    ABORT_BACKGROUND_SELF_TEST((byte)4),
     /**
      * The device server shall start its short self-test (see 5.5.2) in the
      * foreground mode. The {@link SendDiagnosticCdb#parameterListLength} field
      * shall contain zero.
      */
-    FOREGROUND_SELF_TEST((byte) 5),
+    FOREGROUND_SELF_TEST((byte)5),
     /**
      * The device server shall start its extended self-test in the foreground
      * mode. The {@link SendDiagnosticCdb#parameterListLength} field shall
      * contain zero.
      */
-    FOREGROUND_EXTENDED_SELF_TEST((byte) 6);
+    FOREGROUND_EXTENDED_SELF_TEST((byte)6);
     // all other values (011b and 111b) are reserved
 
     /**
@@ -74,8 +73,7 @@ public enum SelfTestCode {
      * 
      * @param value
      *            the value of a SELF-TEST CODE field
-     * @return the {@link SelfTestCode} corresponding to the passed value or
-     *         <code>null</code> if none exists
+     * @return the {@link SelfTestCode} corresponding to the passed value or <code>null</code> if none exists
      */
     public static SelfTestCode getValue(int value) {
         SelfTestCode[] values = values();

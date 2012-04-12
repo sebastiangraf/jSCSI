@@ -6,8 +6,7 @@ import org.jscsi.target.util.BitManip;
 import org.jscsi.target.util.ReadWrite;
 
 /**
- * This class represents Command Descriptor Blocks for the
- * <code>READ CAPACITY (10)</code> SCSI command.
+ * This class represents Command Descriptor Blocks for the <code>READ CAPACITY (10)</code> SCSI command.
  * 
  * @author Andreas Ergenzinger
  */
@@ -25,7 +24,7 @@ public class ReadCapacity10Cdb extends ReadCapacityCdb {
     @Override
     protected boolean deserializePartialMediumIndicator(ByteBuffer buffer) {
         return BitManip.getBit(buffer.get(8),// byte
-                0);// bitNumber
+            0);// bitNumber
     }
 
 }

@@ -30,8 +30,7 @@ public abstract class LogicalBlockDescriptor implements ISerializable {
      * @param logicalBlockLength
      *            the length in bytes of the logical blocks
      */
-    public LogicalBlockDescriptor(final long numberOfLogicalBlocks,
-            final int logicalBlockLength) {
+    public LogicalBlockDescriptor(final long numberOfLogicalBlocks, final int logicalBlockLength) {
         this.numberOfLogicalBlocks = numberOfLogicalBlocks;
         this.logicalBlockLength = logicalBlockLength;
     }

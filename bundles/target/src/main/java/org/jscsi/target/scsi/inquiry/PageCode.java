@@ -7,11 +7,10 @@ import org.jscsi.target.scsi.cdb.InquiryCDB;
  * target to return vital product data (VPD) pages. The specific VPD page is
  * determined by the value of the {@link InquiryCDB#pageCode} field.
  * <p>
- * To find out which page was requested, first create a new {@link PageCode}
- * object using the value provided in the command descriptor block's PAGE CODE
- * field, and then call its {@link #getVitalProductDataPageName()} method. This
- * complicated approach is necessary, since some VPD pages are associated with
- * more than just one page code.
+ * To find out which page was requested, first create a new {@link PageCode} object using the value provided
+ * in the command descriptor block's PAGE CODE field, and then call its {@link #getVitalProductDataPageName()}
+ * method. This complicated approach is necessary, since some VPD pages are associated with more than just one
+ * page code.
  * 
  * @author Andreas Ergenzinger
  */
@@ -38,7 +37,7 @@ public class PageCode {
      * @return the value of the PAGE CODE field
      */
     public final byte getValue() {
-        return (byte) value;
+        return (byte)value;
     }
 
     /**
@@ -85,54 +84,54 @@ public class PageCode {
          * {@link PageCode} value 0x00
          */
         SUPPORTED_VPD_PAGES, // mandatory
-        /**
-         * {@link PageCode} values 0x01-0x7f
-         */
-        ASCII_INFORMATION,
-        /**
-         * {@link PageCode} value 0x80
-         */
-        UNIT_SERIAL_NUMBER,
-        /**
-         * {@link PageCode} values 0x81-0x82
-         */
-        OBSOLETE,
-        /**
-         * {@link PageCode} value 0x83
-         */
-        DEVICE_IDENTIFICATION, // mandatory
-        /**
-         * {@link PageCode} value 0x84
-         */
-        SOFTWARE_INTERFACE_IDENTIFICATION,
-        /**
-         * {@link PageCode} value 0x85
-         */
-        MANAGEMENT_NETWORK_ADDRESSES,
-        /**
-         * {@link PageCode} value 0x86
-         */
-        EXTENDED_INQUIRY_DATA,
-        /**
-         * {@link PageCode} value 0x87
-         */
-        MODE_PAGE_POLICY,
-        /**
-         * {@link PageCode} value 0x88
-         */
-        SCSI_PORTS,
-        /**
-         * {@link PageCode} values 0x89-0xaf
-         */
-        RESERVED,
-        /**
-         * {@link PageCode} values 0xb0-0xbf
-         */
-        DEVICE_TYPE_SPECIFIC,
-        /**
-         * {@link PageCode} values 0xc0-0xff
-         */
-        VENDOR_SPECIFIC
+            /**
+             * {@link PageCode} values 0x01-0x7f
+             */
+            ASCII_INFORMATION,
+            /**
+             * {@link PageCode} value 0x80
+             */
+            UNIT_SERIAL_NUMBER,
+            /**
+             * {@link PageCode} values 0x81-0x82
+             */
+            OBSOLETE,
+            /**
+             * {@link PageCode} value 0x83
+             */
+            DEVICE_IDENTIFICATION, // mandatory
+            /**
+             * {@link PageCode} value 0x84
+             */
+            SOFTWARE_INTERFACE_IDENTIFICATION,
+            /**
+             * {@link PageCode} value 0x85
+             */
+            MANAGEMENT_NETWORK_ADDRESSES,
+            /**
+             * {@link PageCode} value 0x86
+             */
+            EXTENDED_INQUIRY_DATA,
+            /**
+             * {@link PageCode} value 0x87
+             */
+            MODE_PAGE_POLICY,
+            /**
+             * {@link PageCode} value 0x88
+             */
+            SCSI_PORTS,
+            /**
+             * {@link PageCode} values 0x89-0xaf
+             */
+            RESERVED,
+            /**
+             * {@link PageCode} values 0xb0-0xbf
+             */
+            DEVICE_TYPE_SPECIFIC,
+            /**
+             * {@link PageCode} values 0xc0-0xff
+             */
+            VENDOR_SPECIFIC
     }
 
     @Override

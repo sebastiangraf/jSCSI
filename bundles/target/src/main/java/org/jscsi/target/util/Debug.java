@@ -3,8 +3,8 @@ package org.jscsi.target.util;
 import java.nio.ByteBuffer;
 
 /**
- * This class provides static methods for printing the bytes of
- * {@link ByteBuffer} objects. The individual values will be printed in
+ * This class provides static methods for printing the bytes of {@link ByteBuffer} objects. The individual
+ * values will be printed in
  * hexadecimal format in a tabular arrangement.
  * 
  * @author Andreas Ergenzinger

@@ -22,23 +22,20 @@ import org.jscsi.target.settings.SettingsException;
 
 public final class ReadCapacityStage extends TargetFullFeatureStage {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(ReadCapacityStage.class);
+    private static final Logger LOGGER = Logger.getLogger(ReadCapacityStage.class);
 
     public ReadCapacityStage(final TargetFullFeaturePhase targetFullFeaturePhase) {
         super(targetFullFeaturePhase);
     }
 
     @Override
-    public void execute(ProtocolDataUnit pdu) throws IOException,
-            InterruptedException, InternetSCSIException, DigestException,
-            SettingsException {
+    public void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
+        InternetSCSIException, DigestException, SettingsException {
 
         // find out the type of READ CAPACITY command ((10) or (16))
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-        final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
-        final ScsiOperationCode opCode = ScsiOperationCode.valueOf(parser
-                .getCDB().get(0));
+        final SCSICommandParser parser = (SCSICommandParser)bhs.getParser();
+        final ScsiOperationCode opCode = ScsiOperationCode.valueOf(parser.getCDB().get(0));
         ReadCapacityCdb cdb;
         if (opCode == ScsiOperationCode.READ_CAPACITY_10)
             cdb = new ReadCapacity10Cdb(parser.getCDB());
@@ -46,8 +43,7 @@ public final class ReadCapacityStage extends TargetFullFeatureStage {
             cdb = new ReadCapacity16Cdb(parser.getCDB());
         else {
             // programmer error, we should not be here, close the connection
-            throw new InternetSCSIException("wrong SCSI Operation Code "
-                    + opCode + " in ReadCapacityStage");
+            throw new InternetSCSIException("wrong SCSI Operation Code " + opCode + " in ReadCapacityStage");
         }
 
         /*
@@ -64,39 +60,36 @@ public final class ReadCapacityStage extends TargetFullFeatureStage {
         // appropriate response
         if (session.getStorageModule().checkBounds(cdb.getLogicalBlockAddress(), 0) != 0) {
             // invalid, log error, send error PDU, and return
-            LOGGER.error("encountered " + cdb.getClass()
-                    + " in ReadCapacityStage with "
-                    + "LOGICAL BLOCK ADDRESS = " + cdb.getLogicalBlockAddress());
+            LOGGER.error("encountered " + cdb.getClass() + " in ReadCapacityStage with "
+                + "LOGICAL BLOCK ADDRESS = " + cdb.getLogicalBlockAddress());
 
-            final FieldPointerSenseKeySpecificData fp = new FieldPointerSenseKeySpecificData(
-                    true,// senseKeySpecificDataValid
-                    true,// commandData (i.e. invalid field in CDB)
-                    false,// bitPointerValid
-                    0,// bitPointer, reserved since invalid
-                    0);// fieldPointer to the SCSI OpCode field
-            final FieldPointerSenseKeySpecificData[] fpArray = new FieldPointerSenseKeySpecificData[] { fp };
-            final ProtocolDataUnit responsePdu = createFixedFormatErrorPdu(
-                    fpArray,// senseKeySpecificData
-                    AdditionalSenseCodeAndQualifier.LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,// additionalSenseCodeAndQualifier
-                    bhs.getInitiatorTaskTag(),// initiatorTaskTag
-                    parser.getExpectedDataTransferLength());// expectedDataTransferLength
+            final FieldPointerSenseKeySpecificData fp = new FieldPointerSenseKeySpecificData(true,// senseKeySpecificDataValid
+                true,// commandData (i.e. invalid field in CDB)
+                false,// bitPointerValid
+                0,// bitPointer, reserved since invalid
+                0);// fieldPointer to the SCSI OpCode field
+            final FieldPointerSenseKeySpecificData[] fpArray = new FieldPointerSenseKeySpecificData[] {
+                fp
+            };
+            final ProtocolDataUnit responsePdu = createFixedFormatErrorPdu(fpArray,// senseKeySpecificData
+                AdditionalSenseCodeAndQualifier.LOGICAL_BLOCK_ADDRESS_OUT_OF_RANGE,// additionalSenseCodeAndQualifier
+                bhs.getInitiatorTaskTag(),// initiatorTaskTag
+                parser.getExpectedDataTransferLength());// expectedDataTransferLength
             connection.sendPdu(responsePdu);
             return;
         } else {
             // send PDU with requested READ CAPACITY parameter data
             ReadCapacityParameterData parameterData;
             if (cdb instanceof ReadCapacity10Cdb)
-                parameterData = new ReadCapacity10ParameterData(
-                        session.getStorageModule().getSizeInBlocks(),// returnedLogicalBlockAddress
-                        session.getStorageModule().getBlockSizeInBytes());// logicalBlockLengthInBytes
+                parameterData = new ReadCapacity10ParameterData(session.getStorageModule().getSizeInBlocks(),// returnedLogicalBlockAddress
+                    session.getStorageModule().getBlockSizeInBytes());// logicalBlockLengthInBytes
             else
-                parameterData = new ReadCapacity16ParameterData(
-                        session.getStorageModule().getSizeInBlocks(),// returnedLogicalBlockAddress
-                        session.getStorageModule().getBlockSizeInBytes());// logicalBlockLengthInBytes
+                parameterData = new ReadCapacity16ParameterData(session.getStorageModule().getSizeInBlocks(),// returnedLogicalBlockAddress
+                    session.getStorageModule().getBlockSizeInBytes());// logicalBlockLengthInBytes
 
             sendResponse(bhs.getInitiatorTaskTag(),// initiatorTaskTag,
-                    parser.getExpectedDataTransferLength(),// expectedDataTransferLength,
-                    parameterData);// responseData
+                parser.getExpectedDataTransferLength(),// expectedDataTransferLength,
+                parameterData);// responseData
         }
     }
 

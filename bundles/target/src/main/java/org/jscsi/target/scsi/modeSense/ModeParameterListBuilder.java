@@ -1,8 +1,7 @@
 package org.jscsi.target.scsi.modeSense;
 
 /**
- * A builder object used during the initialization of new
- * {@link ModeParameterList} objects.
+ * A builder object used during the initialization of new {@link ModeParameterList} objects.
  * 
  * @author Andreas Ergenzinger
  */
@@ -14,14 +13,13 @@ public final class ModeParameterListBuilder {
     final HeaderType headerType;
 
     /**
-     * Contains all elements to be included in the list of
-     * {@link LogicalBlockDescriptor} objects of the {@link ModeParameterList}.
+     * Contains all elements to be included in the list of {@link LogicalBlockDescriptor} objects of the
+     * {@link ModeParameterList}.
      */
     LogicalBlockDescriptor[] logicalBlockDescriptors;
 
     /**
-     * If the {@link ModeParameterList} uses a
-     * {@link HeaderType#MODE_PARAMETER_HEADER_10} and this value is
+     * If the {@link ModeParameterList} uses a {@link HeaderType#MODE_PARAMETER_HEADER_10} and this value is
      * <code>true</code>, then all contained MODE PARAMETER BLOCK DESCRIPTORs
      * will have the LONG LBA (LOGICAL BLOCK ADDRESS) format.
      * <p>
@@ -30,8 +28,8 @@ public final class ModeParameterListBuilder {
     boolean longLba = false;
 
     /**
-     * Contains all elements to be included in the list of {@link ModePage}
-     * objects of the {@link ModeParameterList}.
+     * Contains all elements to be included in the list of {@link ModePage} objects of the
+     * {@link ModeParameterList}.
      */
     ModePage[] modePages;
 
@@ -39,21 +37,18 @@ public final class ModeParameterListBuilder {
         this.headerType = headerType;
     }
 
-    public void setLogicalBlockDescriptors(
-            final ShortLogicalBlockDescriptor logicalBlockDescriptor) {
+    public void setLogicalBlockDescriptors(final ShortLogicalBlockDescriptor logicalBlockDescriptor) {
         final ShortLogicalBlockDescriptor[] array = new ShortLogicalBlockDescriptor[1];
         array[0] = logicalBlockDescriptor;
         setLogicalBlockDescriptors(array);
     }
 
-    public void setLogicalBlockDescriptors(
-            final ShortLogicalBlockDescriptor[] logicalBlockDescriptors) {
+    public void setLogicalBlockDescriptors(final ShortLogicalBlockDescriptor[] logicalBlockDescriptors) {
         this.logicalBlockDescriptors = logicalBlockDescriptors;
         longLba = false;
     }
 
-    public void setLogicalBlockDescriptors(
-            final LongLogicalBlockDescriptor[] logicalBlockDescriptors) {
+    public void setLogicalBlockDescriptors(final LongLogicalBlockDescriptor[] logicalBlockDescriptors) {
         this.logicalBlockDescriptors = logicalBlockDescriptors;
         longLba = true;
     }

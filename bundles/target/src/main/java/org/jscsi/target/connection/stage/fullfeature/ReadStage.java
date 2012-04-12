@@ -34,30 +34,27 @@ public class ReadStage extends ReadOrWriteStage {
     }
 
     @Override
-    public void execute(ProtocolDataUnit pdu) throws IOException,
-            InterruptedException, InternetSCSIException, SettingsException {
+    public void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
+        InternetSCSIException, SettingsException {
 
         // get relevant variables ...
         // ... from settings
         final boolean immediateData = settings.getImmediateData();
-        final int maxRecvDataSegmentLength = settings
-                .getMaxRecvDataSegmentLength();
+        final int maxRecvDataSegmentLength = settings.getMaxRecvDataSegmentLength();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("immediateData = " + immediateData);
-            LOGGER.debug("maxRecvDataSegmentLength = "
-                    + maxRecvDataSegmentLength);
+            LOGGER.debug("maxRecvDataSegmentLength = " + maxRecvDataSegmentLength);
         }
 
         // ... and from the PDU
         BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-        SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
+        SCSICommandParser parser = (SCSICommandParser)bhs.getParser();
         final int initiatorTaskTag = bhs.getInitiatorTaskTag();
 
         // get the Read(6) or Read(10) CDB
         ReadCdb cdb;
-        final ScsiOperationCode scsiOpCode = ScsiOperationCode.valueOf(parser
-                .getCDB().get(0));
+        final ScsiOperationCode scsiOpCode = ScsiOperationCode.valueOf(parser.getCDB().get(0));
         if (scsiOpCode == ScsiOperationCode.READ_10)// most likely option first
             cdb = new Read10Cdb(parser.getCDB());
         else if (scsiOpCode == ScsiOperationCode.READ_6)
@@ -65,8 +62,7 @@ public class ReadStage extends ReadOrWriteStage {
         else {
             // anything else wouldn't be good (programmer error)
             // close connection
-            throw new InternetSCSIException("wrong SCSI Operation Code "
-                    + scsiOpCode + " in ReadStage");
+            throw new InternetSCSIException("wrong SCSI Operation Code " + scsiOpCode + " in ReadStage");
         }
 
         // check if requested blocks are out of bounds
@@ -79,9 +75,8 @@ public class ReadStage extends ReadOrWriteStage {
             LOGGER.error("illegal field in Read CDB");
 
             // create and send error PDU and leave stage
-            final ProtocolDataUnit responsePdu = createFixedFormatErrorPdu(
-                    cdb.getIllegalFieldPointers(),// senseKeySpecificData
-                    initiatorTaskTag, parser.getExpectedDataTransferLength());
+            final ProtocolDataUnit responsePdu = createFixedFormatErrorPdu(cdb.getIllegalFieldPointers(),// senseKeySpecificData
+                initiatorTaskTag, parser.getExpectedDataTransferLength());
             connection.sendPdu(responsePdu);
             return;
         }
@@ -91,12 +86,10 @@ public class ReadStage extends ReadOrWriteStage {
         final long storageOffset = blockSize * cdb.getLogicalBlockAddress();
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("cdb.getLogicalBlockAddress() = "
-                    + cdb.getLogicalBlockAddress());
+            LOGGER.debug("cdb.getLogicalBlockAddress() = " + cdb.getLogicalBlockAddress());
             LOGGER.debug("blockSize = " + blockSize);
             LOGGER.debug("totalTransferLength = " + totalTransferLength);
-            LOGGER.debug("expectedDataSegmentLength = "
-                    + parser.getExpectedDataTransferLength());
+            LOGGER.debug("expectedDataSegmentLength = " + parser.getExpectedDataTransferLength());
         }
 
         // *** start sending ***
@@ -115,16 +108,15 @@ public class ReadStage extends ReadOrWriteStage {
              * Initialize dataSegmentArray and dataSegment with
              * MaxRecvDataSegmentLength bytes.
              */
-            dataSegmentArray = connection.getDataInArray(settings
-                    .getMaxRecvDataSegmentLength());
+            dataSegmentArray = connection.getDataInArray(settings.getMaxRecvDataSegmentLength());
             dataSegment = ByteBuffer.wrap(dataSegmentArray);
         }
 
         while (bytesSent < totalTransferLength - maxRecvDataSegmentLength) {
 
             // get data and prepare data segment
-            session.getStorageModule().read(dataSegmentArray, 0,
-                    maxRecvDataSegmentLength, storageOffset + bytesSent);
+            session.getStorageModule().read(dataSegmentArray, 0, maxRecvDataSegmentLength,
+                storageOffset + bytesSent);
 
             // create and send PDU
             responsePdu = TargetPduFactory.createDataInPdu(false,// finalFlag,
@@ -133,18 +125,18 @@ public class ReadStage extends ReadOrWriteStage {
                                                                  // data payload
                                                                  // in the
                                                                  // sequence
-                    false,// acknowledgeFlag, ErrorRecoveryLevel == 0, so we
-                          // never do that
-                    false,// residualOverflowFlag
-                    false,// residualUnderflowFlag
-                    false,// statusFlag
-                    SCSIStatus.GOOD,// status, actually reserved i.e. 0x0
-                    0L,// logicalUnitNumber, reserved
-                    initiatorTaskTag, 0xffffffff,// targetTransferTag
-                    dataSequenceNumber,// dataSequenceNumber
-                    bytesSent,// bufferOffset
-                    0,// residualCount
-                    dataSegment);
+                false,// acknowledgeFlag, ErrorRecoveryLevel == 0, so we
+                      // never do that
+                false,// residualOverflowFlag
+                false,// residualUnderflowFlag
+                false,// statusFlag
+                SCSIStatus.GOOD,// status, actually reserved i.e. 0x0
+                0L,// logicalUnitNumber, reserved
+                initiatorTaskTag, 0xffffffff,// targetTransferTag
+                dataSequenceNumber,// dataSequenceNumber
+                bytesSent,// bufferOffset
+                0,// residualCount
+                dataSegment);
 
             connection.sendPdu(responsePdu);
 
@@ -172,18 +164,18 @@ public class ReadStage extends ReadOrWriteStage {
                                                             // PDU in the
                                                             // sequence with
                                                             // data payload
-                false,// acknowledgeFlag, ErrorRecoveryLevel == 0, so we never
-                      // do that
-                false,// residualOverflowFlag
-                false,// residualUnderflowFlag
-                immediateData,// statusFlag
-                SCSIStatus.GOOD,// status, or not (reserved if no status)
-                0L,// logicalUnitNumber, reserved
-                initiatorTaskTag, 0xffffffff,// targetTransferTag
-                dataSequenceNumber,// dataSequenceNumber
-                bytesSent,// bufferOffset
-                0,// residualCount
-                dataSegment);
+            false,// acknowledgeFlag, ErrorRecoveryLevel == 0, so we never
+                  // do that
+            false,// residualOverflowFlag
+            false,// residualUnderflowFlag
+            immediateData,// statusFlag
+            SCSIStatus.GOOD,// status, or not (reserved if no status)
+            0L,// logicalUnitNumber, reserved
+            initiatorTaskTag, 0xffffffff,// targetTransferTag
+            dataSequenceNumber,// dataSequenceNumber
+            bytesSent,// bufferOffset
+            0,// residualCount
+            dataSegment);
 
         LOGGER.debug("sending last Data-In PDU");
         connection.sendPdu(responsePdu);
@@ -192,18 +184,18 @@ public class ReadStage extends ReadOrWriteStage {
         if (!immediateData) {
 
             responsePdu = TargetPduFactory.createSCSIResponsePdu(false,// bidirectionalReadResidualOverflow
-                    false,// bidirectionalReadResidualUnderflow
-                    false,// residualOverflow
-                    false,// residualUnderflow
-                    ServiceResponse.COMMAND_COMPLETED_AT_TARGET,// response
-                    SCSIStatus.GOOD,// status
-                    initiatorTaskTag,// initiatorTaskTag
-                    0,// snackTag, reserved
-                    0,// expectedDataSequenceNumber, reserved
-                    0,// bidirectionalReadResidualCount
-                    0,// residualCount
-                    ScsiResponseDataSegment.EMPTY_DATA_SEGMENT);// empty
-                                                                // ScsiResponseDataSegment
+                false,// bidirectionalReadResidualUnderflow
+                false,// residualOverflow
+                false,// residualUnderflow
+                ServiceResponse.COMMAND_COMPLETED_AT_TARGET,// response
+                SCSIStatus.GOOD,// status
+                initiatorTaskTag,// initiatorTaskTag
+                0,// snackTag, reserved
+                0,// expectedDataSequenceNumber, reserved
+                0,// bidirectionalReadResidualCount
+                0,// residualCount
+                ScsiResponseDataSegment.EMPTY_DATA_SEGMENT);// empty
+                                                            // ScsiResponseDataSegment
 
             LOGGER.debug("sending SCSI Response PDU");
             connection.sendPdu(responsePdu);

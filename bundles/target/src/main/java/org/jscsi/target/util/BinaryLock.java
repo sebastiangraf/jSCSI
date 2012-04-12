@@ -5,12 +5,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Instances of {@link BinaryLock} can be used to prevent concurrent access to
- * the same resource, so, in essence, this is a very simplified {@link Lock}
- * implementation, however lacking many advanced capabilities.
+ * the same resource, so, in essence, this is a very simplified {@link Lock} implementation, however lacking
+ * many advanced capabilities.
  * <p>
- * A {@link BinaryLock} knows only two states, locked and unlocked. Attempts by
- * the lock-holder to lock a {@link BinaryLock} when locked or to unlock it when
- * unlocked, will have no effect.
+ * A {@link BinaryLock} knows only two states, locked and unlocked. Attempts by the lock-holder to lock a
+ * {@link BinaryLock} when locked or to unlock it when unlocked, will have no effect.
  * 
  * @author Andreas Ergenzinger
  */
@@ -23,13 +22,13 @@ public class BinaryLock {
     private final ReentrantLock lock = new ReentrantLock();
 
     /**
-     * This method is used to acquire the lock. It will block until no other
-     * {@link Thread} is holding the lock and then return <code>true</code> to
+     * This method is used to acquire the lock. It will block until no other {@link Thread} is holding the
+     * lock and then return <code>true</code> to
      * indicate the successful lock acquisition, or return <code>false</code>,
      * if the calling {@link Thread} was interrupted while waiting for the lock.
      * <p>
-     * If the caller is already holding the lock, the method will immediately
-     * return <code>true</code> without any changes.
+     * If the caller is already holding the lock, the method will immediately return <code>true</code> without
+     * any changes.
      * 
      * @return <code>true</code> if and only if the lock has been acquired
      */

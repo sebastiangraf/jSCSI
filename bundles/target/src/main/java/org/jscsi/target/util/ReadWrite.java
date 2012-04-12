@@ -101,8 +101,7 @@ public final class ReadWrite {
      * @return the unsigned value of the three-byte integer
      */
     public static final int readThreeByteInt(byte[] array, int start) {
-        return ((array[start] & 255) << 16) | ((array[start + 1] & 255) << 8)
-                | (array[start + 2] & 255);
+        return ((array[start] & 255) << 16) | ((array[start + 1] & 255) << 8) | (array[start + 2] & 255);
     }
 
     /**
@@ -120,8 +119,7 @@ public final class ReadWrite {
         final byte b2 = buffer.get(start + 1);
         final byte b3 = buffer.get(start + 2);
         final byte b4 = buffer.get(start + 3);
-        return ((b1 & 255) << 24) | ((b2 & 255) << 16) | ((b3 & 255) << 8)
-                | (b4 & 255);
+        return ((b1 & 255) << 24) | ((b2 & 255) << 16) | ((b3 & 255) << 8) | (b4 & 255);
     }
 
     /**
@@ -136,17 +134,16 @@ public final class ReadWrite {
      */
     public static final int readFourByteInt(byte[] array, int start) {
         return ((array[start] & 255) << 24) | ((array[start + 1] & 255) << 16)
-                | ((array[start + 2] & 255) << 8) | (array[start + 3] & 255);
+            | ((array[start + 2] & 255) << 8) | (array[start + 3] & 255);
     }
 
     /**
      * Puts the characters in the passed String into an array of one or more
      * ByteBuffers and returns it.
      * <p>
-     * If the String does not end with a null character, one will be appended.
-     * If the String's length is larger than the specified <i>bufferSize</i>,
-     * all but the last ByteBuffer will have <i>capacity() = bufferSize</i>, the
-     * last one will contain the remaining String characters.
+     * If the String does not end with a null character, one will be appended. If the String's length is
+     * larger than the specified <i>bufferSize</i>, all but the last ByteBuffer will have <i>capacity() =
+     * bufferSize</i>, the last one will contain the remaining String characters.
      * 
      * @param string
      *            the String to be put into the ByteBuffer
@@ -154,8 +151,7 @@ public final class ReadWrite {
      *            the maximum size of the returned ByteBuffers
      * @return an array of ByteBuffers containing the passed String
      */
-    public static ByteBuffer[] stringToTextDataSegments(String string,
-            int bufferSize) {
+    public static ByteBuffer[] stringToTextDataSegments(String string, int bufferSize) {
 
         int numberOfParts = string.length() / bufferSize + 1;
         ByteBuffer[] segments = new ByteBuffer[numberOfParts];
@@ -163,11 +159,9 @@ public final class ReadWrite {
         int bytesRemaining = string.length();
         for (int i = 0; i < numberOfParts; ++i) {
             if (bytesRemaining > bufferSize) {
-                segments[i] = stringToByteBuffer(string.substring(i
-                        * bufferSize, (i + 1) * bufferSize));
+                segments[i] = stringToByteBuffer(string.substring(i * bufferSize, (i + 1) * bufferSize));
             } else {
-                segments[i] = stringToByteBuffer(string.substring(i
-                        * bufferSize));
+                segments[i] = stringToByteBuffer(string.substring(i * bufferSize));
             }
         }
         return segments;
@@ -184,7 +178,7 @@ public final class ReadWrite {
     private static ByteBuffer stringToByteBuffer(final String string) {
         final ByteBuffer buffer = ByteBuffer.allocate(string.length());
         for (int i = 0; i < string.length(); ++i)
-            buffer.put((byte) string.charAt(i));
+            buffer.put((byte)string.charAt(i));
         buffer.clear();
         return buffer;
     }
@@ -198,8 +192,8 @@ public final class ReadWrite {
      * @param stringBuilder
      *            the {@link StringBuilder} that will be extended
      */
-    public static final void appendTextDataSegmentToStringBuffer(
-            final ByteBuffer byteBuffer, final StringBuilder stringBuilder) {
+    public static final void appendTextDataSegmentToStringBuffer(final ByteBuffer byteBuffer,
+        final StringBuilder stringBuilder) {
         final String s = new String(byteBuffer.array());
         stringBuilder.append(s);
     }
@@ -215,18 +209,16 @@ public final class ReadWrite {
      * @param start
      *            index of the most significant byte of the stored <i>value</i>
      */
-    public static final void writeInt(int value, final ByteBuffer buffer,
-            int start) {
+    public static final void writeInt(int value, final ByteBuffer buffer, int start) {
         buffer.position(start);
-        buffer.put((byte) (value >>> 24));
-        buffer.put((byte) (value >>> 16));
-        buffer.put((byte) (value >>> 8));
-        buffer.put((byte) value);
+        buffer.put((byte)(value >>> 24));
+        buffer.put((byte)(value >>> 16));
+        buffer.put((byte)(value >>> 8));
+        buffer.put((byte)value);
     }
 
     /**
-     * Returns the bytes in a {@link ByteBuffer} as a UTF-8 encoded
-     * {@link String}.
+     * Returns the bytes in a {@link ByteBuffer} as a UTF-8 encoded {@link String}.
      * 
      * @param buffer
      *            a {@link ByteBuffer} containing UTF-8 encoded characters.
@@ -248,7 +240,7 @@ public final class ReadWrite {
     public static byte[] longToBytes(final long value) {
         final byte[] bytes = new byte[8];
         for (int i = 0; i < bytes.length; ++i)
-            bytes[i] = (byte) (value >> (8 * (bytes.length - 1 - i)));
+            bytes[i] = (byte)(value >> (8 * (bytes.length - 1 - i)));
         return bytes;
     }
 
@@ -263,8 +255,7 @@ public final class ReadWrite {
      * @param index
      *            index of the most significant byte of the stored <i>value</i>
      */
-    public static void writeLong(final ByteBuffer buffer, final long value,
-            final int index) {
+    public static void writeLong(final ByteBuffer buffer, final long value, final int index) {
         final byte[] bytes = longToBytes(value);
         buffer.position(index);
         for (int i = 0; i < bytes.length; ++i)
@@ -280,14 +271,12 @@ public final class ReadWrite {
      * @param value
      *            the value to convert and copy
      * @param index
-     *            the position of the most significant byte in the
-     *            {@link ByteBuffer}
+     *            the position of the most significant byte in the {@link ByteBuffer}
      */
-    public static void writeTwoByteInt(final ByteBuffer buffer,
-            final int value, final int index) {
+    public static void writeTwoByteInt(final ByteBuffer buffer, final int value, final int index) {
         buffer.position(index);
-        buffer.put((byte) (value >> 8));// most significant byte
-        buffer.put((byte) value);// least significant byte
+        buffer.put((byte)(value >> 8));// most significant byte
+        buffer.put((byte)value);// least significant byte
     }
 
     /**
@@ -299,16 +288,14 @@ public final class ReadWrite {
      * @param value
      *            the value to convert and copy
      * @param index
-     *            the position of the most significant byte in the
-     *            {@link ByteBuffer}
+     *            the position of the most significant byte in the {@link ByteBuffer}
      */
-    public static void writeThreeByteInt(final ByteBuffer buffer,
-            final int value, final int index) {
+    public static void writeThreeByteInt(final ByteBuffer buffer, final int value, final int index) {
 
         buffer.position(index);
-        buffer.put((byte) (value >> 16));// most significant byte
-        buffer.put((byte) (value >> 8));
-        buffer.put((byte) value);// least significant byte
+        buffer.put((byte)(value >> 16));// most significant byte
+        buffer.put((byte)(value >> 8));
+        buffer.put((byte)value);// least significant byte
     }
 
     /**

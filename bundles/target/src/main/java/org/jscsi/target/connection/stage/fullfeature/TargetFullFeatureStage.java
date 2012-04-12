@@ -22,8 +22,7 @@ import org.jscsi.target.scsi.sense.information.FourByteInformation;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
 
 /**
- * This class is an abstract super-class for stages of the
- * {@link TargetFullFeaturePhase}.
+ * This class is an abstract super-class for stages of the {@link TargetFullFeaturePhase}.
  * 
  * @see TargetStage
  * @author Andreas Ergenzinger
@@ -58,50 +57,49 @@ public abstract class TargetFullFeatureStage extends TargetStage {
      * @return the error PDU
      */
     protected static final ProtocolDataUnit createFixedFormatErrorPdu(
-            final FieldPointerSenseKeySpecificData[] senseKeySpecificData,
-            final AdditionalSenseCodeAndQualifier additionalSenseCodeAndQualifier,
-            final int initiatorTaskTag, final int expectedDataTransferLength) {
+        final FieldPointerSenseKeySpecificData[] senseKeySpecificData,
+        final AdditionalSenseCodeAndQualifier additionalSenseCodeAndQualifier, final int initiatorTaskTag,
+        final int expectedDataTransferLength) {
 
         // create the whole sense data
         FixedFormatSenseData senseData = new FixedFormatSenseData(false,// valid
-                ErrorType.CURRENT,// error type
-                false,// file mark
-                false,// end of medium
-                false,// incorrect length indicator
-                SenseKey.ILLEGAL_REQUEST,// sense key
-                new FourByteInformation(),// information
-                new FourByteInformation(),// command specific information
-                additionalSenseCodeAndQualifier,// additional sense code and
-                                                // qualifier
-                (byte) 0,// field replaceable unit code
-                senseKeySpecificData[0],// sense key specific data, only report
-                                        // first problem
-                new AdditionalSenseBytes());// additional sense bytes
+            ErrorType.CURRENT,// error type
+            false,// file mark
+            false,// end of medium
+            false,// incorrect length indicator
+            SenseKey.ILLEGAL_REQUEST,// sense key
+            new FourByteInformation(),// information
+            new FourByteInformation(),// command specific information
+            additionalSenseCodeAndQualifier,// additional sense code and
+                                            // qualifier
+            (byte)0,// field replaceable unit code
+            senseKeySpecificData[0],// sense key specific data, only report
+                                    // first problem
+            new AdditionalSenseBytes());// additional sense bytes
 
         // keep only the part of the sense data that will be sent
-        final ScsiResponseDataSegment dataSegment = new ScsiResponseDataSegment(
-                senseData, expectedDataTransferLength);
+        final ScsiResponseDataSegment dataSegment =
+            new ScsiResponseDataSegment(senseData, expectedDataTransferLength);
         final int senseDataSize = senseData.size();
 
         // calculate residuals and flags
-        final int residualCount = Math.abs(expectedDataTransferLength
-                - senseDataSize);
+        final int residualCount = Math.abs(expectedDataTransferLength - senseDataSize);
         final boolean residualOverflow = expectedDataTransferLength < senseDataSize;
         final boolean residualUnderflow = expectedDataTransferLength > senseDataSize;
 
         // create and return PDU
         return TargetPduFactory.createSCSIResponsePdu(false,// bidirectionalReadResidualOverflow
-                false,// bidirectionalReadResidualUnderflow
-                residualOverflow,// residualOverflow
-                residualUnderflow,// residualUnderflow,
-                SCSIResponseParser.ServiceResponse.COMMAND_COMPLETED_AT_TARGET,// response,
-                SCSIStatus.CHECK_CONDITION,// status,
-                initiatorTaskTag,// initiatorTaskTag,
-                0,// snackTag
-                0,// expectedDataSequenceNumber
-                0,// bidirectionalReadResidualCount
-                residualCount,// residualCount
-                dataSegment);// data segment
+            false,// bidirectionalReadResidualUnderflow
+            residualOverflow,// residualOverflow
+            residualUnderflow,// residualUnderflow,
+            SCSIResponseParser.ServiceResponse.COMMAND_COMPLETED_AT_TARGET,// response,
+            SCSIStatus.CHECK_CONDITION,// status,
+            initiatorTaskTag,// initiatorTaskTag,
+            0,// snackTag
+            0,// expectedDataSequenceNumber
+            0,// bidirectionalReadResidualCount
+            residualCount,// residualCount
+            dataSegment);// data segment
     }
 
     /**
@@ -120,19 +118,19 @@ public abstract class TargetFullFeatureStage extends TargetStage {
      * @return the error PDU
      */
     protected static final ProtocolDataUnit createFixedFormatErrorPdu(
-            final FieldPointerSenseKeySpecificData[] senseKeySpecificData,
-            final int initiatorTaskTag, final int expectedDataTransferLength) {
+        final FieldPointerSenseKeySpecificData[] senseKeySpecificData, final int initiatorTaskTag,
+        final int expectedDataTransferLength) {
         return createFixedFormatErrorPdu(senseKeySpecificData,
-                AdditionalSenseCodeAndQualifier.INVALID_FIELD_IN_CDB,
-                initiatorTaskTag, expectedDataTransferLength);
+            AdditionalSenseCodeAndQualifier.INVALID_FIELD_IN_CDB, initiatorTaskTag,
+            expectedDataTransferLength);
     }
 
     /**
      * Creates a SCSI Response PDU with a length zero data segment. Objects
-     * created with this method can be used as replies in task terminating with
-     * {@link SCSIStatus#GOOD} which do not require additional data to be
-     * transfered, or for creating follow-up PDU with
-     * {@link SCSIStatus#CHECK_CONDITION} status sent after Data-In PDUs with
+     * created with this method can be used as replies in task terminating with {@link SCSIStatus#GOOD} which
+     * do not require additional data to be
+     * transfered, or for creating follow-up PDU with {@link SCSIStatus#CHECK_CONDITION} status sent after
+     * Data-In PDUs with
      * sense data.
      * 
      * @param status
@@ -146,28 +144,26 @@ public abstract class TargetFullFeatureStage extends TargetStage {
      *            actual amount of payload data in bytes sent by the target
      * @return the SCSI Response PDU
      */
-    protected static final ProtocolDataUnit createScsiResponsePdu(
-            final SCSIStatus status, final int initiatorTaskTag,
-            final int expectedDataTransferLength, final int responseDataSize) {
+    protected static final ProtocolDataUnit createScsiResponsePdu(final SCSIStatus status,
+        final int initiatorTaskTag, final int expectedDataTransferLength, final int responseDataSize) {
 
         // calculate residuals and flags
-        final int residualCount = Math.abs(expectedDataTransferLength
-                - responseDataSize);
+        final int residualCount = Math.abs(expectedDataTransferLength - responseDataSize);
         final boolean residualOverflow = expectedDataTransferLength < responseDataSize;
         final boolean residualUnderflow = expectedDataTransferLength > responseDataSize;
 
         return TargetPduFactory.createSCSIResponsePdu(false,// bidirectionalReadResidualOverflow
-                false,// bidirectionalReadResidualUnderflow
-                residualOverflow,// residualOverflow,
-                residualUnderflow,// residualUnderflow,
-                SCSIResponseParser.ServiceResponse.COMMAND_COMPLETED_AT_TARGET,// response
-                status,// status
-                initiatorTaskTag,// initiatorTaskTag
-                0,// snackTag
-                0,// expectedDataSequenceNumber
-                0,// bidirectionalReadResidualCount
-                residualCount,// residualCount
-                ScsiResponseDataSegment.EMPTY_DATA_SEGMENT);// data segment
+            false,// bidirectionalReadResidualUnderflow
+            residualOverflow,// residualOverflow,
+            residualUnderflow,// residualUnderflow,
+            SCSIResponseParser.ServiceResponse.COMMAND_COMPLETED_AT_TARGET,// response
+            status,// status
+            initiatorTaskTag,// initiatorTaskTag
+            0,// snackTag
+            0,// expectedDataSequenceNumber
+            0,// bidirectionalReadResidualCount
+            residualCount,// residualCount
+            ScsiResponseDataSegment.EMPTY_DATA_SEGMENT);// data segment
     }
 
     /**
@@ -180,18 +176,15 @@ public abstract class TargetFullFeatureStage extends TargetStage {
      *            the total amount of payload data in bytes expected by the
      *            initiator
      *            <p>
-     *            The method might throw exceptions during PDU serialization and
-     *            sending.
+     *            The method might throw exceptions during PDU serialization and sending.
      * @param responseData
      *            the data requested by the initiator
      * @throws InterruptedException
      * @throws IOException
      * @throws InternetSCSIException
      */
-    protected final void sendResponse(final int initiatorTaskTag,
-            final int expectedDataTransferLength,
-            final IResponseData responseData) throws InterruptedException,
-            IOException, InternetSCSIException {
+    protected final void sendResponse(final int initiatorTaskTag, final int expectedDataTransferLength,
+        final IResponseData responseData) throws InterruptedException, IOException, InternetSCSIException {
 
         // serialize all response data
         final ByteBuffer fullBuffer = ByteBuffer.allocate(responseData.size());
@@ -206,17 +199,14 @@ public abstract class TargetFullFeatureStage extends TargetStage {
         } else {
             trimmedBuffer = ByteBuffer.allocate(expectedDataTransferLength);
             trimmedBuffer.put(fullBuffer.array(),// source array
-                    0,// offset in source
-                    expectedDataTransferLength);// length
+                0,// offset in source
+                expectedDataTransferLength);// length
         }
 
         // coompute residual count and associated flags
-        final boolean residualOverflow = expectedDataTransferLength < fullBuffer
-                .capacity();
-        final boolean residualUnderflow = expectedDataTransferLength > fullBuffer
-                .capacity();
-        final int residualCount = Math.abs(expectedDataTransferLength
-                - fullBuffer.capacity());
+        final boolean residualOverflow = expectedDataTransferLength < fullBuffer.capacity();
+        final boolean residualUnderflow = expectedDataTransferLength > fullBuffer.capacity();
+        final int residualCount = Math.abs(expectedDataTransferLength - fullBuffer.capacity());
 
         // //create and send PDU//TODO this worked for Open-iSCSI, MS Initiator
         // does not like phase collapse
@@ -237,32 +227,32 @@ public abstract class TargetFullFeatureStage extends TargetStage {
 
         // create and send PDU
         ProtocolDataUnit pdu = TargetPduFactory.createDataInPdu(true,// finalFlag
-                false,// acknowledgeFlag always false
-                false,// residualOverflowFlag x
-                false,// residualUnderflowFlag x
-                false,// statusFlag
-                SCSIStatus.GOOD,// status, reserved
-                0,// logicalUnitNumber reserved
-                initiatorTaskTag,// initiatorTaskTag
-                -1,// targetTransferTag reserved
-                0,// dataSequenceNumber
-                0,// bufferOffset
-                0,// residualCount x
-                trimmedBuffer);// dataSegment
+            false,// acknowledgeFlag always false
+            false,// residualOverflowFlag x
+            false,// residualUnderflowFlag x
+            false,// statusFlag
+            SCSIStatus.GOOD,// status, reserved
+            0,// logicalUnitNumber reserved
+            initiatorTaskTag,// initiatorTaskTag
+            -1,// targetTransferTag reserved
+            0,// dataSequenceNumber
+            0,// bufferOffset
+            0,// residualCount x
+            trimmedBuffer);// dataSegment
 
         connection.sendPdu(pdu);
 
         pdu = TargetPduFactory.createSCSIResponsePdu(false,// bidirectionalReadResidualOverflow
-                false,// bidirectionalReadResidualUnderflow
-                residualOverflow,// residualOverflow
-                residualUnderflow,// residualUnderflow
-                ServiceResponse.COMMAND_COMPLETED_AT_TARGET,// response
-                SCSIStatus.GOOD,// status
-                initiatorTaskTag, 0,// snackTag, reserved
-                0,// expectedDataSequenceNumber
-                0,// bidirectionalReadResidualCount
-                residualCount,// residualCount
-                ScsiResponseDataSegment.EMPTY_DATA_SEGMENT);// scsiResponseDataSegment
+            false,// bidirectionalReadResidualUnderflow
+            residualOverflow,// residualOverflow
+            residualUnderflow,// residualUnderflow
+            ServiceResponse.COMMAND_COMPLETED_AT_TARGET,// response
+            SCSIStatus.GOOD,// status
+            initiatorTaskTag, 0,// snackTag, reserved
+            0,// expectedDataSequenceNumber
+            0,// bidirectionalReadResidualCount
+            residualCount,// residualCount
+            ScsiResponseDataSegment.EMPTY_DATA_SEGMENT);// scsiResponseDataSegment
 
         connection.sendPdu(pdu);
 

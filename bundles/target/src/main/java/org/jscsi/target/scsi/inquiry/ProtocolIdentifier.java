@@ -82,12 +82,12 @@ package org.jscsi.target.scsi.inquiry;
  * @author Andreas Ergenzinger
  */
 public enum ProtocolIdentifier {
-    FIBRE_CHANNEL((byte) 0x0), PARALLEL_SCSI((byte) 0x1), SSA((byte) 0x2), IEEE1394(
-            (byte) 0x3), SCSI_REMOTE_DIRECT_MEMORY_ACCESS_PROTOCOL((byte) 0x4), INTERNET_SCSI(
-            (byte) 0x5), SAS_SERIAL_SCSI_PROTOCOL((byte) 0x6), AUTOMATION_DRIVE_INTERFACE_TRANSPORT_PROTOCOL(
-            (byte) 0x7), AT_ATTACHEMENT_INTERFACE((byte) 0x8),
-    // RESERVED not implemented
-    NO_SPECIFIC_PROTOCOL((byte) 0xf);
+    FIBRE_CHANNEL((byte)0x0), PARALLEL_SCSI((byte)0x1), SSA((byte)0x2), IEEE1394((byte)0x3),
+        SCSI_REMOTE_DIRECT_MEMORY_ACCESS_PROTOCOL((byte)0x4), INTERNET_SCSI((byte)0x5),
+        SAS_SERIAL_SCSI_PROTOCOL((byte)0x6), AUTOMATION_DRIVE_INTERFACE_TRANSPORT_PROTOCOL((byte)0x7),
+        AT_ATTACHEMENT_INTERFACE((byte)0x8),
+        // RESERVED not implemented
+        NO_SPECIFIC_PROTOCOL((byte)0xf);
 
     private ProtocolIdentifier(final byte value) {
         this.value = value;

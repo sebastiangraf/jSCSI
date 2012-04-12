@@ -26,12 +26,10 @@ public final class InformationSenseDataDescriptor extends SenseDataDescriptor {
     /**
      * The VALID bit shall be set to one.
      * <p>
-     * In previous versions of this standard and in the fixed format sense data,
-     * the VALID bit indicates whether the contents of the INFORMATION field is
-     * valid as defined by a command standard. Since the contents of the
-     * INFORMATION field are valid whenever an information sense data descriptor
-     * is included in the sense data, the only legal value for the VALID bit is
-     * set to one.
+     * In previous versions of this standard and in the fixed format sense data, the VALID bit indicates
+     * whether the contents of the INFORMATION field is valid as defined by a command standard. Since the
+     * contents of the INFORMATION field are valid whenever an information sense data descriptor is included
+     * in the sense data, the only legal value for the VALID bit is set to one.
      */
     private final boolean valid = true;
 
@@ -49,13 +47,12 @@ public final class InformationSenseDataDescriptor extends SenseDataDescriptor {
      */
     public InformationSenseDataDescriptor(final EightByteInformation information) {
         super(SenseDataDescriptorType.INFORMATION, // descriptor type
-                0x0a); // additional length
+            0x0a); // additional length
         this.information = information;
     }
 
     @Override
-    protected final void serializeSpecificFields(final ByteBuffer byteBuffer,
-            final int index) {
+    protected final void serializeSpecificFields(final ByteBuffer byteBuffer, final int index) {
 
         byte b = 0;
 

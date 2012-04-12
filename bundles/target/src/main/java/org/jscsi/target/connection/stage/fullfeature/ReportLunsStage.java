@@ -22,34 +22,31 @@ import org.jscsi.target.settings.SettingsException;
  */
 public class ReportLunsStage extends TargetFullFeatureStage {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(ReportLunsStage.class);
+    private static final Logger LOGGER = Logger.getLogger(ReportLunsStage.class);
 
     public ReportLunsStage(TargetFullFeaturePhase targetFullFeaturePhase) {
         super(targetFullFeaturePhase);
     }
 
     @Override
-    public void execute(ProtocolDataUnit pdu) throws IOException,
-            InterruptedException, InternetSCSIException, DigestException,
-            SettingsException {
+    public void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
+        InternetSCSIException, DigestException, SettingsException {
 
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-        final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
+        final SCSICommandParser parser = (SCSICommandParser)bhs.getParser();
 
         ProtocolDataUnit responsePdu = null;// the response PDU
 
         // get command details in CDB
         final ReportLunsCDB cdb = new ReportLunsCDB(parser.getCDB());
-        final FieldPointerSenseKeySpecificData[] illegalFieldPointers = cdb
-                .getIllegalFieldPointers();
+        final FieldPointerSenseKeySpecificData[] illegalFieldPointers = cdb.getIllegalFieldPointers();
 
         if (illegalFieldPointers != null) {
 
             // an illegal request has been made
             responsePdu = createFixedFormatErrorPdu(illegalFieldPointers,// senseKeySpecificData
-                    bhs.getInitiatorTaskTag(),// initiatorTaskTag
-                    parser.getExpectedDataTransferLength());// expectedDataTransferLength
+                bhs.getInitiatorTaskTag(),// initiatorTaskTag
+                parser.getExpectedDataTransferLength());// expectedDataTransferLength
 
             // send response
             connection.sendPdu(responsePdu);
@@ -69,8 +66,8 @@ public class ReportLunsStage extends TargetFullFeatureStage {
             case SELECTED_ADDRESSING_METHODS:
             case WELL_KNOWN_LUNS_ONLY:
             case ALL:
-                reportLunsParameterData = new ReportLunsParameterData(
-                        session.getTargetServer().getConfig().getLogicalUnitNumber());
+                reportLunsParameterData =
+                    new ReportLunsParameterData(session.getTargetServer().getConfig().getLogicalUnitNumber());
                 break;
             default:
                 throw new InternetSCSIException();
@@ -82,8 +79,8 @@ public class ReportLunsStage extends TargetFullFeatureStage {
 
             // send response
             sendResponse(bhs.getInitiatorTaskTag(),// initiatorTaskTag
-                    parser.getExpectedDataTransferLength(),// expectedDataTransferLength
-                    reportLunsParameterData);// responseData
+                parser.getExpectedDataTransferLength(),// expectedDataTransferLength
+                reportLunsParameterData);// responseData
 
         }
     }

@@ -12,12 +12,12 @@ import org.jscsi.target.settings.Settings;
 import org.jscsi.target.settings.SettingsException;
 
 /**
- * This class is an abstract super-class for stages of the (see
- * {@link TargetConnection} for a description of the relationship between
+ * This class is an abstract super-class for stages of the (see {@link TargetConnection} for a description of
+ * the relationship between
  * sessions, connections, phases, and sessions).
  * <p>
- * The stage is started by calling the {@link #execute(ProtocolDataUnit)} method
- * with the first {@link ProtocolDataUnit} to be processed as part of the stage.
+ * The stage is started by calling the {@link #execute(ProtocolDataUnit)} method with the first
+ * {@link ProtocolDataUnit} to be processed as part of the stage.
  * 
  * @author Andreas Ergenzinger
  */
@@ -76,8 +76,7 @@ public abstract class TargetStage {
      *             which has not been negotiated and which does not have a
      *             default value
      */
-    public abstract void execute(ProtocolDataUnit pdu) throws IOException,
-            InterruptedException, InternetSCSIException, DigestException,
-            SettingsException;
+    public abstract void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
+        InternetSCSIException, DigestException, SettingsException;
 
 }

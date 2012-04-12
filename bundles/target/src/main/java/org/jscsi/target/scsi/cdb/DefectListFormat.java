@@ -10,8 +10,8 @@ package org.jscsi.target.scsi.cdb;
  * @author Andreas Ergenzinger
  */
 public enum DefectListFormat {
-    SHORT_BLOCK((byte) 0), LONG_BLOCK((byte) 3), BYTES_FROM_INDEX((byte) 4), PHYSICAL_SECTOR(
-            (byte) 5), VENDOR_SPECIFIC((byte) 6);
+    SHORT_BLOCK((byte)0), LONG_BLOCK((byte)3), BYTES_FROM_INDEX((byte)4), PHYSICAL_SECTOR((byte)5),
+        VENDOR_SPECIFIC((byte)6);
     // all other values are RESERVED
 
     private final byte value;

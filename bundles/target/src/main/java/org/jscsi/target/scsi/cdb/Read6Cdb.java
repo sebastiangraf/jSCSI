@@ -8,19 +8,16 @@ import org.jscsi.target.util.ReadWrite;
  * This class represents Command Descriptor Blocks for the <code>READ (6)
  * </code> SCSI command.
  * <p>
- * The READ (6) command requests that the device server read the specified
- * logical block(s) and transfer them to the data-in buffer. Each logical block
- * read includes user data and, if the medium is formatted with protection
- * information enabled, protection information. Each logical block transferred
- * includes user data but does not include protection information.
+ * The READ (6) command requests that the device server read the specified logical block(s) and transfer them
+ * to the data-in buffer. Each logical block read includes user data and, if the medium is formatted with
+ * protection information enabled, protection information. Each logical block transferred includes user data
+ * but does not include protection information.
  * <p>
- * Although the READ (6) command is limited to addressing up to 2,097,151
- * logical blocks, this command has been maintained as mandatory since some
- * system initialization routines require that the READ (6) command be used.
- * System initialization routines should migrate from the READ (6) command to
- * the READ (10) command, which is capable of addressing 4,294,947,295 logical
- * blocks, or the READ (16) command, which is capable of addressing
- * 18,446,744,073,709,551,615 logical blocks.
+ * Although the READ (6) command is limited to addressing up to 2,097,151 logical blocks, this command has
+ * been maintained as mandatory since some system initialization routines require that the READ (6) command be
+ * used. System initialization routines should migrate from the READ (6) command to the READ (10) command,
+ * which is capable of addressing 4,294,947,295 logical blocks, or the READ (16) command, which is capable of
+ * addressing 18,446,744,073,709,551,615 logical blocks.
  * 
  * @author Andreas Ergenzinger
  */

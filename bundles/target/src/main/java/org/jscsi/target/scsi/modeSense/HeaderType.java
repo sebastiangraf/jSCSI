@@ -1,8 +1,7 @@
 package org.jscsi.target.scsi.modeSense;
 
 /**
- * This enumeration is used to determine which header type a
- * {@link ModeParameterList} should use.
+ * This enumeration is used to determine which header type a {@link ModeParameterList} should use.
  * 
  * @author Andreas Ergenzinger
  */

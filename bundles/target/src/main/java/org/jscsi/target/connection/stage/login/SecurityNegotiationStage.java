@@ -23,8 +23,7 @@ import org.jscsi.target.settings.TextParameter;
  */
 public final class SecurityNegotiationStage extends TargetLoginStage {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(SecurityNegotiationStage.class);
+    private static final Logger LOGGER = Logger.getLogger(SecurityNegotiationStage.class);
 
     /**
      * The constructor.
@@ -37,9 +36,8 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
     }
 
     @Override
-    public void execute(ProtocolDataUnit initialPdu) throws IOException,
-            InterruptedException, InternetSCSIException, DigestException,
-            SettingsException {
+    public void execute(ProtocolDataUnit initialPdu) throws IOException, InterruptedException,
+        InternetSCSIException, DigestException, SettingsException {
 
         // "receive" initial PDU
         BasicHeaderSegment bhs = initialPdu.getBasicHeaderSegment();
@@ -54,8 +52,8 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
             final String requestTextParameters = receivePduSequence(initialPdu);
 
             // split key-value pairs
-            final Vector<String> requestKeyValuePairs = TextParameter
-                    .tokenizeKeyValuePairs(requestTextParameters);
+            final Vector<String> requestKeyValuePairs =
+                TextParameter.tokenizeKeyValuePairs(requestTextParameters);
 
             // Vector for AuthMethod keys
             final Vector<String> authMethodKeyValuePairs = new Vector<String>();
@@ -75,13 +73,11 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
             String authMethodValues = null;
             if (!authenticated) {// authentication part one
                 for (int i = 0; i < requestKeyValuePairs.size(); ++i) {
-                    final String[] split = TextParameter
-                            .splitKeyValuePair(requestKeyValuePairs.get(i));
+                    final String[] split = TextParameter.splitKeyValuePair(requestKeyValuePairs.get(i));
                     if (split == null) {
                         sendRejectPdu(LoginStatus.INITIATOR_ERROR);
-                        throw new InternetSCSIException(
-                                "key=value format error: "
-                                        + requestKeyValuePairs.get(i));
+                        throw new InternetSCSIException("key=value format error: "
+                            + requestKeyValuePairs.get(i));
                     }
                     if (TextKeyword.AUTH_METHOD.equals(split[0])) {
                         authMethodValues = split[1];
@@ -92,8 +88,8 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
                         // else block
                     } else if (isAuthenticationKey(split[0])) {
                         // move key-value pair to authMethodKeyValuePairs
-                        authMethodKeyValuePairs.add(requestKeyValuePairs
-                                .remove(i--));// correct for shifted indices
+                        authMethodKeyValuePairs.add(requestKeyValuePairs.remove(i--));// correct for shifted
+                                                                                      // indices
                     }
                 }
                 if (authMethodValues == null) {// missing AuthMethod key
@@ -104,8 +100,7 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
                                                                  // first PDU
                                                                  // sequence
                     // close connection
-                    throw new InternetSCSIException(
-                            "Missing AuthMethod key-value pair");
+                    throw new InternetSCSIException("Missing AuthMethod key-value pair");
                 }
             }
 
@@ -115,11 +110,9 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
                                                                               // be
                                                                               // sent
                                                                               // back
-            if (!negotiator
-                    .negotiate(session.getTargetServer(), stageNumber, connection.isLeadingConnection(),
-                            ((TargetLoginPhase) targetPhase)
-                                    .getFirstPduAndSetToFalse(),
-                            requestKeyValuePairs, responseKeyValuePairs)) {
+            if (!negotiator.negotiate(session.getTargetServer(), stageNumber, connection
+                .isLeadingConnection(), ((TargetLoginPhase)targetPhase).getFirstPduAndSetToFalse(),
+                requestKeyValuePairs, responseKeyValuePairs)) {
                 // negotiation error
                 sendRejectPdu(LoginStatus.INITIATOR_ERROR);
                 throw new InternetSCSIException("negotiation failure");
@@ -130,13 +123,12 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
                 if (authMethodValues.contains(TextKeyword.NONE)) {
 
                     authenticated = true;
-                    responseKeyValuePairs.add(TextParameter.toKeyValuePair(
-                            TextKeyword.AUTH_METHOD,// key
-                            TextKeyword.NONE));// value
+                    responseKeyValuePairs.add(TextParameter.toKeyValuePair(TextKeyword.AUTH_METHOD,// key
+                        TextKeyword.NONE));// value
 
                     // concatenate key value pairs to single string
-                    final String responseString = TextParameter
-                            .concatenateKeyValuePairs(responseKeyValuePairs);
+                    final String responseString =
+                        TextParameter.concatenateKeyValuePairs(responseKeyValuePairs);
 
                     if (LOGGER.isDebugEnabled())
                         LOGGER.debug("response: " + responseString);
@@ -146,7 +138,7 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
 
                     // leave this (and proceed to next) stage
                     if (requestedNextStageNumber == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION
-                            || requestedNextStageNumber == LoginStage.FULL_FEATURE_PHASE) {
+                        || requestedNextStageNumber == LoginStage.FULL_FEATURE_PHASE) {
                         nextStageNumber = requestedNextStageNumber;
                         return;
                     }
@@ -175,20 +167,16 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
      * </ul>
      * 
      * @param <i>key</i> part of a <i>key-value</i> pair
-     * @return <code>true</code> if the String is an AuthMethod key,
-     *         <code>false</code> if it is not.
+     * @return <code>true</code> if the String is an AuthMethod key, <code>false</code> if it is not.
      */
     private final boolean isAuthenticationKey(final String key) {
         if (key == null || key.length() < 5)
             return false;
         final String fourChars = key.substring(0, 4);
         final String fiveChars = key.substring(0, 5);
-        if ("CHAP_".matches(fiveChars)
-                || "KRB_".matches(fourChars)
-                || "SPKM_".matches(fiveChars)
-                || "SRP_".matches(fourChars)
-                || (key.length() >= 10 && "TargetAuth".matches(key.substring(0,
-                        10))))
+        if ("CHAP_".matches(fiveChars) || "KRB_".matches(fourChars) || "SPKM_".matches(fiveChars)
+            || "SRP_".matches(fourChars)
+            || (key.length() >= 10 && "TargetAuth".matches(key.substring(0, 10))))
             return true;
         return false;
     }

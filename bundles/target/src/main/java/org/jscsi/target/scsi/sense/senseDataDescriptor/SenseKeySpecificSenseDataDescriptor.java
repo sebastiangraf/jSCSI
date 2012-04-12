@@ -12,8 +12,7 @@ import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.SenseKey
  * 
  * @author Andreas Ergenzinger
  */
-public final class SenseKeySpecificSenseDataDescriptor extends
-        SenseDataDescriptor {
+public final class SenseKeySpecificSenseDataDescriptor extends SenseDataDescriptor {
 
     /**
      * The byte position of the SENSE-KEY-SPECIFIC DATA field.
@@ -31,18 +30,15 @@ public final class SenseKeySpecificSenseDataDescriptor extends
      * @param senseKeySpecificData
      *            provides more detailed information
      */
-    public SenseKeySpecificSenseDataDescriptor(
-            final SenseKeySpecificData senseKeySpecificData) {
+    public SenseKeySpecificSenseDataDescriptor(final SenseKeySpecificData senseKeySpecificData) {
         super(SenseDataDescriptorType.SENSE_KEY_SPECIFIC, 0x06);// additional
                                                                 // length
         this.senseKeySpecificData = senseKeySpecificData;
     }
 
     @Override
-    protected final void serializeSpecificFields(final ByteBuffer byteBuffer,
-            final int index) {
+    protected final void serializeSpecificFields(final ByteBuffer byteBuffer, final int index) {
 
-        senseKeySpecificData.serialize(byteBuffer, index
-                + SENSE_KEY_SPECIFIC_DATA_INDEX);
+        senseKeySpecificData.serialize(byteBuffer, index + SENSE_KEY_SPECIFIC_DATA_INDEX);
     }
 }

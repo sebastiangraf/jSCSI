@@ -58,8 +58,8 @@ public class FixedFormatSenseData extends SenseData {
     private static final int MIN_ADDITIONAL_SENSE_LENGTH = 10;
 
     /**
-     * A VALID bit set to <code>false</code> indicates that the
-     * {@link #information} field is not defined in SPC or any other command
+     * A VALID bit set to <code>false</code> indicates that the {@link #information} field is not defined in
+     * SPC or any other command
      * standard. A VALID bit set to <code>true</code> indicates the INFORMATION
      * field contains valid information as defined in the SPC or a command
      * standard.
@@ -100,9 +100,8 @@ public class FixedFormatSenseData extends SenseData {
      * indicates that no specific component has been identified to have failed
      * or that the data is not available.
      * <p>
-     * The format of this information is not specified by the SPC. Additional
-     * information about the field replaceable unit may be available in the
-     * ASCII Information VPD page, if supported by the device server.
+     * The format of this information is not specified by the SPC. Additional information about the field
+     * replaceable unit may be available in the ASCII Information VPD page, if supported by the device server.
      */
     private final byte fieldReplaceableUnitCode;
 
@@ -148,21 +147,13 @@ public class FixedFormatSenseData extends SenseData {
      * @param senseKeySpecificData
      * @param additionalSenseBytes
      */
-    public FixedFormatSenseData(
-            final boolean valid,
-            final ErrorType errorType,
-            final boolean fileMark,
-            final boolean endOfMedium,
-            final boolean incorrectLengthIndicator,
-            final SenseKey senseKey,
-            final FourByteInformation information,
-            final FourByteInformation commandSpecificInformation,
-            final AdditionalSenseCodeAndQualifier additionalSenseCodeAndQualifier,
-            final byte fieldReplaceableUnitCode,
-            final SenseKeySpecificData senseKeySpecificData,
-            final AdditionalSenseBytes additionalSenseBytes) {
-        super(errorType, SenseDataFormat.FIXED, senseKey,
-                additionalSenseCodeAndQualifier);
+    public FixedFormatSenseData(final boolean valid, final ErrorType errorType, final boolean fileMark,
+        final boolean endOfMedium, final boolean incorrectLengthIndicator, final SenseKey senseKey,
+        final FourByteInformation information, final FourByteInformation commandSpecificInformation,
+        final AdditionalSenseCodeAndQualifier additionalSenseCodeAndQualifier,
+        final byte fieldReplaceableUnitCode, final SenseKeySpecificData senseKeySpecificData,
+        final AdditionalSenseBytes additionalSenseBytes) {
+        super(errorType, SenseDataFormat.FIXED, senseKey, additionalSenseCodeAndQualifier);
         this.valid = valid;
         this.fileMark = fileMark;
         this.endOfMedium = endOfMedium;
@@ -185,17 +176,17 @@ public class FixedFormatSenseData extends SenseData {
 
         // *** byte 0 ***
         // response code
-        byte b = (byte) getReponseCodeFor(errorType, SenseDataFormat.FIXED);
+        byte b = (byte)getReponseCodeFor(errorType, SenseDataFormat.FIXED);
         // valid flag
         b = BitManip.getByteWithBitSet(b, 7, valid);
         byteBuffer.put(b);
 
         // *** byte 1 - is obsolete ***
-        byteBuffer.put((byte) 0);
+        byteBuffer.put((byte)0);
 
         // *** byte 2 ***
         // file mark
-        b = BitManip.getByteWithBitSet((byte) 0, 7, fileMark);
+        b = BitManip.getByteWithBitSet((byte)0, 7, fileMark);
 
         // EOM
         b = BitManip.getByteWithBitSet(b, 6, endOfMedium);
@@ -204,7 +195,7 @@ public class FixedFormatSenseData extends SenseData {
         b = BitManip.getByteWithBitSet(b, 5, incorrectLengthIndicator);
 
         // sense key
-        b = (byte) (15 & senseKey.getValue());
+        b = (byte)(15 & senseKey.getValue());
         byteBuffer.put(b);
 
         // *** bytes 3 - 6 ***
@@ -213,27 +204,23 @@ public class FixedFormatSenseData extends SenseData {
             information.serialize(byteBuffer, index + INFORMATION_FIELD_INDEX);
 
         // additional sense length
-        byteBuffer.put(index + ADDITIONAL_SENSE_LENGTH_INDEX,
-                (byte) additionalSenseLength);
+        byteBuffer.put(index + ADDITIONAL_SENSE_LENGTH_INDEX, (byte)additionalSenseLength);
 
         // command specific information
         if (commandSpecificInformation != null)
-            commandSpecificInformation.serialize(byteBuffer, index
-                    + COMMAND_SPECIFIC_INFORMATION_FIELD_INDEX);
+            commandSpecificInformation
+                .serialize(byteBuffer, index + COMMAND_SPECIFIC_INFORMATION_FIELD_INDEX);
 
         // additional sense code and additional sense code qualifier
-        ReadWrite.writeTwoByteInt(byteBuffer,
-                additionalSenseCodeAndQualifier.getValue(), index
-                        + ADDITIONAL_SENSE_CODE_INDEX);
+        ReadWrite.writeTwoByteInt(byteBuffer, additionalSenseCodeAndQualifier.getValue(), index
+            + ADDITIONAL_SENSE_CODE_INDEX);
 
         // field replaceable unit code
-        byteBuffer.put(FIELD_REPLACEABLE_UNIT_CODE_INDEX,
-                fieldReplaceableUnitCode);
+        byteBuffer.put(FIELD_REPLACEABLE_UNIT_CODE_INDEX, fieldReplaceableUnitCode);
 
         // sense key specific data
         if (senseKeySpecificData != null)
-            senseKeySpecificData.serialize(byteBuffer, index
-                    + SENSE_KEY_SPECIFIC_DATA_INDEX);
+            senseKeySpecificData.serialize(byteBuffer, index + SENSE_KEY_SPECIFIC_DATA_INDEX);
 
         // additional sense bytes
         if (additionalSenseBytes != null)

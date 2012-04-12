@@ -18,16 +18,14 @@ public final class TextParameter {
      * Returns the <i>key-value</i> pairs contained in a null
      * character-separated text data segment in an array of {@link String}s.
      * <p>
-     * If the parameter equals <code>null</code> an empty {@link Vector} will be
-     * returned.
+     * If the parameter equals <code>null</code> an empty {@link Vector} will be returned.
      * 
      * @param keyValuePairs
      *            a login request or text negotiation text data segment
      * @return a {@link Vector} of {@link String}s containing the purged key
      *         value pairs
      */
-    public static Vector<String> tokenizeKeyValuePairs(
-            final String keyValuePairs) {
+    public static Vector<String> tokenizeKeyValuePairs(final String keyValuePairs) {
         final Vector<String> result = new Vector<String>();
         if (keyValuePairs == null)
             return result;
@@ -40,16 +38,15 @@ public final class TextParameter {
     }
 
     /**
-     * Concatenates the <i>key-value</i> pair elements from the specified
-     * {@link Collection} to a null-character-separated {@link String} that can
+     * Concatenates the <i>key-value</i> pair elements from the specified {@link Collection} to a
+     * null-character-separated {@link String} that can
      * be sent as a text parameter data segment.
      * 
      * @param keyValuePairs
      *            a {@link Collection} of <i>key-value</i> pairs
      * @return null-character-separated {@link String} containing all elements
      */
-    public static String concatenateKeyValuePairs(
-            final Collection<String> keyValuePairs) {
+    public static String concatenateKeyValuePairs(final Collection<String> keyValuePairs) {
         final StringBuilder sb = new StringBuilder();
         for (String s : keyValuePairs) {
             sb.append(s);
@@ -62,8 +59,7 @@ public final class TextParameter {
      * Returns the suffix of a specified {@link String}. The length of the
      * suffix is equal to the length of <i>string</i> minus the lenght of
      * <i>prefix</i>, but of course only if the beginning of <i>string</i> does
-     * equal <i>prefix<i>. If <i>prefix</i> is not a prefix of <i>string</i>,
-     * <code>null</code> is returned.
+     * equal <i>prefix<i>. If <i>prefix</i> is not a prefix of <i>string</i>, <code>null</code> is returned.
      * 
      * @param string
      *            the {@link String} whose suffix we want to have returned
@@ -72,8 +68,7 @@ public final class TextParameter {
      * @return the suffix or <code>null</code>
      */
     public static String getSuffix(final String string, final String prefix) {
-        if (string == null || prefix == null
-                || prefix.length() > string.length())
+        if (string == null || prefix == null || prefix.length() > string.length())
             return null;
         final String stringPrefix = string.substring(0, prefix.length());
         if (stringPrefix.equals(prefix))
@@ -85,19 +80,16 @@ public final class TextParameter {
      * Splits a <i>key=value</i> pair and returns an array with the separated
      * <i>key</i> and <i>value</i> parts.
      * <p>
-     * If the parameter does not match this required pattern, then
-     * <code>null</code> will be returned.
+     * If the parameter does not match this required pattern, then <code>null</code> will be returned.
      * 
      * @param keyValuePair
      *            a {@link String} with a <i>key</i> prefix of length > 0, a '='
      *            in the middle and a <i>value</i> suffix of length > 0
-     * @return array with the separated <i>key</i> and <i>value</i> parts or
-     *         <code>null</code>.
+     * @return array with the separated <i>key</i> and <i>value</i> parts or <code>null</code>.
      */
     public static String[] splitKeyValuePair(final String keyValuePair) {
         String[] split = keyValuePair.split(TextKeyword.EQUALS);
-        if (split.length != 2 || split[0].length() == 0
-                || split[1].length() == 0)
+        if (split.length != 2 || split[0].length() == 0 || split[1].length() == 0)
             return null;
         return split;
     }
@@ -122,11 +114,9 @@ public final class TextParameter {
      * Returns an array of Strings containing only those String values present
      * in both input String arrays <i>a</i> and <i>b</i>.
      * <p>
-     * The order of elements in the returned array equals that in array
-     * <i>a</i>.
+     * The order of elements in the returned array equals that in array <i>a</i>.
      * <p>
-     * If <i>a</i> or <i>b</i> or one of their elements is <code>null</code>,
-     * <code>null</code> is returned.
+     * If <i>a</i> or <i>b</i> or one of their elements is <code>null</code>, <code>null</code> is returned.
      * 
      * @param a
      *            an array of Strings (element order will be preserved)
@@ -158,8 +148,8 @@ public final class TextParameter {
 
     /**
      * A methods for parsing boolean values from the <i>value</i> part of a
-     * <i>key=value</i> pair String. If <i>value</i> equals <i>"Yes"</i>, then
-     * <code>true</code> will be returned, if <i>value</i> equals <i>"No"</i>,
+     * <i>key=value</i> pair String. If <i>value</i> equals <i>"Yes"</i>, then <code>true</code> will be
+     * returned, if <i>value</i> equals <i>"No"</i>,
      * then <code>false</code> will be returned. In all other cases the method
      * will return <code>null</code>.
      * 
@@ -177,8 +167,7 @@ public final class TextParameter {
         return null;
     }
 
-    private static final Pattern TEXT_VALUE_PATTERN = Pattern
-            .compile("[\\[\\]a-zA-Z0-9.:;_@/+-]+");
+    private static final Pattern TEXT_VALUE_PATTERN = Pattern.compile("[\\[\\]a-zA-Z0-9.:;_@/+-]+");
 
     /**
      * Checks if the <i>value</i> parameter is a properly formatted String

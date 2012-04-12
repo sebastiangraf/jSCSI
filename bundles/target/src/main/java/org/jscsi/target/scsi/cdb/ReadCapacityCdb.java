@@ -14,10 +14,9 @@ public abstract class ReadCapacityCdb extends CommandDescriptorBlock {
      * The LOGICAL BLOCK ADDRESS field specifies the LBA of the first logical
      * block accessed by this command.
      * <p>
-     * If the specified LBA exceeds the capacity of the medium, then the device
-     * server shall terminate the command with CHECK CONDITION status with the
-     * sense key set to ILLEGAL REQUEST and the additional sense code set to
-     * LOGICAL BLOCK ADDRESS OUT OF RANGE.
+     * If the specified LBA exceeds the capacity of the medium, then the device server shall terminate the
+     * command with CHECK CONDITION status with the sense key set to ILLEGAL REQUEST and the additional sense
+     * code set to LOGICAL BLOCK ADDRESS OUT OF RANGE.
      * 
      * @see #partialMediumIndicator
      */
@@ -28,16 +27,14 @@ public abstract class ReadCapacityCdb extends CommandDescriptorBlock {
      * device server return information on the last logical block on the
      * direct-access block device.
      * <p>
-     * A PMI bit set to one specifies that the device server return information
-     * on the last logical block after that specified in the LOGICAL BLOCK
-     * ADDRESS field before a substantial vendor specific delay in data transfer
-     * may be encountered.
+     * A PMI bit set to one specifies that the device server return information on the last logical block
+     * after that specified in the LOGICAL BLOCK ADDRESS field before a substantial vendor specific delay in
+     * data transfer may be encountered.
      * <p>
-     * The LOGICAL BLOCK ADDRESS field shall be set to zero if the PMI bit is
-     * set to zero. If the PMI bit is set to zero and the LOGICAL BLOCK ADDRESS
-     * field is not set to zero, then the device server shall terminate the
-     * command with CHECK CONDITION status with the sense key set to ILLEGAL
-     * REQUEST and the additional sense code set to INVALID FIELD IN CDB.
+     * The LOGICAL BLOCK ADDRESS field shall be set to zero if the PMI bit is set to zero. If the PMI bit is
+     * set to zero and the LOGICAL BLOCK ADDRESS field is not set to zero, then the device server shall
+     * terminate the command with CHECK CONDITION status with the sense key set to ILLEGAL REQUEST and the
+     * additional sense code set to INVALID FIELD IN CDB.
      * 
      * @see #logicalBlockAddress
      */
@@ -54,8 +51,7 @@ public abstract class ReadCapacityCdb extends CommandDescriptorBlock {
 
     protected abstract long deserializeLogicalBlockAddress(ByteBuffer buffer);
 
-    protected abstract boolean deserializePartialMediumIndicator(
-            ByteBuffer buffer);
+    protected abstract boolean deserializePartialMediumIndicator(ByteBuffer buffer);
 
     public final long getLogicalBlockAddress() {
         return logicalBlockAddress;

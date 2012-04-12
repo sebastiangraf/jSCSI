@@ -12,10 +12,10 @@ import org.jscsi.target.connection.stage.login.LoginOperationalParameterNegotiat
  * The factors to consider are:
  * <ul>
  * <li>the current stage of the connection</li>
- * <li>whether that connection is the leading connection, i.e. the initial
- * connection in the enclosing session.</li>
- * <li>if the <i>key-value</i> pair relating to the parameter was part of the
- * first {@link ProtocolDataUnit} sent over the connection</i>
+ * <li>whether that connection is the leading connection, i.e. the initial connection in the enclosing
+ * session.</li>
+ * <li>if the <i>key-value</i> pair relating to the parameter was part of the first {@link ProtocolDataUnit}
+ * sent over the connection</i>
  * </ul>
  * 
  * @author Andreas Ergenzinger
@@ -43,14 +43,12 @@ public enum Use {
      */
     FFP,
     /**
-     * The parameter may only be declared in the initial
-     * {@link ProtocolDataUnit}.
+     * The parameter may only be declared in the initial {@link ProtocolDataUnit}.
      */
     INITIAL,
     /**
-     * The parameter may only be declared in the initial
-     * {@link ProtocolDataUnit} or by any PDU sent as part of the
-     * {@link TextNegotiationStage} in the Full Feature Phase.
+     * The parameter may only be declared in the initial {@link ProtocolDataUnit} or by any PDU sent as part
+     * of the {@link TextNegotiationStage} in the Full Feature Phase.
      */
     INITIAL_AND_FFP;
 
@@ -67,17 +65,16 @@ public enum Use {
      *            <code>true</code> if and only if the connection is the leading
      *            connection of its session
      * @param initialPdu
-     *            <code>true</code> if and only if the {@link ProtocolDataUnit}
-     *            is the first PDU sent over the connection
+     *            <code>true</code> if and only if the {@link ProtocolDataUnit} is the first PDU sent over the
+     *            connection
      * @return <code>true</code> if and only if all requirements of the
      *         <i>use</i> parameter have been met
      */
     private static boolean checkUse(final Use use, final LoginStage loginStage,
-            final boolean leadingConnection, final boolean initialPdu) {
+        final boolean leadingConnection, final boolean initialPdu) {
         switch (use) {
         case LEADING_LOPNS:
-            if (leadingConnection
-                    && loginStage == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION)
+            if (leadingConnection && loginStage == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION)
                 return true;
             return false;
         case LOPNS:
@@ -86,7 +83,7 @@ public enum Use {
             return false;
         case LOPNS_AND_FFP:
             if (loginStage == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION
-                    || loginStage == LoginStage.FULL_FEATURE_PHASE)
+                || loginStage == LoginStage.FULL_FEATURE_PHASE)
                 return true;
             return false;
         case FFP:
@@ -99,7 +96,7 @@ public enum Use {
             // fall through
         case INITIAL:
             if (initialPdu
-                    && (loginStage == LoginStage.SECURITY_NEGOTIATION || loginStage == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION))
+                && (loginStage == LoginStage.SECURITY_NEGOTIATION || loginStage == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION))
                 return true;
             return false;
         default:
@@ -118,13 +115,12 @@ public enum Use {
      *            <code>true</code> if and only if the connection is the leading
      *            connection of its session
      * @param initialPdu
-     *            <code>true</code> if and only if the {@link ProtocolDataUnit}
-     *            is the first PDU sent over the connection
-     * @return <code>true</code> if and only if all requirements of this
-     *         {@link Use} instance have been met
+     *            <code>true</code> if and only if the {@link ProtocolDataUnit} is the first PDU sent over the
+     *            connection
+     * @return <code>true</code> if and only if all requirements of this {@link Use} instance have been met
      */
-    public boolean checkUse(final LoginStage loginStage,
-            final boolean leadingConnection, final boolean initialPdu) {
+    public boolean checkUse(final LoginStage loginStage, final boolean leadingConnection,
+        final boolean initialPdu) {
         return checkUse(this, loginStage, leadingConnection, initialPdu);
     }
 }

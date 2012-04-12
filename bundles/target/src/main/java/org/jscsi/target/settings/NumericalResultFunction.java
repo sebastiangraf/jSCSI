@@ -4,8 +4,7 @@ package org.jscsi.target.settings;
  * A result function used by the {@link NumericalEntry} class to determine the
  * outcome of integer parameter negotiations.
  * <p>
- * The behavior of this enumeration is described in the
- * {@link #getResult(int, int)} method.
+ * The behavior of this enumeration is described in the {@link #getResult(int, int)} method.
  * 
  * @author Andreas Ergenzinger
  */

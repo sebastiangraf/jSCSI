@@ -17,8 +17,8 @@ public final class SingleNumericalValue extends NumericalValue {
     /**
      * The constructor.
      * <p>
-     * This method is private to enforce usage of {@link #create(int)}, similar
-     * to the way new {@link NumericalValueRange} objects are created.
+     * This method is private to enforce usage of {@link #create(int)}, similar to the way new
+     * {@link NumericalValueRange} objects are created.
      * 
      * @param value
      *            the value of the new {@link SingleNumericalValue}
@@ -54,11 +54,9 @@ public final class SingleNumericalValue extends NumericalValue {
      * 
      * @param value
      *            the {@link String} to parse
-     * @return a {@link SingleNumericalValue} with the parsed value or
-     *         <code>null</code>
+     * @return a {@link SingleNumericalValue} with the parsed value or <code>null</code>
      */
-    public static final SingleNumericalValue parseSingleNumericValue(
-            final String value) {
+    public static final SingleNumericalValue parseSingleNumericValue(final String value) {
         // decimal constant
         final Matcher decimalMatcher = DECIMAL_CONSTANT_PATTERN.matcher(value);
         if (decimalMatcher.matches())
@@ -78,9 +76,8 @@ public final class SingleNumericalValue extends NumericalValue {
     /**
      * Parses an integer value from a {@link String} encoded in decimal format.
      * <p>
-     * This method does not check the passed {@link String} before parsing, so
-     * this method should only be used on string which are certain to match the
-     * required format.
+     * This method does not check the passed {@link String} before parsing, so this method should only be used
+     * on string which are certain to match the required format.
      * 
      * @param value
      *            a {@link String} containing (only) an integer encoded in
@@ -95,9 +92,8 @@ public final class SingleNumericalValue extends NumericalValue {
      * Parses an integer value from a {@link String} encoded in hexadecimal
      * format.
      * <p>
-     * This method does not check the passed {@link String} before parsing, so
-     * this method should only be used on string which are certain to match the
-     * required format.
+     * This method does not check the passed {@link String} before parsing, so this method should only be used
+     * on string which are certain to match the required format.
      * 
      * @param value
      *            a {@link String} containing (only) an integer encoded in
@@ -106,15 +102,14 @@ public final class SingleNumericalValue extends NumericalValue {
      */
     private static final int parseHexConstantString(final String value) {
         return Integer.parseInt(value.substring(2),// skip "0x" prefix
-                16);
+            16);
     }
 
     /**
      * Parses an integer value from a {@link String} encoded in Base64 format.
      * <p>
-     * This method does not check the passed {@link String} before parsing, so
-     * this method should only be used on string which are certain to match the
-     * required format.
+     * This method does not check the passed {@link String} before parsing, so this method should only be used
+     * on string which are certain to match the required format.
      * 
      * @param value
      *            a {@link String} containing (only) an integer encoded in
@@ -175,9 +170,9 @@ public final class SingleNumericalValue extends NumericalValue {
         if (value == null)
             return false;
         if (value instanceof SingleNumericalValue)
-            return contains(((SingleNumericalValue) value).getValue());
+            return contains(((SingleNumericalValue)value).getValue());
         if (value instanceof Integer)
-            return contains((int) ((Integer) value));
+            return contains((int)((Integer)value));
         return false;
     }
 

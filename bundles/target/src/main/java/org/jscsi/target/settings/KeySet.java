@@ -2,14 +2,12 @@ package org.jscsi.target.settings;
 
 /**
  * {@link KeySet} objects are used by {@link Entry} instances for storing all
- * <i>keys</i> that might be used to negotiate the parameter managed by the
- * {@link Entry}. Individual <i>keys</i> are represented as {@link String}
- * objects.
+ * <i>keys</i> that might be used to negotiate the parameter managed by the {@link Entry}. Individual
+ * <i>keys</i> are represented as {@link String} objects.
  * <p>
- * Although most parameters are associated with just one <i>key</i>, there are
- * some exceptions, hence justifying the added complexity of using a dedicated
- * class for managing <i>keys</i> in favor of simply using multiple
- * {@link String} objects.
+ * Although most parameters are associated with just one <i>key</i>, there are some exceptions, hence
+ * justifying the added complexity of using a dedicated class for managing <i>keys</i> in favor of simply
+ * using multiple {@link String} objects.
  * 
  * @author Andreas Ergenzinger
  */
@@ -67,8 +65,7 @@ public final class KeySet {
     }
 
     /**
-     * Returns the primary <i>key</i>, stored at the first position in
-     * {@link #values}.
+     * Returns the primary <i>key</i>, stored at the first position in {@link #values}.
      * 
      * @return the primary <i>key</i>
      */
@@ -77,13 +74,11 @@ public final class KeySet {
     }
 
     /**
-     * Returns the <i>key</i> stored at the specified position in
-     * {@link #values}.
+     * Returns the <i>key</i> stored at the specified position in {@link #values}.
      * 
      * @param index
      *            the position of the requested <i>key</i> in {@link #values}
-     * @return the <i>key</i> stored at the specified position in
-     *         {@link #values}
+     * @return the <i>key</i> stored at the specified position in {@link #values}
      */
     public String getValue(final int index) {
         return values[index];

@@ -38,8 +38,7 @@ import org.jscsi.target.settings.SettingsException;
  */
 public final class TargetFullFeaturePhase extends TargetPhase {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(TargetFullFeaturePhase.class);
+    private static final Logger LOGGER = Logger.getLogger(TargetFullFeaturePhase.class);
 
     /**
      * The current stage of this phase.
@@ -79,8 +78,8 @@ public final class TargetFullFeaturePhase extends TargetPhase {
      * @throws SettingsException
      *             {@inheritDoc}
      */
-    public boolean execute() throws DigestException, IOException,
-            InterruptedException, InternetSCSIException, SettingsException {
+    public boolean execute() throws DigestException, IOException, InterruptedException,
+        InternetSCSIException, SettingsException {
 
         running = true;
         while (running) {
@@ -93,10 +92,8 @@ public final class TargetFullFeaturePhase extends TargetPhase {
 
             case SCSI_COMMAND:
                 if (connection.getTargetSession().isNormalSession()) {
-                    final SCSICommandParser parser = (SCSICommandParser) bhs
-                            .getParser();
-                    ScsiOperationCode scsiOpCode = ScsiOperationCode
-                            .valueOf(parser.getCDB().get(0));
+                    final SCSICommandParser parser = (SCSICommandParser)bhs.getParser();
+                    ScsiOperationCode scsiOpCode = ScsiOperationCode.valueOf(parser.getCDB().get(0));
 
                     LOGGER.debug("scsiOpCode = " + scsiOpCode);// log SCSI
                                                                // Operation Code
@@ -154,15 +151,12 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                     }// else, or if default block was entered (programmer error)
                     if (scsiOpCode == null) {
                         LOGGER.error("Unsupported SCSI OpCode 0x"
-                                + Integer
-                                        .toHexString(parser.getCDB().get(0) & 255)
-                                + " in SCSI Command PDU.");
+                            + Integer.toHexString(parser.getCDB().get(0) & 255) + " in SCSI Command PDU.");
                         stage = new UnsupportedOpCodeStage(this);
                     }
 
                 } else {// session is discovery session
-                    throw new InternetSCSIException(
-                            "received SCSI command in discovery session");
+                    throw new InternetSCSIException("received SCSI command in discovery session");
                 }
                 break; // SCSI_COMMAND
 

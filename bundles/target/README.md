@@ -1,7 +1,12 @@
 jSCSI - Target implementation
 =========
 
-This bundle represents the target implementation of jSCSI. 
+This bundle represents the target implementation of jSCSI. Before start, it is highly recommend to create a file by hand e.g. with 
+
+
+```
+mkfile 1g storage.dat
+```
 
 Installation on different systems
 ---------
@@ -25,6 +30,7 @@ MS Windows 7 (& MS 2008?)
 Changelog
 =========
 
+* 2012/04/12: Added support for multiple targets within one process (Thanks to David Smith-Uchida)
 * 2012/03/27: Added file creation by target (Thanks to Stephen Davidson)
 * 2012/02/28: Move to github entirely
 * 2012/01/01: Move to github for open source release

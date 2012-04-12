@@ -6,8 +6,8 @@ import org.jscsi.target.scsi.IResponseData;
 import org.jscsi.target.util.ReadWrite;
 
 /**
- * Instances of this class are sent to the initiator in response to
- * <code>REPORT LUNS</code> SCSI commands. They contain a zero or more logical
+ * Instances of this class are sent to the initiator in response to <code>REPORT LUNS</code> SCSI commands.
+ * They contain a zero or more logical
  * unit numbers (LUNs) that identify some or all of the target's logical units,
  * depending on the <code>REPORT
  * LUNS</code> parameters.

@@ -22,14 +22,13 @@ import org.jscsi.target.util.ReadWrite;
  * <li>SCSI target port group number or</li>
  * <li>Logical unit group number.</li>
  * </ul>
- * Identification descriptors shall be assigned to the peripheral device (e.g.,
- * a disk drive) and not to the currently mounted media, in the case of
- * removable media devices. Operating systems are expected to use the
- * identification descriptors during system configuration activities to
- * determine whether alternate paths exist for the same peripheral device.
+ * Identification descriptors shall be assigned to the peripheral device (e.g., a disk drive) and not to the
+ * currently mounted media, in the case of removable media devices. Operating systems are expected to use the
+ * identification descriptors during system configuration activities to determine whether alternate paths
+ * exist for the same peripheral device.
  * <p>
- * This class uses the singleton pattern since the content of the DEVICE
- * IDENTIFICATION VPD PAGE will never change.
+ * This class uses the singleton pattern since the content of the DEVICE IDENTIFICATION VPD PAGE will never
+ * change.
  * 
  * @author Andreas Ergenzinger
  */
@@ -51,12 +50,10 @@ public class DeviceIdentificationVpdPage implements IResponseData {
      * <p>
      * These values have the following meaning:
      * <p>
-     * A peripheral device having the specified peripheral device type is
-     * connected to this logical unit. If the device server is unable to
-     * determine whether or not a peripheral device is connected, it also shall
-     * use this peripheral qualifier. This peripheral qualifier does not mean
-     * that the peripheral device connected to the logical unit is ready for
-     * access.
+     * A peripheral device having the specified peripheral device type is connected to this logical unit. If
+     * the device server is unable to determine whether or not a peripheral device is connected, it also shall
+     * use this peripheral qualifier. This peripheral qualifier does not mean that the peripheral device
+     * connected to the logical unit is ready for access.
      * <p>
      * The Logical Unit is a direct access block device (e.g., magnetic disk).
      */
@@ -65,16 +62,15 @@ public class DeviceIdentificationVpdPage implements IResponseData {
     /**
      * Identifies this PAGE as a DEVICE IDENTIFICATION VPD PAGE.
      */
-    private final byte pageCode = (byte) 0x83;
+    private final byte pageCode = (byte)0x83;
 
     private TargetServer target;
     private IdentificationDescriptor[] identificationDescriptors = new IdentificationDescriptor[0];
-    
+
     public DeviceIdentificationVpdPage(TargetServer target) {
         this.target = target;
 
     }
-
 
     /**
      * Returns the combined length of all contained IDENTIFICATION DESCRIPTORs.
@@ -94,7 +90,7 @@ public class DeviceIdentificationVpdPage implements IResponseData {
         byteBuffer.position(index);
         byteBuffer.put(peripheralQualifierAndPeripheralDeviceType);
         byteBuffer.put(pageCode);
-        
+
         /*
          * For each logical unit that is not a well known logical unit, the
          * Device Identification VPD page shall include at least one
@@ -107,21 +103,18 @@ public class DeviceIdentificationVpdPage implements IResponseData {
         final Association association = Association.SCSI_TARGET_DEVICE;
         final IdentifierType identifierType = IdentifierType.SCSI_NAME_STRING;
 
-        String [] targetNames = target.getTargetNames();
+        String[] targetNames = target.getTargetNames();
         identificationDescriptors = new IdentificationDescriptor[targetNames.length];
-        for (int curTargetNum = 0; curTargetNum < targetNames.length; curTargetNum++)
-        {
-            final IdentificationDescriptor identDescriptor = new IdentificationDescriptor(
-                    protocolIdentifier, codeSet, protocolIdentifierValid,
-                    association, identifierType,
-                    new ScsiNameStringIdentifier(targetNames[curTargetNum]));
-
+        for (int curTargetNum = 0; curTargetNum < targetNames.length; curTargetNum++) {
+            final IdentificationDescriptor identDescriptor =
+                new IdentificationDescriptor(protocolIdentifier, codeSet, protocolIdentifierValid,
+                    association, identifierType, new ScsiNameStringIdentifier(targetNames[curTargetNum]));
 
             identificationDescriptors[curTargetNum] = identDescriptor;
         }
         ReadWrite.writeInt(getPageLength(),// value
-                byteBuffer,// buffer
-                index + PAGE_LENGTH_FIELD_INDEX);// index
+            byteBuffer,// buffer
+            index + PAGE_LENGTH_FIELD_INDEX);// index
 
         // identification descriptor list
         int iddIndex = index + HEADER_LENGTH;// index of the current ident.

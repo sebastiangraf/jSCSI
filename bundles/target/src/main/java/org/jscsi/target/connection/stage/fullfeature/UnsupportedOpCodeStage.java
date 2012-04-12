@@ -16,10 +16,10 @@ import org.jscsi.target.settings.SettingsException;
  * Unlike the other subclasses of {@link TargetFullFeatureStage}, this class is
  * not associated with a single {@link ScsiOperationCode}. All SCSI Command PDUs
  * containing a SCSI OpCode not supported by the jSCSI Target (i.e. without a
- * dedicated FullFeatureStage to process them) shall be passed to the
- * {@link #execute(ProtocolDataUnit)} method of this class, which will dispatch
- * a standard SCSI Response PDU stating that the given {@link ScsiOperationCode}
- * is not supported by this target.
+ * dedicated FullFeatureStage to process them) shall be passed to the {@link #execute(ProtocolDataUnit)}
+ * method of this class, which will dispatch
+ * a standard SCSI Response PDU stating that the given {@link ScsiOperationCode} is not supported by this
+ * target.
  * 
  * @author Andreas Ergenzinger
  */
@@ -30,28 +30,27 @@ public class UnsupportedOpCodeStage extends TargetFullFeatureStage {
     }
 
     @Override
-    public void execute(ProtocolDataUnit pdu) throws IOException,
-            InterruptedException, InternetSCSIException, DigestException,
-            SettingsException {
+    public void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
+        InternetSCSIException, DigestException, SettingsException {
 
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-        final InitiatorMessageParser parser = (InitiatorMessageParser) bhs
-                .getParser();
+        final InitiatorMessageParser parser = (InitiatorMessageParser)bhs.getParser();
 
         // the SCSI OpCode is not supported, tell the initiator
 
-        final FieldPointerSenseKeySpecificData fp = new FieldPointerSenseKeySpecificData(
-                true,// senseKeySpecificDataValid
-                true,// commandData (i.e. invalid field in CDB)
-                false,// bitPointerValid
-                0,// bitPointer, reserved since invalid
-                0);// fieldPointer to the SCSI OpCode field
+        final FieldPointerSenseKeySpecificData fp = new FieldPointerSenseKeySpecificData(true,// senseKeySpecificDataValid
+            true,// commandData (i.e. invalid field in CDB)
+            false,// bitPointerValid
+            0,// bitPointer, reserved since invalid
+            0);// fieldPointer to the SCSI OpCode field
 
-        final FieldPointerSenseKeySpecificData[] fpArray = new FieldPointerSenseKeySpecificData[] { fp };
+        final FieldPointerSenseKeySpecificData[] fpArray = new FieldPointerSenseKeySpecificData[] {
+            fp
+        };
 
         final ProtocolDataUnit responsePdu = createFixedFormatErrorPdu(fpArray,// senseKeySpecificData
-                bhs.getInitiatorTaskTag(),// initiatorTaskTag
-                parser.getExpectedStatusSequenceNumber());// expectedDataTransferLength
+            bhs.getInitiatorTaskTag(),// initiatorTaskTag
+            parser.getExpectedStatusSequenceNumber());// expectedDataTransferLength
 
         // send response
         connection.sendPdu(responsePdu);

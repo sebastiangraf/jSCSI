@@ -24,8 +24,7 @@ import org.jscsi.target.settings.TextKeyword;
  */
 public class TargetSenderWorker {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(TargetSenderWorker.class);
+    private static final Logger LOGGER = Logger.getLogger(TargetSenderWorker.class);
 
     /**
      * The connection which uses this object for sending and receiving PDUs.
@@ -49,18 +48,15 @@ public class TargetSenderWorker {
     final private ProtocolDataUnitFactory protocolDataUnitFactory;
 
     /**
-     * If this is <code>true</code>, then the next PDU read from the
-     * {@link #socketChannel} will be the first PDU received in the
-     * {@link #session}.
+     * If this is <code>true</code>, then the next PDU read from the {@link #socketChannel} will be the first
+     * PDU received in the {@link #session}.
      * <p>
-     * Will be initializes to <code>true</code> if and only if the
-     * {@link #connection} is the leading connection of its session.
+     * Will be initializes to <code>true</code> if and only if the {@link #connection} is the leading
+     * connection of its session.
      * <p>
-     * PDUs identified by this variable as the first PDU in a session will not
-     * have their counters (i.e. CmdSN and ExpStatSN) checked. Instead the
-     * values of these counters will be used to initialize the targets local
-     * copies of these counters that will be used to ensure that no PDUs have
-     * been lost in transit.
+     * PDUs identified by this variable as the first PDU in a session will not have their counters (i.e. CmdSN
+     * and ExpStatSN) checked. Instead the values of these counters will be used to initialize the targets
+     * local copies of these counters that will be used to ensure that no PDUs have been lost in transit.
      */
     private boolean initialPdu;
 
@@ -74,8 +70,7 @@ public class TargetSenderWorker {
      *            used for sending and receiving serialized PDU to and from the
      *            target
      */
-    public TargetSenderWorker(final TargetConnection connection,
-            final SocketChannel socketChannel) {
+    public TargetSenderWorker(final TargetConnection connection, final SocketChannel socketChannel) {
         this.connection = connection;
         this.socketChannel = socketChannel;
         protocolDataUnitFactory = new ProtocolDataUnitFactory();
@@ -85,10 +80,9 @@ public class TargetSenderWorker {
     /**
      * Sets the {@link #session} variable.
      * <p>
-     * During the time this object is initialized, the
-     * {@link TargetConnection#getSession()} method will return
-     * <code>null</code>. Therefore {@link #session} must be set manually once
-     * the {@link TargetSession} object has been created.
+     * During the time this object is initialized, the {@link TargetConnection#getSession()} method will
+     * return <code>null</code>. Therefore {@link #session} must be set manually once the
+     * {@link TargetSession} object has been created.
      * 
      * @param session
      *            the session of the {@link #connection}
@@ -121,8 +115,8 @@ public class TargetSenderWorker {
      *             if a mismatch of the digest exists.
      * @throws SettingsException
      */
-    ProtocolDataUnit receiveFromWire() throws DigestException,
-            InternetSCSIException, IOException, SettingsException {
+    ProtocolDataUnit receiveFromWire() throws DigestException, InternetSCSIException, IOException,
+        SettingsException {
 
         ProtocolDataUnit pdu;
         if (initialPdu) {
@@ -135,12 +129,11 @@ public class TargetSenderWorker {
              */
             pdu = protocolDataUnitFactory.create(TextKeyword.NONE,// header
                                                                   // digest
-                    TextKeyword.NONE);// data digest
+                TextKeyword.NONE);// data digest
         } else {
             // use negotiated or (now available) default settings
             final Settings settings = connection.getSettings();
-            pdu = protocolDataUnitFactory.create(settings.getHeaderDigest(),
-                    settings.getDataDigest());
+            pdu = protocolDataUnitFactory.create(settings.getHeaderDigest(), settings.getDataDigest());
         }
 
         try {
@@ -154,11 +147,9 @@ public class TargetSenderWorker {
 
         // parse sequence counters
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-        final InitiatorMessageParser parser = (InitiatorMessageParser) bhs
-                .getParser();
+        final InitiatorMessageParser parser = (InitiatorMessageParser)bhs.getParser();
         final int commandSequenceNumber = parser.getCommandSequenceNumber();
-        final int expectedStatusSequenceNumber = parser
-                .getExpectedStatusSequenceNumber();
+        final int expectedStatusSequenceNumber = parser.getExpectedStatusSequenceNumber();
 
         // if this is the first PDU in the leading connection, then
         // initialize the session's ExpectedCommandSequenceNumber
@@ -171,18 +162,14 @@ public class TargetSenderWorker {
             // Target.main()
         } else {
             // check sequence counters
-            if (session.getMaximumCommandSequenceNumber().lessThan(
-                    commandSequenceNumber))
-                throw new InternetSCSIException(
-                        "received CmdSN > local MaxCmdSN");
+            if (session.getMaximumCommandSequenceNumber().lessThan(commandSequenceNumber))
+                throw new InternetSCSIException("received CmdSN > local MaxCmdSN");
 
-            if (!connection.getStatusSequenceNumber().equals(
-                    expectedStatusSequenceNumber)
-                    && expectedStatusSequenceNumber != 0)// required by MS iSCSI
-                                                         // initiator DATA-OUT
-                                                         // PDU sequence
-                throw new InternetSCSIException(
-                        "received ExpStatusSN != local StatusSN + 1");
+            if (!connection.getStatusSequenceNumber().equals(expectedStatusSequenceNumber)
+                && expectedStatusSequenceNumber != 0)// required by MS iSCSI
+                                                     // initiator DATA-OUT
+                                                     // PDU sequence
+                throw new InternetSCSIException("received ExpStatusSN != local StatusSN + 1");
         }
 
         // increment CmdSN if not immediate PDU (or Data-Out PDU)
@@ -209,21 +196,16 @@ public class TargetSenderWorker {
      *             exception is thrown.
      */
 
-    final void sendOverWire(final ProtocolDataUnit pdu)
-            throws InternetSCSIException, IOException, InterruptedException {
+    final void sendOverWire(final ProtocolDataUnit pdu) throws InternetSCSIException, IOException,
+        InterruptedException {
 
         // set sequence counters
-        final TargetMessageParser parser = (TargetMessageParser) pdu
-                .getBasicHeaderSegment().getParser();
-        parser.setExpectedCommandSequenceNumber(session
-                .getExpectedCommandSequenceNumber().getValue());
-        parser.setMaximumCommandSequenceNumber(session
-                .getMaximumCommandSequenceNumber().getValue());
-        final boolean incrementSequenceNumber = parser
-                .incrementSequenceNumber();
+        final TargetMessageParser parser = (TargetMessageParser)pdu.getBasicHeaderSegment().getParser();
+        parser.setExpectedCommandSequenceNumber(session.getExpectedCommandSequenceNumber().getValue());
+        parser.setMaximumCommandSequenceNumber(session.getMaximumCommandSequenceNumber().getValue());
+        final boolean incrementSequenceNumber = parser.incrementSequenceNumber();
         if (incrementSequenceNumber)// set StatSN only if field is not reserved
-            parser.setStatusSequenceNumber(connection.getStatusSequenceNumber()
-                    .getValue());
+            parser.setStatusSequenceNumber(connection.getStatusSequenceNumber().getValue());
 
         if (LOGGER.isDebugEnabled())
             LOGGER.debug("Sending this PDU:\n" + pdu);

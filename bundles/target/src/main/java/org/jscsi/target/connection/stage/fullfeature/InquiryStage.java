@@ -32,43 +32,38 @@ public class InquiryStage extends TargetFullFeatureStage {
     }
 
     @Override
-    public void execute(ProtocolDataUnit pdu) throws IOException,
-            InterruptedException, InternetSCSIException, DigestException,
-            SettingsException {
+    public void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
+        InternetSCSIException, DigestException, SettingsException {
 
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-        final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
+        final SCSICommandParser parser = (SCSICommandParser)bhs.getParser();
 
         ProtocolDataUnit responsePdu = null;// the response PDU
 
         // get command details in CDB
         if (LOGGER.isDebugEnabled()) {// print CDB bytes
-            LOGGER.debug("CDB bytes: \n"
-                    + Debug.byteBufferToString(parser.getCDB()));
+            LOGGER.debug("CDB bytes: \n" + Debug.byteBufferToString(parser.getCDB()));
         }
 
         final InquiryCDB cdb = new InquiryCDB(parser.getCDB());
-        final FieldPointerSenseKeySpecificData[] illegalFieldPointers = cdb
-                .getIllegalFieldPointers();
+        final FieldPointerSenseKeySpecificData[] illegalFieldPointers = cdb.getIllegalFieldPointers();
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("cdb.getAllocationLength() = "
-                    + cdb.getAllocationLength());
-            LOGGER.debug("cdb.getEnableVitalProductData() = "
-                    + cdb.getEnableVitalProductData());
+            LOGGER.debug("cdb.getAllocationLength() = " + cdb.getAllocationLength());
+            LOGGER.debug("cdb.getEnableVitalProductData() = " + cdb.getEnableVitalProductData());
             LOGGER.debug("cdb.isNormalACA() = " + cdb.isNormalACA());
             LOGGER.debug("cdb.getPageCode() = " + cdb.getPageCode());
             LOGGER.debug("cdb.getPageCode().getVitalProductDataPageName() = "
-                    + cdb.getPageCode().getVitalProductDataPageName());
+                + cdb.getPageCode().getVitalProductDataPageName());
         }
 
         if (illegalFieldPointers != null) {
             // an illegal request has been made
             LOGGER.error("illegal INQUIRY request");
 
-            responsePdu = createFixedFormatErrorPdu(illegalFieldPointers,
-                    bhs.getInitiatorTaskTag(),
-                    parser.getExpectedDataTransferLength());
+            responsePdu =
+                createFixedFormatErrorPdu(illegalFieldPointers, bhs.getInitiatorTaskTag(), parser
+                    .getExpectedDataTransferLength());
 
             // send response
             connection.sendPdu(responsePdu);
@@ -91,8 +86,7 @@ public class InquiryStage extends TargetFullFeatureStage {
                  * been entered. (see {@link
                  * InquiryCDB#checkIntegrity(ByteBuffer dataSegment)})
                  */
-                final VitalProductDataPageName pageName = cdb.getPageCode()
-                        .getVitalProductDataPageName();
+                final VitalProductDataPageName pageName = cdb.getPageCode().getVitalProductDataPageName();
 
                 switch (pageName) {// is never null
                 case SUPPORTED_VPD_PAGES:
@@ -108,8 +102,7 @@ public class InquiryStage extends TargetFullFeatureStage {
             }
 
             // send response
-            sendResponse(bhs.getInitiatorTaskTag(),
-                    parser.getExpectedDataTransferLength(), responseData);
+            sendResponse(bhs.getInitiatorTaskTag(), parser.getExpectedDataTransferLength(), responseData);
 
         }
 

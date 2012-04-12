@@ -46,8 +46,7 @@ public class ScsiNameStringIdentifier extends Identifier {
          * ",L,0x" concatenated with 16 hexadecimal digits for the logical unit
          * name extension.
          */
-        nameString = targetName + ",L,0x"
-                + logicalUnitNameExtension;
+        nameString = targetName + ",L,0x" + logicalUnitNameExtension;
     }
 
     public void serialize(ByteBuffer byteBuffer, int index) {
@@ -58,15 +57,14 @@ public class ScsiNameStringIdentifier extends Identifier {
             --stringLength;// at least one null character as padding
         // copy string characters
         for (int i = 0; i < stringLength; ++i)
-            byteBuffer.put((byte) nameString.charAt(i));
+            byteBuffer.put((byte)nameString.charAt(i));
         // add padding
         for (int i = 0; i < size - stringLength; ++i)
-            byteBuffer.put((byte) 0);
+            byteBuffer.put((byte)0);
     }
 
     public int size() {
-        return Math.min(nameString.length() + getNullTerminatedPaddingLength(),
-                MAX_SIZE);
+        return Math.min(nameString.length() + getNullTerminatedPaddingLength(), MAX_SIZE);
     }
 
     /**

@@ -4,9 +4,8 @@ package org.jscsi.target.settings;
  * {@link NegotiationStatus} objects specifies the necessity, progress, and
  * outcome of the parameter negotiation managed by {@link Entry} instances.
  * <p>
- * The only legal transitions of an {@link Entry} object's
- * {@link NegotiationStatus} are from {@link #NOT_NEGOTIATED} or
- * {@link #DEFAULT} to {@link #ACCEPTED} or {@link #REJECTED}. A status of
+ * The only legal transitions of an {@link Entry} object's {@link NegotiationStatus} are from
+ * {@link #NOT_NEGOTIATED} or {@link #DEFAULT} to {@link #ACCEPTED} or {@link #REJECTED}. A status of
  * {@link #IRRELEVANT} must never change.
  * 
  * @author Andreas Ergenzinger

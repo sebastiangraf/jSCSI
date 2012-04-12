@@ -7,20 +7,18 @@ import org.jscsi.target.TargetServer;
  * require the iSCSI initiator to offer an interval from which the target must
  * choose the final value. Thereby the <i>key=value</i> format differs from that
  * required by the {@link NumericalEntry} class, for which <i>value</i> is a
- * single integer. The <i>value</i> part expected by this class looks like
- * <code>1024~2048</code>, however the response <i>value</i> will again be a
+ * single integer. The <i>value</i> part expected by this class looks like <code>1024~2048</code>, however the
+ * response <i>value</i> will again be a
  * single integer from the given range.
  * <p>
- * Currently this {@link Entry} sub-class is only used for two parameters -
- * <code>IFMarkInt</code> and <code>OFMarkInt</code>. However, since the jSCSI
- * Target does not support stream markers (<code>IFMarker=No</code> and
- * <code>OFMarker=No</code>), the correct response value to
- * <code>IFMarkInt</code> and <code>OFMarkInt</code> <i>keys</i> must be
- * <code>Irrelevant</code>. This behavior is part of the
+ * Currently this {@link Entry} sub-class is only used for two parameters - <code>IFMarkInt</code> and
+ * <code>OFMarkInt</code>. However, since the jSCSI Target does not support stream markers (
+ * <code>IFMarker=No</code> and <code>OFMarker=No</code>), the correct response value to
+ * <code>IFMarkInt</code> and <code>OFMarkInt</code> <i>keys</i> must be <code>Irrelevant</code>. This
+ * behavior is part of the
  * {@link Entry#negotiate(org.jscsi.parser.login.LoginStage, boolean, boolean, String, String, java.util.Collection)}
- * method, which will lead to correct responses without having to check for
- * additional constraints (the presence and <i>value</i> of
- * <code>IFMarker</code> and <code>OFMarker</code> <i>key=value</i> pairs.
+ * method, which will lead to correct responses without having to check for additional constraints (the
+ * presence and <i>value</i> of <code>IFMarker</code> and <code>OFMarker</code> <i>key=value</i> pairs.
  * 
  * @author Andreas Ergenzinger
  */
@@ -57,13 +55,9 @@ public final class NumericalRangeEntry extends Entry {
      * @param defaultValue
      *            the default value or <code>null</code>
      */
-    public NumericalRangeEntry(final KeySet keySet, final Use use,
-            final NegotiationStatus negotiationStatus,
-            final int negotiationValue,
-            final NumericalValueRange protocolValueRange,
-            final Object defaultValue) {
-        super(keySet, NegotiationType.NEGOTIATED, use, negotiationStatus,
-                defaultValue);
+    public NumericalRangeEntry(final KeySet keySet, final Use use, final NegotiationStatus negotiationStatus,
+        final int negotiationValue, final NumericalValueRange protocolValueRange, final Object defaultValue) {
+        super(keySet, NegotiationType.NEGOTIATED, use, negotiationStatus, defaultValue);
         this.negotiationValue = negotiationValue;
         this.protocolValueRange = protocolValueRange;
     }
@@ -71,15 +65,14 @@ public final class NumericalRangeEntry extends Entry {
     @Override
     protected boolean inProtocolValueRange(Object values) {
         // receives a NumericalValueRange
-        return protocolValueRange.contains((NumericalValueRange) values);
+        return protocolValueRange.contains((NumericalValueRange)values);
     }
 
     @Override
     protected Object parseOffer(TargetServer target, String values) {
         // expected format: "1234~5678"
 
-        NumericalValueRange range = NumericalValueRange
-                .parseNumericalValueRange(values);
+        NumericalValueRange range = NumericalValueRange.parseNumericalValueRange(values);
         if (range == null && target.getConfig().getAllowSloppyNegotiation()) {
             /*
              * The format was violated.
@@ -89,11 +82,10 @@ public final class NumericalRangeEntry extends Entry {
              * 
              * If values is at least a number we will fix this.
              */
-            final SingleNumericalValue singleValue = SingleNumericalValue
-                    .parseSingleNumericValue(values);
+            final SingleNumericalValue singleValue = SingleNumericalValue.parseSingleNumericValue(values);
             if (singleValue != null) {
                 range = NumericalValueRange.create(singleValue.getValue(),// min
-                        singleValue.getValue());// max
+                    singleValue.getValue());// max
             }
         }
 
@@ -108,7 +100,7 @@ public final class NumericalRangeEntry extends Entry {
     @Override
     protected String processNegotiation(Object values) {
         // receives a NumericalValueRange
-        final NumericalValueRange range = (NumericalValueRange) values;
+        final NumericalValueRange range = (NumericalValueRange)values;
         // accept if negotiatedValue in initiator offer, else reject
         if (range.contains(negotiationValue)) {
             value = negotiationValue;
@@ -120,14 +112,14 @@ public final class NumericalRangeEntry extends Entry {
 
     @Override
     public Integer getIntegerValue() {
-        return (Integer) value;
+        return (Integer)value;
     }
 
     @Override
     public Entry copy() {
-        final NumericalRangeEntry e = new NumericalRangeEntry(keySet, use,
-                negotiationStatus, negotiationValue, protocolValueRange,
-                (Integer) value);
+        final NumericalRangeEntry e =
+            new NumericalRangeEntry(keySet, use, negotiationStatus, negotiationValue, protocolValueRange,
+                (Integer)value);
         e.alreadyNegotiated = this.alreadyNegotiated;
         return e;
     }

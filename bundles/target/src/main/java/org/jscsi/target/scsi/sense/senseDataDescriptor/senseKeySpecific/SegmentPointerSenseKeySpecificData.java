@@ -23,14 +23,13 @@ public class SegmentPointerSenseKeySpecificData extends SenseKeySpecificData {
      * relative to the start of the parameter list. An SD bit set to one
      * indicates that the field pointer is relative to the start of the segment
      * descriptor indicated by the third and fourth bytes of the
-     * {@link CommandSpecificSenseDataDescriptor#commandSpecificInformation}
-     * field.
+     * {@link CommandSpecificSenseDataDescriptor#commandSpecificInformation} field.
      */
     private final boolean segmentDescriptor;
 
     /**
-     * A bit pointer valid (BPV) bit set to zero indicates that the value in the
-     * {@link #bitPointer} field is not valid. A BPV bit set to one indicates
+     * A bit pointer valid (BPV) bit set to zero indicates that the value in the {@link #bitPointer} field is
+     * not valid. A BPV bit set to one indicates
      * that the {@link #bitPointer} field specifies which bit of the byte
      * designated by the {@link #fieldPointer} field is in error. When a
      * multiple-bit field is in error, the {@link #bitPointerValid} field shall
@@ -56,8 +55,7 @@ public class SegmentPointerSenseKeySpecificData extends SenseKeySpecificData {
     /**
      * The constructor.
      * <p>
-     * All parameters are used to initialize the member variables with the same
-     * name.
+     * All parameters are used to initialize the member variables with the same name.
      * 
      * @param senseKeySpecificDataValid
      * @param segmentDescriptor
@@ -65,20 +63,18 @@ public class SegmentPointerSenseKeySpecificData extends SenseKeySpecificData {
      * @param bitPointer
      * @param fieldPointer
      */
-    public SegmentPointerSenseKeySpecificData(
-            final boolean senseKeySpecificDataValid,
-            final boolean segmentDescriptor, final boolean bitPointerValid,
-            final int bitPointer, final int fieldPointer) {
+    public SegmentPointerSenseKeySpecificData(final boolean senseKeySpecificDataValid,
+        final boolean segmentDescriptor, final boolean bitPointerValid, final int bitPointer,
+        final int fieldPointer) {
         super(senseKeySpecificDataValid);
         this.segmentDescriptor = segmentDescriptor;
         this.bitPointerValid = bitPointerValid;
         this.bitPointer = bitPointer;
-        this.fieldPointer = (short) fieldPointer;
+        this.fieldPointer = (short)fieldPointer;
     }
 
     @Override
-    protected void serializeSpecificFields(final ByteBuffer byteBuffer,
-            final int index) {
+    protected void serializeSpecificFields(final ByteBuffer byteBuffer, final int index) {
 
         byte b = byteBuffer.get(index);// SKSV bit has already been set and has
                                        // to be preserved
@@ -96,8 +92,7 @@ public class SegmentPointerSenseKeySpecificData extends SenseKeySpecificData {
         byteBuffer.put(index, b);
 
         // field pointer
-        ReadWrite.writeTwoByteInt(byteBuffer, fieldPointer,
-                byteBuffer.position());
+        ReadWrite.writeTwoByteInt(byteBuffer, fieldPointer, byteBuffer.position());
     }
 
 }

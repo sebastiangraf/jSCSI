@@ -5,8 +5,7 @@ import java.nio.ByteBuffer;
 import org.jscsi.target.util.BitManip;
 
 /**
- * This class represents Command Descriptor Blocks for the
- * <code>READ CAPACITY (16)</code> SCSI command.
+ * This class represents Command Descriptor Blocks for the <code>READ CAPACITY (16)</code> SCSI command.
  * 
  * @author Andreas Ergenzinger
  */
@@ -20,15 +19,14 @@ public class ReadCapacity16Cdb extends ReadCapacityCdb {
     /**
      * The value of the SERVICE ACTION field.
      * <p>
-     * The value of this 5-bit field must equal {@link #SERVICE_ACTION}. Its
-     * meaning is described in SPC-4.
+     * The value of this 5-bit field must equal {@link #SERVICE_ACTION}. Its meaning is described in SPC-4.
      */
     private final byte serviceAction;
 
     public ReadCapacity16Cdb(ByteBuffer buffer) {
         super(buffer);
         // deserialize SERVICE ACTION field
-        serviceAction = (byte) (buffer.get(1) & 31);
+        serviceAction = (byte)(buffer.get(1) & 31);
         if (serviceAction != SERVICE_ACTION)
             addIllegalFieldPointer(1, 4);
     }
@@ -41,7 +39,7 @@ public class ReadCapacity16Cdb extends ReadCapacityCdb {
     @Override
     protected boolean deserializePartialMediumIndicator(ByteBuffer buffer) {
         return BitManip.getBit(buffer.get(14),// byte
-                0);// bitNumber
+            0);// bitNumber
     }
 
     public byte getServiceAction() {

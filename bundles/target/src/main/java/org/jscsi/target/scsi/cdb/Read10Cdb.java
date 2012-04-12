@@ -9,13 +9,12 @@ import org.jscsi.target.util.ReadWrite;
  * This class represents Command Descriptor Blocks for the <code>READ (10)
  * </code> SCSI command.
  * <p>
- * The <code>READ (10)</code> command requests that the device server to read
- * the specified logical block(s) and transfer them to the data-in buffer.
+ * The <code>READ (10)</code> command requests that the device server to read the specified logical block(s)
+ * and transfer them to the data-in buffer.
  * <p>
- * Each logical block read includes user data and, if the medium is formatted
- * with protection information enabled, protection information. Each logical
- * block transferred includes user data and may include protection information,
- * based on the RDPROTECT field and the medium format.
+ * Each logical block read includes user data and, if the medium is formatted with protection information
+ * enabled, protection information. Each logical block transferred includes user data and may include
+ * protection information, based on the RDPROTECT field and the medium format.
  * 
  * @author Andreas Ergenzinger
  */
@@ -27,9 +26,8 @@ public final class Read10Cdb extends ReadCdb {
      * before returning status for the command associated with this command
      * descriptor block.
      * <p>
-     * Since the jSCSI Target simulates a logical unit formatted without any
-     * protection information (that can be checked), the value of this field is
-     * inconsequential.
+     * Since the jSCSI Target simulates a logical unit formatted without any protection information (that can
+     * be checked), the value of this field is inconsequential.
      */
     private final int readProtect;
 
@@ -38,30 +36,25 @@ public final class Read10Cdb extends ReadCdb {
      * does not support advanced caching strategies, the value of this variable
      * is ignored.
      * <p>
-     * A disable page out (DPO) bit set to zero specifies that the retention
-     * priority shall be determined by the RETENTION PRIORITY fields in the
-     * Caching mode page (see 6.4.5). A DPO bit set to one specifies that the
-     * device server shall assign the logical blocks accessed by this command
-     * the lowest retention priority for being fetched into or retained by the
-     * cache. A DPO bit set to one overrides any retention priority specified in
-     * the Caching mode page. All other aspects of the algorithm implementing
-     * the cache replacement strategy are not defined by this standard.
+     * A disable page out (DPO) bit set to zero specifies that the retention priority shall be determined by
+     * the RETENTION PRIORITY fields in the Caching mode page (see 6.4.5). A DPO bit set to one specifies that
+     * the device server shall assign the logical blocks accessed by this command the lowest retention
+     * priority for being fetched into or retained by the cache. A DPO bit set to one overrides any retention
+     * priority specified in the Caching mode page. All other aspects of the algorithm implementing the cache
+     * replacement strategy are not defined by this standard.
      * <p>
-     * NOTE 11 - The DPO bit is used to control replacement of logical blocks in
-     * the cache when the application client has information on the future usage
-     * of the logical blocks. If the DPO bit is set to one, then the application
-     * client is specifying that the logical blocks accessed by the command are
-     * not likely to be accessed again in the near future and should not be put
-     * in the cache nor retained by the cache. If the DPO bit is set to zero,
-     * then the application client is specifying that the logical blocks
-     * accessed by this command are likely to be accessed again in the near
-     * future.
+     * NOTE 11 - The DPO bit is used to control replacement of logical blocks in the cache when the
+     * application client has information on the future usage of the logical blocks. If the DPO bit is set to
+     * one, then the application client is specifying that the logical blocks accessed by the command are not
+     * likely to be accessed again in the near future and should not be put in the cache nor retained by the
+     * cache. If the DPO bit is set to zero, then the application client is specifying that the logical blocks
+     * accessed by this command are likely to be accessed again in the near future.
      */
     private final boolean disablePageOut;
 
     /**
-     * The FUA ({@link #forceUnitAccess}) and FUA_NV (
-     * {@link #forceUnitAccessNonVolatileCache}) bits together determine from
+     * The FUA ({@link #forceUnitAccess}) and FUA_NV ( {@link #forceUnitAccessNonVolatileCache}) bits together
+     * determine from
      * exactly the requested data shall be retrieved (cache, non-volatile cache,
      * or medium) and whether or not the returned data has to be transferred to
      * the medium before sending the response.
@@ -75,37 +68,35 @@ public final class Read10Cdb extends ReadCdb {
      * <tr>
      * <td>0</td>
      * <td>0</td>
-     * <td>The device server may read the logical blocks from volatile cache,
-     * non-volatile cache, and/or the medium.</td>
+     * <td>The device server may read the logical blocks from volatile cache, non-volatile cache, and/or the
+     * medium.</td>
      * </tr>
      * <tr>
      * <td>0</td>
      * <td>1</td>
-     * <td>If the NV_SUP bit is set to one in the Extended INQUIRY Data VPD page
-     * (see SPC-4), then the device server shall read the logical blocks from
-     * non-volatile cache or the medium. If a non-volatile cache is present and
-     * a volatile cache contains a more recent version of a logical block, then
-     * the device server shall write the logical block to:<br/>
+     * <td>If the NV_SUP bit is set to one in the Extended INQUIRY Data VPD page (see SPC-4), then the device
+     * server shall read the logical blocks from non-volatile cache or the medium. If a non-volatile cache is
+     * present and a volatile cache contains a more recent version of a logical block, then the device server
+     * shall write the logical block to:<br/>
      * a) non-volatile cache; and/or<br/>
      * b) the medium,<br/>
-     * before reading it. If the NV_SUP bit is set to zero in the Extended
-     * INQUIRY Data VPD page (see SPC-4), then the device server may read the
-     * logical blocks from volatile cache, non-volatile cache, and/or the
+     * before reading it. If the NV_SUP bit is set to zero in the Extended INQUIRY Data VPD page (see SPC-4),
+     * then the device server may read the logical blocks from volatile cache, non-volatile cache, and/or the
      * medium.</td>
      * </tr>
      * <tr>
      * <td>1</td>
      * <td>0 or 1</td>
-     * <td>The device server may read the logical blocks from volatile cache,
-     * non-volatile cache, and/or the medium.</td>
+     * <td>The device server may read the logical blocks from volatile cache, non-volatile cache, and/or the
+     * medium.</td>
      * </tr>
      * </table>
      */
     private final boolean forceUnitAccess;
 
     /**
-     * The FUA ({@link #forceUnitAccess}) and FUA_NV (
-     * {@link #forceUnitAccessNonVolatileCache}) bits together determine from
+     * The FUA ({@link #forceUnitAccess}) and FUA_NV ( {@link #forceUnitAccessNonVolatileCache}) bits together
+     * determine from
      * exactly the requested data shall be retrieved (cache, non-volatile cache,
      * or medium) and whether or not the returned data has to be transferred to
      * the medium before sending the response.
@@ -120,12 +111,11 @@ public final class Read10Cdb extends ReadCdb {
      * commands (i.e., information about commands with the same group value are
      * collected into the specified group).
      * <p>
-     * The collection of this information is outside the scope of the SCSI
-     * standard (as of SBC3R25) and also not part of the iSCSI specification, so
-     * the value of this field will be ignored.
+     * The collection of this information is outside the scope of the SCSI standard (as of SBC3R25) and also
+     * not part of the iSCSI specification, so the value of this field will be ignored.
      * <p>
-     * Support for the grouping function is indicated in the GROUP_SUP bit in
-     * the Extended INQUIRY Data VPD page (see SPC-4).
+     * Support for the grouping function is indicated in the GROUP_SUP bit in the Extended INQUIRY Data VPD
+     * page (see SPC-4).
      * <p>
      * 
      */

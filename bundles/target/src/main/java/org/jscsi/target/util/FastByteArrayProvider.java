@@ -45,13 +45,12 @@ public final class FastByteArrayProvider {
     /**
      * Returns a byte array of the specified length.
      * <p>
-     * Note that the returned array may have been used before and therefore the
-     * array's values are not guaranteed to be <code>0</code>.
+     * Note that the returned array may have been used before and therefore the array's values are not
+     * guaranteed to be <code>0</code>.
      * <p>
-     * The method consecutively checks {@link #arrays} for an array of the
-     * correct length. If such an array exists, it will be moved to one index
-     * position closer to the front of the array (if possible), speeding up
-     * future retrievals of the same array.
+     * The method consecutively checks {@link #arrays} for an array of the correct length. If such an array
+     * exists, it will be moved to one index position closer to the front of the array (if possible), speeding
+     * up future retrievals of the same array.
      * 
      * @param length
      *            the length of the returned array
@@ -84,8 +83,7 @@ public final class FastByteArrayProvider {
     /**
      * Returns all stored byte arrays.
      * <p>
-     * This method's primary purpose is to enable testing of byte array storing
-     * and reordering.
+     * This method's primary purpose is to enable testing of byte array storing and reordering.
      * 
      * @return {@link #arrays}.
      */

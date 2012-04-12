@@ -4,8 +4,8 @@ import java.util.regex.Matcher;
 
 /**
  * This is a {@link NumericalValue} sub-class for representing integer
- * intervals. Each {@link NumericalValueRange} is defined by two integers -
- * {@link #min} and {@link #max} - the lower and the upper bound of the
+ * intervals. Each {@link NumericalValueRange} is defined by two integers - {@link #min} and {@link #max} -
+ * the lower and the upper bound of the
  * represented interval.
  * 
  * @author Andreas Ergenzinger
@@ -25,8 +25,8 @@ public final class NumericalValueRange extends NumericalValue {
     /**
      * The build method for creating {@link NumericalValueRange} objects. The
      * specified <i>min</i> and <i>max</i> parameters are going to be used for
-     * initializing the {@link #min} and {@link #max} variables of the new
-     * {@link NumericalValueRange}. Since this only makes sense if <i>min</i>
+     * initializing the {@link #min} and {@link #max} variables of the new {@link NumericalValueRange}. Since
+     * this only makes sense if <i>min</i>
      * &le; <i>max</i>, <code>null</code> will be returned if this requirement
      * is violated.
      * 
@@ -54,8 +54,7 @@ public final class NumericalValueRange extends NumericalValue {
      * @return a {@link NumericalValueRange} representing the interval in the
      *         parsed {@link String} or <code>null</code>
      */
-    public static final NumericalValueRange parseNumericalValueRange(
-            final String value) {
+    public static final NumericalValueRange parseNumericalValueRange(final String value) {
         // check formatting
         final Matcher rangeMatcher = NUMERICAL_RANGE_PATTERN.matcher(value);
         if (!rangeMatcher.matches()) {
@@ -65,10 +64,8 @@ public final class NumericalValueRange extends NumericalValue {
 
         // split parameter at '~' sign and parse boundaries individually
         String[] numbers = value.split("~");
-        final SingleNumericalValue minVal = SingleNumericalValue
-                .parseSingleNumericValue(numbers[0]);
-        final SingleNumericalValue maxVal = SingleNumericalValue
-                .parseSingleNumericValue(numbers[1]);
+        final SingleNumericalValue minVal = SingleNumericalValue.parseSingleNumericValue(numbers[0]);
+        final SingleNumericalValue maxVal = SingleNumericalValue.parseSingleNumericValue(numbers[1]);
         if (minVal == null || maxVal == null)
             return null;// not possible, format checked by rangeMatcher
         min = minVal.getValue();
@@ -81,9 +78,8 @@ public final class NumericalValueRange extends NumericalValue {
     /**
      * The private constructor for {@link NumericalValueRange} objects.
      * <p>
-     * This method has a limited visibility to make sure that {@link #min} &le;
-     * {@link #max} is always true, by forcing users to rely on
-     * {@link #create(int, int)}.
+     * This method has a limited visibility to make sure that {@link #min} &le; {@link #max} is always true,
+     * by forcing users to rely on {@link #create(int, int)}.
      * 
      * @param min
      *            the lower boundary of the specified interval
@@ -126,9 +122,9 @@ public final class NumericalValueRange extends NumericalValue {
     @Override
     public boolean contains(final Object value) {
         if (value instanceof NumericalValue)
-            return contains((NumericalValue) value);
+            return contains((NumericalValue)value);
         if (value instanceof Integer)
-            return contains((int) ((Integer) value));
+            return contains((int)((Integer)value));
         return false;
     }
 
@@ -138,14 +134,13 @@ public final class NumericalValueRange extends NumericalValue {
      * 
      * @param value
      *            the {@link NumericalValue} to check
-     * @return <code>true</code> if the value is complete contained,
-     *         <code>false</code> if it is not
+     * @return <code>true</code> if the value is complete contained, <code>false</code> if it is not
      */
     public boolean contains(final NumericalValue value) {
         if (value instanceof SingleNumericalValue)
-            return contains((SingleNumericalValue) value);
+            return contains((SingleNumericalValue)value);
         if (value instanceof NumericalValueRange)
-            return contains((NumericalValueRange) value);
+            return contains((NumericalValueRange)value);
         return false;
     }
 
@@ -155,8 +150,7 @@ public final class NumericalValueRange extends NumericalValue {
      * 
      * @param range
      *            the {@link NumericalValueRange} to check
-     * @return <code>true</code> if the value is complete contained,
-     *         <code>false</code> if it is not
+     * @return <code>true</code> if the value is complete contained, <code>false</code> if it is not
      */
     public boolean contains(final NumericalValueRange range) {
         if (range == null)
@@ -172,8 +166,7 @@ public final class NumericalValueRange extends NumericalValue {
      * 
      * @param value
      *            the {@link SingleNumericalValue} to check
-     * @return <code>true</code> if the value is complete contained,
-     *         <code>false</code> if it is not
+     * @return <code>true</code> if the value is complete contained, <code>false</code> if it is not
      */
     public boolean contains(final SingleNumericalValue value) {
         if (value == null)

@@ -5,8 +5,8 @@ import java.nio.ByteBuffer;
 import org.jscsi.target.storage.AbstractStorageModule;
 
 /**
- * This abstract class represents Command Descriptor Blocks for the
- * <code>READ</code> and <code>WRITE</code> SCSI commands. This grouping makes
+ * This abstract class represents Command Descriptor Blocks for the <code>READ</code> and <code>WRITE</code>
+ * SCSI commands. This grouping makes
  * sense, since, apart from the different values of the OPERATION CODE field,
  * Read and Write CDBs are identical.
  * 
@@ -43,8 +43,7 @@ public abstract class ReadOrWriteCdb extends CommandDescriptorBlock {
      *            the {@link ByteBuffer} containing the CDB
      * @return value of the {@link #logicalBlockAddress} field
      */
-    protected abstract long deserializeLogicalBlockAddress(
-            final ByteBuffer buffer);
+    protected abstract long deserializeLogicalBlockAddress(final ByteBuffer buffer);
 
     /**
      * Deserializes the value of the {@link #transferLength} field.
@@ -74,29 +73,24 @@ public abstract class ReadOrWriteCdb extends CommandDescriptorBlock {
     }
 
     /**
-     * Returns the index position of the first byte used for encoding the
-     * {@link #logicalBlockAddress} field.
+     * Returns the index position of the first byte used for encoding the {@link #logicalBlockAddress} field.
      * 
-     * @return the index position of the first byte used for encoding the
-     *         {@link #logicalBlockAddress} field
+     * @return the index position of the first byte used for encoding the {@link #logicalBlockAddress} field
      */
     protected abstract int getLogicalBlockAddressFieldIndex();
 
     /**
-     * Returns the index position of the first byte used for encoding the
-     * {@link #transferLength} field.
+     * Returns the index position of the first byte used for encoding the {@link #transferLength} field.
      * 
-     * @return the index position of the first byte used for encoding the
-     *         {@link #transferLength} field
+     * @return the index position of the first byte used for encoding the {@link #transferLength} field
      */
     protected abstract int getTransferLengthFieldIndex();
 
     /**
-     * This method is used for signaling an illegal value of the
-     * {@link #logicalBlockAddress} variable.
+     * This method is used for signaling an illegal value of the {@link #logicalBlockAddress} variable.
      * <p>
-     * This method must be called if the {@link #logicalBlockAddress} lies
-     * outside the bounds of the used medium.
+     * This method must be called if the {@link #logicalBlockAddress} lies outside the bounds of the used
+     * medium.
      * 
      * @see #getIllegalFieldPointers()
      * @see AbstractStorageModule#checkBounds(long, int)
@@ -106,11 +100,10 @@ public abstract class ReadOrWriteCdb extends CommandDescriptorBlock {
     }
 
     /**
-     * This method is used for signaling an illegal value of the
-     * {@link #transferLength} variable.
+     * This method is used for signaling an illegal value of the {@link #transferLength} variable.
      * <p>
-     * This method must be called if the {@link #transferLength} field value
-     * would result in accessing of out-of-bounds blocks of the storage medium.
+     * This method must be called if the {@link #transferLength} field value would result in accessing of
+     * out-of-bounds blocks of the storage medium.
      * 
      * @see #getIllegalFieldPointers()
      * @see AbstractStorageModule#checkBounds(long, int)

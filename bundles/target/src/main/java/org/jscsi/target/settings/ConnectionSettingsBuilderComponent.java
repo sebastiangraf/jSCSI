@@ -6,15 +6,12 @@ import javax.naming.OperationNotSupportedException;
 
 /**
  * Instances of {@link ConnectionSettingsBuilderComponent} are used jointly with
- * instances of {@link SessionSettingsBuilderComponent} for creating
- * {@link Settings} objects.
+ * instances of {@link SessionSettingsBuilderComponent} for creating {@link Settings} objects.
  * <p>
- * {@link ConnectionSettingsBuilderComponent} objects provide all
- * connection-specific parameters managed by the connection's
- * {@link ConnectionSettingsNegotiator}.
+ * {@link ConnectionSettingsBuilderComponent} objects provide all connection-specific parameters managed by
+ * the connection's {@link ConnectionSettingsNegotiator}.
  * 
- * @see Settings#Settings(ConnectionSettingsBuilderComponent,
- *      SessionSettingsBuilderComponent)
+ * @see Settings#Settings(ConnectionSettingsBuilderComponent, SessionSettingsBuilderComponent)
  * @author Andreas Ergenzinger
  */
 final class ConnectionSettingsBuilderComponent {
@@ -23,7 +20,7 @@ final class ConnectionSettingsBuilderComponent {
      * The <code>TargetName</code> parameter.
      */
     String targetName;
-    
+
     /**
      * The <code>DataDigest</code> parameter.
      */
@@ -58,36 +55,27 @@ final class ConnectionSettingsBuilderComponent {
      * The <code>OFMarkInt</code> parameter.
      */
     Integer ofMarkInt;
-    
+
     /**
-     * The {@link ConnectionSettingsBuilderComponent} constructor. The passed
-     * {@link Collection} must contain all connection-specific {@link Entry}
-     * objects, since the constructor will try to locate a specific
+     * The {@link ConnectionSettingsBuilderComponent} constructor. The passed {@link Collection} must contain
+     * all connection-specific {@link Entry} objects, since the constructor will try to locate a specific
      * {@link Entry} for each member variable and copy its current value.
      * 
      * @param entries
-     *            a {@link Collection} containing all connection-specific
-     *            {@link Entry} objects
+     *            a {@link Collection} containing all connection-specific {@link Entry} objects
      */
     ConnectionSettingsBuilderComponent(final Collection<Entry> entries) {
         try {
-            targetName = SettingsNegotiator.getEntry(TextKeyword.TARGET_NAME, 
-                    entries).getStringValue();
-            dataDigest = SettingsNegotiator.getEntry(TextKeyword.DATA_DIGEST,
-                    entries).getStringValue();
-            headerDigest = SettingsNegotiator.getEntry(
-                    TextKeyword.HEADER_DIGEST, entries).getStringValue();
-            ifMarker = SettingsNegotiator.getEntry(TextKeyword.IF_MARKER,
-                    entries).getBooleanValue();
-            ifMarkInt = SettingsNegotiator.getEntry(TextKeyword.IF_MARK_INT,
-                    entries).getIntegerValue();
-            maxRecvDataSegmentLength = SettingsNegotiator.getEntry(
-                    TextKeyword.MAX_RECV_DATA_SEGMENT_LENGTH, entries)
+            targetName = SettingsNegotiator.getEntry(TextKeyword.TARGET_NAME, entries).getStringValue();
+            dataDigest = SettingsNegotiator.getEntry(TextKeyword.DATA_DIGEST, entries).getStringValue();
+            headerDigest = SettingsNegotiator.getEntry(TextKeyword.HEADER_DIGEST, entries).getStringValue();
+            ifMarker = SettingsNegotiator.getEntry(TextKeyword.IF_MARKER, entries).getBooleanValue();
+            ifMarkInt = SettingsNegotiator.getEntry(TextKeyword.IF_MARK_INT, entries).getIntegerValue();
+            maxRecvDataSegmentLength =
+                SettingsNegotiator.getEntry(TextKeyword.MAX_RECV_DATA_SEGMENT_LENGTH, entries)
                     .getIntegerValue();
-            ofMarker = SettingsNegotiator.getEntry(TextKeyword.OF_MARKER,
-                    entries).getBooleanValue();
-            ofMarkInt = SettingsNegotiator.getEntry(TextKeyword.OF_MARK_INT,
-                    entries).getIntegerValue();
+            ofMarker = SettingsNegotiator.getEntry(TextKeyword.OF_MARKER, entries).getBooleanValue();
+            ofMarkInt = SettingsNegotiator.getEntry(TextKeyword.OF_MARK_INT, entries).getIntegerValue();
         } catch (OperationNotSupportedException e) {
             e.printStackTrace();
         }

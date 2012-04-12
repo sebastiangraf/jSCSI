@@ -4,23 +4,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * An abstract parent class to {@link SingleNumericalValue} and
- * {@link NumericalValueRange}. Objects of these two classes represent single
+ * An abstract parent class to {@link SingleNumericalValue} and {@link NumericalValueRange}. Objects of these
+ * two classes represent single
  * integers and integer intervals, respectively, and can be parsed from any
  * properly formatted <i>key=value</i> pair <i>value</i>, be they formatted in
  * decimal, hexadecimal, or Base64 notation.
  * <p>
- * Instances of {@link NumericalValue} can be intersected, i.e. that by using
- * either the {@link #intersect(NumericalValue)} or the
- * {@link #intersect(NumericalValue, NumericalValue)}, a {@link NumericalValue}
- * can be created which encompasses all integers that are part of the range of
- * values represented by the intersected {@link NumericalValue} objects.
+ * Instances of {@link NumericalValue} can be intersected, i.e. that by using either the
+ * {@link #intersect(NumericalValue)} or the {@link #intersect(NumericalValue, NumericalValue)}, a
+ * {@link NumericalValue} can be created which encompasses all integers that are part of the range of values
+ * represented by the intersected {@link NumericalValue} objects.
  * <p>
- * For example, if the interval [1,10] is intersected with the interval [5,15],
- * the result would be a {@link NumericalValueRange} representing the interval
- * [5,10]. Intersecting an interval with a single number would return the
- * number, but only if the number is part of the interval. Generally, both
- * methods return <code>null</code> if there is no overlap.
+ * For example, if the interval [1,10] is intersected with the interval [5,15], the result would be a
+ * {@link NumericalValueRange} representing the interval [5,10]. Intersecting an interval with a single number
+ * would return the number, but only if the number is part of the interval. Generally, both methods return
+ * <code>null</code> if there is no overlap.
  * 
  * @author Andreas Ergenzinger
  */
@@ -41,41 +39,36 @@ public abstract class NumericalValue {
      * Regular expression for Base64 integers.
      */
     private static final String BASE_64_REGEX = "0[b|B][0-9a-zA-Z+/]+";
-    private static final String SINGLE_CONSTANT_REGEX = DECIMAL_REGEX + "|"
-            + HEX_REGEX + "|" + BASE_64_REGEX;
+    private static final String SINGLE_CONSTANT_REGEX = DECIMAL_REGEX + "|" + HEX_REGEX + "|" + BASE_64_REGEX;
 
     // *** single number patterns ***
     /**
      * A precompiled pattern for matching decimal integer {@link String}.
      */
-    public static final Pattern DECIMAL_CONSTANT_PATTERN = Pattern
-            .compile(DECIMAL_REGEX);
+    public static final Pattern DECIMAL_CONSTANT_PATTERN = Pattern.compile(DECIMAL_REGEX);
 
     /**
      * A precompiled pattern for matching hexadecimal integer {@link String}.
      */
-    public static final Pattern HEX_CONSTANT_PATTERN = Pattern
-            .compile(HEX_REGEX);
+    public static final Pattern HEX_CONSTANT_PATTERN = Pattern.compile(HEX_REGEX);
 
     /**
      * A precompiled pattern for matching Base64 integer {@link String}.
      */
-    public static final Pattern BASE_64_CONSTANT_PATTERN = Pattern
-            .compile(BASE_64_REGEX);
+    public static final Pattern BASE_64_CONSTANT_PATTERN = Pattern.compile(BASE_64_REGEX);
 
     /**
      * A precompiled pattern for matching decimal, hexadecimal, and Base64
      * integer {@link String}.
      */
-    public static final Pattern SINGLE_CONSTANT_PATTERN = Pattern
-            .compile(SINGLE_CONSTANT_REGEX);
+    public static final Pattern SINGLE_CONSTANT_PATTERN = Pattern.compile(SINGLE_CONSTANT_REGEX);
 
     /**
      * A precompiled pattern for matching decimal, hexadecimal, and Base64
      * integer interval {@link String} (two integers separated by '~').
      */
-    public static final Pattern NUMERICAL_RANGE_PATTERN = Pattern.compile("("
-            + SINGLE_CONSTANT_REGEX + ")~(" + SINGLE_CONSTANT_REGEX + ")");
+    public static final Pattern NUMERICAL_RANGE_PATTERN = Pattern.compile("(" + SINGLE_CONSTANT_REGEX + ")~("
+        + SINGLE_CONSTANT_REGEX + ")");
 
     // *** methods ***
 
@@ -90,8 +83,7 @@ public abstract class NumericalValue {
      */
     public static final NumericalValue parseNumericalValue(final String value) {
         // return SingleNumericalValue ...
-        final Matcher singleValueMatcher = SINGLE_CONSTANT_PATTERN
-                .matcher(value);
+        final Matcher singleValueMatcher = SINGLE_CONSTANT_PATTERN.matcher(value);
         if (singleValueMatcher.matches())
             return SingleNumericalValue.parseSingleNumericValue(value);
         // ... NumericalValueRange ...
@@ -103,13 +95,12 @@ public abstract class NumericalValue {
     }
 
     /**
-     * Returns a {@link NumericalValue} spanning the overlap of this
-     * {@link NumericalValue} and the parameter.
+     * Returns a {@link NumericalValue} spanning the overlap of this {@link NumericalValue} and the parameter.
      * 
      * @param value
      *            the {@link NumericalValue} to be intersected with this object
-     * @return a {@link NumericalValue} representing the intersection of this
-     *         {@link NumericalValue} with the parameter
+     * @return a {@link NumericalValue} representing the intersection of this {@link NumericalValue} with the
+     *         parameter
      */
     public NumericalValue intersect(final NumericalValue value) {
         return intersect(this, value);
@@ -126,28 +117,27 @@ public abstract class NumericalValue {
      * @return a {@link NumericalValue} representing the intersection of the two
      *         parameters
      */
-    public static NumericalValue intersect(final NumericalValue a,
-            final NumericalValue b) {
+    public static NumericalValue intersect(final NumericalValue a, final NumericalValue b) {
         // early exit
         if (a == null || b == null)
             return null;
         // get ranges of a and b
         int aMin, aMax, bMin, bMax;
         if (a instanceof SingleNumericalValue) {
-            final SingleNumericalValue v = (SingleNumericalValue) a;
+            final SingleNumericalValue v = (SingleNumericalValue)a;
             aMin = v.getValue();
             aMax = aMin;
         } else {
-            final NumericalValueRange r = (NumericalValueRange) a;
+            final NumericalValueRange r = (NumericalValueRange)a;
             aMin = r.getMin();
             aMax = r.getMax();
         }
         if (b instanceof SingleNumericalValue) {
-            final SingleNumericalValue v = (SingleNumericalValue) b;
+            final SingleNumericalValue v = (SingleNumericalValue)b;
             bMin = v.getValue();
             bMax = bMin;
         } else {
-            final NumericalValueRange r = (NumericalValueRange) b;
+            final NumericalValueRange r = (NumericalValueRange)b;
             bMin = r.getMin();
             bMax = r.getMax();
         }
@@ -162,14 +152,13 @@ public abstract class NumericalValue {
 
     /**
      * Returns true if the passed {@link Integer} or {@link NumericalValue} lies
-     * completely inside the interval represented by this {@link NumericalValue}
-     * . If the parameter is not an {@link Integer} or a {@link NumericalValue},
+     * completely inside the interval represented by this {@link NumericalValue} . If the parameter is not an
+     * {@link Integer} or a {@link NumericalValue},
      * the method will return <code>false</code>.
      * 
      * @param value
      *            the {@link Integer} or {@link NumericalValue} to check
-     * @return <code>true</code> if the value is complete contained,
-     *         <code>false</code> if it is not
+     * @return <code>true</code> if the value is complete contained, <code>false</code> if it is not
      */
     public abstract boolean contains(Object value);
 
@@ -179,8 +168,7 @@ public abstract class NumericalValue {
      * 
      * @param value
      *            the integer to check
-     * @return <code>true</code> if the value is complete contained,
-     *         <code>false</code> if it is not
+     * @return <code>true</code> if the value is complete contained, <code>false</code> if it is not
      */
     public abstract boolean contains(int value);
 }

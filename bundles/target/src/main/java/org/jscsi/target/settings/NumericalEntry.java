@@ -5,21 +5,18 @@ import org.jscsi.target.TargetServer;
 /**
  * An {@link Entry} sub-class for boolean parameters.
  * <p>
- * During text parameter negotiation, numerical parameters are negotiated by
- * sending a single integer <i>value</i> as part of a <i>key=value</i> pair.
- * Based on the values permitted for the specific <i>key</i> (
- * {@link #protocolValueRange}), the {@link #resultFunction} and the
- * {@link #negotiationValue}, the jSCSI Target will choose a single value as the
- * negotiation outcome.
+ * During text parameter negotiation, numerical parameters are negotiated by sending a single integer
+ * <i>value</i> as part of a <i>key=value</i> pair. Based on the values permitted for the specific <i>key</i>
+ * ( {@link #protocolValueRange}), the {@link #resultFunction} and the {@link #negotiationValue}, the jSCSI
+ * Target will choose a single value as the negotiation outcome.
  * <p>
- * For declared parameters this process is less complex, any proposed value from
- * the {@link #protocolValueRange} will be silently accepted.
+ * For declared parameters this process is less complex, any proposed value from the
+ * {@link #protocolValueRange} will be silently accepted.
  * <p>
- * Please note the difference between numerical values and numerical range
- * values (see {@link NumericalRangeEntry}).
+ * Please note the difference between numerical values and numerical range values (see
+ * {@link NumericalRangeEntry}).
  * <p>
- * The default or negotiated value can be accessed via the
- * {@link #getIntegerValue()} method.
+ * The default or negotiated value can be accessed via the {@link #getIntegerValue()} method.
  * 
  * @see Entry
  * @author Andreas Ergenzinger
@@ -43,10 +40,10 @@ public final class NumericalEntry extends Entry {
     private final NumericalResultFunction resultFunction;
 
     /**
-     * <code>true</code> means that a {@link #negotiationValue} of
-     * <code>0</code> allows the jSCSI Target to choose any value from the
-     * resulting range. <code>false</code> means that {@link #negotiationValue}
-     * must always be treated as an upper or lower boundary.
+     * <code>true</code> means that a {@link #negotiationValue} of <code>0</code> allows the jSCSI Target to
+     * choose any value from the
+     * resulting range. <code>false</code> means that {@link #negotiationValue} must always be treated as an
+     * upper or lower boundary.
      */
     private final boolean zeroMeansDontCare;
 
@@ -74,18 +71,15 @@ public final class NumericalEntry extends Entry {
      * @param defaultValue
      *            the default value or <code>null</code>
      * @param zeroMeansDontCare
-     *            if <code>true</code> and <i>negotiationValue</i> equals
-     *            <code>0</code> then <i>negotiationValue</i> does not serve as
+     *            if <code>true</code> and <i>negotiationValue</i> equals <code>0</code> then
+     *            <i>negotiationValue</i> does not serve as
      *            an upper or lower boundary to the values the jSCSI Target will
      *            accept
      */
-    public NumericalEntry(final KeySet keySet,
-            final NegotiationType negotiationType, final Use use,
-            final NegotiationStatus negotiationStatus,
-            final int negotiationValue,
-            final NumericalValueRange protocolValueRange,
-            final NumericalResultFunction resultFunction,
-            final Integer defaultValue, final boolean zeroMeansDontCare) {
+    public NumericalEntry(final KeySet keySet, final NegotiationType negotiationType, final Use use,
+        final NegotiationStatus negotiationStatus, final int negotiationValue,
+        final NumericalValueRange protocolValueRange, final NumericalResultFunction resultFunction,
+        final Integer defaultValue, final boolean zeroMeansDontCare) {
         super(keySet, negotiationType, use, negotiationStatus, defaultValue);
         this.protocolValueRange = protocolValueRange;
         this.negotiationValue = negotiationValue;
@@ -96,7 +90,7 @@ public final class NumericalEntry extends Entry {
     @Override
     protected boolean inProtocolValueRange(final Object values) {
         // receives an Integer
-        final int val = (Integer) values;
+        final int val = (Integer)values;
         if (zeroMeansDontCare && val == 0)// val might not lie inside reg.
                                           // interval
             return true;
@@ -112,7 +106,7 @@ public final class NumericalEntry extends Entry {
     @Override
     protected void processDeclaration(final Object values) {
         // receives an Integer
-        final int val = (Integer) values;
+        final int val = (Integer)values;
         if (zeroMeansDontCare && val == 0)// pick value desired by target
             value = negotiationValue;
         else
@@ -122,7 +116,7 @@ public final class NumericalEntry extends Entry {
     @Override
     protected String processNegotiation(final Object values) {
         // receives an Integer
-        final int val = (Integer) values;
+        final int val = (Integer)values;
         if (zeroMeansDontCare && val == 0)// pick value desired by target
             value = negotiationValue;
         else
@@ -133,14 +127,14 @@ public final class NumericalEntry extends Entry {
 
     @Override
     public Integer getIntegerValue() {
-        return (Integer) value;
+        return (Integer)value;
     }
 
     @Override
     public Entry copy() {
-        final NumericalEntry e = new NumericalEntry(keySet, negotiationType,
-                use, negotiationStatus, negotiationValue, protocolValueRange,
-                resultFunction, (Integer) value, zeroMeansDontCare);
+        final NumericalEntry e =
+            new NumericalEntry(keySet, negotiationType, use, negotiationStatus, negotiationValue,
+                protocolValueRange, resultFunction, (Integer)value, zeroMeansDontCare);
         e.alreadyNegotiated = this.alreadyNegotiated;
         return e;
     }
