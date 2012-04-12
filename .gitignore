@@ -3,5 +3,6 @@
 .project
 .classpath
 storage.dat
-target
+/target
+
 
