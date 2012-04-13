@@ -48,7 +48,7 @@ public class Configuration {
     private static final String ALLOW_SLOPPY_NEGOTIATION_ELEMENT_NAME = "AllowSloppyNegotiation";
     private static final String PORT_ELEMENT_NAME = "Port";
 
-    protected List<TargetInfo> targets;
+    private List<TargetInfo> targets;
 
     /**
      * The <code>TargetAddress</code> parameter (the jSCSI Target's IP address).
@@ -63,7 +63,7 @@ public class Configuration {
      * The default port number is 3260. This value may be overridden by specifying a different value in the
      * configuration file.
      */
-    protected int port;
+    private int port;
 
     /**
      * This variable toggles the strictness with which the parameters <code>IFMarkInt</code> and
@@ -76,8 +76,8 @@ public class Configuration {
      * consequences by setting {@link #allowSloppyNegotiation} to <code>true</code> in the configuration file.
      * The default is <code>false</code>.
      */
-    protected boolean allowSloppyNegotiation;// TODO fix in jSCSI Initiator and
-                                             // remove
+    private boolean allowSloppyNegotiation;// TODO fix in jSCSI Initiator and
+                                           // remove
 
     /**
      * The <code>TargetPortalGroupTag</code> parameter.
@@ -113,6 +113,12 @@ public class Configuration {
      */
     private final int maxRecvTextPduSequenceLength = 4;
 
+    public Configuration() throws IOException {
+        port = 3260;
+        targetAddress = InetAddress.getLocalHost().getHostAddress();
+        targets = new ArrayList<TargetInfo>();
+    }
+
     public int getInMaxRecvTextPduSequenceLength() {
         return maxRecvTextPduSequenceLength;
     }
@@ -125,16 +131,8 @@ public class Configuration {
         return targetAddress;
     }
 
-    public void setPort(int port) {
-        this.port = port;
-    }
-
     public int getPort() {
         return port;
-    }
-
-    public void setAllowSloppyNegotiation(boolean allowSloppyNegotiation) {
-        this.allowSloppyNegotiation = allowSloppyNegotiation;
     }
 
     public boolean getAllowSloppyNegotiation() {
@@ -149,12 +147,6 @@ public class Configuration {
         return logicalUnitNumber;
     }
 
-    public Configuration() throws IOException {
-        port = 3260;
-        targetAddress = InetAddress.getLocalHost().getHostAddress();
-        targets = new ArrayList<TargetInfo>();
-    }
-
     /**
      * Reads the given configuration file in memory and creates a DOM
      * representation.
@@ -167,7 +159,7 @@ public class Configuration {
      * @throws IOException
      *             If any IO errors occur.
      */
-    protected Document parse(final File schemaLocation, final File configFile) throws SAXException,
+    private Document parse(final File schemaLocation, final File configFile) throws SAXException,
         ParserConfigurationException, IOException {
 
         final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -289,19 +281,19 @@ public class Configuration {
 
         // port
         if (root.getElementsByTagName(PORT_ELEMENT_NAME).getLength() > 0)
-            returnConfiguration.setPort(Integer.parseInt(root.getElementsByTagName(PORT_ELEMENT_NAME).item(0)
-                .getTextContent()));
+            returnConfiguration.port =
+                Integer.parseInt(root.getElementsByTagName(PORT_ELEMENT_NAME).item(0).getTextContent());
         else
-            returnConfiguration.setPort(3260);
+            returnConfiguration.port = 3260;
 
         // support sloppy text parameter negotiation (i.e. the jSCSI Initiator)?
         final Node allowSloppyNegotiationNode =
             root.getElementsByTagName(ALLOW_SLOPPY_NEGOTIATION_ELEMENT_NAME).item(0);
         if (allowSloppyNegotiationNode == null)
-            returnConfiguration.setAllowSloppyNegotiation(false);
+            returnConfiguration.allowSloppyNegotiation = false;
         else
-            returnConfiguration.setAllowSloppyNegotiation(Boolean.parseBoolean(allowSloppyNegotiationNode
-                .getTextContent()));
+            returnConfiguration.allowSloppyNegotiation =
+                Boolean.parseBoolean(allowSloppyNegotiationNode.getTextContent());
 
         return returnConfiguration;
     }
