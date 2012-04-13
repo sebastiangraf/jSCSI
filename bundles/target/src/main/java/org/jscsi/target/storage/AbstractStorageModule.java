@@ -24,23 +24,6 @@ public abstract class AbstractStorageModule {
     public static final int VIRTUAL_BLOCK_SIZE = 512;
 
     /**
-     * The size of the medium in blocks.
-     * 
-     * @see #VIRTUAL_BLOCK_SIZE
-     */
-    protected long sizeInBlocks;
-
-    /**
-     * The abstract constructor that makes sure that the {@link #sizeInBlocks} variable is initialized.
-     * 
-     * @param sizeInBlocks
-     *            the size of the medium in blocks
-     */
-    protected AbstractStorageModule(final long sizeInBlocks) {
-        this.sizeInBlocks = sizeInBlocks;
-    }
-
-    /**
      * The mode {@link String} parameter used during the instantiation of {@link #randomAccessFile}.
      * <p>
      * This will create a {@link RandomAccessFile} with both read and write privileges that will immediately

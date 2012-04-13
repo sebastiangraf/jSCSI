@@ -31,7 +31,9 @@ import org.jscsi.target.configuration.TargetInfo;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.scsi.inquiry.DeviceIdentificationVpdPage;
+import org.jscsi.target.storage.AbstractStorageModule;
 import org.jscsi.target.storage.IStorageModule;
+import org.jscsi.target.storage.RandomAccessStorageModule;
 import org.jscsi.target.storage.SynchronizedRandomAccessStorageModule;
 import org.xml.sax.SAXException;
 
@@ -132,7 +134,7 @@ public final class TargetServer {
                     }
 
                     final IStorageModule curStorageModule =
-                        SynchronizedRandomAccessStorageModule.open(storageFileInfo.getStorageFilePath());
+                        AbstractStorageModule.open(storageFileInfo.getStorageFilePath());
                     addStorageModule(storageFileInfo.getTargetName(), storageFileInfo.getTargetAlias(),
                         curStorageModule);
                     // print configuration and medium details

@@ -14,7 +14,14 @@ import java.io.RandomAccessFile;
  * @see java.io.RandomAccessFile
  * @author Andreas Ergenzinger
  */
-public class RandomAccessStorageModule extends AbstractStorageModule implements IStorageModule {
+public class RandomAccessStorageModule implements IStorageModule {
+
+    /**
+     * The size of the medium in blocks.
+     * 
+     * @see #VIRTUAL_BLOCK_SIZE
+     */
+    protected long sizeInBlocks;
 
     /**
      * The {@link RandomAccessFile} used for accessing the storage medium.
@@ -37,7 +44,7 @@ public class RandomAccessStorageModule extends AbstractStorageModule implements 
      */
     protected RandomAccessStorageModule(final long sizeInBlocks, final RandomAccessFile randomAccessFile)
         throws FileNotFoundException {
-        super(sizeInBlocks);
+        this.sizeInBlocks = sizeInBlocks;
         this.randomAccessFile = randomAccessFile;
     }
 
