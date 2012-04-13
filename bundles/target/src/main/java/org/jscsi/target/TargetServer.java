@@ -26,7 +26,6 @@ import org.jscsi.parser.login.ISID;
 import org.jscsi.parser.login.LoginRequestParser;
 import org.jscsi.target.configuration.StorageFileTargetInfo;
 import org.jscsi.target.configuration.TargetConfiguration;
-import org.jscsi.target.configuration.TargetConfigurationXMLParser;
 import org.jscsi.target.configuration.TargetInfo;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
@@ -221,7 +220,7 @@ public final class TargetServer {
      */
     private boolean readConfig() {
         try {
-            setConfig(new TargetConfigurationXMLParser().parseSettings());
+            setConfig(new TargetConfiguration().parseSettings());
         } catch (SAXException e) {
             LOGGER.fatal(e);
             return false;
