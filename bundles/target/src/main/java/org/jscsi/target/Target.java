@@ -1,6 +1,6 @@
 package org.jscsi.target;
 
-import org.jscsi.target.storage.AbstractStorageModule;
+import org.jscsi.target.storage.IStorageModule;
 
 /**
  * One Target exists per iSCSI named target. Holds onto the name and the AbstractStorageModule
@@ -12,11 +12,11 @@ import org.jscsi.target.storage.AbstractStorageModule;
  *         Copyright (C) 2009 iGeek, Inc. All Rights Reserved
  */
 public class Target {
-    private String targetName;
-    private String targetAlias;
-    private AbstractStorageModule storageModule;
+    private final String targetName;
+    private final String targetAlias;
+    private final IStorageModule storageModule;
 
-    public Target(String targetName, String targetAlias, AbstractStorageModule storageModule) {
+    public Target(String targetName, String targetAlias, IStorageModule storageModule) {
         this.targetName = targetName;
         this.targetAlias = targetAlias;
         this.storageModule = storageModule;
@@ -30,7 +30,7 @@ public class Target {
         return targetAlias;
     }
 
-    public AbstractStorageModule getStorageModule() {
+    public IStorageModule getStorageModule() {
         return storageModule;
     }
 

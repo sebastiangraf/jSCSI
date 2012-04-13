@@ -31,7 +31,7 @@ import org.jscsi.target.configuration.TargetInfo;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.scsi.inquiry.DeviceIdentificationVpdPage;
-import org.jscsi.target.storage.AbstractStorageModule;
+import org.jscsi.target.storage.IStorageModule;
 import org.jscsi.target.storage.SynchronizedRandomAccessStorageModule;
 import org.xml.sax.SAXException;
 
@@ -131,7 +131,7 @@ public final class TargetServer {
                             .getTargetLength());
                     }
 
-                    final AbstractStorageModule curStorageModule =
+                    final IStorageModule curStorageModule =
                         SynchronizedRandomAccessStorageModule.open(storageFileInfo.getStorageFilePath());
                     addStorageModule(storageFileInfo.getTargetName(), storageFileInfo.getTargetAlias(),
                         curStorageModule);
@@ -270,7 +270,7 @@ public final class TargetServer {
         return returnNames;
     }
 
-    public void addStorageModule(String targetName, String targetAlias, AbstractStorageModule storageModule) {
+    public void addStorageModule(String targetName, String targetAlias, IStorageModule storageModule) {
         Target addTarget = new Target(targetName, targetAlias, storageModule);
         synchronized (targets) {
             targets.put(targetName, addTarget);

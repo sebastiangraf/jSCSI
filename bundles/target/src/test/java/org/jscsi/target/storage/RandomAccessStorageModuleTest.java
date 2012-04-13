@@ -9,12 +9,12 @@ import java.io.RandomAccessFile;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.jscsi.target.storage.AbstractStorageModule.VIRTUAL_BLOCK_SIZE;
+
 public class RandomAccessStorageModuleTest {
 
     private static final String TEST_FILE_NAME = "storage_test_file.dat";
 
-    private static AbstractStorageModule module = null;
+    private static IStorageModule module = null;
 
     private static final int TEST_FILE_SIZE = 1024;
 

@@ -14,7 +14,7 @@ import java.io.RandomAccessFile;
  * @see java.io.RandomAccessFile
  * @author Andreas Ergenzinger
  */
-public class RandomAccessStorageModule extends AbstractStorageModule {
+public class RandomAccessStorageModule extends AbstractStorageModule implements IStorageModule {
 
     /**
      * The {@link RandomAccessFile} used for accessing the storage medium.
@@ -41,16 +41,42 @@ public class RandomAccessStorageModule extends AbstractStorageModule {
         this.randomAccessFile = randomAccessFile;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void read(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
         randomAccessFile.seek(storageIndex);
         randomAccessFile.read(bytes, bytesOffset, length);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void write(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
         randomAccessFile.seek(storageIndex);
         randomAccessFile.write(bytes, bytesOffset, length);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final long getSizeInBlocks() {
+        return sizeInBlocks;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final int checkBounds(final long logicalBlockAddress, final int transferLengthInBlocks) {
+        if (logicalBlockAddress < 0 || logicalBlockAddress >= sizeInBlocks)
+            return 1;
+        if (transferLengthInBlocks < 0 || logicalBlockAddress + transferLengthInBlocks > sizeInBlocks)
+            return 2;
+        return 0;
     }
 
     /**
@@ -59,7 +85,7 @@ public class RandomAccessStorageModule extends AbstractStorageModule {
      * @throws IOException
      *             if an I/O Error occurs
      */
-    public void close() throws IOException {
+    public final void close() throws IOException {
         randomAccessFile.close();
     }
 }
