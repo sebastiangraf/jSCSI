@@ -1,4 +1,4 @@
-package org.jscsi.target.settings;
+package org.jscsi.target.configuration;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.jscsi.target.settings.TextKeyword;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

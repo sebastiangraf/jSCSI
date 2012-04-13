@@ -1,4 +1,4 @@
-package org.jscsi.target.settings;
+package org.jscsi.target.configuration;
 
 /**
  * A TargetInfo is created from the config file for each Target element. It contains

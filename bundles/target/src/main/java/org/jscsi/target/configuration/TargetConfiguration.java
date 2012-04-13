@@ -1,4 +1,4 @@
-package org.jscsi.target.settings;
+package org.jscsi.target.configuration;
 
 import java.io.File;
 import java.io.IOException;
