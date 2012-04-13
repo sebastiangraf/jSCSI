@@ -1,5 +1,7 @@
 package org.jscsi.target.connection.stage.fullfeature;
 
+import static org.jscsi.target.storage.AbstractStorageModule.VIRTUAL_BLOCK_SIZE;
+
 import java.io.IOException;
 import java.security.DigestException;
 
@@ -87,7 +89,7 @@ public final class ModeSenseStage extends TargetFullFeatureStage {
                 new ModeParameterListBuilder(HeaderType.MODE_PARAMETER_HEADER_6);
             builder.setLogicalBlockDescriptors(new ShortLogicalBlockDescriptor(session.getStorageModule()
                 .getSizeInBlocks(),// numberOfLogicalBlocks
-                session.getStorageModule().getBlockSizeInBytes()));// logicalBlockLength
+                VIRTUAL_BLOCK_SIZE));// logicalBlockLength
             builder.setModePages(modePages);
             ModeParameterList modeParameterList = ModeParameterList.build(builder);
 

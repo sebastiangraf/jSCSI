@@ -18,6 +18,7 @@ import org.jscsi.target.scsi.cdb.Read6Cdb;
 import org.jscsi.target.scsi.cdb.ReadCdb;
 import org.jscsi.target.scsi.cdb.ScsiOperationCode;
 import org.jscsi.target.settings.SettingsException;
+import static org.jscsi.target.storage.AbstractStorageModule.VIRTUAL_BLOCK_SIZE;
 
 /**
  * A stage for processing <code>READ (6)</code> and <code>READ (10)</code> SCSI
@@ -81,13 +82,12 @@ public class ReadStage extends ReadOrWriteStage {
             return;
         }
 
-        final int blockSize = session.getStorageModule().getBlockSizeInBytes();
-        final int totalTransferLength = blockSize * cdb.getTransferLength();
-        final long storageOffset = blockSize * cdb.getLogicalBlockAddress();
+        final int totalTransferLength = VIRTUAL_BLOCK_SIZE * cdb.getTransferLength();
+        final long storageOffset = VIRTUAL_BLOCK_SIZE * cdb.getLogicalBlockAddress();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("cdb.getLogicalBlockAddress() = " + cdb.getLogicalBlockAddress());
-            LOGGER.debug("blockSize = " + blockSize);
+            LOGGER.debug("blockSize = " + VIRTUAL_BLOCK_SIZE);
             LOGGER.debug("totalTransferLength = " + totalTransferLength);
             LOGGER.debug("expectedDataSegmentLength = " + parser.getExpectedDataTransferLength());
         }
@@ -156,7 +156,8 @@ public class ReadStage extends ReadOrWriteStage {
         // get data and prepare data segment
         final int bytesRemaining = totalTransferLength - bytesSent;
         dataSegmentArray = connection.getDataInArray(bytesRemaining);
-        session.getStorageModule().read(dataSegmentArray, storageOffset + bytesSent);
+        session.getStorageModule().read(dataSegmentArray, 0, dataSegmentArray.length,
+            storageOffset + bytesSent);
         dataSegment = ByteBuffer.wrap(dataSegmentArray);
 
         // create and send PDU (with or without status)

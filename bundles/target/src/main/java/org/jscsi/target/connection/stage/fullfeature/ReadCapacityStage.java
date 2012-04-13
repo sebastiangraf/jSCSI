@@ -19,6 +19,7 @@ import org.jscsi.target.scsi.readCapacity.ReadCapacityParameterData;
 import org.jscsi.target.scsi.sense.AdditionalSenseCodeAndQualifier;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
 import org.jscsi.target.settings.SettingsException;
+import static org.jscsi.target.storage.AbstractStorageModule.VIRTUAL_BLOCK_SIZE;
 
 public final class ReadCapacityStage extends TargetFullFeatureStage {
 
@@ -82,10 +83,10 @@ public final class ReadCapacityStage extends TargetFullFeatureStage {
             ReadCapacityParameterData parameterData;
             if (cdb instanceof ReadCapacity10Cdb)
                 parameterData = new ReadCapacity10ParameterData(session.getStorageModule().getSizeInBlocks(),// returnedLogicalBlockAddress
-                    session.getStorageModule().getBlockSizeInBytes());// logicalBlockLengthInBytes
+                    VIRTUAL_BLOCK_SIZE);// logicalBlockLengthInBytes
             else
                 parameterData = new ReadCapacity16ParameterData(session.getStorageModule().getSizeInBlocks(),// returnedLogicalBlockAddress
-                    session.getStorageModule().getBlockSizeInBytes());// logicalBlockLengthInBytes
+                    VIRTUAL_BLOCK_SIZE);// logicalBlockLengthInBytes
 
             sendResponse(bhs.getInitiatorTaskTag(),// initiatorTaskTag,
                 parser.getExpectedDataTransferLength(),// expectedDataTransferLength,

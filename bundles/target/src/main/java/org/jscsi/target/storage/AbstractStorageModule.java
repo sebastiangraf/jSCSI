@@ -1,6 +1,9 @@
 package org.jscsi.target.storage;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import org.jscsi.target.scsi.cdb.CommandDescriptorBlock;
 
@@ -19,7 +22,7 @@ public abstract class AbstractStorageModule {
     /**
      * A fictitious block size.
      */
-    protected static final int VIRTUAL_BLOCK_SIZE = 512;
+    public static final int VIRTUAL_BLOCK_SIZE = 512;
 
     /**
      * The size of the medium in blocks.
@@ -36,15 +39,6 @@ public abstract class AbstractStorageModule {
      */
     protected AbstractStorageModule(final long sizeInBlocks) {
         this.sizeInBlocks = sizeInBlocks;
-    }
-
-    /**
-     * Returns the virtual storage block size in bytes.
-     * 
-     * @return the virtual storage block size in bytes
-     */
-    public final int getBlockSizeInBytes() {
-        return VIRTUAL_BLOCK_SIZE;
     }
 
     /**
@@ -73,17 +67,17 @@ public abstract class AbstractStorageModule {
     public abstract void read(byte[] bytes, int bytesOffset, int length, long storageIndex)
         throws IOException;
 
-    /**
-     * Copies bytes from storage to the passed byte array. <code>bytes.length</code> bytes will be copied.
-     * 
-     * @param bytes
-     *            the array into which the data will be copied
-     * @param storageIndex
-     *            he position of the first byte to be copied
-     */
-    public final void read(byte[] bytes, long storageIndex) throws IOException {
-        read(bytes, 0, bytes.length, storageIndex);
-    }
+    // /**
+    // * Copies bytes from storage to the passed byte array. <code>bytes.length</code> bytes will be copied.
+    // *
+    // * @param bytes
+    // * the array into which the data will be copied
+    // * @param storageIndex
+    // * he position of the first byte to be copied
+    // */
+    // public final void read(byte[] bytes, long storageIndex) throws IOException {
+    // read(bytes, 0, bytes.length, storageIndex);
+    // }
 
     /**
      * Saves part of the passed byte array's content.
@@ -100,6 +94,8 @@ public abstract class AbstractStorageModule {
      */
     public abstract void write(byte[] bytes, int bytesOffset, int length, long storageIndex)
         throws IOException;
+
+    public abstract void close() throws IOException;
 
     /**
      * Saves the whole content of the passed byte array.
@@ -236,6 +232,33 @@ public abstract class AbstractStorageModule {
                 sb.append(" bytes are not used");
         }
         return sb.toString();
+    }
+
+    /**
+     * The mode {@link String} parameter used during the instantiation of {@link #randomAccessFile}.
+     * <p>
+     * This will create a {@link RandomAccessFile} with both read and write privileges that will immediately
+     * save all written data in the file.
+     */
+    private static final String MODE = "rwd";
+
+    /**
+     * This is the build method for creating instances of {@link RandomAccessStorageModule}. If there is no
+     * file to be found at the
+     * specified <code>filePath</code>, then a {@link FileNotFoundException} will be thrown.
+     * 
+     * @param file
+     *            a path leading to the file serving as storage medium
+     * @return a new instance of {@link RandomAccessStorageModule}
+     * @throws FileNotFoundException
+     *             if the specified file does not exist
+     */
+    public static synchronized final AbstractStorageModule open(final File file) throws FileNotFoundException {
+        final long sizeInBlocks = file.length() / VIRTUAL_BLOCK_SIZE;
+        final RandomAccessFile randomAccessFile = new RandomAccessFile(file, MODE);// throws exc. if
+                                                                                   // !file.exists()
+
+        return new SynchronizedRandomAccessStorageModule(sizeInBlocks, randomAccessFile);
     }
 
 }

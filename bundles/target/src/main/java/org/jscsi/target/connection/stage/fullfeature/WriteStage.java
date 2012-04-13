@@ -22,6 +22,7 @@ import org.jscsi.target.scsi.cdb.Write6Cdb;
 import org.jscsi.target.scsi.cdb.WriteCdb;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.util.Debug;
+import static org.jscsi.target.storage.AbstractStorageModule.VIRTUAL_BLOCK_SIZE;
 
 /**
  * A stage for processing <code>WRITE (6)</code> and <code>WRITE (10)</code> SCSI commands.
@@ -97,9 +98,8 @@ public final class WriteStage extends ReadOrWriteStage {
         final long logicalBlockAddress = cdb.getLogicalBlockAddress();
 
         // transform to from block units to byte units
-        final int blockSize = session.getStorageModule().getBlockSizeInBytes();
-        final int transferLengthInBytes = transferLength * blockSize;
-        long storageIndex = logicalBlockAddress * blockSize;
+        final int transferLengthInBytes = transferLength * VIRTUAL_BLOCK_SIZE;
+        long storageIndex = logicalBlockAddress * VIRTUAL_BLOCK_SIZE;
 
         // check if requested blocks are out of bounds
         // (might add FPSKSD to the CDB's list to be detected in the next step)
