@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Instances of {@link TargetConfiguration} provides access target-wide
+ * Instances of {@link Configuration} provides access target-wide
  * parameters, variables that are the same across all sessions and connections
  * that do not change after initialization and which play a role during text
  * parameter negotiation. Some of these parameters are provided or can be
@@ -33,7 +33,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Andreas Ergenzinger, University of Konstanz
  */
-public class TargetConfiguration {
+public class Configuration {
 
     private static final String TARGET_LIST_ELEMENT_NAME = "TargetList"; // Name of node that contains list of
     // targets
@@ -149,7 +149,7 @@ public class TargetConfiguration {
         return logicalUnitNumber;
     }
 
-    public TargetConfiguration() throws IOException {
+    public Configuration() throws IOException {
         port = 3260;
         targetAddress = InetAddress.getLocalHost().getHostAddress();
         targets = new ArrayList<TargetInfo>();
@@ -265,7 +265,7 @@ public class TargetConfiguration {
         return parse(SCHEMA_FILE, CONFIGURATION_FILE);
     }
 
-    public TargetConfiguration parseSettings() throws SAXException, ParserConfigurationException, IOException {
+    public Configuration parseSettings() throws SAXException, ParserConfigurationException, IOException {
         return parseSettings(parse().getDocumentElement());
     }
 
@@ -275,9 +275,9 @@ public class TargetConfiguration {
      * @param root
      *            The root element of the configuration.
      */
-    public TargetConfiguration parseSettings(final Element root) throws IOException {
+    public Configuration parseSettings(final Element root) throws IOException {
         // TargetName
-        TargetConfiguration returnConfiguration = new TargetConfiguration();
+        Configuration returnConfiguration = new Configuration();
         Element targetListNode = (Element)root.getElementsByTagName(TARGET_LIST_ELEMENT_NAME).item(0);
         NodeList targetList = targetListNode.getElementsByTagName(TARGET_ELEMENT_NAME);
         for (int curTargetNum = 0; curTargetNum < targetList.getLength(); curTargetNum++) {

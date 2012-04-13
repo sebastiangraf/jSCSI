@@ -25,7 +25,7 @@ import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.ISID;
 import org.jscsi.parser.login.LoginRequestParser;
 import org.jscsi.target.configuration.StorageFileTargetInfo;
-import org.jscsi.target.configuration.TargetConfiguration;
+import org.jscsi.target.configuration.Configuration;
 import org.jscsi.target.configuration.TargetInfo;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
@@ -58,7 +58,7 @@ public final class TargetServer {
     /**
      * The jSCSI Target's global parameters.
      */
-    private TargetConfiguration config;
+    private Configuration config;
 
     /**
      * 
@@ -216,11 +216,11 @@ public final class TargetServer {
      * 
      * @return <code>true</code> if the target settings were read from the
      *         configuration file, <code>false</code> otherwise. {@see
-     *         TargetConfiguration}
+     *         Configuration}
      */
     private boolean readConfig() {
         try {
-            setConfig(new TargetConfiguration().parseSettings());
+            setConfig(new Configuration().parseSettings());
         } catch (SAXException e) {
             LOGGER.fatal(e);
             return false;
@@ -244,11 +244,11 @@ public final class TargetServer {
         sessions.remove(session);
     }
 
-    public TargetConfiguration getConfig() {
+    public Configuration getConfig() {
         return config;
     }
 
-    public void setConfig(TargetConfiguration config) {
+    public void setConfig(Configuration config) {
         this.config = config;
         deviceIdentificationVpdPage = new DeviceIdentificationVpdPage(this);
     }
