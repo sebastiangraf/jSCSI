@@ -2,6 +2,7 @@ package org.jscsi.target.connection.stage.login;
 
 import java.io.IOException;
 import java.security.DigestException;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -46,8 +47,8 @@ public final class LoginOperationalParameterNegotiationStage extends TargetLogin
         String keyValuePairProposal = receivePduSequence(pdu);
 
         // negotiate parameters, leave if unsuccessful
-        final Vector<String> requestKeyValuePairs = TextParameter.tokenizeKeyValuePairs(keyValuePairProposal);
-        final Vector<String> responseKeyValuePairs = new Vector<String>();
+        final List<String> requestKeyValuePairs = TextParameter.tokenizeKeyValuePairs(keyValuePairProposal);
+        final List<String> responseKeyValuePairs = new Vector<String>();
         if (!negotiator.negotiate(session.getTargetServer(), stageNumber, connection.isLeadingConnection(),
             ((TargetLoginPhase)targetPhase).getFirstPduAndSetToFalse(), requestKeyValuePairs,
             responseKeyValuePairs)) {

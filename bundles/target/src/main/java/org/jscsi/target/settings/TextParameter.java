@@ -2,6 +2,7 @@ package org.jscsi.target.settings;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,14 +19,14 @@ public final class TextParameter {
      * Returns the <i>key-value</i> pairs contained in a null
      * character-separated text data segment in an array of {@link String}s.
      * <p>
-     * If the parameter equals <code>null</code> an empty {@link Vector} will be returned.
+     * If the parameter equals <code>null</code> an empty {@link List} will be returned.
      * 
      * @param keyValuePairs
      *            a login request or text negotiation text data segment
      * @return a {@link Vector} of {@link String}s containing the purged key
      *         value pairs
      */
-    public static Vector<String> tokenizeKeyValuePairs(final String keyValuePairs) {
+    public static List<String> tokenizeKeyValuePairs(final String keyValuePairs) {
         final Vector<String> result = new Vector<String>();
         if (keyValuePairs == null)
             return result;

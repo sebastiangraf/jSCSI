@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2011, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,6 +26,7 @@
  */
 package org.jscsi.initiator.devices;
 
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
@@ -102,8 +103,7 @@ public class Raid1Device implements Device {
     public int getBlockSize() {
 
         if (blockSize == -1) {
-            throw new IllegalStateException(
-                    "You first have to open the Device!");
+            throw new IllegalStateException("You first have to open the Device!");
         }
 
         return blockSize;
@@ -123,8 +123,7 @@ public class Raid1Device implements Device {
     public long getBlockCount() {
 
         if (blockCount == -1) {
-            throw new IllegalStateException(
-                    "You first have to open the Device!");
+            throw new IllegalStateException("You first have to open the Device!");
         }
 
         return blockCount;
@@ -145,10 +144,9 @@ public class Raid1Device implements Device {
         blockSize = 0;
         for (Device device : devices) {
             if (blockSize == 0) {
-                blockSize = (int) device.getBlockSize();
-            } else if (blockSize != (int) device.getBlockSize()) {
-                throw new IllegalArgumentException(
-                        "All devices must have the same block size!");
+                blockSize = (int)device.getBlockSize();
+            } else if (blockSize != (int)device.getBlockSize()) {
+                throw new IllegalArgumentException("All devices must have the same block size!");
             }
         }
 
@@ -164,28 +162,25 @@ public class Raid1Device implements Device {
     public void read(final long address, final byte[] data) throws Exception {
 
         if (blockCount == -1) {
-            throw new IllegalStateException(
-                    "You first have to open the Device!");
+            throw new IllegalStateException("You first have to open the Device!");
         }
 
         int blocks = data.length / blockSize;
 
         if (address < 0 || address + blocks > blockCount) {
             long adr = address < 0 ? address : address + blocks - 1;
-            throw new IllegalArgumentException("Address " + adr
-                    + " out of range.");
+            throw new IllegalArgumentException("Address " + adr + " out of range.");
         }
 
         if (data.length % blockSize != 0) {
-            throw new IllegalArgumentException(
-                    "Number of bytes is not a multiple of the blocksize!");
+            throw new IllegalArgumentException("Number of bytes is not a multiple of the blocksize!");
         }
 
-        int parts = (blocks >= devices.length) ? devices.length : (int) blocks;
+        int parts = (blocks >= devices.length) ? devices.length : (int)blocks;
         barrier = new CyclicBarrier(parts + 1);
         int targetBlockCount;
-        Vector<byte[]> targetData = new Vector<byte[]>();
-        int targetBlockAddress = (int) address;
+        List<byte[]> targetData = new Vector<byte[]>();
+        int targetBlockAddress = (int)address;
 
         for (int i = 0; i < parts; i++) {
             targetBlockCount = blocks / devices.length;
@@ -196,8 +191,7 @@ public class Raid1Device implements Device {
 
             /** Start Thread to read Data from Target */
             if (targetBlockCount != 0) {
-                executor.execute(new ReadThread(devices[nextTarget],
-                        targetBlockAddress, targetData.get(i)));
+                executor.execute(new ReadThread(devices[nextTarget], targetBlockAddress, targetData.get(i)));
             }
             targetBlockAddress += targetBlockCount;
             nextTarget = (nextTarget < devices.length - 1) ? nextTarget + 1 : 0;
@@ -207,8 +201,7 @@ public class Raid1Device implements Device {
         /** Merge the results. */
         int pos = 0;
         for (int i = 0; i < targetData.size(); i++) {
-            System.arraycopy(targetData.get(i), 0, data, pos,
-                    targetData.get(i).length);
+            System.arraycopy(targetData.get(i), 0, data, pos, targetData.get(i).length);
             pos += targetData.get(i).length;
         }
     }
@@ -217,26 +210,23 @@ public class Raid1Device implements Device {
     public void write(final long address, final byte[] data) throws Exception {
 
         if (blockCount == -1) {
-            throw new IllegalStateException(
-                    "You first have to open the Device!");
+            throw new IllegalStateException("You first have to open the Device!");
         }
 
         long blocks = data.length / blockSize;
 
         if (address < 0 || address + blocks > blockCount) {
             long adr = address < 0 ? address : address + blocks - 1;
-            throw new IllegalArgumentException("Address " + adr
-                    + " out of range.");
+            throw new IllegalArgumentException("Address " + adr + " out of range.");
         }
 
         if (data.length % blockSize != 0) {
-            throw new IllegalArgumentException(
-                    "Number of bytes is not a multiple of the blocksize!");
+            throw new IllegalArgumentException("Number of bytes is not a multiple of the blocksize!");
         }
 
         barrier = new CyclicBarrier(devices.length + 1);
         for (int i = 0; i < devices.length; i++) {
-            executor.execute(new WriteThread(devices[i], (int) address, data));
+            executor.execute(new WriteThread(devices[i], (int)address, data));
         }
         barrier.await();
     }
@@ -255,8 +245,7 @@ public class Raid1Device implements Device {
 
         private final byte[] data;
 
-        private ReadThread(final Device readDevice, final int readBlockAddress,
-                final byte[] readData) {
+        private ReadThread(final Device readDevice, final int readBlockAddress, final byte[] readData) {
 
             device = readDevice;
             address = readBlockAddress;
@@ -288,8 +277,7 @@ public class Raid1Device implements Device {
 
         private final byte[] data;
 
-        private WriteThread(final Device writeDevice,
-                final int writeBlockAddress, final byte[] writeData) {
+        private WriteThread(final Device writeDevice, final int writeBlockAddress, final byte[] writeData) {
 
             device = writeDevice;
             address = writeBlockAddress;

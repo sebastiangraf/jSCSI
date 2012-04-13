@@ -1,5 +1,6 @@
 package org.jscsi.target.settings;
 
+import java.util.List;
 import java.util.Vector;
 
 import org.jscsi.parser.ProtocolDataUnit;
@@ -23,8 +24,8 @@ import org.jscsi.target.connection.TargetSession;
  * <ol>
  * <li>Call {@link #beginNegotiation()} until it returns <code>true</code>.</li>
  * <li>One or, if the initiator is using multiple PDU sequences, multiple calls of
- * {@link #negotiate(TargetServer, LoginStage, boolean, boolean, Vector, Vector)}. The method will return <code>false</code>
- * if there was a problem.</li>
+ * {@link #negotiate(TargetServer, LoginStage, boolean, boolean, Vector, Vector)}. The method will return
+ * <code>false</code> if there was a problem.</li>
  * <li>Call {@link #checkConstraints()} to check more complex requirements. The method will return
  * <code>false</code> if there was a problem.</li>
  * <li>Call {@link #finishNegotiation(boolean)} with the appropriate parameter. This step is mandatory.</li>
@@ -139,12 +140,12 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
      *         problem
      */
     public boolean negotiate(TargetServer target, final LoginStage loginStage,
-        final boolean leadingConnection, final boolean initialPdu, final Vector<String> requestKeyValuePairs,
-        final Vector<String> responseKeyValuePairs) {
+        final boolean leadingConnection, final boolean initialPdu, final List<String> requestKeyValuePairs,
+        final List<String> responseKeyValuePairs) {
 
         // split up key=value pairs from requester
-        final Vector<String> keys = new Vector<String>();
-        final Vector<String> values = new Vector<String>();
+        final List<String> keys = new Vector<String>();
+        final List<String> values = new Vector<String>();
         for (String keyValuePair : requestKeyValuePairs) {
             final String[] split = TextParameter.splitKeyValuePair(keyValuePair);
             if (split == null) {

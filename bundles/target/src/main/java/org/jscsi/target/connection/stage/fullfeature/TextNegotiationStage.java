@@ -3,6 +3,7 @@ package org.jscsi.target.connection.stage.fullfeature;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.DigestException;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -49,9 +50,9 @@ public final class TextNegotiationStage extends TargetFullFeatureStage {
         ByteBuffer replyDataSegment = null;// for later
 
         // tokenize key-value pairs
-        final Vector<String> requestKeyValuePairs = TextParameter.tokenizeKeyValuePairs(textRequest);
+        final List<String> requestKeyValuePairs = TextParameter.tokenizeKeyValuePairs(textRequest);
 
-        final Vector<String> responseKeyValuePairs = new Vector<String>();
+        final List<String> responseKeyValuePairs = new Vector<String>();
 
         // process SendTargets command
         if (requestKeyValuePairs != null) {

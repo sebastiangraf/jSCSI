@@ -2,6 +2,7 @@ package org.jscsi.target.connection.stage.login;
 
 import java.io.IOException;
 import java.security.DigestException;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -52,11 +53,11 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
             final String requestTextParameters = receivePduSequence(initialPdu);
 
             // split key-value pairs
-            final Vector<String> requestKeyValuePairs =
+            final List<String> requestKeyValuePairs =
                 TextParameter.tokenizeKeyValuePairs(requestTextParameters);
 
             // Vector for AuthMethod keys
-            final Vector<String> authMethodKeyValuePairs = new Vector<String>();
+            final List<String> authMethodKeyValuePairs = new Vector<String>();
 
             // log initiator's key-value pairs
             if (LOGGER.isDebugEnabled()) {
