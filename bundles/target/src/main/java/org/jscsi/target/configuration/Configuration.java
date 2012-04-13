@@ -48,7 +48,29 @@ public class Configuration {
     private static final String ALLOW_SLOPPY_NEGOTIATION_ELEMENT_NAME = "AllowSloppyNegotiation";
     private static final String PORT_ELEMENT_NAME = "Port";
 
-    private List<TargetInfo> targets;
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    /**
+     * The relative path (to the project) of the main directory of all
+     * configuration files.
+     */
+    private static final File CONFIG_DIR = new File(new StringBuilder("src").append(File.separator).append(
+        "main").append(File.separator).append("resources").append(File.separator).toString());
+
+    /**
+     * The file name of the XML Schema configuration file for the global
+     * settings.
+     */
+    private static final File CONFIGURATION_SCHEMA_FILE = new File(CONFIG_DIR, "jscsi-target.xsd");
+
+    /** The file name, which contains all global settings. */
+    private static final File CONFIGURATION_CONFIG_FILE = new File(CONFIG_DIR, "jscsi-target.xml");
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
+    private final List<TargetInfo> targets;
 
     /**
      * The <code>TargetAddress</code> parameter (the jSCSI Target's IP address).
@@ -147,6 +169,14 @@ public class Configuration {
         return logicalUnitNumber;
     }
 
+    public List<TargetInfo> getTargets() {
+        return targets;
+    }
+
+    public static final Configuration create() throws SAXException, ParserConfigurationException, IOException {
+        return create(CONFIGURATION_SCHEMA_FILE, CONFIGURATION_CONFIG_FILE);
+    }
+
     /**
      * Reads the given configuration file in memory and creates a DOM
      * representation.
@@ -159,9 +189,8 @@ public class Configuration {
      * @throws IOException
      *             If any IO errors occur.
      */
-    private Document parse(final File schemaLocation, final File configFile) throws SAXException,
-        ParserConfigurationException, IOException {
-
+    public static final Configuration create(final File schemaLocation, final File configFile)
+        throws SAXException, ParserConfigurationException, IOException {
         final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         final Schema schema = schemaFactory.newSchema(schemaLocation);
 
@@ -177,67 +206,18 @@ public class Configuration {
         final DOMResult result = new DOMResult();
 
         validator.validate(source, result);
-        return (Document)result.getNode();
-    }
+        Document root = (Document)result.getNode();
 
-    public TargetInfo[] getTargetInfo() {
-        synchronized (targets) {
-            TargetInfo[] returnInfo = new TargetInfo[targets.size()];
-            returnInfo = targets.toArray(returnInfo);
-            return returnInfo;
-        }
-    }
-
-    public void addTargetInfo(TargetInfo targetInfo) {
-        synchronized (targets) {
-            targets.add(targetInfo);
-        }
-    }
-
-    // --------------------------------------------------------------------------
-    // --------------------------------------------------------------------------
-
-    /**
-     * The relative path (to the project) of the main directory of all
-     * configuration files.
-     */
-    private static final File CONFIG_DIR = new File(new StringBuilder("src").append(File.separator).append(
-        "main").append(File.separator).append("resources").append(File.separator).toString());
-
-    /**
-     * The file name of the XML Schema configuration file for the global
-     * settings.
-     */
-    private static final File CONFIGURATION_SCHEMA_FILE = new File(CONFIG_DIR, "jscsi-target.xsd");
-
-    /** The file name, which contains all global settings. */
-    private static final File CONFIGURATION_CONFIG_FILE = new File(CONFIG_DIR, "jscsi-target.xml");
-
-    // --------------------------------------------------------------------------
-    // --------------------------------------------------------------------------
-
-    public Document parse() throws SAXException, ParserConfigurationException, IOException {
-        return parse(CONFIGURATION_SCHEMA_FILE, CONFIGURATION_CONFIG_FILE);
-    }
-
-    public Configuration parseSettings() throws SAXException, ParserConfigurationException, IOException {
-        return parseSettings(parse().getDocumentElement());
-    }
-
-    /**
-     * Parses all settings form the main configuration file.
-     * 
-     * @param root
-     *            The root element of the configuration.
-     */
-    public Configuration parseSettings(final Element root) throws IOException {
         // TargetName
         Configuration returnConfiguration = new Configuration();
         Element targetListNode = (Element)root.getElementsByTagName(TARGET_LIST_ELEMENT_NAME).item(0);
         NodeList targetList = targetListNode.getElementsByTagName(TARGET_ELEMENT_NAME);
         for (int curTargetNum = 0; curTargetNum < targetList.getLength(); curTargetNum++) {
             TargetInfo curTargetInfo = parseTargetElement((Element)targetList.item(curTargetNum));
-            returnConfiguration.addTargetInfo(curTargetInfo);
+            synchronized (returnConfiguration.targets) {
+                returnConfiguration.targets.add(curTargetInfo);
+            }
+
         }
 
         // else it is null
@@ -259,9 +239,10 @@ public class Configuration {
                 Boolean.parseBoolean(allowSloppyNegotiationNode.getTextContent());
 
         return returnConfiguration;
+
     }
 
-    public TargetInfo parseTargetElement(Element targetElement) {
+    private static final TargetInfo parseTargetElement(Element targetElement) {
         String targetName =
             targetElement.getElementsByTagName(TextKeyword.TARGET_NAME).item(0).getTextContent();
         // TargetAlias (optional)

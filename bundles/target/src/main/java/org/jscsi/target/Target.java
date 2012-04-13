@@ -3,7 +3,7 @@ package org.jscsi.target;
 import org.jscsi.target.storage.IStorageModule;
 
 /**
- * One Target exists per iSCSI named target. Holds onto the name and the AbstractStorageModule
+ * One Target exists per iSCSI named target. Holds onto the name and the {@link IStorageModule}
  * 
  * @author David L. Smith-Uchida
  * 

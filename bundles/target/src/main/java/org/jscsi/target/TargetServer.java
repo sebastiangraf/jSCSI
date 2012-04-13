@@ -11,6 +11,7 @@ import java.nio.channels.SocketChannel;
 import java.security.DigestException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,8 +25,8 @@ import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.ISID;
 import org.jscsi.parser.login.LoginRequestParser;
-import org.jscsi.target.configuration.StorageFileTargetInfo;
 import org.jscsi.target.configuration.Configuration;
+import org.jscsi.target.configuration.StorageFileTargetInfo;
 import org.jscsi.target.configuration.TargetInfo;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
@@ -120,7 +121,7 @@ public final class TargetServer {
         System.out.println("   port:           " + getConfig().getPort());
         // open the storage medium
         try {
-            TargetInfo[] targetInfo = getConfig().getTargetInfo();
+            List<TargetInfo> targetInfo = getConfig().getTargets();
             for (TargetInfo curTargetInfo : targetInfo) {
 
                 if (curTargetInfo instanceof StorageFileTargetInfo) {
@@ -220,7 +221,7 @@ public final class TargetServer {
      */
     private boolean readConfig() {
         try {
-            setConfig(new Configuration().parseSettings());
+            setConfig(Configuration.create());
         } catch (SAXException e) {
             LOGGER.fatal(e);
             return false;
