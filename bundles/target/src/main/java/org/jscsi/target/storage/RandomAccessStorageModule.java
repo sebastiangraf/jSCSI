@@ -2,8 +2,12 @@ package org.jscsi.target.storage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+
+import org.apache.log4j.Logger;
 
 /**
  * Instances of this class can be used for persistent storage of data. They are
@@ -16,6 +20,8 @@ import java.io.RandomAccessFile;
  * @author Andreas Ergenzinger
  */
 public class RandomAccessStorageModule implements IStorageModule {
+
+    private static final Logger LOGGER = Logger.getLogger(RandomAccessStorageModule.class);
 
     /**
      * The mode {@link String} parameter used during the instantiation of {@link #randomAccessFile}.
@@ -30,14 +36,17 @@ public class RandomAccessStorageModule implements IStorageModule {
      * 
      * @see #VIRTUAL_BLOCK_SIZE
      */
-    protected long sizeInBlocks;
+    protected final long sizeInBlocks;
 
     /**
      * The {@link RandomAccessFile} used for accessing the storage medium.
      * 
      * @see #MODE
      */
-    private RandomAccessFile randomAccessFile;
+    private final RandomAccessFile randomAccessFile;
+
+    /** Link to file. */
+    private final File file;
 
     /**
      * Creates a new {@link RandomAccessStorageModule} backed by the specified
@@ -48,13 +57,16 @@ public class RandomAccessStorageModule implements IStorageModule {
      *            blocksize for this module
      * @param randomAccessFile
      *            the path to the file serving as storage medium
+     * @param file
+     *            file to point to
      * @throws FileNotFoundException
      *             if the specified file does not exist
      */
-    protected RandomAccessStorageModule(final long sizeInBlocks, final RandomAccessFile randomAccessFile)
-        throws FileNotFoundException {
+    protected RandomAccessStorageModule(final long sizeInBlocks, final RandomAccessFile randomAccessFile,
+        final File file) throws FileNotFoundException {
         this.sizeInBlocks = sizeInBlocks;
         this.randomAccessFile = randomAccessFile;
+        this.file = file;
     }
 
     /**
@@ -112,15 +124,74 @@ public class RandomAccessStorageModule implements IStorageModule {
      * 
      * @param file
      *            a path leading to the file serving as storage medium
+     * @param storageLength
+     *            length of storage (if not already existing)
      * @return a new instance of {@link RandomAccessStorageModule}
-     * @throws FileNotFoundException
-     *             if the specified file does not exist
+     * @throws IOException
      */
-    public static synchronized final IStorageModule open(final File file) throws FileNotFoundException {
-        final long sizeInBlocks = file.length() / VIRTUAL_BLOCK_SIZE;
-        final RandomAccessFile randomAccessFile = new RandomAccessFile(file, MODE);// throws exc. if
-                                                                                   // !file.exists()
-
-        return new SynchronizedRandomAccessStorageModule(sizeInBlocks, randomAccessFile);
+    public static synchronized final IStorageModule open(final File file, final long storageLength)
+        throws IOException {
+        long sizeInBlocks;
+        RandomAccessFile randomAccessFile;
+        if (file.exists()) {
+            sizeInBlocks = file.length() / VIRTUAL_BLOCK_SIZE;
+        } else {
+            sizeInBlocks = storageLength / VIRTUAL_BLOCK_SIZE;
+            createStorageVolume(file, storageLength);
+        }
+        randomAccessFile = new RandomAccessFile(file, MODE);// throws exc. if
+        // !file.exists()
+        return new SynchronizedRandomAccessStorageModule(sizeInBlocks, randomAccessFile, file);
     }
+
+    public File getFile() {
+        return file;
+    }
+
+    /**
+     * Creating a new file if not existing at the path defined in the config.
+     * Note that it is advised to create the file beforehand.
+     * 
+     * @param pConf
+     *            configuration to be updated
+     * @return true if creation successful, false if file already exists.
+     * @throws IOException
+     *             if anything weird happens
+     */
+    private static synchronized boolean createStorageVolume(final File pToCreate, final long pLength)
+        throws IOException {
+        FileOutputStream outStream = null;
+        try {
+            final File parent = pToCreate.getCanonicalFile().getParentFile();
+            if (!parent.exists() && !parent.mkdirs()) {
+                throw new FileNotFoundException("Unable to create directory: " + parent.getAbsolutePath());
+            }
+            // if file exists, do not override it
+            if (pToCreate.exists()) {
+                return false;
+            }
+
+            pToCreate.createNewFile();
+            outStream = new FileOutputStream(pToCreate);
+            final FileChannel fcout = outStream.getChannel();
+            fcout.position(pLength);
+            outStream.write(26); // Write EOF (not normally needed)
+            fcout.force(true);
+            return true;
+        } catch (IOException e) {
+            LOGGER.fatal("Exception creating storage volume " + pToCreate.getAbsolutePath() + ": "
+                + e.getMessage(), e);
+            throw e;
+        } finally {
+            if (outStream != null) {
+                try {
+                    outStream.close();
+                } catch (IOException e) {
+                    LOGGER.error("Exception closing storage volume: " + e.getMessage(), e);
+                }
+            }
+        }
+
+    }
+
 }

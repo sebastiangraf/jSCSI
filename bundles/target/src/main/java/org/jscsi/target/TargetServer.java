@@ -1,11 +1,7 @@
 package org.jscsi.target;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.channels.FileChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.security.DigestException;
@@ -25,14 +21,10 @@ import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.ISID;
 import org.jscsi.parser.login.LoginRequestParser;
-import org.jscsi.target.configuration.Configuration;
-import org.jscsi.target.configuration.StorageFileTargetInfo;
-import org.jscsi.target.configuration.TargetInfo;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.scsi.inquiry.DeviceIdentificationVpdPage;
 import org.jscsi.target.storage.IStorageModule;
-import org.jscsi.target.storage.RandomAccessStorageModule;
 import org.xml.sax.SAXException;
 
 /**
@@ -120,30 +112,12 @@ public final class TargetServer {
         }
         System.out.println("   port:           " + getConfig().getPort());
         // open the storage medium
-        try {
-            List<TargetInfo> targetInfo = getConfig().getTargets();
-            for (TargetInfo curTargetInfo : targetInfo) {
+        List<Target> targetInfo = getConfig().getTargets();
+        for (Target curTargetInfo : targetInfo) {
 
-                if (curTargetInfo instanceof StorageFileTargetInfo) {
-                    final StorageFileTargetInfo storageFileInfo = (StorageFileTargetInfo)curTargetInfo;
-                    if (!storageFileInfo.getStorageFilePath().exists()) {
-                        createStorageVolume(storageFileInfo.getStorageFilePath(), storageFileInfo
-                            .getTargetLength());
-                    }
-
-                    final IStorageModule curStorageModule =
-                        RandomAccessStorageModule.open(storageFileInfo.getStorageFilePath());
-                    addStorageModule(storageFileInfo.getTargetName(), storageFileInfo.getTargetAlias(),
-                        curStorageModule);
-                    // print configuration and medium details
-                    System.out.println("   target name:    " + storageFileInfo.getTargetName());
-                    System.out.println("   storage file:   " + storageFileInfo.getStorageFilePath());
-                }
-                // TODO Hook for other targets like proxies, etc.
-            }
-        } catch (FileNotFoundException e) {
-            LOGGER.fatal(e.toString());
-            return;
+            targets.put(curTargetInfo.getTargetName(), curTargetInfo);
+            // print configuration and medium details
+            System.out.println("   target name:    " + curTargetInfo.getTargetName());
         }
         mainLoop();
     }
@@ -292,51 +266,6 @@ public final class TargetServer {
         synchronized (targets) {
             targets.remove(exportTargetName);
         }
-    }
-
-    /**
-     * Creating a new file if not existing at the path defined in the config.
-     * Note that it is advised to create the file beforehand.
-     * 
-     * @param pConf
-     *            configuration to be updated
-     * @return true if creation successful, false if file already exists.
-     * @throws IOException
-     *             if anything weird happens
-     */
-    private static boolean createStorageVolume(final File pToCreate, final long pLength) throws IOException {
-        FileOutputStream outStream = null;
-        try {
-            final File parent = pToCreate.getCanonicalFile().getParentFile();
-            if (!parent.exists() && !parent.mkdirs()) {
-                throw new FileNotFoundException("Unable to create directory: " + parent.getAbsolutePath());
-            }
-            // if file exists, do not override it
-            if (pToCreate.exists()) {
-                return false;
-            }
-
-            pToCreate.createNewFile();
-            outStream = new FileOutputStream(pToCreate);
-            final FileChannel fcout = outStream.getChannel();
-            fcout.position(pLength);
-            outStream.write(26); // Write EOF (not normally needed)
-            fcout.force(true);
-            return true;
-        } catch (IOException e) {
-            LOGGER.fatal("Exception creating storage volume " + pToCreate.getAbsolutePath() + ": "
-                + e.getMessage(), e);
-            throw e;
-        } finally {
-            if (outStream != null) {
-                try {
-                    outStream.close();
-                } catch (IOException e) {
-                    LOGGER.error("Exception closing storage volume: " + e.getMessage(), e);
-                }
-            }
-        }
-
     }
 
 }

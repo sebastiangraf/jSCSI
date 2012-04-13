@@ -1,4 +1,4 @@
-package org.jscsi.target.configuration;
+package org.jscsi.target;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +18,8 @@ import javax.xml.validation.Validator;
 
 import org.jscsi.target.scsi.lun.LogicalUnitNumber;
 import org.jscsi.target.settings.TextKeyword;
+import org.jscsi.target.storage.IStorageModule;
+import org.jscsi.target.storage.RandomAccessStorageModule;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -70,7 +72,7 @@ public class Configuration {
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
 
-    private final List<TargetInfo> targets;
+    private final List<Target> targets;
 
     /**
      * The <code>TargetAddress</code> parameter (the jSCSI Target's IP address).
@@ -138,7 +140,7 @@ public class Configuration {
     public Configuration() throws IOException {
         port = 3260;
         targetAddress = InetAddress.getLocalHost().getHostAddress();
-        targets = new ArrayList<TargetInfo>();
+        targets = new ArrayList<Target>();
     }
 
     public int getInMaxRecvTextPduSequenceLength() {
@@ -169,7 +171,7 @@ public class Configuration {
         return logicalUnitNumber;
     }
 
-    public List<TargetInfo> getTargets() {
+    public List<Target> getTargets() {
         return targets;
     }
 
@@ -213,7 +215,7 @@ public class Configuration {
         Element targetListNode = (Element)root.getElementsByTagName(TARGET_LIST_ELEMENT_NAME).item(0);
         NodeList targetList = targetListNode.getElementsByTagName(TARGET_ELEMENT_NAME);
         for (int curTargetNum = 0; curTargetNum < targetList.getLength(); curTargetNum++) {
-            TargetInfo curTargetInfo = parseTargetElement((Element)targetList.item(curTargetNum));
+            Target curTargetInfo = parseTargetElement((Element)targetList.item(curTargetNum));
             synchronized (returnConfiguration.targets) {
                 returnConfiguration.targets.add(curTargetInfo);
             }
@@ -242,7 +244,7 @@ public class Configuration {
 
     }
 
-    private static final TargetInfo parseTargetElement(Element targetElement) {
+    private static final Target parseTargetElement(Element targetElement) throws IOException {
         String targetName =
             targetElement.getElementsByTagName(TextKeyword.TARGET_NAME).item(0).getTextContent();
         // TargetAlias (optional)
@@ -264,8 +266,11 @@ public class Configuration {
                     Math.round(((Double.valueOf(fileProperties.item(i).getTextContent())) * Math.pow(1024, 3)));
             }
         }
+        final IStorageModule module =
+            RandomAccessStorageModule.open(new File(storageFilePath), storageLength);
 
-        return new StorageFileTargetInfo(targetName, targetAlias, new File(storageFilePath), storageLength);
+        return new Target(targetName, targetAlias, module);
+
     }
 
 }
