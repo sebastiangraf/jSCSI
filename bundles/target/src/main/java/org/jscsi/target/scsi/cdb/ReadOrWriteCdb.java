@@ -2,8 +2,6 @@ package org.jscsi.target.scsi.cdb;
 
 import java.nio.ByteBuffer;
 
-import org.jscsi.target.storage.AbstractStorageModule;
-
 /**
  * This abstract class represents Command Descriptor Blocks for the <code>READ</code> and <code>WRITE</code>
  * SCSI commands. This grouping makes

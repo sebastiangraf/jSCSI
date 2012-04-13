@@ -5,11 +5,24 @@ package org.jscsi.target.storage;
 
 import java.io.IOException;
 
+import org.jscsi.target.scsi.cdb.CommandDescriptorBlock;
+
 /**
- * @author Sebastian Graf, University of Konstanz
+ * This is an abstract super class offering methods for storage and retrieval of
+ * data, as well as emulating some properties of block storage devices.
+ * <p>
+ * All index and length parameters used by the read and write methods are referring to bytes, unlike the
+ * values sent in {@link CommandDescriptorBlock} s, which are based on the value reported by
+ * {@link #getBlockSizeInBytes()}.
  * 
+ * @author Andreas Ergenzinger
  */
 public interface IStorageModule {
+
+    /**
+     * A fictitious block size.
+     */
+    public static final int VIRTUAL_BLOCK_SIZE = 512;
 
     /**
      * This method can be used for checking if a (series of) I/O operations will

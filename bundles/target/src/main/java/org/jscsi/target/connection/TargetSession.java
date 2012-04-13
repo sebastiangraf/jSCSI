@@ -5,7 +5,6 @@ import org.jscsi.parser.login.ISID;
 import org.jscsi.target.Target;
 import org.jscsi.target.TargetServer;
 import org.jscsi.target.settings.SessionSettingsNegotiator;
-import org.jscsi.target.storage.AbstractStorageModule;
 import org.jscsi.target.storage.IStorageModule;
 import org.jscsi.target.util.SerialArithmeticNumber;
 

@@ -1,6 +1,6 @@
 package org.jscsi.target.connection.stage.fullfeature;
 
-import static org.jscsi.target.storage.AbstractStorageModule.VIRTUAL_BLOCK_SIZE;
+import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
 
 import java.io.IOException;
 import java.security.DigestException;

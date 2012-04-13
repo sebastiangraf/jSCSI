@@ -22,7 +22,7 @@ import org.jscsi.target.scsi.cdb.Write6Cdb;
 import org.jscsi.target.scsi.cdb.WriteCdb;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.util.Debug;
-import static org.jscsi.target.storage.AbstractStorageModule.VIRTUAL_BLOCK_SIZE;
+import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
 
 /**
  * A stage for processing <code>WRITE (6)</code> and <code>WRITE (10)</code> SCSI commands.

@@ -18,7 +18,7 @@ import org.jscsi.target.scsi.cdb.Read6Cdb;
 import org.jscsi.target.scsi.cdb.ReadCdb;
 import org.jscsi.target.scsi.cdb.ScsiOperationCode;
 import org.jscsi.target.settings.SettingsException;
-import static org.jscsi.target.storage.AbstractStorageModule.VIRTUAL_BLOCK_SIZE;
+import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
 
 /**
  * A stage for processing <code>READ (6)</code> and <code>READ (10)</code> SCSI
