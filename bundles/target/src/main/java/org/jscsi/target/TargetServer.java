@@ -137,9 +137,7 @@ public final class TargetServer {
                         curStorageModule);
                     // print configuration and medium details
                     System.out.println("   target name:    " + storageFileInfo.getTargetName());
-
                     System.out.println("   storage file:   " + storageFileInfo.getStorageFilePath());
-                    System.out.println("   file size:      " + curStorageModule.getHumanFriendlyMediumSize());
                 }
                 // TODO Hook for other targets like proxies, etc.
             }

@@ -9,7 +9,7 @@
 			<TargetName>iqn.2010-04.local-test:disk-1</TargetName>
 			<TargetAlias>jSCSI Target</TargetAlias>
 			<StorageFile>
-				<FilePath>storage1.dat</FilePath>
+				<FilePath>/tmp/storage1.dat</FilePath>
 				<FileLength>0.75</FileLength>
 			</StorageFile>
 		</Target>
@@ -17,7 +17,7 @@
 			<TargetName>iqn.2010-04.local-test:disk-2</TargetName>
 			<TargetAlias>jSCSI Target</TargetAlias>
 			<StorageFile>
-				<FilePath>storage2.dat</FilePath>
+				<FilePath>/tmp/storage2.dat</FilePath>
 				<FileLength>0.75</FileLength>
 			</StorageFile>
 		</Target>

@@ -53,17 +53,6 @@ public class RandomAccessStorageModule extends AbstractStorageModule {
         randomAccessFile.write(bytes, bytesOffset, length);
     }
 
-    @Override
-    public String getHumanFriendlyMediumSize() {
-        long size;
-        try {
-            size = randomAccessFile.length();
-        } catch (IOException e) {
-            return "unable to access the file";
-        }
-        return toHumanFriendlySize(size);
-    }
-
     /**
      * Closes the backing {@link RandomAccessFile}.
      * 

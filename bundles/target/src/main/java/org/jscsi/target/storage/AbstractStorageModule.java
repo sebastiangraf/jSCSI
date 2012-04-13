@@ -51,79 +51,6 @@ public abstract class AbstractStorageModule {
     }
 
     /**
-     * Copies bytes from storage to the passed byte array.
-     * 
-     * @param bytes
-     *            the array into which the data will be copied
-     * @param bytesOffset
-     *            the position of the first byte in <code>bytes</code>, which
-     *            will be filled with data from storage
-     * @param length
-     *            the number of bytes to copy
-     * @param storageIndex
-     *            the position of the first byte to be copied
-     * @throws IOException
-     */
-    public abstract void read(byte[] bytes, int bytesOffset, int length, long storageIndex)
-        throws IOException;
-
-    // /**
-    // * Copies bytes from storage to the passed byte array. <code>bytes.length</code> bytes will be copied.
-    // *
-    // * @param bytes
-    // * the array into which the data will be copied
-    // * @param storageIndex
-    // * he position of the first byte to be copied
-    // */
-    // public final void read(byte[] bytes, long storageIndex) throws IOException {
-    // read(bytes, 0, bytes.length, storageIndex);
-    // }
-
-    /**
-     * Saves part of the passed byte array's content.
-     * 
-     * @param bytes
-     *            the source of the data to be stored
-     * @param bytesOffset
-     *            offset of the first byte to be stored
-     * @param length
-     *            the number of bytes to be copied
-     * @param storageIndex
-     *            byte offset in the storage area
-     * @throws IOException
-     */
-    public abstract void write(byte[] bytes, int bytesOffset, int length, long storageIndex)
-        throws IOException;
-
-    public abstract void close() throws IOException;
-
-    /**
-     * Saves the whole content of the passed byte array.
-     * 
-     * @param bytes
-     *            the source of the data to be stored
-     * @param storageIndex
-     *            byte offset in the storage area
-     * @throws IOException
-     */
-    public final void write(byte[] bytes, long storageIndex) throws IOException {
-        write(bytes, 0, bytes.length, storageIndex);
-    }
-
-    /**
-     * This method returns a human-friendly {@link String} representation of the
-     * medium's size.
-     * <p>
-     * Subclasses that do not enforce <code>MEDIUM SIZE %
-     * {@link #VIRTUAL_BLOCK_SIZE} == 0</code> should overwrite this method to report unused bytes, if any.
-     * 
-     * @return a human-friendly representation of the medium's size
-     */
-    public String getHumanFriendlyMediumSize() {// intentionally not final
-        return toHumanFriendlySize(sizeInBlocks * VIRTUAL_BLOCK_SIZE);
-    }
-
-    /**
      * This method can be used for checking if a (series of) I/O operations will
      * result in an {@link IOException} due to trying to access blocks outside
      * the medium's boundaries.
@@ -174,65 +101,51 @@ public abstract class AbstractStorageModule {
     }
 
     /**
-     * Returns a more human-friendly representation of a value in "bytes",
-     * breaking down the passed value into larger byte units.
+     * Copies bytes from storage to the passed byte array.
      * 
-     * @param sizeInBytes
-     *            a value specifying a certain number of bytes
-     * @return a more human-friendly representation of the passed value
+     * @param bytes
+     *            the array into which the data will be copied
+     * @param bytesOffset
+     *            the position of the first byte in <code>bytes</code>, which
+     *            will be filled with data from storage
+     * @param length
+     *            the number of bytes to copy
+     * @param storageIndex
+     *            the position of the first byte to be copied
+     * @throws IOException
      */
-    protected static final String toHumanFriendlySize(final long sizeInBytes) {
+    public abstract void read(byte[] bytes, int bytesOffset, int length, long storageIndex)
+        throws IOException;
 
-        // some stuff we will need
-        final long factor = 1024;
-        final String[] byteUnits = {
-            "B", "KiB", "MiB", "GiB", "TiB"
-        };
-        final StringBuilder sb = new StringBuilder();
+    // /**
+    // * Copies bytes from storage to the passed byte array. <code>bytes.length</code> bytes will be copied.
+    // *
+    // * @param bytes
+    // * the array into which the data will be copied
+    // * @param storageIndex
+    // * he position of the first byte to be copied
+    // */
+    // public final void read(byte[] bytes, long storageIndex) throws IOException {
+    // read(bytes, 0, bytes.length, storageIndex);
+    // }
 
-        // begin building output
-        sb.append(sizeInBytes);
-        sb.append(" bytes (");
+    /**
+     * Saves part of the passed byte array's content.
+     * 
+     * @param bytes
+     *            the source of the data to be stored
+     * @param bytesOffset
+     *            offset of the first byte to be stored
+     * @param length
+     *            the number of bytes to be copied
+     * @param storageIndex
+     *            byte offset in the storage area
+     * @throws IOException
+     */
+    public abstract void write(byte[] bytes, int bytesOffset, int length, long storageIndex)
+        throws IOException;
 
-        if (sizeInBytes <= 0) {// early exit
-            sb.append("nothing)");
-            return sb.toString();
-        }
-
-        // calculate the size in different units (non-inclusive)
-        long size = sizeInBytes;
-        final long[] values = new long[byteUnits.length];
-        for (int i = 0; i < values.length - 1; ++i) {
-            values[i] = size % factor;
-            size /= factor;
-        }
-        values[values.length - 1] = size;// the value for the biggest unit may
-                                         // be >= factor
-
-        // append the non-zero values + units
-        boolean addSpace = false;
-        for (int i = values.length - 1; i >= 0; --i) {
-            if (values[i] > 0) {
-                if (addSpace)
-                    sb.append(" ");
-                sb.append(values[i]);
-                sb.append(byteUnits[i]);
-                addSpace = true;
-            }
-        }
-        sb.append(")");
-
-        // report unused bytes
-        if (values[0] % VIRTUAL_BLOCK_SIZE != 0) {
-            sb.append(", ");
-            sb.append(values[0] % VIRTUAL_BLOCK_SIZE);
-            if (values[0] == 1)
-                sb.append(" byte is not used");
-            else
-                sb.append(" bytes are not used");
-        }
-        return sb.toString();
-    }
+    public abstract void close() throws IOException;
 
     /**
      * The mode {@link String} parameter used during the instantiation of {@link #randomAccessFile}.

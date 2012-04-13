@@ -128,7 +128,7 @@ public final class WriteStage extends ReadOrWriteStage {
         if (immediateData && bhs.getDataSegmentLength() > 0) {
             final byte[] immediateDataArray = pdu.getDataSegment().array();
 
-            session.getStorageModule().write(immediateDataArray, storageIndex);
+            session.getStorageModule().write(immediateDataArray, 0, immediateDataArray.length, storageIndex);
             bytesReceived = immediateDataArray.length;
 
             if (LOGGER.isDebugEnabled())
@@ -152,9 +152,9 @@ public final class WriteStage extends ReadOrWriteStage {
 
                 final DataOutParser dataOutParser = (DataOutParser)bhs.getParser();
 
-                session.getStorageModule().write(pdu.getDataSegment().array(),// source
-                    storageIndex + dataOutParser.getBufferOffset());// destination
-                                                                    // index
+                session.getStorageModule().write(pdu.getDataSegment().array(), 0,
+                    pdu.getDataSegment().array().length, storageIndex + dataOutParser.getBufferOffset());
+                ;
                 bytesReceived += bhs.getDataSegmentLength();
 
                 if (bhs.isFinalFlag())
@@ -196,9 +196,9 @@ public final class WriteStage extends ReadOrWriteStage {
 
                     final DataOutParser dataOutParser = (DataOutParser)bhs.getParser();
 
-                    session.getStorageModule().write(pdu.getDataSegment().array(),// source
-                        storageIndex + dataOutParser.getBufferOffset());// destination
-                                                                        // index
+                    session.getStorageModule().write(pdu.getDataSegment().array(), 0,
+                        pdu.getDataSegment().array().length, storageIndex + dataOutParser.getBufferOffset());
+
                     bytesReceivedThisCycle += bhs.getDataSegmentLength();
 
                     /*
