@@ -20,44 +20,41 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class TargetConfigurationXMLParser {
-    public static final String TARGET_LIST_ELEMENT_NAME = "TargetList"; // Name of node that contains list of
-                                                                        // targets
+    private static final String TARGET_LIST_ELEMENT_NAME = "TargetList"; // Name of node that contains list of
+                                                                         // targets
 
-    public static final String TARGET_ELEMENT_NAME = "Target"; // Name for nodes that contain a target
+    private static final String TARGET_ELEMENT_NAME = "Target"; // Name for nodes that contain a target
     // Target configuration elements
     private static final String FILE_PATH_ELEMENT_NAME = "FilePath";
     private static final String FILE_LENGTH_ELEMENT_NAME = "FileLength";
-    public static final String STORAGE_FILE_ELEMENT_NAME = "StorageFile";
-
-    public static final String GLOBAL_CONFIG_ELEMENT_NAME = "GlobalConfig"; // Name of node that contains
-                                                                            // global configuration
+    private static final String STORAGE_FILE_ELEMENT_NAME = "StorageFile";
 
     // Global configuration elements
-    public static final String ALLOW_SLOPPY_NEGOTIATION_ELEMENT_NAME = "AllowSloppyNegotiation";
-    public static final String PORT_ELEMENT_NAME = "Port";
+    private static final String ALLOW_SLOPPY_NEGOTIATION_ELEMENT_NAME = "AllowSloppyNegotiation";
+    private static final String PORT_ELEMENT_NAME = "Port";
 
     /**
      * The file name of the configuration file.
      */
-    public static final String CONFIGURATION_FILE_NAME = "jscsi-target.xml";
+    private static final String CONFIGURATION_FILE_NAME = "jscsi-target.xml";
 
     /**
      * The name of the schema file describing the format of the configuration
      * file.
      */
-    public static final String SCHEMA_FILE_NAME = "jscsi-target.xsd";
+    private static final String SCHEMA_FILE_NAME = "jscsi-target.xsd";
 
     /**
      * The primary folder containing all configuration files.
      */
-    public static final File RELEASE_CONFIGURATION_DIRECTORY = new File(new StringBuilder(System
+    private static final File RELEASE_CONFIGURATION_DIRECTORY = new File(new StringBuilder(System
         .getProperty("user.dir")).append(File.separator).toString());
 
     /**
      * The back-up folder which will be searched for the <code>xsd</code> and <code>xml</code>files if they
      * cannot be found in the {@link #RELEASE_CONFIGURATION_DIRECTORY}.
      */
-    public static final File DEVELOPMENT_CONFIGURATION_DIRECTORY = new File(new StringBuilder(System
+    private static final File DEVELOPMENT_CONFIGURATION_DIRECTORY = new File(new StringBuilder(System
         .getProperty("user.dir")).append(File.separator).append("src").append(File.separator).append("main")
         .append(File.separator).append("resources").append(File.separator).toString());
 
@@ -65,13 +62,13 @@ public class TargetConfigurationXMLParser {
      * The <code>xsd</code> file containing the schema information for all
      * target-specific settings.
      */
-    public static final File CONFIGURATION_FILE = getFile(RELEASE_CONFIGURATION_DIRECTORY,
+    private static final File CONFIGURATION_FILE = getFile(RELEASE_CONFIGURATION_DIRECTORY,
         DEVELOPMENT_CONFIGURATION_DIRECTORY, CONFIGURATION_FILE_NAME);
 
     /**
      * The <code>xml</code> file containing all target-specific settings.
      */
-    public static final File SCHEMA_FILE = getFile(RELEASE_CONFIGURATION_DIRECTORY,
+    private static final File SCHEMA_FILE = getFile(RELEASE_CONFIGURATION_DIRECTORY,
         DEVELOPMENT_CONFIGURATION_DIRECTORY, SCHEMA_FILE_NAME);
 
     /**

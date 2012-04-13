@@ -185,19 +185,4 @@ public class TargetConfiguration {
         }
     }
 
-    public boolean removeTargetInfo(TargetInfo removeInfo) {
-        synchronized (targets) {
-            return targets.remove(removeInfo);
-        }
-    }
-
-    public boolean removeTargetInfo(String targetName) {
-        for (TargetInfo checkTargetInfo : targets) {
-            if (checkTargetInfo.getTargetName().equals(targetName)) {
-                targets.remove(targetName);
-                return true;
-            }
-        }
-        return false;
-    }
 }

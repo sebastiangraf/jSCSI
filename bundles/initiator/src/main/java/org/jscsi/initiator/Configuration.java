@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  * This class stores all informations, which are set during an iSCSI Session, Connection or are set as the
  * default values. Therefore, this class was implemented as a Singleton Pattern.
  * 
- * @author Volker Wildi
+ * @author Volker Wildi, University of Konstanz
  */
 public final class Configuration {
 

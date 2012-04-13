@@ -26,114 +26,114 @@ public final class Settings {
     /**
      * The <code>DataDigest</code> parameter.
      */
-    String dataDigest;
+    private String dataDigest;
 
     /**
      * The <code>HeaderDigest</code> parameter.
      */
-    String headerDigest;
+    private String headerDigest;
 
     /**
      * The <code>IFMarker</code> parameter.
      */
-    Boolean ifMarker;
+    private Boolean ifMarker;
 
     /**
      * The <code>IFMarkInt</code> parameter.
      */
-    Integer ifMarkInt;
+    private Integer ifMarkInt;
 
     /**
      * The <code>MaxRecvDataSegmentLength</code> parameter.
      */
-    Integer maxRecvDataSegmentLength;
+    private Integer maxRecvDataSegmentLength;
 
     /**
      * The <code>OFMarker</code> parameter.
      */
-    Boolean ofMarker;
+    private Boolean ofMarker;
 
     /**
      * The <code>OFMarkInt</code> parameter.
      */
-    Integer ofMarkInt;
+    private Integer ofMarkInt;
 
     // session parameters
 
     /**
      * The <code>TargetName</code> parameter
      */
-    String targetName;
+    private String targetName;
 
     /**
      * The <code>DataPDUInOrder</code> parameter.
      */
-    Boolean dataPduInOrder;
+    private Boolean dataPduInOrder;
 
     /**
      * The <code>DataSequenceInOrder</code> parameter.
      */
-    Boolean dataSequenceInOrder;
+    private Boolean dataSequenceInOrder;
 
     /**
      * The <code>DefaultTime2Retain</code> parameter.
      */
-    Integer defaultTime2Retain;
+    private Integer defaultTime2Retain;
 
     /**
      * The <code>DefaultTime2Wait</code> parameter.
      */
-    Integer defaultTime2Wait;
+    private Integer defaultTime2Wait;
 
     /**
      * The <code>ErrorRecoveryLevel</code> parameter.
      */
-    Integer errorRecoveryLevel;
+    private Integer errorRecoveryLevel;
 
     /**
      * The <code>FirstBurstLength</code> parameter.
      */
-    Integer firstBurstLength;
+    private Integer firstBurstLength;
 
     /**
      * The <code>ImmediateData</code> parameter.
      */
-    Boolean immediateData;
+    private Boolean immediateData;
 
     /**
      * The <code>InitialR2T</code> parameter.
      */
-    Boolean initialR2T;
+    private Boolean initialR2T;
 
     /**
      * The <code>InitiatorAlias</code> parameter.
      */
-    String initiatorAlias;
+    private String initiatorAlias;
 
     /**
      * The <code>InitiatorName</code> parameter.
      */
-    String initiatorName;
+    private String initiatorName;
 
     /**
      * The <code>MaxBurstLength</code> parameter.
      */
-    Integer maxBurstLength;
+    private Integer maxBurstLength;
 
     /**
      * The <code>MaxConnections</code> parameter.
      */
-    Integer maxConnections;
+    private Integer maxConnections;
 
     /**
      * The <code>MaxOutstandingR2T</code> parameter.
      */
-    Integer maxOutstandingR2T;
+    private Integer maxOutstandingR2T;
 
     /**
      * The <code>SessionType</code> parameter.
      */
-    String sessionType;
+    private String sessionType;
 
     /**
      * Throws a {@link SettingsException} if the parameter is <code>null</code>.

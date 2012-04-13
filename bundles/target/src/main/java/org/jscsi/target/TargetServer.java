@@ -115,8 +115,7 @@ public final class TargetServer {
         // read target settings from configuration file
         // exit if there is a problem
         if (!readConfig()) {
-            LOGGER.fatal("Error while trying to read settings from "
-                + TargetConfigurationXMLParser.CONFIGURATION_FILE_NAME + ".\nShutting down.");
+            LOGGER.fatal("Error while trying to read settings.\nShutting down.");
             return;
         }
         System.out.println("   port:           " + getConfig().getPort());
