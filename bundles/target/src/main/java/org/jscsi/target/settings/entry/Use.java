@@ -1,4 +1,4 @@
-package org.jscsi.target.settings;
+package org.jscsi.target.settings.entry;
 
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.LoginStage;

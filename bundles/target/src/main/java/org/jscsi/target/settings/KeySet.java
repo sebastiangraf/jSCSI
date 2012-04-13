@@ -1,5 +1,7 @@
 package org.jscsi.target.settings;
 
+import org.jscsi.target.settings.entry.Entry;
+
 /**
  * {@link KeySet} objects are used by {@link Entry} instances for storing all
  * <i>keys</i> that might be used to negotiate the parameter managed by the {@link Entry}. Individual

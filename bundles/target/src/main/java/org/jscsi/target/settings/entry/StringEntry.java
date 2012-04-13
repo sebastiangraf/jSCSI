@@ -1,6 +1,10 @@
-package org.jscsi.target.settings;
+package org.jscsi.target.settings.entry;
 
 import org.jscsi.target.TargetServer;
+import org.jscsi.target.settings.KeySet;
+import org.jscsi.target.settings.NegotiationStatus;
+import org.jscsi.target.settings.NegotiationType;
+import org.jscsi.target.settings.TextParameter;
 
 /**
  * This {@link Entry} sub-class is used for managing and negotiation String

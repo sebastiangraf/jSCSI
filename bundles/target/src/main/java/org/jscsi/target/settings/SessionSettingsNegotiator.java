@@ -6,6 +6,11 @@ import java.util.concurrent.locks.Lock;
 import javax.naming.OperationNotSupportedException;
 
 import org.jscsi.target.connection.TargetSession;
+import org.jscsi.target.settings.entry.BooleanEntry;
+import org.jscsi.target.settings.entry.Entry;
+import org.jscsi.target.settings.entry.NumericalEntry;
+import org.jscsi.target.settings.entry.StringEntry;
+import org.jscsi.target.settings.entry.Use;
 import org.jscsi.target.util.BinaryLock;
 
 /**

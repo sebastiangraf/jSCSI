@@ -1,5 +1,7 @@
 package org.jscsi.target.settings;
 
+import org.jscsi.target.settings.entry.NumericalEntry;
+
 /**
  * A result function used by the {@link NumericalEntry} class to determine the
  * outcome of integer parameter negotiations.

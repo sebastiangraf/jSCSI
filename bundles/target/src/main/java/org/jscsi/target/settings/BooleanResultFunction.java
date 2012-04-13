@@ -1,5 +1,7 @@
 package org.jscsi.target.settings;
 
+import org.jscsi.target.settings.entry.BooleanEntry;
+
 /**
  * {@link BooleanResultFunction}s are used by instances of{@link BooleanEntry} during the negotiation of
  * boolean parameters.

@@ -1,6 +1,12 @@
-package org.jscsi.target.settings;
+package org.jscsi.target.settings.entry;
 
 import org.jscsi.target.TargetServer;
+import org.jscsi.target.settings.KeySet;
+import org.jscsi.target.settings.NegotiationStatus;
+import org.jscsi.target.settings.NegotiationType;
+import org.jscsi.target.settings.NumericalResultFunction;
+import org.jscsi.target.settings.NumericalValueRange;
+import org.jscsi.target.settings.SingleNumericalValue;
 
 /**
  * An {@link Entry} sub-class for boolean parameters.

@@ -8,6 +8,12 @@ import org.jscsi.parser.login.LoginStage;
 import org.jscsi.target.TargetServer;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
+import org.jscsi.target.settings.entry.BooleanEntry;
+import org.jscsi.target.settings.entry.Entry;
+import org.jscsi.target.settings.entry.NumericalEntry;
+import org.jscsi.target.settings.entry.NumericalRangeEntry;
+import org.jscsi.target.settings.entry.StringEntry;
+import org.jscsi.target.settings.entry.Use;
 
 /**
  * In addition to offering all methods of their {@link SettingsNegotiator} parent class,
@@ -188,11 +194,11 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
             // the target must reply with TargetPortalGroupTag and should
             // append TargetAlias
             boolean normalSession =
-                TextKeyword.NORMAL.equals((String)getEntry(TextKeyword.SESSION_TYPE).value);
+                TextKeyword.NORMAL.equals(((StringEntry)getEntry(TextKeyword.SESSION_TYPE)).getStringValue());
             if (normalSession) {
                 // check if proposed TargetName is correct
-                final Entry targetNameEntry = getEntry(TextKeyword.TARGET_NAME);
-                final String targetName = (String)targetNameEntry.value;
+                final StringEntry targetNameEntry = (StringEntry)getEntry(TextKeyword.TARGET_NAME);
+                final String targetName = targetNameEntry.getStringValue();
                 if (targetName == null || // not declared
                     !target.isValidTargetName(targetName))// wrong name
                     everythingOkay = false;

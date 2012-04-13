@@ -1,4 +1,4 @@
-package org.jscsi.target.settings;
+package org.jscsi.target.settings.entry;
 
 import java.util.Collection;
 
@@ -8,6 +8,12 @@ import org.apache.log4j.Logger;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.LoginStage;
 import org.jscsi.target.TargetServer;
+import org.jscsi.target.settings.KeySet;
+import org.jscsi.target.settings.NegotiationStatus;
+import org.jscsi.target.settings.NegotiationType;
+import org.jscsi.target.settings.SettingsNegotiator;
+import org.jscsi.target.settings.TextKeyword;
+import org.jscsi.target.settings.TextParameter;
 
 /**
  * {@link Entry} objects are used by instances {@link SettingsNegotiator} during
@@ -220,7 +226,7 @@ public abstract class Entry {
      * This method must be used at the end of each negotiation task, i.e. at the end of the login phase and
      * the FFP text negotiation stage.
      */
-    void resetAlreadyNegotiated() {
+    public void resetAlreadyNegotiated() {
         alreadyNegotiated = false;
     }
 

@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.jscsi.target.settings.entry.Entry;
+
 /**
  * Instances of {@link SessionSettingsBuilderComponent} are used jointly with
  * instances of {@link ConnectionSettingsBuilderComponent} for creating {@link Settings} objects.

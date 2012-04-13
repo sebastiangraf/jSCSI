@@ -1,5 +1,7 @@
 package org.jscsi.target.settings;
 
+import org.jscsi.target.settings.entry.Entry;
+
 /**
  * The {@link NegotiationType} of an {@link Entry} affects the way the {@link Entry}'s parameter final value
  * is reached.

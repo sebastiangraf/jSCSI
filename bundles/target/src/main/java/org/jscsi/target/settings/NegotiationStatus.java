@@ -1,5 +1,7 @@
 package org.jscsi.target.settings;
 
+import org.jscsi.target.settings.entry.Entry;
+
 /**
  * {@link NegotiationStatus} objects specifies the necessity, progress, and
  * outcome of the parameter negotiation managed by {@link Entry} instances.

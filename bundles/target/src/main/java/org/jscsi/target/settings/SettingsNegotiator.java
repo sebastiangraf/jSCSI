@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.jscsi.target.settings.entry.Entry;
+
 /**
  * This is an abstract parent-class to {@link ConnectionSettingsNegotiator} and
  * {@link SessionSettingsNegotiator}. The former one is in charge of all {@link Entry} objects with
