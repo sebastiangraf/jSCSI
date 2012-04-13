@@ -27,7 +27,7 @@ public final class TextParameter {
      *         value pairs
      */
     public static List<String> tokenizeKeyValuePairs(final String keyValuePairs) {
-        final Vector<String> result = new Vector<String>();
+        final List<String> result = new Vector<String>();
         if (keyValuePairs == null)
             return result;
         final String[] split = keyValuePairs.split(TextKeyword.NULL_CHAR);
