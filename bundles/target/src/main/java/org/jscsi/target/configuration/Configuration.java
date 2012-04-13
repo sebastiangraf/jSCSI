@@ -194,67 +194,30 @@ public class Configuration {
         }
     }
 
-    /**
-     * The file name of the configuration file.
-     */
-    private static final String CONFIGURATION_FILE_NAME = "jscsi-target.xml";
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
     /**
-     * The name of the schema file describing the format of the configuration
-     * file.
+     * The relative path (to the project) of the main directory of all
+     * configuration files.
      */
-    private static final String SCHEMA_FILE_NAME = "jscsi-target.xsd";
+    private static final File CONFIG_DIR = new File(new StringBuilder("src").append(File.separator).append(
+        "main").append(File.separator).append("resources").append(File.separator).toString());
 
     /**
-     * The primary folder containing all configuration files.
+     * The file name of the XML Schema configuration file for the global
+     * settings.
      */
-    private static final File RELEASE_CONFIGURATION_DIRECTORY = new File(new StringBuilder(System
-        .getProperty("user.dir")).append(File.separator).toString());
+    private static final File CONFIGURATION_SCHEMA_FILE = new File(CONFIG_DIR, "jscsi-target.xsd");
 
-    /**
-     * The back-up folder which will be searched for the <code>xsd</code> and <code>xml</code>files if they
-     * cannot be found in the {@link #RELEASE_CONFIGURATION_DIRECTORY}.
-     */
-    private static final File DEVELOPMENT_CONFIGURATION_DIRECTORY = new File(new StringBuilder(System
-        .getProperty("user.dir")).append(File.separator).append("src").append(File.separator).append("main")
-        .append(File.separator).append("resources").append(File.separator).toString());
+    /** The file name, which contains all global settings. */
+    private static final File CONFIGURATION_CONFIG_FILE = new File(CONFIG_DIR, "jscsi-target.xml");
 
-    /**
-     * The <code>xsd</code> file containing the schema information for all
-     * target-specific settings.
-     */
-    private static final File CONFIGURATION_FILE = getFile(RELEASE_CONFIGURATION_DIRECTORY,
-        DEVELOPMENT_CONFIGURATION_DIRECTORY, CONFIGURATION_FILE_NAME);
-
-    /**
-     * The <code>xml</code> file containing all target-specific settings.
-     */
-    private static final File SCHEMA_FILE = getFile(RELEASE_CONFIGURATION_DIRECTORY,
-        DEVELOPMENT_CONFIGURATION_DIRECTORY, SCHEMA_FILE_NAME);
-
-    /**
-     * Searches and tries to return a {@link File} with the specified
-     * <i>fileName</i> from the given <i>mainDirectory</i>. If this {@link File} does not exist, a
-     * {@link File} with the specified <i>fileName</i> from
-     * the given <i>backUpDirectory</i> will be returned.
-     * 
-     * @param mainDirectory
-     *            the first directory to search
-     * @param backUpDirectory
-     *            the folder to use if the first search fails
-     * @param fileName
-     *            the name of the file without path information
-     * @return a {@link File} that may or may not exist
-     */
-    private static File getFile(final File mainDirectory, final File backUpDirectory, String fileName) {
-        final File file = new File(mainDirectory, fileName);
-        if (file.exists())
-            return file;
-        return new File(backUpDirectory, fileName);
-    }
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
     public Document parse() throws SAXException, ParserConfigurationException, IOException {
-        return parse(SCHEMA_FILE, CONFIGURATION_FILE);
+        return parse(CONFIGURATION_SCHEMA_FILE, CONFIGURATION_CONFIG_FILE);
     }
 
     public Configuration parseSettings() throws SAXException, ParserConfigurationException, IOException {
