@@ -16,39 +16,50 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.jscsi.parser.datasegment.OperationalTextKey;
 import org.jscsi.target.scsi.lun.LogicalUnitNumber;
 import org.jscsi.target.settings.TextKeyword;
 import org.jscsi.target.storage.IStorageModule;
+import org.jscsi.target.storage.IStorageModule.STORAGEKIND;
 import org.jscsi.target.storage.RandomAccessStorageModule;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 /**
- * Instances of {@link Configuration} provides access target-wide
- * parameters, variables that are the same across all sessions and connections
- * that do not change after initialization and which play a role during text
- * parameter negotiation. Some of these parameters are provided or can be
- * overridden by the content of an XML file - <code>jscsi-target.xml</code>.
+ * Instances of {@link Configuration} provides access target-wide parameters,
+ * variables that are the same across all sessions and connections that do not
+ * change after initialization and which play a role during text parameter
+ * negotiation. Some of these parameters are provided or can be overridden by
+ * the content of an XML file - <code>jscsi-target.xml</code>.
  * 
  * @author Andreas Ergenzinger, University of Konstanz
  */
 public class Configuration {
 
-    private static final String TARGET_LIST_ELEMENT_NAME = "TargetList"; // Name of node that contains list of
+    private static final String ELEMENT_TARGET_LIST = "TargetList"; // Name of
+                                                                    // node that
+                                                                    // contains
+                                                                    // list of
     // targets
 
-    private static final String TARGET_ELEMENT_NAME = "Target"; // Name for nodes that contain a target
+    private static final String ELEMENT_TARGET = "Target"; // Name for nodes
+                                                           // that contain a
+                                                           // target
     // Target configuration elements
-    private static final String FILE_PATH_ELEMENT_NAME = "FilePath";
-    private static final String FILE_LENGTH_ELEMENT_NAME = "FileLength";
-    private static final String STORAGE_FILE_ELEMENT_NAME = "StorageFile";
+    private static final String ELEMENT_SYNCFILESTORAGE = "SyncFileStorage";
+    private static final String ELEMENT_ASYNCFILESTORAGE = "AsyncFileStorage";
+    private static final String ELEMENT_PATH = "Path";
+    private static final String ELEMENT_CREATE = "Create";
+    private static final String ELEMENT_DONTCREATE = "DontCreate";
+    private static final String ATTRIBUTE_SIZE = "size";
 
     // Global configuration elements
-    private static final String ALLOW_SLOPPY_NEGOTIATION_ELEMENT_NAME = "AllowSloppyNegotiation";
-    private static final String PORT_ELEMENT_NAME = "Port";
+    private static final String ELEMENT_ALLOWSLOPPYNEGOTIATION = "AllowSloppyNegotiation";
+    private static final String ELEMENT_PORT = "Port";
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -57,17 +68,20 @@ public class Configuration {
      * The relative path (to the project) of the main directory of all
      * configuration files.
      */
-    private static final File CONFIG_DIR = new File(new StringBuilder("src").append(File.separator).append(
-        "main").append(File.separator).append("resources").append(File.separator).toString());
+    private static final File CONFIG_DIR = new File(new StringBuilder("src")
+            .append(File.separator).append("main").append(File.separator)
+            .append("resources").append(File.separator).toString());
 
     /**
      * The file name of the XML Schema configuration file for the global
      * settings.
      */
-    private static final File CONFIGURATION_SCHEMA_FILE = new File(CONFIG_DIR, "jscsi-target.xsd");
+    private static final File CONFIGURATION_SCHEMA_FILE = new File(CONFIG_DIR,
+            "jscsi-target.xsd");
 
     /** The file name, which contains all global settings. */
-    private static final File CONFIGURATION_CONFIG_FILE = new File(CONFIG_DIR, "jscsi-target.xml");
+    private static final File CONFIGURATION_CONFIG_FILE = new File(CONFIG_DIR,
+            "jscsi-target.xml");
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -84,21 +98,22 @@ public class Configuration {
     /**
      * The port used by the jSCSI Target for listening for new connections.
      * <p>
-     * The default port number is 3260. This value may be overridden by specifying a different value in the
-     * configuration file.
+     * The default port number is 3260. This value may be overridden by
+     * specifying a different value in the configuration file.
      */
     private int port;
 
     /**
-     * This variable toggles the strictness with which the parameters <code>IFMarkInt</code> and
-     * <code>OFMarkInt</code> are processed, when
+     * This variable toggles the strictness with which the parameters
+     * <code>IFMarkInt</code> and <code>OFMarkInt</code> are processed, when
      * provided by the initiator. Usually the offered values must have to
      * following format: <code>smallInteger~largeInteger</code>, however the
      * jSCSI Initiator sends only single integers as <i>value</i> part of the
      * <i>key-value</i> pairs. Since the value of these two parameters always
      * are <code>Irrelevant</code>, this bug can be ignored without any negative
-     * consequences by setting {@link #allowSloppyNegotiation} to <code>true</code> in the configuration file.
-     * The default is <code>false</code>.
+     * consequences by setting {@link #allowSloppyNegotiation} to
+     * <code>true</code> in the configuration file. The default is
+     * <code>false</code>.
      */
     private boolean allowSloppyNegotiation;// TODO fix in jSCSI Initiator and
                                            // remove
@@ -111,14 +126,15 @@ public class Configuration {
     /**
      * The Logical Unit Number of the virtual Logical Unit.
      */
-    private final LogicalUnitNumber logicalUnitNumber = new LogicalUnitNumber(0L);
+    private final LogicalUnitNumber logicalUnitNumber = new LogicalUnitNumber(
+            0L);
 
     /**
      * The <code>MaxRecvDataSegmentLength</code> parameter for PDUs sent in the
      * out direction (i.e. initiator to target).
      * <p>
-     * Since the value of this variable is equal to the specified default value, it does not have to be
-     * declared during login.
+     * Since the value of this variable is equal to the specified default value,
+     * it does not have to be declared during login.
      */
     private final int outMaxRecvDataSegmentLength = 8192;
 
@@ -126,14 +142,17 @@ public class Configuration {
      * The maximum number of consecutive Login PDUs or Text Negotiation PDUs the
      * target will accept in a single sequence.
      * <p>
-     * The iSCSI standard does not dictate a minimum or maximum text PDU sequence length, but only suggests to
-     * select a value large enough for all expected key-value pairs that might be sent in a single sequence. A
-     * limit should be imposed, however, to prevent {@link OutOfMemoryError}s resulting from malicious or
-     * accidental text PDU sequences of extreme lengths.
+     * The iSCSI standard does not dictate a minimum or maximum text PDU
+     * sequence length, but only suggests to select a value large enough for all
+     * expected key-value pairs that might be sent in a single sequence. A limit
+     * should be imposed, however, to prevent {@link OutOfMemoryError}s
+     * resulting from malicious or accidental text PDU sequences of extreme
+     * lengths.
      * <p>
-     * Since all common text parameters (plus values) easily fit into a single text PDU with the default data
-     * segment size, this value could be set to <code>1</code> without negatively affecting compatibility with
-     * most initiators.
+     * Since all common text parameters (plus values) easily fit into a single
+     * text PDU with the default data segment size, this value could be set to
+     * <code>1</code> without negatively affecting compatibility with most
+     * initiators.
      */
     private final int maxRecvTextPduSequenceLength = 4;
 
@@ -175,7 +194,8 @@ public class Configuration {
         return targets;
     }
 
-    public static final Configuration create() throws SAXException, ParserConfigurationException, IOException {
+    public static final Configuration create() throws SAXException,
+            ParserConfigurationException, IOException {
         return create(CONFIGURATION_SCHEMA_FILE, CONFIGURATION_CONFIG_FILE);
     }
 
@@ -191,15 +211,18 @@ public class Configuration {
      * @throws IOException
      *             If any IO errors occur.
      */
-    public static final Configuration create(final File schemaLocation, final File configFile)
-        throws SAXException, ParserConfigurationException, IOException {
-        final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    public static final Configuration create(final File schemaLocation,
+            final File configFile) throws SAXException,
+            ParserConfigurationException, IOException {
+        final SchemaFactory schemaFactory = SchemaFactory
+                .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         final Schema schema = schemaFactory.newSchema(schemaLocation);
 
         // create a validator for the document
         final Validator validator = schema.newValidator();
 
-        final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+        final DocumentBuilderFactory domFactory = DocumentBuilderFactory
+                .newInstance();
         domFactory.setNamespaceAware(true); // never forget this
         final DocumentBuilder builder = domFactory.newDocumentBuilder();
         final Document doc = builder.parse(configFile);
@@ -208,14 +231,17 @@ public class Configuration {
         final DOMResult result = new DOMResult();
 
         validator.validate(source, result);
-        Document root = (Document)result.getNode();
+        Document root = (Document) result.getNode();
 
         // TargetName
         Configuration returnConfiguration = new Configuration();
-        Element targetListNode = (Element)root.getElementsByTagName(TARGET_LIST_ELEMENT_NAME).item(0);
-        NodeList targetList = targetListNode.getElementsByTagName(TARGET_ELEMENT_NAME);
+        Element targetListNode = (Element) root.getElementsByTagName(
+                ELEMENT_TARGET_LIST).item(0);
+        NodeList targetList = targetListNode
+                .getElementsByTagName(ELEMENT_TARGET);
         for (int curTargetNum = 0; curTargetNum < targetList.getLength(); curTargetNum++) {
-            Target curTargetInfo = parseTargetElement((Element)targetList.item(curTargetNum));
+            Target curTargetInfo = parseTargetElement((Element) targetList
+                    .item(curTargetNum));
             synchronized (returnConfiguration.targets) {
                 returnConfiguration.targets.add(curTargetInfo);
             }
@@ -225,52 +251,83 @@ public class Configuration {
         // else it is null
 
         // port
-        if (root.getElementsByTagName(PORT_ELEMENT_NAME).getLength() > 0)
-            returnConfiguration.port =
-                Integer.parseInt(root.getElementsByTagName(PORT_ELEMENT_NAME).item(0).getTextContent());
+        if (root.getElementsByTagName(ELEMENT_PORT).getLength() > 0)
+            returnConfiguration.port = Integer.parseInt(root
+                    .getElementsByTagName(ELEMENT_PORT).item(0)
+                    .getTextContent());
         else
             returnConfiguration.port = 3260;
 
         // support sloppy text parameter negotiation (i.e. the jSCSI Initiator)?
-        final Node allowSloppyNegotiationNode =
-            root.getElementsByTagName(ALLOW_SLOPPY_NEGOTIATION_ELEMENT_NAME).item(0);
+        final Node allowSloppyNegotiationNode = root.getElementsByTagName(
+                ELEMENT_ALLOWSLOPPYNEGOTIATION).item(0);
         if (allowSloppyNegotiationNode == null)
             returnConfiguration.allowSloppyNegotiation = false;
         else
-            returnConfiguration.allowSloppyNegotiation =
-                Boolean.parseBoolean(allowSloppyNegotiationNode.getTextContent());
+            returnConfiguration.allowSloppyNegotiation = Boolean
+                    .parseBoolean(allowSloppyNegotiationNode.getTextContent());
 
         return returnConfiguration;
 
     }
 
-    private static final Target parseTargetElement(Element targetElement) throws IOException {
-        String targetName =
-            targetElement.getElementsByTagName(TextKeyword.TARGET_NAME).item(0).getTextContent();
+    private static final Target parseTargetElement(Element targetElement)
+            throws IOException {
+        // TargetName
+        Node nextNode = chopWhiteSpaces(targetElement.getFirstChild());
+        assert nextNode.getLocalName().equals(OperationalTextKey.TARGET_NAME);
+        String targetName = nextNode.getTextContent();
+
         // TargetAlias (optional)
-        Node targetAliasNode = targetElement.getElementsByTagName(TextKeyword.TARGET_ALIAS).item(0);
+        nextNode = chopWhiteSpaces(nextNode.getNextSibling());
         String targetAlias = "";
-        if (targetAliasNode != null)
-            targetAlias = targetAliasNode.getTextContent();
-
-        NodeList fileProperties =
-            targetElement.getElementsByTagName(STORAGE_FILE_ELEMENT_NAME).item(0).getChildNodes();
-        String storageFilePath = null;
-        long storageLength = -1;
-
-        for (int i = 0; i < fileProperties.getLength(); ++i) {
-            if (FILE_PATH_ELEMENT_NAME.equals(fileProperties.item(i).getNodeName())) {
-                storageFilePath = fileProperties.item(i).getTextContent();
-            } else if (FILE_LENGTH_ELEMENT_NAME.equals(fileProperties.item(i).getNodeName())) {
-                storageLength =
-                    Math.round(((Double.valueOf(fileProperties.item(i).getTextContent())) * Math.pow(1024, 3)));
-            }
+        if (nextNode.getLocalName().equals(TextKeyword.TARGET_ALIAS)) {
+            targetAlias = nextNode.getTextContent();
+            nextNode = chopWhiteSpaces(nextNode.getNextSibling());
         }
-        final IStorageModule module =
-            RandomAccessStorageModule.open(new File(storageFilePath), storageLength);
+
+        // Finding out the concrete storage
+        IStorageModule.STORAGEKIND kind = null;
+        if (nextNode.getLocalName().equals(ELEMENT_SYNCFILESTORAGE)) {
+            kind = STORAGEKIND.SyncFile;
+        } else {
+            assert nextNode.getLocalName().equals(ELEMENT_ASYNCFILESTORAGE);
+            kind = STORAGEKIND.AsyncFile;
+        }
+
+        // Getting storagepath
+        nextNode = nextNode.getFirstChild();
+        nextNode = chopWhiteSpaces(nextNode);
+        assert nextNode.getLocalName().equals(ELEMENT_PATH);
+        String storageFilePath = nextNode.getTextContent();
+
+        // CreateNode with size
+        nextNode = chopWhiteSpaces(nextNode.getNextSibling());
+        long storageLength = -1;
+        boolean create = true;
+        if (nextNode.getLocalName().equals(ELEMENT_CREATE)) {
+            Node sizeAttribute = nextNode.getAttributes().getNamedItem(
+                    ATTRIBUTE_SIZE);
+            storageLength = Math.round(((Double.valueOf(sizeAttribute
+                    .getTextContent())) * Math.pow(1024, 3)));
+        } else {
+            create = false;
+            assert nextNode.getLocalName().equals(ELEMENT_DONTCREATE);
+        }
+        final IStorageModule module = RandomAccessStorageModule.open(new File(
+                storageFilePath), storageLength, create, kind);
 
         return new Target(targetName, targetAlias, module);
 
+    }
+
+    private static Node chopWhiteSpaces(final Node node) {
+        Node toIterate = node;
+        while (toIterate instanceof Text
+                && toIterate.getTextContent().trim().length() == 0) {
+            toIterate = toIterate.getNextSibling();
+        }
+        return toIterate;
     }
 
 }

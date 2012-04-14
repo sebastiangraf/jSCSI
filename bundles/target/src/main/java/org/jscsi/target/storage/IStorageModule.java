@@ -11,13 +11,18 @@ import org.jscsi.target.scsi.cdb.CommandDescriptorBlock;
  * This is an abstract super class offering methods for storage and retrieval of
  * data, as well as emulating some properties of block storage devices.
  * <p>
- * All index and length parameters used by the read and write methods are referring to bytes, unlike the
- * values sent in {@link CommandDescriptorBlock} s, which are based on the value reported by
- * {@link #getBlockSizeInBytes()}.
+ * All index and length parameters used by the read and write methods are
+ * referring to bytes, unlike the values sent in {@link CommandDescriptorBlock}
+ * s, which are based on the value reported by {@link #getBlockSizeInBytes()}.
  * 
  * @author Andreas Ergenzinger
  */
 public interface IStorageModule {
+
+    /** Enum to denote the modules. */
+    enum STORAGEKIND {
+        SyncFile, AsyncFile;
+    }
 
     /**
      * A fictitious block size.
@@ -29,12 +34,13 @@ public interface IStorageModule {
      * result in an {@link IOException} due to trying to access blocks outside
      * the medium's boundaries.
      * <p>
-     * The SCSI standard requires checking for these boundary violations right after receiving a read or write
-     * command, so that an appropriate error message can be returned to the initiator. Therefore this method
-     * must be called prior to each read or write sequence.
+     * The SCSI standard requires checking for these boundary violations right
+     * after receiving a read or write command, so that an appropriate error
+     * message can be returned to the initiator. Therefore this method must be
+     * called prior to each read or write sequence.
      * <p>
-     * The values returned by this method and their meaning with regard to the interval [0,
-     * {@link #sizeInBlocks} - 1] are shown in the following table:
+     * The values returned by this method and their meaning with regard to the
+     * interval [0, {@link #sizeInBlocks} - 1] are shown in the following table:
      * <p>
      * <table border="1">
      * <tr>
@@ -47,17 +53,20 @@ public interface IStorageModule {
      * </tr>
      * <tr>
      * <td>1</td>
-     * <td>the <i>logicalBlockAddress</i> parameter lies outside of the interval</td>
+     * <td>the <i>logicalBlockAddress</i> parameter lies outside of the interval
+     * </td>
      * </tr>
      * <tr>
      * <td>2</td>
-     * <td>the interval [<i>logicalBlockAddress</i>, <i>logicalBlockAddress</i> +
-     * <i>transferLengthInBlocks</i>]<br/>
-     * lies outside of the interval, or <i>transferLengthInBlocks</i> is negative</td>
+     * <td>the interval [<i>logicalBlockAddress</i>, <i>logicalBlockAddress</i>
+     * + <i>transferLengthInBlocks</i>]<br/>
+     * lies outside of the interval, or <i>transferLengthInBlocks</i> is
+     * negative</td>
      * </tr>
      * </table>
      * <p>
-     * Note that the parameters of this method are referring to blocks, not to byte indices.
+     * Note that the parameters of this method are referring to blocks, not to
+     * byte indices.
      * 
      * @param logicalBlockAddress
      *            the index of the first block of data to be read or written
@@ -66,10 +75,12 @@ public interface IStorageModule {
      *            written
      * @return see table in description
      */
-    int checkBounds(final long logicalBlockAddress, final int transferLengthInBlocks);
+    int checkBounds(final long logicalBlockAddress,
+            final int transferLengthInBlocks);
 
     /**
-     * Returns the storage space size in bytes divided by {@link #getBlockSizeInBytes()} (rounded down).
+     * Returns the storage space size in bytes divided by
+     * {@link #getBlockSizeInBytes()} (rounded down).
      * 
      * @return the virtual amount of storage blocks available
      */
@@ -89,7 +100,8 @@ public interface IStorageModule {
      *            the position of the first byte to be copied
      * @throws IOException
      */
-    void read(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException;
+    void read(byte[] bytes, int bytesOffset, int length, long storageIndex)
+            throws IOException;
 
     /**
      * Saves part of the passed byte array's content.
@@ -104,7 +116,8 @@ public interface IStorageModule {
      *            byte offset in the storage area
      * @throws IOException
      */
-    void write(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException;
+    void write(byte[] bytes, int bytesOffset, int length, long storageIndex)
+            throws IOException;
 
     /**
      * Closing the storage.

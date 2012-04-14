@@ -1,69 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema elementFormDefault="qualified" targetNamespace="http://www.jscsi.org/2010-04"
-	xmlns="http://www.jscsi.org/2010-04" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<xs:simpleType name="TargetNameType">
-		<xs:restriction base="xs:string">
-			<xs:maxLength value="100" />
-			<xs:pattern
-				value="iqn\.[0-9]{4}-[0-9]{2}\.([a-z0-9\-])+(\.([a-z0-9\-])+)*\:([a-z0-9\-])+(\.([a-z0-9\-])+)*" />
-		</xs:restriction>
-	</xs:simpleType>
+    xmlns="http://www.jscsi.org/2010-04" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- Type for target name fitting the iSCSI naming reference. -->
+    <xs:simpleType name="TargetNameType">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="100" />
+            <xs:pattern
+                value="iqn\.[0-9]{4}-[0-9]{2}\.([a-z0-9\-])+(\.([a-z0-9\-])+)*\:([a-z0-9\-])+(\.([a-z0-9\-])+)*" />
+        </xs:restriction>
+    </xs:simpleType>
 
-	<xs:simpleType name="TargetPortType">
-		<xs:restriction base="xs:positiveInteger">
-			<xs:minInclusive value="1" />
-			<xs:maxInclusive value="65536" />
-		</xs:restriction>
-	</xs:simpleType>
+    <!-- Type for port. -->
+    <xs:simpleType name="TargetPortType">
+        <xs:restriction base="xs:positiveInteger">
+            <xs:minInclusive value="1" />
+            <xs:maxInclusive value="65536" />
+        </xs:restriction>
+    </xs:simpleType>
 
-	<xs:complexType name="FileDeviceType">
-		<xs:sequence>
-			<!-- ID of the volume -->
-			<xs:element name="VolumeID" type="xs:string" default="storage.dat"
-				minOccurs="1" maxOccurs="1" />
-			<!-- Storage where the data of the target should be stored to. -->
-			<xs:element name="FilePath" type="xs:string" default="storage.dat"
-				minOccurs="1" maxOccurs="1" />
-			<!-- If storage is fresh, define the file size for creation process in 
-				GB. -->
-			<xs:element name="FileLength" type="xs:double" default="0.5"
-				minOccurs="0" maxOccurs="1" />
-		</xs:sequence>
+    <!-- Type for creating a storage, including a length of the fresh storage. -->
+    <xs:complexType name="CreateType">
+        <xs:attribute name="size" type="xs:double" default="0.5" />
+    </xs:complexType>
 
-	</xs:complexType>
-	<xs:element name="configuration">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="TargetList" type="TargetList"
-					minOccurs="1" />
-				<xs:element name="GlobalConfig" type="GlobalConfig"
-					minOccurs="1" />
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
-	<xs:complexType name="TargetList">
-		<xs:sequence minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="Target" />
-		</xs:sequence>
-	</xs:complexType>
+    <!-- Type for file storage. -->
+    <xs:complexType name="FileStorageType">
+        <xs:sequence>
+            <!-- Storage where the data of the target should be stored to. -->
+            <xs:element name="Path" type="xs:string" default="storage.dat"
+                minOccurs="1" maxOccurs="1" />
+            <!-- Should a new storage created or not. -->
+            <xs:choice>
+                <xs:element name="DontCreate" />
+                <xs:element name="Create" type="CreateType" />
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
 
-	<xs:complexType name="GlobalConfig">
-		<xs:all>
-			<xs:element name="AllowSloppyNegotiation" type="xs:boolean"
-				default="false" minOccurs="0" maxOccurs="1" />
-			<xs:element name="Port" type="TargetPortType" default="3260"
-				minOccurs="0" maxOccurs="1" />
-		</xs:all>
-	</xs:complexType>
+    <!--Over all configuration including targets and a global config. -->
+    <xs:element name="configuration">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="TargetList" type="TargetList"
+                    minOccurs="1" maxOccurs="1" />
+                <xs:element name="GlobalConfig" type="GlobalConfig"
+                    minOccurs="1" maxOccurs="1" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-	<xs:complexType name="Target">
-		<xs:all>
-			<xs:element name="TargetName" type="TargetNameType"
-				minOccurs="1" maxOccurs="1" />
-			<xs:element name="TargetAlias" type="xs:string" minOccurs="0"
-				maxOccurs="1" />
-			<xs:element name="StorageFile" type="FileDeviceType"
-				maxOccurs="1" />
-		</xs:all>
-	</xs:complexType>
+    <!-- Just the target list. -->
+    <xs:complexType name="TargetList">
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="Target" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Type for the global config. Note that most settings are part of 
+        the negotiation and thereby not set over here. -->
+    <xs:complexType name="GlobalConfig">
+        <xs:sequence>
+            <xs:element name="AllowSloppyNegotiation" type="xs:boolean"
+                default="false" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Port" type="TargetPortType"
+                default="3260" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Single targets. -->
+    <xs:complexType name="Target">
+        <xs:sequence>
+            <xs:element name="TargetName" type="TargetNameType"
+                minOccurs="1" maxOccurs="1" />
+            <xs:element name="TargetAlias" type="xs:string"
+                minOccurs="0" maxOccurs="1" />
+            <xs:choice>
+                <xs:element name="SyncFileStorage" type="FileStorageType" />
+                <xs:element name="AsyncFileStorage" type="FileStorageType" />
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+
 </xs:schema>

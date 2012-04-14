@@ -24,12 +24,13 @@ import org.jscsi.parser.login.LoginRequestParser;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.scsi.inquiry.DeviceIdentificationVpdPage;
+import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.storage.IStorageModule;
 import org.xml.sax.SAXException;
 
 /**
- * The central class of the jSCSI Target, which keeps track of all active {@link TargetSession}s, stores
- * target-wide parameters and variables, and
+ * The central class of the jSCSI Target, which keeps track of all active
+ * {@link TargetSession}s, stores target-wide parameters and variables, and
  * which contains the {@link #main(String[])} method for starting the program.
  * 
  * @author Andreas Ergenzinger, University of Konstanz
@@ -64,15 +65,15 @@ public final class TargetServer {
     private HashMap<String, Target> targets = new HashMap<String, Target>();
 
     /**
-     * A target-wide counter used for providing the value of sent {@link ProtocolDataUnit}s'
-     * <code>Target Transfer Tag</code> field, unless
+     * A target-wide counter used for providing the value of sent
+     * {@link ProtocolDataUnit}s' <code>Target Transfer Tag</code> field, unless
      * that field is reserved.
      */
     private static final AtomicInteger nextTargetTransferTag = new AtomicInteger();
 
     /**
-     * Gets and increments the value to use in the next unreserved <code>Target Transfer Tag</code> field of
-     * the next PDU to be sent by the
+     * Gets and increments the value to use in the next unreserved
+     * <code>Target Transfer Tag</code> field of the next PDU to be sent by the
      * jSCSI Target.
      * 
      * @see #nextTargetTransferTag
@@ -102,7 +103,7 @@ public final class TargetServer {
 
     public void start() throws IOException {
 
-        System.out.println("jSCSI Target");
+        LOGGER.debug("Starting jSCSI-target: ");
 
         // read target settings from configuration file
         // exit if there is a problem
@@ -110,14 +111,16 @@ public final class TargetServer {
             LOGGER.fatal("Error while trying to read settings.\nShutting down.");
             return;
         }
-        System.out.println("   port:           " + getConfig().getPort());
+        LOGGER.debug("   port:           " + getConfig().getPort());
+        LOGGER.debug("   loading targets.");
         // open the storage medium
         List<Target> targetInfo = getConfig().getTargets();
         for (Target curTargetInfo : targetInfo) {
 
             targets.put(curTargetInfo.getTargetName(), curTargetInfo);
             // print configuration and medium details
-            System.out.println("   target name:    " + curTargetInfo.getTargetName());
+            LOGGER.debug("   target name:    " + curTargetInfo.getTargetName()
+                    + " loaded.");
         }
         mainLoop();
     }
@@ -130,25 +133,29 @@ public final class TargetServer {
             // port
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.configureBlocking(true);
-            serverSocketChannel.socket().bind(new InetSocketAddress(getConfig().getPort()));
+            serverSocketChannel.socket().bind(
+                    new InetSocketAddress(getConfig().getPort()));
 
             while (true) {
                 // Accept the connection request.
                 // If serverSocketChannel is blocking, this method blocks.
                 // The returned channel is in blocking mode.
-                final SocketChannel socketChannel = serverSocketChannel.accept();
+                final SocketChannel socketChannel = serverSocketChannel
+                        .accept();
 
                 // deactivate Nagle algorithm
                 socketChannel.socket().setTcpNoDelay(true);
 
-                final TargetConnection connection = new TargetConnection(socketChannel, true);
+                final TargetConnection connection = new TargetConnection(
+                        socketChannel, true);
                 try {
                     final ProtocolDataUnit pdu = connection.receivePdu();
                     // confirm OpCode
                     if (pdu.getBasicHeaderSegment().getOpCode() != OperationCode.LOGIN_REQUEST)
                         throw new InternetSCSIException();
                     // get initiatorSessionID
-                    LoginRequestParser parser = (LoginRequestParser)pdu.getBasicHeaderSegment().getParser();
+                    LoginRequestParser parser = (LoginRequestParser) pdu
+                            .getBasicHeaderSegment().getParser();
                     ISID initiatorSessionID = parser.getInitiatorSessionID();
 
                     /*
@@ -156,12 +163,12 @@ public final class TargetServer {
                      * since we don't do session reinstatement and
                      * MaxConnections=1, we can just create a new one.
                      */
-                    TargetSession session =
-                        new TargetSession(this, connection, initiatorSessionID, parser
-                            .getCommandSequenceNumber(),// set ExpCmdSN
-                                                        // (PDU is
-                                                        // immediate,
-                                                        // hence no ++)
+                    TargetSession session = new TargetSession(this, connection,
+                            initiatorSessionID,
+                            parser.getCommandSequenceNumber(),// set ExpCmdSN
+                                                              // (PDU is
+                                                              // immediate,
+                                                              // hence no ++)
                             parser.getExpectedStatusSequenceNumber());
 
                     sessions.add(session);
@@ -172,10 +179,9 @@ public final class TargetServer {
                 } catch (InternetSCSIException e) {
                     LOGGER.info(e);
                     continue;
-                } catch (Exception e) {
-                    // something went wrong on the target side
-                    // (programming error)
-                    LOGGER.fatal(e);
+                } catch (SettingsException e) {
+                    LOGGER.info(e);
+                    continue;
                 }
             }
         } catch (IOException e) {
@@ -185,8 +191,8 @@ public final class TargetServer {
     }
 
     /**
-     * Reads target settings from configuration file and stores them in the {@link #config} object. Returns
-     * <code>false</code> if the operation could
+     * Reads target settings from configuration file and stores them in the
+     * {@link #config} object. Returns <code>false</code> if the operation could
      * not be completed successfully, else it returns <code>true</code>.
      * 
      * @return <code>true</code> if the target settings were read from the
@@ -197,13 +203,13 @@ public final class TargetServer {
         try {
             setConfig(Configuration.create());
         } catch (SAXException e) {
-            LOGGER.fatal(e);
+            LOGGER.fatal(e.fillInStackTrace());
             return false;
         } catch (ParserConfigurationException e) {
-            LOGGER.fatal(e);
+            LOGGER.fatal(e.fillInStackTrace());
             return false;
         } catch (IOException e) {
-            LOGGER.fatal(e);
+            LOGGER.fatal(e.fillInStackTrace());
             return false;
         }
         return true;
@@ -244,7 +250,8 @@ public final class TargetServer {
         return returnNames;
     }
 
-    public void addStorageModule(String targetName, String targetAlias, IStorageModule storageModule) {
+    public void addStorageModule(String targetName, String targetAlias,
+            IStorageModule storageModule) {
         Target addTarget = new Target(targetName, targetAlias, storageModule);
         synchronized (targets) {
             targets.put(targetName, addTarget);
