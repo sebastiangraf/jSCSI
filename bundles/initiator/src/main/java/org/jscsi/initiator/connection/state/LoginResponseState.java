@@ -32,9 +32,9 @@ import org.jscsi.initiator.connection.phase.FullFeaturePhase;
 import org.jscsi.initiator.connection.phase.LoginOperationalNegotiationPhase;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.datasegment.DataSegmentFactory;
+import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.parser.datasegment.IDataSegment;
 import org.jscsi.parser.datasegment.OperationalTextKey;
-import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.parser.login.LoginResponseParser;
 import org.jscsi.parser.login.LoginStage;
 

@@ -27,7 +27,6 @@
 package org.jscsi.parser.datasegment;
 
 import java.util.NoSuchElementException;
-import java.lang.NumberFormatException;
 
 /**
  * <h1>ResultFunctionFactory</h1>

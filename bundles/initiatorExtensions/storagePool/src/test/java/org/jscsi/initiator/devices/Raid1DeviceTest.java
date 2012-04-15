@@ -30,9 +30,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
 
-import org.jscsi.initiator.devices.Device;
-import org.jscsi.initiator.devices.JSCSIDevice;
-import org.jscsi.initiator.devices.Raid1Device;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;

@@ -76,7 +76,7 @@ public class Configuration {
      * The file name of the XML Schema configuration file for the global
      * settings.
      */
-    private static final File CONFIGURATION_SCHEMA_FILE = new File(CONFIG_DIR,
+    public static final File CONFIGURATION_SCHEMA_FILE = new File(CONFIG_DIR,
             "jscsi-target.xsd");
 
     /** The file name, which contains all global settings. */

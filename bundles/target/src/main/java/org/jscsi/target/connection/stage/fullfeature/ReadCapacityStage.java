@@ -1,5 +1,7 @@
 package org.jscsi.target.connection.stage.fullfeature;
 
+import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
+
 import java.io.IOException;
 import java.security.DigestException;
 
@@ -19,7 +21,6 @@ import org.jscsi.target.scsi.readCapacity.ReadCapacityParameterData;
 import org.jscsi.target.scsi.sense.AdditionalSenseCodeAndQualifier;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
 import org.jscsi.target.settings.SettingsException;
-import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
 
 public final class ReadCapacityStage extends TargetFullFeatureStage {
 

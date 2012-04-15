@@ -35,8 +35,8 @@ import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.data.DataOutParser;
 import org.jscsi.parser.datasegment.IDataSegmentIterator;
-import org.jscsi.parser.datasegment.OperationalTextKey;
 import org.jscsi.parser.datasegment.IDataSegmentIterator.IDataSegmentChunk;
+import org.jscsi.parser.datasegment.OperationalTextKey;
 
 /**
  * <h1>WriteFirstBurstState</h1>

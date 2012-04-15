@@ -1,5 +1,7 @@
 package org.jscsi.target.connection.stage.fullfeature;
 
+import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -18,7 +20,6 @@ import org.jscsi.target.scsi.cdb.Read6Cdb;
 import org.jscsi.target.scsi.cdb.ReadCdb;
 import org.jscsi.target.scsi.cdb.ScsiOperationCode;
 import org.jscsi.target.settings.SettingsException;
-import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
 
 /**
  * A stage for processing <code>READ (6)</code> and <code>READ (10)</code> SCSI

@@ -1,5 +1,6 @@
 package org.jscsi.target;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
@@ -100,7 +101,17 @@ public final class TargetServer implements Callable<Void> {
      * @throws IOException
      */
     public static void main(String[] args) throws Exception {
-        TargetServer target = new TargetServer(Configuration.create());
+        TargetServer target;
+        switch(args.length) {
+           case 0:
+              target = new TargetServer(Configuration.create()); 
+	          break;
+           case 1:
+              target = new TargetServer(Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE, new File(args[0]))); 
+	          break;
+           default:
+              throw new IllegalArgumentException("Only zero or one Parameter (Path to Configuration-File) allowed!");
+        }        
         target.call();
     }
 
