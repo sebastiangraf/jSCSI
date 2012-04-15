@@ -80,7 +80,7 @@ public class Configuration {
             "jscsi-target.xsd");
 
     /** The file name, which contains all global settings. */
-    private static final File CONFIGURATION_CONFIG_FILE = new File(CONFIG_DIR,
+    public static final File CONFIGURATION_CONFIG_FILE = new File(CONFIG_DIR,
             "jscsi-target.xml");
 
     // --------------------------------------------------------------------------
