@@ -9,11 +9,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
@@ -25,8 +24,6 @@ import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.scsi.inquiry.DeviceIdentificationVpdPage;
 import org.jscsi.target.settings.SettingsException;
-import org.jscsi.target.storage.IStorageModule;
-import org.xml.sax.SAXException;
 
 /**
  * The central class of the jSCSI Target, which keeps track of all active
@@ -34,8 +31,9 @@ import org.xml.sax.SAXException;
  * which contains the {@link #main(String[])} method for starting the program.
  * 
  * @author Andreas Ergenzinger, University of Konstanz
+ * @author Sebastian Graf, University of Konstanz
  */
-public final class TargetServer {
+public final class TargetServer implements Callable<Void> {
 
     private static final Logger LOGGER = Logger.getLogger(TargetServer.class);
 
@@ -71,6 +69,11 @@ public final class TargetServer {
      */
     private static final AtomicInteger nextTargetTransferTag = new AtomicInteger();
 
+    public TargetServer(final Configuration conf) {
+        this.config = conf;
+        this.deviceIdentificationVpdPage = new DeviceIdentificationVpdPage(this);
+    }
+
     /**
      * Gets and increments the value to use in the next unreserved
      * <code>Target Transfer Tag</code> field of the next PDU to be sent by the
@@ -96,21 +99,17 @@ public final class TargetServer {
      *            all command line arguments are ignored
      * @throws IOException
      */
-    public static void main(String[] args) throws IOException {
-        TargetServer target = new TargetServer();
-        target.start();
+    public static void main(String[] args) throws Exception {
+        TargetServer target = new TargetServer(Configuration.create());
+        target.call();
     }
 
-    public void start() throws IOException {
+    public Void call() throws Exception {
 
         LOGGER.debug("Starting jSCSI-target: ");
 
         // read target settings from configuration file
-        // exit if there is a problem
-        if (!readConfig()) {
-            LOGGER.fatal("Error while trying to read settings.\nShutting down.");
-            return;
-        }
+
         LOGGER.debug("   port:           " + getConfig().getPort());
         LOGGER.debug("   loading targets.");
         // open the storage medium
@@ -122,10 +121,7 @@ public final class TargetServer {
             LOGGER.debug("   target name:    " + curTargetInfo.getTargetName()
                     + " loaded.");
         }
-        mainLoop();
-    }
 
-    public void mainLoop() {
         ExecutorService threadPool = Executors.newFixedThreadPool(4);
         // Create a blocking server socket and check for connections
         try {
@@ -188,50 +184,11 @@ public final class TargetServer {
             // this block is entered if the desired port is already in use
             LOGGER.fatal(e);
         }
-    }
-
-    /**
-     * Reads target settings from configuration file and stores them in the
-     * {@link #config} object. Returns <code>false</code> if the operation could
-     * not be completed successfully, else it returns <code>true</code>.
-     * 
-     * @return <code>true</code> if the target settings were read from the
-     *         configuration file, <code>false</code> otherwise. {@see
-     *         Configuration}
-     */
-    private boolean readConfig() {
-        try {
-            setConfig(Configuration.create());
-        } catch (SAXException e) {
-            LOGGER.fatal(e.fillInStackTrace());
-            return false;
-        } catch (ParserConfigurationException e) {
-            LOGGER.fatal(e.fillInStackTrace());
-            return false;
-        } catch (IOException e) {
-            LOGGER.fatal(e.fillInStackTrace());
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Removes a session from the jSCSI Target's list of active sessions.
-     * 
-     * @param session
-     *            the session to remove from the list of active sessions
-     */
-    public synchronized void removeTargetSession(TargetSession session) {
-        sessions.remove(session);
+        return null;
     }
 
     public Configuration getConfig() {
         return config;
-    }
-
-    public void setConfig(Configuration config) {
-        this.config = config;
-        deviceIdentificationVpdPage = new DeviceIdentificationVpdPage(this);
     }
 
     public DeviceIdentificationVpdPage getDeviceIdentificationVpdPage() {
@@ -244,18 +201,20 @@ public final class TargetServer {
         }
     }
 
+    /**
+     * Removes a session from the jSCSI Target's list of active sessions.
+     * 
+     * @param session
+     *            the session to remove from the list of active sessions
+     */
+    public synchronized void removeTargetSession(TargetSession session) {
+        sessions.remove(session);
+    }
+
     public String[] getTargetNames() {
         String[] returnNames = new String[targets.size()];
         returnNames = targets.keySet().toArray(returnNames);
         return returnNames;
-    }
-
-    public void addStorageModule(String targetName, String targetAlias,
-            IStorageModule storageModule) {
-        Target addTarget = new Target(targetName, targetAlias, storageModule);
-        synchronized (targets) {
-            targets.put(targetName, addTarget);
-        }
     }
 
     /**
@@ -266,13 +225,6 @@ public final class TargetServer {
      */
     public boolean isValidTargetName(String checkTargetName) {
         return targets.containsKey(checkTargetName);
-    }
-
-    public void removeStorageModule(String exportTargetName) {
-        // TODO - check for logins
-        synchronized (targets) {
-            targets.remove(exportTargetName);
-        }
     }
 
 }
