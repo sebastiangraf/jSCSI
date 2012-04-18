@@ -13,7 +13,7 @@ published on sonatype.
 2011
 ----
 
-* jSCSI is transferred from http://sourceforge.net/projects/jscsi/ Sourceforge to https://github.com/disy Github.
+* jSCSI is transferred from [sourceforge](http://sourceforge.net/projects/jscsi/) to [github&(https://github.com/disy).
 The development of a target is concluded as bachelors' project of Andreas Ergenzinger.
 
 2010

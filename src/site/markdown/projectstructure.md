@@ -1,8 +1,9 @@
 # Overall Structure
 
-The modularity of jSCSI is represented by its module structure. Fully mavenized, the functionality are split into different modules depending on each other. ![project schema](/pictures/projectschema.graffle)
+The modularity of jSCSI is represented by its module structure. Fully mavenized, the functionality are split into different modules depending on each other.
 
 The denoted figure represents the project structure of jSCSI:
+![project schema](/images/projectschema.graffle)
 
 * All common functionalities for parsing are handles over a commons-bundle. These functionalities include the parsing of PDUs as well as common exceptions. The centralized handling of such functionalities guarantee a similar behavior of the target and the initiator including application which depend on those.
 * The initiator is handled over a depending module. Its applicability as library depending on the commons-bundle offers easy access to (nearly) any target instance. All functionality necessary to work with iSCSI-targets is provided by this bundle.
@@ -16,7 +17,7 @@ Please note, that parts of the project are neither supported nor further develop
 
 ## Storage Pool
 
-The design and implementation of the storage pool was a bachelors' project by Bastian Lemke. The idea was to implement a jSCSI-based layer for combining targets similar to the volume manager provided by ZFS or LVM as shown in the following figure. ![pool tree ](/pictures/pool-tree.graffle)
+The design and implementation of the storage pool was a bachelors' project by Bastian Lemke. The idea was to implement a jSCSI-based layer for combining targets similar to the volume manager provided by ZFS or LVM as shown in the following figure. ![pool tree ](/images/pool-tree.graffle)
 
 A detailed description is available as http://kops.ub.uni-konstanz.de/handle/urn:nbn:de:bsz:352-opus-58078 bachelor thesis of Bastian Lemke (unfortunately in German only).
 
@@ -26,7 +27,7 @@ The storage still works with the newest version of the initiator but is not main
 
 ## Whiskas Block Visualization
 
-Another application for the initiator is the visualization of blocks. Resulting in an Eclipse plugin, block access pattern are visualized like denoted in the following figure. [whiskas plugin  ](/pictures/fullscreen2.png)
+Another application for the initiator is the visualization of blocks. Resulting in an Eclipse plugin, block access pattern are visualized like denoted in the following figure. [whiskas plugin  ](/images/fullscreen2.png)
 
 A detailed description is available as http://kops.ub.uni-konstanz.de/handle/urn:nbn:de:bsz:352-opus-69096 InfoVis Poster.
 
@@ -36,7 +37,7 @@ The plugin is included in the source tree although it is not maintained any more
 
 ## SCSI-Layer
 
-Since jSCSI acted as component within the Dispersed Storage from Cleversafe, Clefersafe contributed a SCSI-layer to jSCSI. This layer maps SCSI-commands to Java offering native support for SCSI-devices. More information about the Dispersed Storage can be found under the website of the http://online.wsj.com/article/SB122227003788371453.html WSJ Cleversafe won with their approach.
+Since jSCSI acted as component within the Dispersed Storage from Cleversafe, Clefersafe contributed a SCSI-layer to jSCSI. This layer maps SCSI-commands to Java offering native support for SCSI-devices. More information about the Dispersed Storage can be found under the website of the [WSJ Cleversafe ](http://online.wsj.com/article/SB122227003788371453.html) won with their approach.
 
 ### Status
 

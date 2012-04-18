@@ -12,8 +12,6 @@ Operation queueing and reordering is the task of the device implementation where
 
 All the Devices are fully stackable, this means that they can be combined arbitrarily:
 
-
-
 Currently, following Devices exists:
 
 ### JSCSIDevice

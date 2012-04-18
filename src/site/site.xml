@@ -34,9 +34,14 @@
 			<item name="Project Structure" href="projectstructure.html" />
 			<item name="development" href="development.html" />
 			<item name="FAQ" href="faq.html" />
-			
 		</menu>
-		<menu ref="modules" />
+    <breadcrumbs>
+	  <item name="JSCSI" href="http://disy.github.com/jscsi"/>
+	</breadcrumbs>
+		<menu name="Modules">
+			<item name="Initiator" href="bundles/initiator/index.html" />
+			<item name="Target" href="bundles/target/index.html" />
+		</menu>
 	</body>
 	<skin>
 		<groupId>org.apache.maven.skins</groupId>

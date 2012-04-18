@@ -7,7 +7,7 @@ The iSCSI protocol
 ------------------
 
 The iSCSI protocol defines how a client (iSCSI initiator) accesses a block device on a server (iSCSI target) over a TCP/IP network. It is inspired by the existing SCSI protocol used to access local hard drives or other devices in a block-oriented fashion. 
-Being standardized in April 2004 with ../../licence/rfc3720.txt RFC 3720, it was quickly	adopted, not least because it is believed to offer a better price-performance ratio and fewer infrastructure changes than competing solutions such as fibre channel. 
+Being standardized in April 2004 with [RFC 3720](http://www.ietf.org/rfc/rfc3720.txt), it was quickly	adopted, not least because it is believed to offer a better price-performance ratio and fewer infrastructure changes than competing solutions such as fibre channel. 
 Furthermore, recent research indicates that user-level iSCSI initiators can improve performance considerably.
 
 jSCSI - a plain Java iSCSI framework
@@ -32,7 +32,7 @@ Our target is suited to act as a base for further target-allocated applications 
 Who worked on jSCSI?
 --------------------
 
-jSCSI was created at the http://www.informatik.uni-konstanz.de/arbeitsgruppen/disy/ Distributed Systems Group from the http://www.uni-konstanz.de/ University of Konstanz. jSCSI is licensed under the http://www.opensource.org/licenses/BSD-3-Clause BSD license offering easy ways to utilize the provided library. 
+jSCSI was created at the [Distributed Systems Group](http://www.informatik.uni-konstanz.de/arbeitsgruppen/disy/) from the [university of Konstanz](http://www.uni-konstanz.de/). jSCSI is licensed under the [BSD3-Clause Licence](http://www.opensource.org/licenses/BSD-3-Clause) offering easy ways to utilize the provided library. 
 The project was started in 2006 by Marc Kramis and transferred in 2007 to Sebastian Graf. Since its beginning, jSCSI acts as a base for student projects. The following students contributed to this project:
 
 Volker Wildi, jSCSI Initiator 1.0
@@ -43,7 +43,7 @@ Patrice Brend'amour, jSCSI Initiator 2.0
 Andreas Ergenzinger, jSCSI Target 1.0
 Nuray GÃ¼rler, jSCSI websites
 Andreas Rain, Test-cases
-Within the switch of the hosting from http://sourceforge.net/projects/jscsi/ Sourceforge to 	https://github.com/disy Github, jSCSI experiences impacts from the open-source community directly. The following companies provided features within jSCSI:
+Within the switch of the hosting from [Sourceforge](http://sourceforge.net/projects/jscsi/) to [github](https://github.com/disy), jSCSI experiences impacts from the open-source community directly. The following companies provided features within jSCSI:
 SCSI-layer; Thank you, Cleversafe
 Flexible disk-size; Thank you,
 Multiple target-handling within one instance; Thank you,

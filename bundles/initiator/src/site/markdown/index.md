@@ -2,11 +2,11 @@
 
 iSCSI defines a server-client protocol for block-based data transmission whereas the client is denoted as initiator while the server is called target. This bundle represents the client denoted initiator for the rest of the documentation.
 
-The most recent description of the framework is a TechReport from 2009 accessible over http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84511 here.
+The most recent description of the framework is a TechReport from 2009 accessible [over here](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84511).
 
 ## Block-based access from native Java-Libraries
 
-The interface of the jSCSI initiator is easy similar to common byte-based interfaces well known from the java.io-package. The configuration can take place either over Java directly or over defined XML-files validated against given schemas. After connecting to any target, the initiator is able to read/write chunks of bytes directly out of Java to any target while offering other convenience methods fully compliant to the http://www.ietf.org/rfc/rfc3720.txt iSCSI RFC 3720.
+The interface of the jSCSI initiator is easy similar to common byte-based interfaces well known from the java.io-package. The configuration can take place either over Java directly or over defined XML-files validated against given schemas. After connecting to any target, the initiator is able to read/write chunks of bytes directly out of Java to any target while offering other convenience methods fully compliant to the [iSCSI RFC 3720](http://www.ietf.org/rfc/rfc3720.txt).
 
 ## Fast and robust
 
@@ -17,6 +17,6 @@ As clearly visible, jSCSI offers the ability to either open multiple sessions to
 
 ## Own needs, own requirements
 
-jSCSI was created at the http://www.uni-konstanz.de University of Konstanz at the http://www.informatik.uni-konstanz.de/arbeitsgruppen/disy/ Distributed Systems Group}Distributed Systems Group out of the necessity to provide an architecture for storing blocks directly out of Java without any hassle of filesystems.
+jSCSI was created at the [university of Konstanz](http://www.uni-konstanz.de) at the [distributed systems group](http://www.informatik.uni-konstanz.de/arbeitsgruppen/disy/) out of the necessity to provide an architecture for storing blocks directly out of Java without any hassle of filesystems.
 
-The jSCSI-initiator is hosted with jSCSI https://github.com/disy/jSCSI under the BSD License and guarded by Travis-CI. It can be found under the bundle jscsi-initiator.
+The jSCSI-initiator is hosted with [github](https://github.com/disy/jSCSI) under the BSD License and guarded by Travis-CI. It can be found under the bundle jscsi-initiator.
