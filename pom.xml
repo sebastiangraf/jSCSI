@@ -70,6 +70,14 @@
 		<name>University of Konstanz, Distributed System Group</name>
 		<url>http://www.disy.uni-konstanz.de</url>
 	</organization>
+	<mailingLists>
+		<mailingList>
+			<name>JSCSI Mailing List</name>
+			<subscribe>jscsi-subscribe@mailman.uni-konstanz.de</subscribe>
+			<unsubscribe>jscsi-unsibscribe@mailman.uni-konstanz.de</unsubscribe>
+			<post>jscsi@mailman.uni-konstanz.de</post>
+		</mailingList>
+	</mailingLists>
 	<build>
 		<plugins>
 			<plugin>
@@ -170,7 +178,7 @@
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-project-info-reports-plugin</artifactId>
-							<version>2.2</version>
+							<version>2.4</version>
 							<configuration>
 								<dependencyDetailsEnabled>false</dependencyDetailsEnabled>
 								<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
@@ -188,8 +196,6 @@
 								<report>summary</report>
 							</reports>
 						</plugin>
-					</reportPlugins>
-					<reportPlugins>
 						<plugin>
 							<artifactId>maven-javadoc-plugin</artifactId>
 							<version>2.7</version>
