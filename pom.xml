@@ -72,7 +72,7 @@
 	</organization>
 	<mailingLists>
 		<mailingList>
-			<name>JSCSI Mailing List</name>
+			<name>jSCSI Mailing List</name>
 			<subscribe>jscsi-subscribe@mailman.uni-konstanz.de</subscribe>
 			<unsubscribe>jscsi-unsibscribe@mailman.uni-konstanz.de</unsubscribe>
 			<post>jscsi@mailman.uni-konstanz.de</post>
@@ -292,7 +292,6 @@
 			<url>gitsite:git@github.com/disy/jSCSI.git</url>
 		</site>
 	</distributionManagement>
-
 
 	<modules>
 		<module>bundles/commons</module>

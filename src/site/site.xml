@@ -20,15 +20,15 @@
 	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN If 
 	ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. -->
 
-<project name="JSCSI">
+<project name="jSCSI">
 	<bannerLeft>
-		<name>JSCSI</name>
+		<name>jSCSI</name>
 		<src>images/logo.png</src>
 		<href>git@github.com:disy/jSCSI.git</href>
 	</bannerLeft>
 	<body>
 		<menu ref="reports" />
-		<menu name="JSCSI">
+		<menu name="jSCSI">
 			<item name="Overview" href="index.html" />
 			<item name="history" href="history.html" />
 			<item name="Project Structure" href="projectstructure.html" />
@@ -36,7 +36,7 @@
 			<item name="FAQ" href="faq.html" />
 		</menu>
     <breadcrumbs>
-	  <item name="JSCSI" href="http://disy.github.com/jscsi"/>
+	  <item name="jSCSI" href="http://disy.github.com/jSCSI"/>
 	</breadcrumbs>
 		<menu name="Modules">
 			<item name="Initiator" href="bundles/initiator/index.html" />
@@ -52,8 +52,8 @@
 		<fluidoSkin>
 			<topBarEnabled>false</topBarEnabled>
 			<topBarIcon>
-				<name>JSCSI</name>
-				<alt>JSCSI Logo</alt>
+				<name>jSCSI</name>
+				<alt>jSCSI Logo</alt>
 				<src>images/logo.png</src>
 			</topBarIcon>
 		</fluidoSkin>

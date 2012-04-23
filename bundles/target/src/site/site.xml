@@ -27,9 +27,9 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -->
-<project name="JSCSI">
+<project name="jSCSI">
   <bannerLeft>
-    <name>JSCSI</name>
+    <name>jSCSI</name>
     <src>images/logo.png</src>
     <href>git@github.com:disy/jSCSI.git</href>
   </bannerLeft>
@@ -40,7 +40,7 @@
       <item name="Examples" href="examples.html"/>
     </menu>
     <breadcrumbs>
-	  <item name="JSCSI" href="http://disy.github.com/jscsi"/>
+	  <item name="jSCSI" href="http://disy.github.com/jSCSI"/>
 	</breadcrumbs>
     <menu ref="reports"/>
   </body>
@@ -53,8 +53,8 @@
 	<fluidoSkin>
       <topBarEnabled>false</topBarEnabled>
       <topBarIcon>
-        <name>JSCSI </name>
-        <alt>JSCSI Logo</alt>
+        <name>jSCSI </name>
+        <alt>jSCSI Logo</alt>
         <src>images/logo.png</src>
       </topBarIcon>
     </fluidoSkin>
