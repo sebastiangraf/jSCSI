@@ -27,7 +27,8 @@
 
 	<description>jSCSI is a feature-complete iSCSI implementation in Java only. Platform-independent and fast, jSCSI represents a premium example how low-level protocols can be pushed to higher levels. jSCSI contains a server (target), a client (initiator) and common classes to work with the protocol.</description>
 
-	<url>https://github.com/disy/jSCSI</url>
+	<url>http://disy.github.com/jSCSI/</url>
+	<!-- 	<url>https://github.com/disy/jSCSI/</url>-->
 	<issueManagement>
 		<url>https://github.com/disy/jSCSI/issues</url>
 		<system>GitHub Issues</system>
@@ -57,12 +58,10 @@
 				<role>Developer</role>
 				<role>Architect</role>
 			</roles>
-			<url>http://www.informatik.uni-konstanz.de/arbeitsgruppen/Verteilte-Systeme/mitglieder/Sebastian-Graf
-			</url>
-			<organization>University of Konstanz, Distributed Systems Lab
+			<url>http://www.disy.uni-konstanz.de/</url>
+			<organization>University of Konstanz, Distributed Systems Group
 			</organization>
-			<organizationUrl>http://www.informatik.uni-konstanz.de/ags/disy/
-			</organizationUrl>
+			<organizationUrl>http://www.disy.uni-konstanz.de/</organizationUrl>
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
@@ -223,7 +222,8 @@
 					<dependency>
 						<groupId>org.apache.maven.doxia</groupId>
 						<artifactId>doxia-module-markdown</artifactId>
-						<version>1.3-SNAPSHOT</version>
+<!--						<version>1.3-SNAPSHOT</version>-->
+						<version>1.3</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -266,7 +266,8 @@
 		<dependency>
 			<groupId>org.perfidix</groupId>
 			<artifactId>perfidix</artifactId>
-			<version>3.6.5-SNAPSHOT</version>
+			<version>3.6.5</version>
+			<!--						<version>3.6.5-SNAPSHOT</version>-->
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -289,7 +290,8 @@
 		</snapshotRepository>
 		<site>
 			<id>github</id>
-			<url>gitsite:nuray-guerler@github.com/disy/jSCSI.git</url>
+<!--			<url>gitsite:disy@github.com/disy/jSCSI.git</url>-->
+<url>gitsite:git@github.com/disy/jSCSI.git</url> 
 		</site>
 	</distributionManagement>
 
