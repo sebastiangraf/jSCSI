@@ -6,4 +6,4 @@ install: echo 'Skipping mvn install'
 script: mvn clean test -U
 notifications:
     on_success: never
-    on_failure: always
+    on_failure: never
