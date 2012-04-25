@@ -40,7 +40,7 @@
       <item name="Examples" href="examples.html"/>
     </menu>
     <breadcrumbs>
-	  <item name="jSCSI" href="http://disy.github.com/jSCSI"/>
+	  <item name="jSCSI" href="http://disy.github.com/jSCSI/"/>
 	</breadcrumbs>
     <menu ref="reports"/>
   </body>

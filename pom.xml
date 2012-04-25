@@ -289,7 +289,7 @@
 		</snapshotRepository>
 		<site>
 			<id>github</id>
-			<url>gitsite:git@github.com/disy/jSCSI.git</url>
+			<url>gitsite:nuray-guerler@github.com/disy/jSCSI.git</url>
 		</site>
 	</distributionManagement>
 

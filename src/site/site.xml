@@ -24,7 +24,7 @@
 	<bannerLeft>
 		<name>jSCSI</name>
 		<src>images/logo.png</src>
-		<href>git@github.com:disy/jSCSI.git</href>
+		<href>http://disy.github.com/jSCSI</href>
 	</bannerLeft>
 	<body>
 		<menu ref="reports" />
@@ -36,7 +36,7 @@
 			<item name="FAQ" href="faq.html" />
 		</menu>
     <breadcrumbs>
-	  <item name="jSCSI" href="http://disy.github.com/jSCSI"/>
+	  <item name="jSCSI" href="http://disy.github.com/jSCSI/"/>
 	</breadcrumbs>
 		<menu name="Modules">
 			<item name="Initiator" href="bundles/initiator/index.html" />
