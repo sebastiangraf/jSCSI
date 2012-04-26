@@ -2,8 +2,8 @@ language: java
 branches:
   only:
     - master
-install: echo 'Skipping mvn install'
+install: echo 'Skipping mvn install' 
 script: mvn clean test -U
 notifications:
     on_success: never
-    on_failure: never
+    on_failure: always
