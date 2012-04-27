@@ -34,6 +34,9 @@
     <href>git@github.com:disy/jSCSI.git</href>
   </bannerLeft>
   <body>
+    <menu name="Reports">
+      <item name="Reports" href="project-reports.html"/>
+    </menu>
     <menu name="Target">
       <item name="About Target" href="index.html"/>
       <item name="Usage" href="usage.html"/>
@@ -42,7 +45,6 @@
     <breadcrumbs>
 	  <item name="jSCSI" href="http://disy.github.com/jSCSI/"/>
 	</breadcrumbs>
-    <menu ref="reports"/>
   </body>
   <skin>
     <groupId>org.apache.maven.skins</groupId>
