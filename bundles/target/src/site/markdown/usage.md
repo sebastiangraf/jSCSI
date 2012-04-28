@@ -4,14 +4,14 @@ The target is entirely written in Java. Based on its use-case as stand-alone pro
 
 ### Configuration
 
-The configuration of the initiator takes place over the class org.jscsi.target.Configuration storing global configurations as well as target-specific ones. Instead of building a suitable configuration by hand, a xsd is provided under src/main/resources/jscsi.xsd.
+The configuration of the initiator takes place over the class *org.jscsi.target.Configuration* storing global configurations as well as target-specific ones. Instead of building a suitable configuration by hand, a xsd is provided under *src/main/resources/jscsi.xsd*.
 Please note that every own xml used for configuring the jSCSI-target must satisfy the denoted xsd. One example of such an xml is given at the end of the document.
 
-A detailed description of the supported settings is given in the classes org.jscsi.parser.datasegment.OperationalTextKey in the commons-bundle. If the config is created by hand, the same settings than denoted by the xsd must be set. Otherwise the target may not be fully functional (even if no exception might be thrown). In all cases, the Configuration must be initialized properly to get the target running
+A detailed description of the supported settings is given in the class *org.jscsi.parser.datasegment.OperationalTextKey* in the commons-bundle. If the config is created by hand, the same settings than denoted by the xsd must be set. Otherwise the target may not be fully functional (even if no exception might be thrown). In all cases, the Configuration must be initialized properly to get the target running
 
 ### Handling the Target
 
-The main class org.jscsi.target.TargetServer refers to a Configuration, created with the help of such an XML, while running. At the moment (April 2012), the target is not supporting any authentication or authorization
+The main class *org.jscsi.target.TargetServer* refers to a Configuration, created with the help of such an XML, while running. At the moment (April 2012), the target is not supporting any authentication or authorization
 If the storage, referring in the Configuration, is not existing, a creation process must triggered implicitly by the implementing StorageModule. The login-process is performed afterwards.
 
 ### Reading and Writing
@@ -20,7 +20,7 @@ The target listens on the port denoted in the Configuration an maps any request 
 
 ### Example of initialization
 
-The fastest way to get the jSCSI-target on is the writing of the denote configuration-xml and giving the path of the XML to the TargetServer as only parameter. If no parameter is given as parameter, the standard configuration from target/src/main/resources/jscsi-target.xml is taken.
+The fastest way to get the jSCSI-target on is the writing of the denote configuration-xml and giving the path of the XML to the TargetServer as only parameter. If no parameter is given as parameter, the standard configuration from *target/src/main/resources/jscsi-target.xml* is taken.
 
 ### Example of a configuration-xml
 

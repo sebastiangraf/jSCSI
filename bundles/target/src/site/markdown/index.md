@@ -9,16 +9,16 @@ The target is designed to act as a standalone Java-process in a JVM offering the
 ## Robust and Flexible
 
 The jSCSI-target represents a plain-java based adapter for providing an iSCSI-target directly out of your Java environment. By leveraging from the concurrency-features of Java 5+, the target offers variable ways to handle any incoming data request. Furthermore, the mapping if the iSCSI RFC to object-oriented paradigms within jSCSI offers the ability to map iSCSI to different storage backends as denoted below:
-![storage](/images/storage.graffle)
-As clearly visible, jSCSI offers the ability to map any backend implementing the interface org.jscsi.target.storage.IStorageModule to the iSCSI RFC. At the moment, the interface is implemented only by an asynchronous file backend as well as a synchronized file environment. Each request is handled multi-threaded where possible. It is important to note, that the multi-threaded ability of jSCSI is only utilized after login when accessing any target for read-/write-purposes.
+![storage](images/storage.svg)
+As clearly visible, jSCSI offers the ability to map any backend implementing the interface *org.jscsi.target.storage.IStorageModule* to the iSCSI RFC. At the moment, the interface is implemented only by an asynchronous file backend as well as a synchronized file environment. Each request is handled multi-threaded where possible. It is important to note, that the multi-threaded ability of jSCSI is only utilized after login when accessing any target for read-/write-purposes.
 
 ## Own needs, own requirements
 
-jSCSI was created at the [university of Konstanz](http://www.uni-konstanz.de/) at the [distributed systems group](http://www.informatik.uni-konstanz.de/arbeitsgruppen/disy/) out of the necessity to provide an architecture for storing blocks directly out of Java without any hassle of filesystems.
+jSCSI was created at the [University of Konstanz](http://www.uni-konstanz.de/) at the [Distributed Systems Group](http://www.disy.uni-konstanz.de/) out of the necessity to provide an architecture for storing blocks directly out of Java without any hassle of filesystems.
 
 Below, see a small history of the jSCSI-target:
 
 * Transferred from sourceforge to github in 2011.
 * Transferred to github in 2011.
 * The target was developed as a bachelors' project of Andreas Ergenzinger in 2011.
-The jSCSI-target is hosted with [github](https://github.com/disy/jSCSI) under the BSD License and guarded by Travis-CI. It can be found under the bundle jscsi-target.
+The jSCSI-target is hosted with [github](https://github.com/disy/jSCSI) under the [BSD License](http://www.opensource.org/licenses/BSD-3-Clause) and guarded by Travis-CI. It can be found under the bundle jscsi-target.
