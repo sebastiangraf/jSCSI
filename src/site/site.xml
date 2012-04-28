@@ -30,9 +30,8 @@
 		<menu ref="reports" />
 		<menu name="jSCSI">
 			<item name="Overview" href="index.html" />
-			<item name="history" href="history.html" />
+			<item name="History" href="history.html" />
 			<item name="Project Structure" href="projectstructure.html" />
-			<item name="development" href="development.html" />
 			<item name="FAQ" href="faq.html" />
 		</menu>
     <breadcrumbs>
