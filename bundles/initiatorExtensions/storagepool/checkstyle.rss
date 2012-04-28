@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>jscsi-storagepool - Checkstyle report</title>
+    <link>http://disy.github.com/jSCSI/bundles/initiatorExtensions/storagepool/</link>
+    <description>jscsi-storagepool - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2012 University of Konstanz, Distributed System Group</copyright>
+    <item>
+      <title>File: 9,
+             Errors: 222,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>http://disy.github.com/jSCSI/bundles/initiatorExtensions/storagepool//checkstyle.html</link>
+      <description>
+        <p>Click <a href="http://disy.github.com/jSCSI/bundles/initiatorExtensions/storagepool//checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="http://disy.github.com/jSCSI/bundles/initiatorExtensions/storagepool//checkstyle.html#org.jscsi.initiator.devices.Raid0Device.java">org/jscsi/initiator/devices/Raid0Device.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  57
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://disy.github.com/jSCSI/bundles/initiatorExtensions/storagepool//checkstyle.html#org.jscsi.initiator.devices.WriteBufferDevice.java">org/jscsi/initiator/devices/WriteBufferDevice.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  15
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://disy.github.com/jSCSI/bundles/initiatorExtensions/storagepool//checkstyle.html#org.jscsi.initiator.devices.Device.java">org/jscsi/initiator/devices/Device.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  17
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://disy.github.com/jSCSI/bundles/initiatorExtensions/storagepool//checkstyle.html#org.jscsi.initiator.devices.WhiskasDevice.java">org/jscsi/initiator/devices/WhiskasDevice.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  20
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://disy.github.com/jSCSI/bundles/initiatorExtensions/storagepool//checkstyle.html#org.jscsi.initiator.devices.PrefetchDevice.java">org/jscsi/initiator/devices/PrefetchDevice.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://disy.github.com/jSCSI/bundles/initiatorExtensions/storagepool//checkstyle.html#org.jscsi.initiator.devices.JSCSIDevice.java">org/jscsi/initiator/devices/JSCSIDevice.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  27
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://disy.github.com/jSCSI/bundles/initiatorExtensions/storagepool//checkstyle.html#org.jscsi.initiator.devices.Raid1Device.java">org/jscsi/initiator/devices/Raid1Device.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  49
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://disy.github.com/jSCSI/bundles/initiatorExtensions/storagepool//checkstyle.html#org.jscsi.initiator.devices.DummyDevice.java">org/jscsi/initiator/devices/DummyDevice.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://disy.github.com/jSCSI/bundles/initiatorExtensions/storagepool//checkstyle.html#org.jscsi.initiator.devices.package-info.java">org/jscsi/initiator/devices/package-info.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  5
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+
