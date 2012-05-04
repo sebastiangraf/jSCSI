@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>target</artifactId>
-	<name>jscsi-target</name>
+	<name>Target</name>
 	<packaging>jar</packaging>
 
 	<build>

@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>commons</artifactId>
-	<name>jscsi-commons</name>
+	<name>Libraries</name>
 	<packaging>jar</packaging>
 
 </project>

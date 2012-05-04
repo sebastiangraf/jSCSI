@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>initiator</artifactId>
-	<name>jscsi-initiator</name>
+	<name>Initiator</name>
 	<packaging>jar</packaging>
 
 

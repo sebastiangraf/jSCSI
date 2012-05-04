@@ -37,10 +37,11 @@
     <breadcrumbs>
 	  <item name="jSCSI" href="http://disy.github.com/jSCSI/"/>
 	</breadcrumbs>
-		<menu name="Modules">
+		<menu ref="modules"/>
+<!--		<menu name="Modules">
 			<item name="Initiator" href="bundles/initiator/index.html" />
 			<item name="Target" href="bundles/target/index.html" />
-		</menu>
+		</menu>-->
 	</body>
 	<skin>
 		<groupId>org.apache.maven.skins</groupId>

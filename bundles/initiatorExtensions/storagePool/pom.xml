@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>storagepool</artifactId>
-	<name>jscsi-storagepool</name>
+	<name>Storage-Pool</name>
 	<packaging>jar</packaging>
 
 	<dependencies>

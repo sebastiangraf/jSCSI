@@ -17,7 +17,7 @@
 	<artifactId>pom</artifactId>
 	<packaging>pom</packaging>
 	<version>2.2-SNAPSHOT</version>
-	<name>jscsi-pom</name>
+	<name>Builder</name>
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -142,7 +142,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.1.2</version>
 				<executions>
@@ -159,7 +158,6 @@
 				<version>2.3.1</version> <executions> <execution> <goals> <goal>test-jar</goal> 
 				</goals> </execution> </executions> </plugin> -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
@@ -214,6 +212,9 @@
 						<plugin>
 							<artifactId>maven-pmd-plugin</artifactId>
 							<version>2.7.1</version>
+							<configuration>
+						        <targetJdk>${maven.compiler.target}</targetJdk>
+					      </configuration>
 						</plugin>
 					</reportPlugins>
 				</configuration>
@@ -300,7 +301,7 @@
 		<module>bundles/commons</module>
 		<module>bundles/initiator</module>
 		<module>bundles/target</module>
-		<module>bundles/initiatorExtensions/storagePool</module>
+<!--		<module>bundles/initiatorExtensions/storagePool</module>-->
 	</modules>
 
 
@@ -308,7 +309,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
-		<slf4j.version>1.6.1</slf4j.version>
 	</properties>
 
 </project>
