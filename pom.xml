@@ -284,11 +284,21 @@
     </distributionManagement>
 
     <modules>
-        <module>bundles/commons</module>
         <module>bundles/initiator</module>
         <module>bundles/target</module>
-        <module>bundles/initiatorExtensions/storagePool</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>all</id>
+            <modules>
+                <module>bundles/commons</module>
+                <module>bundles/initiator</module>
+                <module>bundles/target</module>
+                <module>bundles/initiatorExtensions/storagePool</module>
+            </modules>
+        </profile>
+    </profiles>
 
 
     <properties>
