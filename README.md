@@ -25,7 +25,7 @@ This work is released in the public domain under the BSD 3-clause license
 Further information
 -------
 
-The project is currently under refactoring, the documentation will be under http://jscsi.org (pointing to http://disy.github.com/jscsi/) and a mailinglist has been set up:
+The project is currently under refactoring, the documentation is accessible under http://jscsi.org (pointing to http://disy.github.com/jscsi/) and a mailinglist has been set up:
 https://mailman.uni-konstanz.de/mailman/listinfo/jscsi
 
 ###Publications

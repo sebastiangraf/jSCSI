@@ -2,6 +2,10 @@
 
 jSCSI is the first Java iSCSI initiator continuously developed since 2006. Entirely written in Java, it allows easy access to iSCSI as block-accessing protocol from both sides, server(target) and client(initiator).
 
+#Build status
+
+jSCSI is guarded by Travis CI: [![Build Status](https://secure.travis-ci.org/disy/jSCSI.png)](http://travis-ci.org/disy/jSCSI)
+
 ##The iSCSI protocol
 
 The iSCSI protocol defines how a client (iSCSI initiator) accesses a block device on a server (iSCSI target) over a TCP/IP network. It is inspired by the existing SCSI protocol used to access local hard drives or other devices in a block-oriented fashion. 

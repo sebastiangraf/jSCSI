@@ -21,4 +21,5 @@ Below, see a small history of the jSCSI-target:
 * Transferred from sourceforge to github in 2011.
 * Transferred to github in 2011.
 * The target was developed as a bachelors' project of Andreas Ergenzinger in 2011.
-The jSCSI-target is hosted with [github](https://github.com/disy/jSCSI) under the [BSD License](http://www.opensource.org/licenses/BSD-3-Clause) and guarded by Travis-CI. It can be found under the bundle jscsi-target.
+
+The jSCSI-target is hosted with [github](https://github.com/disy/jSCSI) under the [BSD License](http://www.opensource.org/licenses/BSD-3-Clause) and guarded by Travis-CI: [![Build Status](https://secure.travis-ci.org/disy/jSCSI.png)](http://travis-ci.org/disy/jSCSI)

@@ -20,4 +20,4 @@ As clearly visible, jSCSI offers the ability to either open multiple sessions to
 
 jSCSI was created at the [University of Konstanz](http://www.uni-konstanz.de) at the [Distributed Systems Group](http://www.disy.uni-konstanz.de/) out of the necessity to provide an architecture for storing blocks directly out of Java without any hassle of filesystems.
 
-The jSCSI-initiator is hosted with [github](https://github.com/disy/jSCSI) under the [BSD License](http://www.opensource.org/licenses/BSD-3-Clause) and guarded by Travis-CI. It can be found under the bundle jscsi-initiator.
+The jSCSI-initiator is hosted with [github](https://github.com/disy/jSCSI) under the [BSD License](http://www.opensource.org/licenses/BSD-3-Clause) and guarded by Travis-CI: [![Build Status](https://secure.travis-ci.org/disy/jSCSI.png)](http://travis-ci.org/disy/jSCSI)
