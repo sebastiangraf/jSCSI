@@ -272,7 +272,7 @@
             be installed -->
         <site>
             <id>file</id>
-            <url>file:${project.build.directory}/deploy</url>
+            <url>file:/tmp/deploy</url>
         </site>
         <!--<site> <id>github</id> <url>gitsite:git@github.com/disy/jSCSI.git</url> 
             </site> -->
