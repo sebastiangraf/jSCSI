@@ -190,7 +190,6 @@
                                 <report>issue-tracking</report>
                                 <report>license</report>
                                 <report>scm</report>
-                                <report>mailing-list></report>
                                 <report>summary</report>
                             </reports>
                         </plugin>
@@ -229,9 +228,25 @@
                 </dependencies>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-ant-plugin</artifactId>
-                <version>2.3</version>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <target>
+                                <delete
+                                    dir="${project.build.directory}/site" />
+                                <copy todir="${project.build.directory}/site">
+                                    <fileset dir="${site.deploy.dir}" />
+                                </copy>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         <!-- <extensions> <extension> <groupId>org.apache.maven.scm</groupId> 
@@ -286,7 +301,7 @@
             be installed -->
         <site>
             <id>file</id>
-            <url>file:/tmp/deploy</url>
+            <url>file:${site.deploy.dir}</url>
         </site>
         <!--<site> <id>github</id> <url>gitsite:git@github.com/disy/jSCSI.git</url> 
             </site> -->
@@ -314,6 +329,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
+        <site.deploy.dir>/tmp/deploy</site.deploy.dir>
     </properties>
 
 </project>
