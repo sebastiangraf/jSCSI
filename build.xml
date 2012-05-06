@@ -1,0 +1,18 @@
+<project name="Deploy Site" basedir="." default="stage">
+
+    <property name="deploy.dir"     value="/tmp/deploy"/>
+    <property name="site.dir"     value="target/site"/>
+
+    <target name="clean">
+        <delete dir="${site.dir}"/>
+    </target>
+
+	<target name="copy">
+        <copy todir="${site.dir}">
+           <fileset dir="${deploy.dir}"/>
+        </copy>
+    </target>
+
+    <target name="stage" depends="clean,copy"/>
+
+</project>
