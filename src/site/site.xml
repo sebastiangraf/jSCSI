@@ -27,21 +27,17 @@
 		<href>http://disy.github.com/jSCSI</href>
 	</bannerLeft>
 	<body>
-		<menu ref="reports" />
 		<menu name="jSCSI">
 			<item name="Overview" href="index.html" />
 			<item name="History" href="history.html" />
 			<item name="Project Structure" href="projectstructure.html" />
 			<item name="FAQ" href="faq.html" />
 		</menu>
-    <breadcrumbs>
-	  <item name="jSCSI" href="http://disy.github.com/jSCSI/"/>
-	</breadcrumbs>
 		<menu ref="modules"/>
-<!--		<menu name="Modules">
-			<item name="Initiator" href="bundles/initiator/index.html" />
-			<item name="Target" href="bundles/target/index.html" />
-		</menu>-->
+		<menu ref="reports" />
+    	<breadcrumbs>
+	  		<item name="jSCSI" href="http://disy.github.com/jSCSI/"/>
+		</breadcrumbs>
 	</body>
 	<skin>
 		<groupId>org.apache.maven.skins</groupId>
