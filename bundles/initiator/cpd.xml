@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+<duplication lines="34" tokens="170">
+<file line="120" path="/Users/sebi/Dropbox/github/jscsi/bundles/initiator/src/main/java/org/jscsi/initiator/connection/state/WriteFirstBurstState.java"/>
+<file line="140" path="/Users/sebi/Dropbox/github/jscsi/bundles/initiator/src/main/java/org/jscsi/initiator/connection/state/WriteSecondBurstState.java"/>
+<codefragment>
+<![CDATA[
+        while (bytes2Transfer > 0 && iterator.hasNext()) {
+            if (bytes2Transfer <= maxRecvDataSegmentLength) {
+                dataSegmentChunk = iterator.next(bytes2Transfer);
+                finalFlag = true;
+            } else {
+                dataSegmentChunk = iterator.next(maxRecvDataSegmentLength);
+                finalFlag = false;
+            }
+
+            protocolDataUnit = protocolDataUnitFactory.create(false, finalFlag,
+                    OperationCode.SCSI_DATA_OUT,
+                    connection.getSetting(OperationalTextKey.HEADER_DIGEST),
+                    connection.getSetting(OperationalTextKey.DATA_DIGEST));
+            protocolDataUnit.getBasicHeaderSegment().setInitiatorTaskTag(
+                    connection.getSession().getInitiatorTaskTag());
+
+            dataOut = (DataOutParser) protocolDataUnit.getBasicHeaderSegment()
+                    .getParser();
+
+            dataOut.setTargetTransferTag(targetTransferTag);
+            dataOut.setDataSequenceNumber(dataSequenceNumber++);
+            dataOut.setBufferOffset(bufferOffset);
+            bufferOffset += maxRecvDataSegmentLength;
+
+            protocolDataUnit.setDataSegment(dataSegmentChunk);
+
+            protocolDataUnits.offer(protocolDataUnit);
+            bytes2Transfer -= maxRecvDataSegmentLength;
+        }
+
+        connection.send(protocolDataUnits);
+
+        connection.nextState(new WriteSecondResponseState(connection, iterator,
+                dataSequenceNumber, bufferOffset));
+]]>
+</codefragment>
+</duplication>
+</pmd-cpd>

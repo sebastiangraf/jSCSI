@@ -1,0 +1,26 @@
+-classpath
+'/Users/sebi/Dropbox/github/jscsi/bundles/initiator/target/classes:/Users/sebi/Dropbox/github/jscsi/bundles/initiator/target/test-classes:/Users/sebi/.m2/repository/log4j/log4j/1.2.9/log4j-1.2.9.jar:/Users/sebi/.m2/repository/commons-math/commons-math/1.2/commons-math-1.2.jar:/Users/sebi/.m2/repository/commons-primitives/commons-primitives/20041207.202534/commons-primitives-20041207.202534.jar:/Users/sebi/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/Users/sebi/.m2/repository/org/perfidix/perfidix/3.6.5/perfidix-3.6.5.jar:/Users/sebi/.m2/repository/org/jscsi/commons/2.2-SNAPSHOT/commons-2.2-SNAPSHOT.jar:/Users/sebi/.m2/repository/junit/junit/4.4/junit-4.4.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/Users/sebi/Dropbox/github/jscsi/bundles/initiator/src/test/java'
+-author
+-bottom
+'Copyright &#169; 2012 <a href="http://www.disy.uni-konstanz.de">University of Konstanz, Distributed Systems Group</a>. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/sebi/Dropbox/github/jscsi/bundles/initiator/target/site/testapidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Initiator 2.2-SNAPSHOT Test API'
+-link
+'http://java.sun.com/javase/6/docs/api'
+-linkoffline
+'http://disy.github.com/jSCSI/apidocs' '/Users/sebi/Dropbox/github/jscsi/bundles/target/target/site/testapidocs'
+-use
+-version
+-windowtitle
+'Initiator 2.2-SNAPSHOT Test API'
