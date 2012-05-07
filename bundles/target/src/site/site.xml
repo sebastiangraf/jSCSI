@@ -34,13 +34,13 @@
     <href>git@github.com:disy/jSCSI.git</href>
   </bannerLeft>
   <body>
-    <menu name="Reports">
-      <item name="Reports" href="project-reports.html"/>
-    </menu>
-    <menu name="Target">
+	<menu name="Target">
       <item name="About Target" href="index.html"/>
       <item name="Usage" href="usage.html"/>
       <item name="Examples" href="examples.html"/>
+    </menu>
+    <menu name="Reports">
+      <item name="Reports" href="project-reports.html"/>
     </menu>
     <breadcrumbs>
 	  <item name="jSCSI" href="http://disy.github.com/jSCSI/"/>
