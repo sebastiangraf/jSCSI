@@ -28,6 +28,11 @@
     <description>jSCSI is a feature-complete iSCSI implementation in Java only. Platform-independent and fast, jSCSI represents a premium example how low-level protocols can be pushed to higher levels. jSCSI contains a server (target), a client (initiator) and common classes to work with the protocol.</description>
 
     <url>http://disy.github.com/jSCSI/</url>
+    <scm>
+        <url>git@github.com:disy/jSCSI.git</url>
+        <connection>scm:git:git@github.com:disy/jSCSI.git</connection>
+        <developerConnection>scm:git:git@github.com:disy/jSCSI.git</developerConnection>
+    </scm>
     <issueManagement>
         <url>https://github.com/disy/jSCSI/issues</url>
         <system>GitHub Issues</system>
@@ -43,11 +48,6 @@
         <system>Travis CI</system>
         <url>http://travis-ci.org/#!/disy/jSCSI</url>
     </ciManagement>
-    <scm>
-        <url>git@github.com:disy/jSCSI.git</url>
-        <connection>scm:git:git@github.com:disy/jSCSI.git</connection>
-        <developerConnection>scm:git:git@github.com:disy/jSCSI.git</developerConnection>
-    </scm>
     <developers>
         <developer>
             <name>Sebastian Graf</name>
@@ -137,7 +137,7 @@
                     <includeAttached>true</includeAttached>
                 </configuration>
             </plugin>
-            <!-- To invoke with "mvn site:site site:stage site:deploy antrun:run ghSite:site" -->
+            <!-- To invoke with "mvn site:site site:stage site:deploy" + "mvn antrun:run -N" + "mvn ghSite:site -N" -->
             <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
@@ -149,7 +149,7 @@
             <plugin>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.4</version>
-                 <executions>
+                <executions>
                     <execution>
                         <phase>install</phase>
                         <goals>
@@ -229,22 +229,14 @@
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.7</version>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <target>
-                                <delete
-                                    dir="${project.build.directory}/site" />
-                                <copy todir="${project.build.directory}/site">
-                                    <fileset dir="${site.deploy.dir}" />
-                                </copy>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <configuration>
+                    <target>
+                        <delete dir="${project.build.directory}/site" />
+                        <copy todir="${project.build.directory}/site">
+                            <fileset dir="${site.deploy.dir}" />
+                        </copy>
+                    </target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
