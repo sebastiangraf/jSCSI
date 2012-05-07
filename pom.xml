@@ -137,7 +137,7 @@
                     <includeAttached>true</includeAttached>
                 </configuration>
             </plugin>
-            <!-- To invoke with "mvn site:site ghSite:site" -->
+            <!-- To invoke with "mvn site:site site:stage site:deploy antrun:run ghSite:site" -->
             <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
