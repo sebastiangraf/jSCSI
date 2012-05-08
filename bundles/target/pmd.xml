@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.3" timestamp="2012-05-08T07:27:00.166">
+<pmd version="4.3" timestamp="2012-05-08T08:52:25.854">
 <file name="/Users/sebi/Dropbox/github/jscsi/bundles/target/src/main/java/org/jscsi/target/connection/phase/TargetFullFeaturePhase.java">
 <violation beginline="6" endline="6" begincolumn="1" endcolumn="51" rule="UnusedImports" ruleset="Import Statement Rules" package="org.jscsi.target.connection.phase" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
 Avoid unused imports such as 'javax.naming.OperationNotSupportedException'
