@@ -35,8 +35,8 @@
 		</menu>
 		<menu ref="modules"/>
 		<menu ref="reports" />
-    	<breadcrumbs>
-	  		<item name="jSCSI" href="http://disy.github.com/jSCSI/"/>
+	    <breadcrumbs>
+		  <item name="jSCSI" href="http://jscsi.org"/>
 		</breadcrumbs>
 	</body>
 	<skin>

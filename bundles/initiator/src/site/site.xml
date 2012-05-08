@@ -42,9 +42,6 @@
     <menu name="Reports">
       <item name="Reports" href="project-reports.html"/>
     </menu>
-    <breadcrumbs>
-	  <item name="jSCSI" href="http://jscsi.org"/>
-	</breadcrumbs>
   </body>
   <skin>
     <groupId>org.apache.maven.skins</groupId>
