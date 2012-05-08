@@ -12,7 +12,7 @@ published on sonatype.
 
 ##2011
 
-* jSCSI is transferred from [sourceforge](http://sourceforge.net/projects/jscsi/) to [github&(https://github.com/disy).
+* jSCSI is transferred from [sourceforge](http://sourceforge.net/projects/jscsi/) to [github](https://github.com/disy).
 The development of a target is concluded as bachelors' project of Andreas Ergenzinger.
 
 ##2010
@@ -30,7 +30,7 @@ The initiator was entirely refactored leveraging from the new abilities provided
 
 ##2007
 
-* Developed as the master project of Volker Wildi, a more detailed description of the jSCSI 1.0 (initiator only) is accessible as master thesis under
+* Developed as the master project of Volker Wildi, a more detailed description of the jSCSI 1.0 (initiator only) is accessible as master thesis under http://nbn-resolving.de/urn:nbn:de:bsz:352-175134.
 * The initiator of jSCSI 1.0 was presented at the Jazoon as Work in Progress: The working paper is accessible under http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84424.
 
 ##2006
