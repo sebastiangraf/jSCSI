@@ -16,6 +16,8 @@
 'UTF-8'
 -doctitle
 'Builder 2.2-SNAPSHOT Test API'
+-link
+'http://java.sun.com/javase/6/docs/api'
 -use
 -version
 -windowtitle
