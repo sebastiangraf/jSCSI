@@ -159,9 +159,9 @@ public class TargetSession {
     }
 
     /**
-     * Returns the session's {@link AbstractStorageModule}.
+     * Returns the session's {@link IStorageModule}.
      * 
-     * @return the session's {@link AbstractStorageModule}
+     * @return the session's {@link IStorageModule}
      */
     public IStorageModule getStorageModule() {
         return target.getStorageModule();

@@ -2,6 +2,8 @@ package org.jscsi.target.scsi.cdb;
 
 import java.nio.ByteBuffer;
 
+import org.jscsi.target.storage.IStorageModule;
+
 /**
  * This abstract class represents Command Descriptor Blocks for the <code>READ</code> and <code>WRITE</code>
  * SCSI commands. This grouping makes
@@ -91,7 +93,7 @@ public abstract class ReadOrWriteCdb extends CommandDescriptorBlock {
      * medium.
      * 
      * @see #getIllegalFieldPointers()
-     * @see AbstractStorageModule#checkBounds(long, int)
+     * @see IStorageModule#checkBounds(long, int)
      */
     public final void addIllegalFieldPointerForLogicalBlockAddress() {
         addIllegalFieldPointer(getLogicalBlockAddressFieldIndex());
@@ -104,7 +106,7 @@ public abstract class ReadOrWriteCdb extends CommandDescriptorBlock {
      * out-of-bounds blocks of the storage medium.
      * 
      * @see #getIllegalFieldPointers()
-     * @see AbstractStorageModule#checkBounds(long, int)
+     * @see IStorageModule#checkBounds(long, int)
      */
     public final void addIllegalFieldPointerForTransferLength() {
         addIllegalFieldPointer(getTransferLengthFieldIndex());

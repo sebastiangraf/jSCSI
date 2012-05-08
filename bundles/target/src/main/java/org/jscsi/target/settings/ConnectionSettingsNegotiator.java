@@ -30,7 +30,7 @@ import org.jscsi.target.settings.entry.Use;
  * <ol>
  * <li>Call {@link #beginNegotiation()} until it returns <code>true</code>.</li>
  * <li>One or, if the initiator is using multiple PDU sequences, multiple calls of
- * {@link #negotiate(TargetServer, LoginStage, boolean, boolean, Vector, Vector)}. The method will return
+ * {@link #negotiate(TargetServer, LoginStage, boolean, boolean, List, List)}. The method will return
  * <code>false</code> if there was a problem.</li>
  * <li>Call {@link #checkConstraints()} to check more complex requirements. The method will return
  * <code>false</code> if there was a problem.</li>

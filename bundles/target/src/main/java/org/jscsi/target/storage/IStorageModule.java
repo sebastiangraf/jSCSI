@@ -13,7 +13,7 @@ import org.jscsi.target.scsi.cdb.CommandDescriptorBlock;
  * <p>
  * All index and length parameters used by the read and write methods are
  * referring to bytes, unlike the values sent in {@link CommandDescriptorBlock}
- * s, which are based on the value reported by {@link #getBlockSizeInBytes()}.
+ * s.
  * 
  * @author Andreas Ergenzinger
  */
@@ -40,7 +40,7 @@ public interface IStorageModule {
      * called prior to each read or write sequence.
      * <p>
      * The values returned by this method and their meaning with regard to the
-     * interval [0, {@link #sizeInBlocks} - 1] are shown in the following table:
+     * interval [0, {@link #getSizeInBlocks()} - 1] are shown in the following table:
      * <p>
      * <table border="1">
      * <tr>
@@ -80,7 +80,7 @@ public interface IStorageModule {
 
     /**
      * Returns the storage space size in bytes divided by
-     * {@link #getBlockSizeInBytes()} (rounded down).
+     * the block size in bytes (rounded down).
      * 
      * @return the virtual amount of storage blocks available
      */
