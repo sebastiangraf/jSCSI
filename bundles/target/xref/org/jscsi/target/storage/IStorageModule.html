@@ -23,7 +23,7 @@
 <a class="jxr_linenumber" name="13" href="#13">13</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="14" href="#14">14</a>  <em class="jxr_javadoccomment"> * All index and length parameters used by the read and write methods are</em>
 <a class="jxr_linenumber" name="15" href="#15">15</a>  <em class="jxr_javadoccomment"> * referring to bytes, unlike the values sent in {@link CommandDescriptorBlock}</em>
-<a class="jxr_linenumber" name="16" href="#16">16</a>  <em class="jxr_javadoccomment"> * s, which are based on the value reported by {@link #getBlockSizeInBytes()}.</em>
+<a class="jxr_linenumber" name="16" href="#16">16</a>  <em class="jxr_javadoccomment"> * s.</em>
 <a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment"> * </em>
 <a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
 <a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment"> */</em>
@@ -50,7 +50,7 @@
 <a class="jxr_linenumber" name="40" href="#40">40</a>  <em class="jxr_javadoccomment">     * called prior to each read or write sequence.</em>
 <a class="jxr_linenumber" name="41" href="#41">41</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="42" href="#42">42</a>  <em class="jxr_javadoccomment">     * The values returned by this method and their meaning with regard to the</em>
-<a class="jxr_linenumber" name="43" href="#43">43</a>  <em class="jxr_javadoccomment">     * interval [0, {@link #sizeInBlocks} - 1] are shown in the following table:</em>
+<a class="jxr_linenumber" name="43" href="#43">43</a>  <em class="jxr_javadoccomment">     * interval [0, {@link #getSizeInBlocks()} - 1] are shown in the following table:</em>
 <a class="jxr_linenumber" name="44" href="#44">44</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="45" href="#45">45</a>  <em class="jxr_javadoccomment">     * &lt;table border="1"&gt;</em>
 <a class="jxr_linenumber" name="46" href="#46">46</a>  <em class="jxr_javadoccomment">     * &lt;tr&gt;</em>
@@ -90,7 +90,7 @@
 <a class="jxr_linenumber" name="80" href="#80">80</a>  
 <a class="jxr_linenumber" name="81" href="#81">81</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="82" href="#82">82</a>  <em class="jxr_javadoccomment">     * Returns the storage space size in bytes divided by</em>
-<a class="jxr_linenumber" name="83" href="#83">83</a>  <em class="jxr_javadoccomment">     * {@link #getBlockSizeInBytes()} (rounded down).</em>
+<a class="jxr_linenumber" name="83" href="#83">83</a>  <em class="jxr_javadoccomment">     * the block size in bytes (rounded down).</em>
 <a class="jxr_linenumber" name="84" href="#84">84</a>  <em class="jxr_javadoccomment">     * </em>
 <a class="jxr_linenumber" name="85" href="#85">85</a>  <em class="jxr_javadoccomment">     * @return the virtual amount of storage blocks available</em>
 <a class="jxr_linenumber" name="86" href="#86">86</a>  <em class="jxr_javadoccomment">     */</em>
