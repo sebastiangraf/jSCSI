@@ -36,7 +36,7 @@ https://mailman.uni-konstanz.de/mailman/listinfo/jscsi
 
 ###Concluded Thesis
 
-* Target 1.0 (english): TO FOLLOW
+* Target 1.0 (english): [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-175134)
 * Initiator 2.0 (german only): [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-130096)
 * Storage Pool (german only): [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-58078)
 * Initiator 1.0 (english): TO FOLLOW
