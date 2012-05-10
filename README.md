@@ -54,10 +54,10 @@ For further documentation and as an example, please refer to the examples in the
 
 ##Content
 
-* README:					this readme file
-* LICENSE:	 				license file
-* bundles:					bundles containing the projects
-* pom.xml					Simple pom (yes we use Maven)
+* README: this readme file
+* LICENSE: license file
+* bundles: bundles containing the projects
+* pom.xml: Simple pom (yes we use Maven)
 
 ##License
 
