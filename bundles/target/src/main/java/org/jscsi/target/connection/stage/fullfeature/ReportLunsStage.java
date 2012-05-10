@@ -3,7 +3,6 @@ package org.jscsi.target.connection.stage.fullfeature;
 import java.io.IOException;
 import java.security.DigestException;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -14,6 +13,8 @@ import org.jscsi.target.scsi.cdb.SelectReport;
 import org.jscsi.target.scsi.lun.ReportLunsParameterData;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
 import org.jscsi.target.settings.SettingsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A stage for processing <code>REPORT LUNS</code> SCSI commands.
@@ -22,7 +23,7 @@ import org.jscsi.target.settings.SettingsException;
  */
 public class ReportLunsStage extends TargetFullFeatureStage {
 
-    private static final Logger LOGGER = Logger.getLogger(ReportLunsStage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReportLunsStage.class);
 
     public ReportLunsStage(TargetFullFeaturePhase targetFullFeaturePhase) {
         super(targetFullFeaturePhase);

@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,8 +28,8 @@ package org.jscsi.initiator.devices;
 
 import java.util.Date;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <h1>DummyDevice</h1>
@@ -50,7 +50,7 @@ public class DummyDevice implements Device {
     private boolean opened = false;
 
     /** The Logger interface. */
-    private static final Log LOGGER = LogFactory.getLog(DummyDevice.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DummyDevice.class);
 
     /**
      * Constructor to create an DummyDevice. The Device has to be initialized
@@ -63,8 +63,7 @@ public class DummyDevice implements Device {
      * @throws Exception
      *             if any error occurs
      */
-    public DummyDevice(final int initBlockSize, final long initBlockCount)
-            throws Exception {
+    public DummyDevice(final int initBlockSize, final long initBlockCount) throws Exception {
 
         blockSize = initBlockSize;
         blockCount = initBlockCount;
@@ -81,8 +80,7 @@ public class DummyDevice implements Device {
     public int getBlockSize() {
 
         if (!opened) {
-            throw new IllegalStateException(
-                    "You first have to open the Device!");
+            throw new IllegalStateException("You first have to open the Device!");
         }
 
         return blockSize;
@@ -92,8 +90,7 @@ public class DummyDevice implements Device {
     public String getName() {
 
         if (!opened) {
-            throw new IllegalStateException(
-                    "You first have to open the Device!");
+            throw new IllegalStateException("You first have to open the Device!");
         }
 
         return "DummyDevice(" + creationDate.getTime() + ")";
@@ -103,8 +100,7 @@ public class DummyDevice implements Device {
     public long getBlockCount() {
 
         if (!opened) {
-            throw new IllegalStateException(
-                    "You first have to open the Device!");
+            throw new IllegalStateException("You first have to open the Device!");
         }
 
         return blockCount;
@@ -127,8 +123,7 @@ public class DummyDevice implements Device {
     public void read(final long address, final byte[] data) throws Exception {
 
         if (!opened) {
-            throw new IllegalStateException(
-                    "You first have to open the Device!");
+            throw new IllegalStateException("You first have to open the Device!");
         }
 
         long blocks = data.length / blockSize;
@@ -140,13 +135,11 @@ public class DummyDevice implements Device {
             } else {
                 adr = address + blocks - 1;
             }
-            throw new IllegalArgumentException("Address " + adr
-                    + " out of range!");
+            throw new IllegalArgumentException("Address " + adr + " out of range!");
         }
 
         if (data.length % blockSize != 0) {
-            throw new IllegalArgumentException(
-                    "Number of bytes is not a multiple of the blocksize!");
+            throw new IllegalArgumentException("Number of bytes is not a multiple of the blocksize!");
         }
 
         // do nothing
@@ -156,8 +149,7 @@ public class DummyDevice implements Device {
     public void write(final long address, final byte[] data) throws Exception {
 
         if (!opened) {
-            throw new IllegalStateException(
-                    "You first have to open the Device!");
+            throw new IllegalStateException("You first have to open the Device!");
         }
 
         long blocks = data.length / blockSize;
@@ -169,13 +161,11 @@ public class DummyDevice implements Device {
             } else {
                 adr = address + blocks - 1;
             }
-            throw new IllegalArgumentException("Address " + adr
-                    + " out of range.");
+            throw new IllegalArgumentException("Address " + adr + " out of range.");
         }
 
         if (data.length % blockSize != 0) {
-            throw new IllegalArgumentException(
-                    "Number of bytes is not a multiple of the blocksize!");
+            throw new IllegalArgumentException("Number of bytes is not a multiple of the blocksize!");
         }
 
         // do nothing

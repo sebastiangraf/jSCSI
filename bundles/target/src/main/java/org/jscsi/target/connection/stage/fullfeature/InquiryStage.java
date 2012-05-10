@@ -3,7 +3,6 @@ package org.jscsi.target.connection.stage.fullfeature;
 import java.io.IOException;
 import java.security.DigestException;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -17,6 +16,8 @@ import org.jscsi.target.scsi.inquiry.SupportedVpdPages;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.util.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A stage for processing <code>INQUIRY</code> SCSI commands.
@@ -25,7 +26,7 @@ import org.jscsi.target.util.Debug;
  */
 public class InquiryStage extends TargetFullFeatureStage {
 
-    private static final Logger LOGGER = Logger.getLogger(InquiryStage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InquiryStage.class);
 
     public InquiryStage(TargetFullFeaturePhase targetFullFeaturePhase) {
         super(targetFullFeaturePhase);

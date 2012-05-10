@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -31,8 +31,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <h1>SettingsMap</h1>
@@ -47,7 +47,7 @@ public final class SettingsMap {
     // --------------------------------------------------------------------------
 
     /** The Logger interface. */
-    private static final Log LOGGER = LogFactory.getLog(SettingsMap.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SettingsMap.class);
 
     /** Delimiter between the key and the value of a key-value-pair. */
     private static final String KEY_VALUE_DELIMITER = "=";
@@ -65,8 +65,7 @@ public final class SettingsMap {
     // --------------------------------------------------------------------------
 
     /**
-     * Default constructor to create a new, empty <code>SettingsMap</code>
-     * object.
+     * Default constructor to create a new, empty <code>SettingsMap</code> object.
      */
     public SettingsMap() {
 
@@ -84,12 +83,10 @@ public final class SettingsMap {
      * @param textValue
      *            The value of the parameter to add.
      */
-    public final void add(final OperationalTextKey textKey,
-            final String textValue) {
+    public final void add(final OperationalTextKey textKey, final String textValue) {
 
         if (textKey == null || textValue == null) {
-            throw new IllegalArgumentException(
-                    "This is not a valid operation text key.");
+            throw new IllegalArgumentException("This is not a valid operation text key.");
         }
 
         settingsMap.put(textKey, textValue);
@@ -146,16 +143,15 @@ public final class SettingsMap {
      *            The <code>IResultFunction</code> to use to obtaining the
      *            result.
      */
-    public final void update(final OperationalTextKey textKey,
-            final String newTextValue, final IResultFunction resultFunction) {
+    public final void update(final OperationalTextKey textKey, final String newTextValue,
+        final IResultFunction resultFunction) {
 
         final String oldValue = settingsMap.get(textKey);
 
         String updatedValue;
         if (oldValue == null) {
             if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn("Update old value failed: No old value for key "
-                        + textKey.value() + ".");
+                LOGGER.warn("Update old value failed: No old value for key " + textKey.value() + ".");
             }
 
             updatedValue = newTextValue;
@@ -176,8 +172,8 @@ public final class SettingsMap {
      * @param aSettingsMap
      *            A <code>SettingsMap</code> object, which should be used for
      *            the comparsion.
-     * @return <code>true</code>, if the all keys are equal with the ones of the
-     *         <code>aSettingsMap</code> object. Else <code>false</code>.
+     * @return <code>true</code>, if the all keys are equal with the ones of the <code>aSettingsMap</code>
+     *         object. Else <code>false</code>.
      */
     public final boolean equals(final SettingsMap aSettingsMap) {
 
@@ -200,8 +196,8 @@ public final class SettingsMap {
      * @param aMap
      *            A <code>Map&lt;String, String&gt;</code> object, which should
      *            be used for the comparsion.
-     * @return <code>true</code>, if the all keys are equal with the ones of the
-     *         <code>aMap</code> object. Else <code>false</code>.
+     * @return <code>true</code>, if the all keys are equal with the ones of the <code>aMap</code> object.
+     *         Else <code>false</code>.
      */
     public final boolean equals(final Map<OperationalTextKey, String> aMap) {
 
@@ -256,8 +252,7 @@ public final class SettingsMap {
     // --------------------------------------------------------------------------
 
     /**
-     * Returns a set of an key-value pair of this <code>OperationTextKeys</code>
-     * object.
+     * Returns a set of an key-value pair of this <code>OperationTextKeys</code> object.
      * 
      * @return a set view of the mappings (key-value-pair) contained in this
      *         map.

@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Instances of this class can be used for persistent storage of data. They are
@@ -21,15 +22,13 @@ import org.apache.log4j.Logger;
  */
 public class RandomAccessStorageModule implements IStorageModule {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(RandomAccessStorageModule.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RandomAccessStorageModule.class);
 
     /**
-     * The mode {@link String} parameter used during the instantiation of
-     * {@link #randomAccessFile}.
+     * The mode {@link String} parameter used during the instantiation of {@link #randomAccessFile}.
      * <p>
-     * This will create a {@link RandomAccessFile} with both read and write
-     * privileges that will immediately save all written data in the file.
+     * This will create a {@link RandomAccessFile} with both read and write privileges that will immediately
+     * save all written data in the file.
      */
     private static final String MODE = "rwd";
 
@@ -60,9 +59,8 @@ public class RandomAccessStorageModule implements IStorageModule {
      * @throws FileNotFoundException
      *             if the specified file does not exist
      */
-    protected RandomAccessStorageModule(final long sizeInBlocks,
-            final RandomAccessFile randomAccessFile)
-            throws FileNotFoundException {
+    protected RandomAccessStorageModule(final long sizeInBlocks, final RandomAccessFile randomAccessFile)
+        throws FileNotFoundException {
         this.sizeInBlocks = sizeInBlocks;
         this.randomAccessFile = randomAccessFile;
     }
@@ -71,8 +69,7 @@ public class RandomAccessStorageModule implements IStorageModule {
      * {@inheritDoc}
      */
     @Override
-    public void read(byte[] bytes, int bytesOffset, int length,
-            long storageIndex) throws IOException {
+    public void read(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
         randomAccessFile.seek(storageIndex);
         randomAccessFile.read(bytes, bytesOffset, length);
     }
@@ -81,8 +78,7 @@ public class RandomAccessStorageModule implements IStorageModule {
      * {@inheritDoc}
      */
     @Override
-    public void write(byte[] bytes, int bytesOffset, int length,
-            long storageIndex) throws IOException {
+    public void write(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
         randomAccessFile.seek(storageIndex);
         randomAccessFile.write(bytes, bytesOffset, length);
     }
@@ -99,12 +95,10 @@ public class RandomAccessStorageModule implements IStorageModule {
      * {@inheritDoc}
      */
     @Override
-    public final int checkBounds(final long logicalBlockAddress,
-            final int transferLengthInBlocks) {
+    public final int checkBounds(final long logicalBlockAddress, final int transferLengthInBlocks) {
         if (logicalBlockAddress < 0 || logicalBlockAddress >= sizeInBlocks)
             return 1;
-        if (transferLengthInBlocks < 0
-                || logicalBlockAddress + transferLengthInBlocks > sizeInBlocks)
+        if (transferLengthInBlocks < 0 || logicalBlockAddress + transferLengthInBlocks > sizeInBlocks)
             return 2;
         return 0;
     }
@@ -120,10 +114,9 @@ public class RandomAccessStorageModule implements IStorageModule {
     }
 
     /**
-     * This is the build method for creating instances of
-     * {@link RandomAccessStorageModule}. If there is no file to be found at the
-     * specified <code>filePath</code>, then a {@link FileNotFoundException}
-     * will be thrown.
+     * This is the build method for creating instances of {@link RandomAccessStorageModule}. If there is no
+     * file to be found at the
+     * specified <code>filePath</code>, then a {@link FileNotFoundException} will be thrown.
      * 
      * @param file
      *            a path leading to the file serving as storage medium
@@ -134,9 +127,8 @@ public class RandomAccessStorageModule implements IStorageModule {
      * @return a new instance of {@link RandomAccessStorageModule}
      * @throws IOException
      */
-    public static synchronized final IStorageModule open(final File file,
-            final long storageLength, final boolean create,
-            IStorageModule.STORAGEKIND kind) throws IOException {
+    public static synchronized final IStorageModule open(final File file, final long storageLength,
+        final boolean create, IStorageModule.STORAGEKIND kind) throws IOException {
         long sizeInBlocks;
         RandomAccessFile randomAccessFile;
         if (create) {
@@ -149,8 +141,7 @@ public class RandomAccessStorageModule implements IStorageModule {
         randomAccessFile = new RandomAccessFile(file, MODE);
         switch (kind) {
         case SyncFile:
-            return new SynchronizedRandomAccessStorageModule(sizeInBlocks,
-                    randomAccessFile);
+            return new SynchronizedRandomAccessStorageModule(sizeInBlocks, randomAccessFile);
         case AsyncFile:
             return new RandomAccessStorageModule(sizeInBlocks, randomAccessFile);
         }
@@ -168,26 +159,23 @@ public class RandomAccessStorageModule implements IStorageModule {
      * @throws IOException
      *             if anything weird happens
      */
-    private static synchronized boolean createStorageVolume(
-            final File pToCreate, final long pLength) throws IOException {
+    private static synchronized boolean createStorageVolume(final File pToCreate, final long pLength)
+        throws IOException {
         FileOutputStream outStream = null;
         try {
             // if file exists, remove it after questioning.
             if (pToCreate.exists()) {
                 if (!pToCreate.delete()) {
-                    LOGGER.debug("Removal of old storage "
-                            + pToCreate.toString() + " unsucessful.");
+                    LOGGER.debug("Removal of old storage " + pToCreate.toString() + " unsucessful.");
                     return false;
                 }
-                LOGGER.debug("Removal of old storage " + pToCreate.toString()
-                        + " sucessful.");
+                LOGGER.debug("Removal of old storage " + pToCreate.toString() + " sucessful.");
             }
 
             // create file
             final File parent = pToCreate.getCanonicalFile().getParentFile();
             if (!parent.exists() && !parent.mkdirs()) {
-                throw new FileNotFoundException("Unable to create directory: "
-                        + parent.getAbsolutePath());
+                throw new FileNotFoundException("Unable to create directory: " + parent.getAbsolutePath());
             }
 
             pToCreate.createNewFile();
@@ -196,23 +184,18 @@ public class RandomAccessStorageModule implements IStorageModule {
             fcout.position(pLength);
             outStream.write(26); // Write EOF (not normally needed)
             fcout.force(true);
-            LOGGER.debug("Creation of storage " + pToCreate.toString()
-                    + " sucessful.");
+            LOGGER.debug("Creation of storage " + pToCreate.toString() + " sucessful.");
             return true;
         } catch (IOException e) {
-            LOGGER.fatal(
-                    "Exception creating storage volume "
-                            + pToCreate.getAbsolutePath() + ": "
-                            + e.getMessage(), e);
+            LOGGER.error("Exception creating storage volume " + pToCreate.getAbsolutePath() + ": "
+                + e.getMessage(), e);
             throw e;
         } finally {
             if (outStream != null) {
                 try {
                     outStream.close();
                 } catch (IOException e) {
-                    LOGGER.error(
-                            "Exception closing storage volume: "
-                                    + e.getMessage(), e);
+                    LOGGER.error("Exception closing storage volume: " + e.getMessage(), e);
                 }
             }
         }

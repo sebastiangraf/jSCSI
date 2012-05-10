@@ -5,7 +5,6 @@ import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -20,6 +19,8 @@ import org.jscsi.target.scsi.cdb.Read6Cdb;
 import org.jscsi.target.scsi.cdb.ReadCdb;
 import org.jscsi.target.scsi.cdb.ScsiOperationCode;
 import org.jscsi.target.settings.SettingsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A stage for processing <code>READ (6)</code> and <code>READ (10)</code> SCSI
@@ -29,7 +30,7 @@ import org.jscsi.target.settings.SettingsException;
  */
 public class ReadStage extends ReadOrWriteStage {
 
-    private static final Logger LOGGER = Logger.getLogger(ReadStage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReadStage.class);
 
     public ReadStage(final TargetFullFeaturePhase targetFullFeaturePhase) {
         super(targetFullFeaturePhase);

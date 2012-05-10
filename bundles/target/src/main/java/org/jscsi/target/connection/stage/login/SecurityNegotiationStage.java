@@ -5,7 +5,6 @@ import java.security.DigestException;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -15,6 +14,8 @@ import org.jscsi.target.connection.phase.TargetLoginPhase;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.settings.TextKeyword;
 import org.jscsi.target.settings.TextParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@link TargetLoginStage} sub-class representing Security Negotiation
@@ -24,7 +25,7 @@ import org.jscsi.target.settings.TextParameter;
  */
 public final class SecurityNegotiationStage extends TargetLoginStage {
 
-    private static final Logger LOGGER = Logger.getLogger(SecurityNegotiationStage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityNegotiationStage.class);
 
     /**
      * The constructor.

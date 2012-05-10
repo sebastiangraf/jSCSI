@@ -5,7 +5,6 @@ import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
 import java.io.IOException;
 import java.security.DigestException;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -21,6 +20,8 @@ import org.jscsi.target.scsi.modeSense.ModeParameterList;
 import org.jscsi.target.scsi.modeSense.ModeParameterListBuilder;
 import org.jscsi.target.scsi.modeSense.ShortLogicalBlockDescriptor;
 import org.jscsi.target.settings.SettingsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A stage for processing <code>MODE SENSE (6)</code> SCSI commands.
@@ -29,7 +30,7 @@ import org.jscsi.target.settings.SettingsException;
  */
 public final class ModeSenseStage extends TargetFullFeatureStage {
 
-    private static final Logger LOGGER = Logger.getLogger(ModeSenseStage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModeSenseStage.class);
 
     public ModeSenseStage(TargetFullFeaturePhase targetFullFeaturePhase) {
         super(targetFullFeaturePhase);
@@ -44,12 +45,12 @@ public final class ModeSenseStage extends TargetFullFeatureStage {
         final ModeSense6Cdb cdb = new ModeSense6Cdb(parser.getCDB());
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(cdb.getDisableBlockDescriptors());
-            LOGGER.debug(cdb.getPageControl());
-            LOGGER.debug(cdb.getPageCode());
-            LOGGER.debug(cdb.getSubpageCode());
+            LOGGER.debug(Boolean.toString(cdb.getDisableBlockDescriptors()));
+            LOGGER.debug(cdb.getPageControl().toString());
+            LOGGER.debug(Integer.toString(cdb.getPageCode()));
+            LOGGER.debug(Integer.toString(cdb.getSubpageCode()));
             LOGGER.debug("cdb.getAllocationLength() = " + cdb.getAllocationLength());
-            LOGGER.debug(cdb.getModePage());
+            // LOGGER.debug(cdb.getModePage());
         }
 
         // final PageControl pageControl = cdb.getPageControl();//see 8 lines

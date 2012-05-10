@@ -28,10 +28,10 @@ package org.jscsi.initiator.devices;
 
 import java.nio.ByteBuffer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jscsi.initiator.Configuration;
 import org.jscsi.initiator.Initiator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <h1>JSCSIDevice</h1>
@@ -52,7 +52,7 @@ public class JSCSIDevice implements Device {
     private long blockCount = -1;
 
     /** The Logger interface. */
-    private static final Log LOGGER = LogFactory.getLog(JSCSIDevice.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JSCSIDevice.class);
 
     /**
      * Constructor to create an JSCSIDevice. The Device has to be initialized

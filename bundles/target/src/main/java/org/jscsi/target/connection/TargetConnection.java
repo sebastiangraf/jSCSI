@@ -7,7 +7,6 @@ import java.util.concurrent.Callable;
 
 import javax.naming.OperationNotSupportedException;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
@@ -20,6 +19,8 @@ import org.jscsi.target.settings.Settings;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.util.FastByteArrayProvider;
 import org.jscsi.target.util.SerialArithmeticNumber;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class for objects representing an iSCSI connection with all necessary
@@ -35,7 +36,7 @@ import org.jscsi.target.util.SerialArithmeticNumber;
  */
 public final class TargetConnection implements Callable<Void> {
 
-    private static final Logger LOGGER = Logger.getLogger(TargetConnection.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TargetConnection.class);
 
     /**
      * The {@link TargetSession} this connection belongs to.
@@ -202,19 +203,19 @@ public final class TargetConnection implements Callable<Void> {
                 phase.execute();
             }
         } catch (OperationNotSupportedException e) {
-            LOGGER.error(e);
+            LOGGER.error("Exception throws", e);
         } catch (IOException e) {
             e.printStackTrace();
-            LOGGER.error(e);
+            LOGGER.error("Exception throws", e);
         } catch (InterruptedException e) {
-            LOGGER.error(e);
+            LOGGER.error("Exception throws", e);
         } catch (InternetSCSIException e) {
             e.printStackTrace();
-            LOGGER.error(e);
+            LOGGER.error("Exception throws", e);
         } catch (DigestException e) {
-            LOGGER.error(e);
+            LOGGER.error("Exception throws", e);
         } catch (SettingsException e) {
-            LOGGER.error(e);
+            LOGGER.error("Exception throws", e);
         }
         close();
         targetSession.removeTargetConnection(this);

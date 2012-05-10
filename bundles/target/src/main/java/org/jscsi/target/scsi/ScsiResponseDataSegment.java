@@ -2,11 +2,12 @@ package org.jscsi.target.scsi;
 
 import java.nio.ByteBuffer;
 
-import org.apache.log4j.Logger;
 import org.jscsi.target.connection.TargetPduFactory;
 import org.jscsi.target.scsi.sense.SenseData;
 import org.jscsi.target.util.Debug;
 import org.jscsi.target.util.ReadWrite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Instances of this class represent data that may be sent in a SCSI Command
@@ -25,7 +26,7 @@ import org.jscsi.target.util.ReadWrite;
  */
 public final class ScsiResponseDataSegment {
 
-    private static final Logger LOGGER = Logger.getLogger(ScsiResponseDataSegment.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScsiResponseDataSegment.class);
 
     /**
      * A {@link ScsiResponseDataSegment} of length zero.

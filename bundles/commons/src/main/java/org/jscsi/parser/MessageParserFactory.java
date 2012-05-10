@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,8 +28,6 @@ package org.jscsi.parser;
 
 import java.util.NoSuchElementException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jscsi.parser.data.DataInParser;
 import org.jscsi.parser.data.DataOutParser;
 import org.jscsi.parser.login.LoginRequestParser;
@@ -47,13 +45,14 @@ import org.jscsi.parser.text.TextRequestParser;
 import org.jscsi.parser.text.TextResponseParser;
 import org.jscsi.parser.tmf.TaskManagementFunctionRequestParser;
 import org.jscsi.parser.tmf.TaskManagementFunctionResponseParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <h1>MessageParserFactory</h1>
  * <p>
- * This class creates a specified parser object. But only <b>one</b> object of
- * this kind. With this technique it minimizes the object creation process and
- * affect the execution speed, too.
+ * This class creates a specified parser object. But only <b>one</b> object of this kind. With this technique
+ * it minimizes the object creation process and affect the execution speed, too.
  * 
  * @author Volker Wildi, University of Konstanz
  */
@@ -63,8 +62,7 @@ public final class MessageParserFactory {
     // --------------------------------------------------------------------------
 
     /** Logger Interface. */
-    private static final Log LOGGER = LogFactory
-            .getLog(MessageParserFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageParserFactory.class);
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -84,34 +82,29 @@ public final class MessageParserFactory {
      *            The reference <code>ProtocolDataUnit</code> instance, which
      *            contains this <code>AbstractMessageParser</code> object.
      * @param operationCode
-     *            The operation code of the requested
-     *            <code>AbstractMessageParser</code>.
+     *            The operation code of the requested <code>AbstractMessageParser</code>.
      * @return The instance of the requested <code>AbstractMessageParser</code>.
      * @see org.jscsi.parser.OperationCode
      */
-    public static final AbstractMessageParser getParser(
-            final ProtocolDataUnit protocolDataUnit,
-            final OperationCode operationCode) {
+    public static final AbstractMessageParser getParser(final ProtocolDataUnit protocolDataUnit,
+        final OperationCode operationCode) {
 
         return createParser(protocolDataUnit, operationCode);
     }
 
     /**
-     * Creates an instance of a concrete <code>AbstractMessageParser</code>
-     * object.
+     * Creates an instance of a concrete <code>AbstractMessageParser</code> object.
      * 
      * @param protocolDataUnit
      *            The reference <code>ProtocolDataUnit</code> instance, which
      *            contains this <code>AbstractMessageParser</code> object.
      * @param operationCode
-     *            The operation code of the requested
-     *            <code>AbstractMessageParser</code>.
+     *            The operation code of the requested <code>AbstractMessageParser</code>.
      * @return The instance of the requested <code>AbstractMessageParser</code>.
      * @see org.jscsi.parser.OperationCode
      */
-    private static final AbstractMessageParser createParser(
-            final ProtocolDataUnit protocolDataUnit,
-            final OperationCode operationCode) {
+    private static final AbstractMessageParser createParser(final ProtocolDataUnit protocolDataUnit,
+        final OperationCode operationCode) {
 
         switch (operationCode) {
         case LOGIN_REQUEST:
@@ -150,8 +143,7 @@ public final class MessageParserFactory {
             return new SCSIResponseParser(protocolDataUnit);
         default:
             if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("Parser not supported with this operation code "
-                        + operationCode);
+                LOGGER.error("Parser not supported with this operation code " + operationCode);
             }
             throw new NoSuchElementException();
         }

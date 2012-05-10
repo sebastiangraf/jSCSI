@@ -15,7 +15,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -25,10 +24,12 @@ import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.scsi.inquiry.DeviceIdentificationVpdPage;
 import org.jscsi.target.settings.SettingsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * The central class of the jSCSI Target, which keeps track of all active
- * {@link TargetSession}s, stores target-wide parameters and variables, and
+ * The central class of the jSCSI Target, which keeps track of all active {@link TargetSession}s, stores
+ * target-wide parameters and variables, and
  * which contains the {@link #main(String[])} method for starting the program.
  * 
  * @author Andreas Ergenzinger, University of Konstanz
@@ -36,7 +37,7 @@ import org.jscsi.target.settings.SettingsException;
  */
 public final class TargetServer implements Callable<Void> {
 
-    private static final Logger LOGGER = Logger.getLogger(TargetServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TargetServer.class);
 
     /**
      * A {@link SocketChannel} used for listening to incoming connections.
@@ -64,8 +65,8 @@ public final class TargetServer implements Callable<Void> {
     private HashMap<String, Target> targets = new HashMap<String, Target>();
 
     /**
-     * A target-wide counter used for providing the value of sent
-     * {@link ProtocolDataUnit}s' <code>Target Transfer Tag</code> field, unless
+     * A target-wide counter used for providing the value of sent {@link ProtocolDataUnit}s'
+     * <code>Target Transfer Tag</code> field, unless
      * that field is reserved.
      */
     private static final AtomicInteger nextTargetTransferTag = new AtomicInteger();
@@ -76,8 +77,8 @@ public final class TargetServer implements Callable<Void> {
     }
 
     /**
-     * Gets and increments the value to use in the next unreserved
-     * <code>Target Transfer Tag</code> field of the next PDU to be sent by the
+     * Gets and increments the value to use in the next unreserved <code>Target Transfer Tag</code> field of
+     * the next PDU to be sent by the
      * jSCSI Target.
      * 
      * @see #nextTargetTransferTag
@@ -102,16 +103,19 @@ public final class TargetServer implements Callable<Void> {
      */
     public static void main(String[] args) throws Exception {
         TargetServer target;
-        switch(args.length) {
-           case 0:
-              target = new TargetServer(Configuration.create()); 
-	          break;
-           case 1:
-              target = new TargetServer(Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE, new File(args[0]))); 
-	          break;
-           default:
-              throw new IllegalArgumentException("Only zero or one Parameter (Path to Configuration-File) allowed!");
-        }        
+        switch (args.length) {
+        case 0:
+            target = new TargetServer(Configuration.create());
+            break;
+        case 1:
+            target =
+                new TargetServer(Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE, new File(
+                    args[0])));
+            break;
+        default:
+            throw new IllegalArgumentException(
+                "Only zero or one Parameter (Path to Configuration-File) allowed!");
+        }
         target.call();
     }
 
@@ -129,8 +133,7 @@ public final class TargetServer implements Callable<Void> {
 
             targets.put(curTargetInfo.getTargetName(), curTargetInfo);
             // print configuration and medium details
-            LOGGER.debug("   target name:    " + curTargetInfo.getTargetName()
-                    + " loaded.");
+            LOGGER.debug("   target name:    " + curTargetInfo.getTargetName() + " loaded.");
         }
 
         ExecutorService threadPool = Executors.newFixedThreadPool(4);
@@ -140,29 +143,25 @@ public final class TargetServer implements Callable<Void> {
             // port
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.configureBlocking(true);
-            serverSocketChannel.socket().bind(
-                    new InetSocketAddress(getConfig().getPort()));
+            serverSocketChannel.socket().bind(new InetSocketAddress(getConfig().getPort()));
 
             while (true) {
                 // Accept the connection request.
                 // If serverSocketChannel is blocking, this method blocks.
                 // The returned channel is in blocking mode.
-                final SocketChannel socketChannel = serverSocketChannel
-                        .accept();
+                final SocketChannel socketChannel = serverSocketChannel.accept();
 
                 // deactivate Nagle algorithm
                 socketChannel.socket().setTcpNoDelay(true);
 
-                final TargetConnection connection = new TargetConnection(
-                        socketChannel, true);
+                final TargetConnection connection = new TargetConnection(socketChannel, true);
                 try {
                     final ProtocolDataUnit pdu = connection.receivePdu();
                     // confirm OpCode
                     if (pdu.getBasicHeaderSegment().getOpCode() != OperationCode.LOGIN_REQUEST)
                         throw new InternetSCSIException();
                     // get initiatorSessionID
-                    LoginRequestParser parser = (LoginRequestParser) pdu
-                            .getBasicHeaderSegment().getParser();
+                    LoginRequestParser parser = (LoginRequestParser)pdu.getBasicHeaderSegment().getParser();
                     ISID initiatorSessionID = parser.getInitiatorSessionID();
 
                     /*
@@ -170,30 +169,30 @@ public final class TargetServer implements Callable<Void> {
                      * since we don't do session reinstatement and
                      * MaxConnections=1, we can just create a new one.
                      */
-                    TargetSession session = new TargetSession(this, connection,
-                            initiatorSessionID,
-                            parser.getCommandSequenceNumber(),// set ExpCmdSN
-                                                              // (PDU is
-                                                              // immediate,
-                                                              // hence no ++)
+                    TargetSession session =
+                        new TargetSession(this, connection, initiatorSessionID, parser
+                            .getCommandSequenceNumber(),// set ExpCmdSN
+                                                        // (PDU is
+                                                        // immediate,
+                                                        // hence no ++)
                             parser.getExpectedStatusSequenceNumber());
 
                     sessions.add(session);
                     threadPool.submit(connection);// ignore returned Future
                 } catch (DigestException e) {
-                    LOGGER.info(e);
+                    LOGGER.info("Throws Exception", e);
                     continue;
                 } catch (InternetSCSIException e) {
-                    LOGGER.info(e);
+                    LOGGER.info("Throws Exception", e);
                     continue;
                 } catch (SettingsException e) {
-                    LOGGER.info(e);
+                    LOGGER.info("Throws Exception", e);
                     continue;
                 }
             }
         } catch (IOException e) {
             // this block is entered if the desired port is already in use
-            LOGGER.fatal(e);
+            LOGGER.error("Throws Exception", e);
         }
         return null;
     }

@@ -32,8 +32,8 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <h1>Raid0Device</h1>
@@ -52,7 +52,7 @@ public class Raid0Device implements Device {
     private long blockCount = -1;
 
     /** The Logger interface. */
-    private static final Log LOGGER = LogFactory.getLog(Raid0Device.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Raid0Device.class);
 
     /**
      * Size of the parts, that are distributed between the Devices. Must be a

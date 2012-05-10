@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -32,20 +32,19 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SocketChannel;
 import java.security.DigestException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.InitiatorMessageParser;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.ProtocolDataUnitFactory;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.datasegment.OperationalTextKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <h1>SenderWorker</h1>
  * <p/>
- * The worker caller to send all the protocol data units over the socket of this
- * connection.
+ * The worker caller to send all the protocol data units over the socket of this connection.
  * 
  * @author Volker Wildi
  */
@@ -55,7 +54,7 @@ final class SenderWorker {
     // --------------------------------------------------------------------------
 
     /** The logger interface. */
-    private static final Log LOGGER = LogFactory.getLog(SenderWorker.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SenderWorker.class);
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -69,8 +68,7 @@ final class SenderWorker {
     private final SocketChannel socketChannel;
 
     /**
-     * Factory class for creating the several <code>ProtocolDataUnit</code>
-     * instances.
+     * Factory class for creating the several <code>ProtocolDataUnit</code> instances.
      */
     private final ProtocolDataUnitFactory protocolDataUnitFactory;
 
@@ -87,8 +85,8 @@ final class SenderWorker {
      * @throws IOException
      *             if any IO error occurs.
      */
-    public SenderWorker(final Connection initConnection,
-            final InetSocketAddress inetAddress) throws IOException {
+    public SenderWorker(final Connection initConnection, final InetSocketAddress inetAddress)
+        throws IOException {
 
         connection = initConnection;
         socketChannel = SocketChannel.open(inetAddress);
@@ -129,12 +127,11 @@ final class SenderWorker {
      * @throws DigestException
      *             if a mismatch of the digest exists.
      */
-    public ProtocolDataUnit receiveFromWire() throws DigestException,
-            InternetSCSIException, IOException {
+    public ProtocolDataUnit receiveFromWire() throws DigestException, InternetSCSIException, IOException {
 
-        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory
-                .create(connection.getSetting(OperationalTextKey.HEADER_DIGEST),
-                        connection.getSetting(OperationalTextKey.DATA_DIGEST));
+        final ProtocolDataUnit protocolDataUnit =
+            protocolDataUnitFactory.create(connection.getSetting(OperationalTextKey.HEADER_DIGEST),
+                connection.getSetting(OperationalTextKey.DATA_DIGEST));
 
         try {
             protocolDataUnit.read(socketChannel);
@@ -144,35 +141,29 @@ final class SenderWorker {
 
         LOGGER.debug("Receiving this PDU: " + protocolDataUnit);
 
-        final Exception isCorrect = connection.getState().isCorrect(
-                protocolDataUnit);
+        final Exception isCorrect = connection.getState().isCorrect(protocolDataUnit);
         if (isCorrect == null) {
             LOGGER.trace("Adding PDU to Receiving Queue.");
 
-            final TargetMessageParser parser = (TargetMessageParser) protocolDataUnit
-                    .getBasicHeaderSegment().getParser();
+            final TargetMessageParser parser =
+                (TargetMessageParser)protocolDataUnit.getBasicHeaderSegment().getParser();
             final Session session = connection.getSession();
 
             // the PDU maxCmdSN is greater than the local maxCmdSN, so we
             // have to update the local one
-            if (session.getMaximumCommandSequenceNumber().compareTo(
-                    parser.getMaximumCommandSequenceNumber()) < 0) {
-                session.setMaximumCommandSequenceNumber(parser
-                        .getMaximumCommandSequenceNumber());
+            if (session.getMaximumCommandSequenceNumber().compareTo(parser.getMaximumCommandSequenceNumber()) < 0) {
+                session.setMaximumCommandSequenceNumber(parser.getMaximumCommandSequenceNumber());
             }
 
             // the PDU expCmdSN is greater than the local expCmdSN, so we
             // have to update the local one
             if (parser.incrementSequenceNumber()) {
-                if (connection.getExpectedStatusSequenceNumber().compareTo(
-                        parser.getStatusSequenceNumber()) >= 0) {
+                if (connection.getExpectedStatusSequenceNumber().compareTo(parser.getStatusSequenceNumber()) >= 0) {
                     connection.incrementExpectedStatusSequenceNumber();
                 } else {
                     LOGGER.error("Status Sequence Number Mismatch (received, expected): "
-                            + parser.getStatusSequenceNumber()
-                            + ", "
-                            + (connection.getExpectedStatusSequenceNumber()
-                                    .getValue() - 1));
+                        + parser.getStatusSequenceNumber() + ", "
+                        + (connection.getExpectedStatusSequenceNumber().getValue() - 1));
                 }
 
             }
@@ -202,18 +193,16 @@ final class SenderWorker {
      *             interrupted status of the current caller is cleared when this
      *             exception is thrown.
      */
-    public final void sendOverWire(final ProtocolDataUnit unit)
-            throws InternetSCSIException, IOException, InterruptedException {
+    public final void sendOverWire(final ProtocolDataUnit unit) throws InternetSCSIException, IOException,
+        InterruptedException {
 
         final Session session = connection.getSession();
 
-        unit.getBasicHeaderSegment().setInitiatorTaskTag(
-                session.getInitiatorTaskTag());
-        final InitiatorMessageParser parser = (InitiatorMessageParser) unit
-                .getBasicHeaderSegment().getParser();
+        unit.getBasicHeaderSegment().setInitiatorTaskTag(session.getInitiatorTaskTag());
+        final InitiatorMessageParser parser =
+            (InitiatorMessageParser)unit.getBasicHeaderSegment().getParser();
         parser.setCommandSequenceNumber(session.getCommandSequenceNumber());
-        parser.setExpectedStatusSequenceNumber(connection
-                .getExpectedStatusSequenceNumber().getValue());
+        parser.setExpectedStatusSequenceNumber(connection.getExpectedStatusSequenceNumber().getValue());
 
         unit.write(socketChannel);
 

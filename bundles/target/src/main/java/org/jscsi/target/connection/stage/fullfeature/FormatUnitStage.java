@@ -3,7 +3,6 @@ package org.jscsi.target.connection.stage.fullfeature;
 import java.io.IOException;
 import java.security.DigestException;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -22,6 +21,8 @@ import org.jscsi.target.scsi.sense.SenseKey;
 import org.jscsi.target.scsi.sense.information.FourByteInformation;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
 import org.jscsi.target.settings.SettingsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A stage for processing <code>FORMAT UNIT</code> SCSI commands.
@@ -46,7 +47,7 @@ import org.jscsi.target.settings.SettingsException;
  */
 public class FormatUnitStage extends TargetFullFeatureStage {
 
-    private static final Logger LOGGER = Logger.getLogger(ReadStage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReadStage.class);
 
     public FormatUnitStage(TargetFullFeaturePhase targetFullFeaturePhase) {
         super(targetFullFeaturePhase);

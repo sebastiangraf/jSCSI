@@ -5,7 +5,6 @@ import java.security.DigestException;
 
 import javax.naming.OperationNotSupportedException;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -28,6 +27,8 @@ import org.jscsi.target.connection.stage.fullfeature.UnsupportedOpCodeStage;
 import org.jscsi.target.connection.stage.fullfeature.WriteStage;
 import org.jscsi.target.scsi.cdb.ScsiOperationCode;
 import org.jscsi.target.settings.SettingsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Objects of this class represent the Target Full Feature Phase of a
@@ -38,7 +39,7 @@ import org.jscsi.target.settings.SettingsException;
  */
 public final class TargetFullFeaturePhase extends TargetPhase {
 
-    private static final Logger LOGGER = Logger.getLogger(TargetFullFeaturePhase.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TargetFullFeaturePhase.class);
 
     /**
      * The current stage of this phase.

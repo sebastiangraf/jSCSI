@@ -5,7 +5,6 @@ import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
 import java.io.IOException;
 import java.security.DigestException;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -21,10 +20,12 @@ import org.jscsi.target.scsi.readCapacity.ReadCapacityParameterData;
 import org.jscsi.target.scsi.sense.AdditionalSenseCodeAndQualifier;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
 import org.jscsi.target.settings.SettingsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class ReadCapacityStage extends TargetFullFeatureStage {
 
-    private static final Logger LOGGER = Logger.getLogger(ReadCapacityStage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReadCapacityStage.class);
 
     public ReadCapacityStage(final TargetFullFeaturePhase targetFullFeaturePhase) {
         super(targetFullFeaturePhase);

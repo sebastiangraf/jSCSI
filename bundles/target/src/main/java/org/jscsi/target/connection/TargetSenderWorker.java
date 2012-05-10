@@ -5,7 +5,6 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SocketChannel;
 import java.security.DigestException;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.InitiatorMessageParser;
@@ -15,6 +14,8 @@ import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.target.settings.Settings;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.settings.TextKeyword;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Instances of this class are used by {@link TargetConnection} objects for
@@ -24,7 +25,7 @@ import org.jscsi.target.settings.TextKeyword;
  */
 public class TargetSenderWorker {
 
-    private static final Logger LOGGER = Logger.getLogger(TargetSenderWorker.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TargetSenderWorker.class);
 
     /**
      * The connection which uses this object for sending and receiving PDUs.

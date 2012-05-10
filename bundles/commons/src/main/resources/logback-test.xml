@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2012, University of Konstanz, Distributed Systems Group
+    Copyright (c) 2011, University of Konstanz, Distributed Systems Group
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,17 +27,18 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -->
-<!DOCTYPE log4j:configuration SYSTEM "http://logging.apache.org/log4j/docs/api/org/apache/log4j/xml/log4j.dtd">
-<log4j:configuration debug="false">
-	<appender name="Console" class="org.apache.log4j.ConsoleAppender">
-		<param name="Threshold" value="all"/>
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%t] %l - %m%n"/>
-		</layout>
-	</appender>
-	
-	<root>
-		<priority value="error"/>
-		<appender-ref ref="Console"/>
-	</root>
-</log4j:configuration>
+
+<configuration>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="error">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>

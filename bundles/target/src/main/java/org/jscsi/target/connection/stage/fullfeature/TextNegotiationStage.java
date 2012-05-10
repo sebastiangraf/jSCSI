@@ -6,7 +6,6 @@ import java.security.DigestException;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -17,6 +16,8 @@ import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.settings.TextKeyword;
 import org.jscsi.target.settings.TextParameter;
 import org.jscsi.target.util.ReadWrite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A stage for processing requests by the initiator for a list of all targets
@@ -29,7 +30,7 @@ import org.jscsi.target.util.ReadWrite;
  */
 public final class TextNegotiationStage extends TargetFullFeatureStage {
 
-    private static final Logger LOGGER = Logger.getLogger(TextNegotiationStage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TextNegotiationStage.class);
 
     public TextNegotiationStage(TargetFullFeaturePhase targetFullFeaturePhase) {
         super(targetFullFeaturePhase);

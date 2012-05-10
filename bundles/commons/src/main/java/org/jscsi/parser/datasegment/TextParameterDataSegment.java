@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -30,15 +30,15 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jscsi.exception.InternetSCSIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <h1>OperationTextKeys</h1>
  * <p>
- * This class encaspulates all methods needed for the operation text keys, which
- * can emerge in the data segment of an iSCSI message (RFC3720).
+ * This class encaspulates all methods needed for the operation text keys, which can emerge in the data
+ * segment of an iSCSI message (RFC3720).
  * 
  * @author Volker Wildi
  */
@@ -48,8 +48,7 @@ final class TextParameterDataSegment extends AbstractDataSegment {
     // --------------------------------------------------------------------------
 
     /** The Logger interface. */
-    private static final Log LOGGER = LogFactory
-            .getLog(TextParameterDataSegment.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TextParameterDataSegment.class);
 
     /** All strings should be interpreted as this encoding. */
     private static final String DEFAULT_TEXT_ENCODING = "UTF-8";
@@ -85,13 +84,12 @@ final class TextParameterDataSegment extends AbstractDataSegment {
     // --------------------------------------------------------------------------
 
     /**
-     * Default constructor, to create a new, empty
-     * <code>TextParameterDataSegment</code> object with a maximum length of
-     * <code>initMaximumLength</code> bytes.
+     * Default constructor, to create a new, empty <code>TextParameterDataSegment</code> object with a maximum
+     * length of <code>initMaximumLength</code> bytes.
      * 
      * @param initChunkSize
-     *            The size (in bytes) of one chunk, which represents the
-     *            <code>MaxRecvDataSegmentLength</code>.
+     *            The size (in bytes) of one chunk, which represents the <code>MaxRecvDataSegmentLength</code>
+     *            .
      */
     public TextParameterDataSegment(final int initChunkSize) {
 
@@ -115,8 +113,7 @@ final class TextParameterDataSegment extends AbstractDataSegment {
      */
     public final void add(final OperationalTextKey textKey, final String value) {
 
-        final String s = textKey.value() + KEY_VALUE_DELIMITER + value
-                + PAIR_DELIMITER;
+        final String s = textKey.value() + KEY_VALUE_DELIMITER + value + PAIR_DELIMITER;
         resizeBuffer(s.length(), true);
         dataBuffer.put(s.getBytes());
 
@@ -124,8 +121,8 @@ final class TextParameterDataSegment extends AbstractDataSegment {
     }
 
     /**
-     * Add all text parameters of the given <code>textKeys</code> map to this
-     * <code>ProtocolDataUnit</code> object.
+     * Add all text parameters of the given <code>textKeys</code> map to this <code>ProtocolDataUnit</code>
+     * object.
      * 
      * @param textKeys
      *            Map, which contains all the text parameters to insert.
@@ -180,20 +177,17 @@ final class TextParameterDataSegment extends AbstractDataSegment {
 
         try {
             // split into key-value pairs
-            final String[] data = new String(dataBuffer.array(),
-                    DEFAULT_TEXT_ENCODING).split(PAIR_DELIMITER);
+            final String[] data = new String(dataBuffer.array(), DEFAULT_TEXT_ENCODING).split(PAIR_DELIMITER);
 
             // split the key and value of a key-value pair
             String[] keyValue;
             for (int i = 0; i < data.length; i++) {
                 keyValue = data[i].split(KEY_VALUE_DELIMITER);
                 if (keyValue.length != NUMBER_OF_TOKENS) {
-                    throw new InternetSCSIException(
-                            "This PDU does not contain a valid key-value-pair.");
+                    throw new InternetSCSIException("This PDU does not contain a valid key-value-pair.");
                 }
 
-                settings.add(OperationalTextKey.valueOfEx(keyValue[KEY_INDEX]),
-                        keyValue[VALUE_INDEX]);
+                settings.add(OperationalTextKey.valueOfEx(keyValue[KEY_INDEX]), keyValue[VALUE_INDEX]);
             }
         } catch (UnsupportedEncodingException e) {
             if (LOGGER.isErrorEnabled()) {
@@ -210,11 +204,9 @@ final class TextParameterDataSegment extends AbstractDataSegment {
     // --------------------------------------------------------------------------
 
     /**
-     * Returns the <code>SettingsMap</code> of this
-     * <code>TextParameterDataSegment</code> object.
+     * Returns the <code>SettingsMap</code> of this <code>TextParameterDataSegment</code> object.
      * 
-     * @return The stored settings of this <code>TextParameterDataSegment</code>
-     *         object.
+     * @return The stored settings of this <code>TextParameterDataSegment</code> object.
      * @throws InternetSCSIException
      *             if any violation of the iSCSI Standard occurs.
      */
@@ -252,7 +244,7 @@ final class TextParameterDataSegment extends AbstractDataSegment {
 
         if (anObject instanceof TextParameterDataSegment) {
             try {
-                final TextParameterDataSegment anotherTPDS = (TextParameterDataSegment) anObject;
+                final TextParameterDataSegment anotherTPDS = (TextParameterDataSegment)anObject;
                 return getSettings().equals(anotherTPDS.getSettings());
             } catch (Exception e) {
                 if (LOGGER.isErrorEnabled()) {

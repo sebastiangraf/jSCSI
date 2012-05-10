@@ -5,7 +5,6 @@ import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
 import java.io.IOException;
 import java.security.DigestException;
 
-import org.apache.log4j.Logger;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.AbstractMessageParser;
 import org.jscsi.parser.BasicHeaderSegment;
@@ -24,6 +23,8 @@ import org.jscsi.target.scsi.cdb.Write6Cdb;
 import org.jscsi.target.scsi.cdb.WriteCdb;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.util.Debug;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A stage for processing <code>WRITE (6)</code> and <code>WRITE (10)</code> SCSI commands.
@@ -32,7 +33,7 @@ import org.jscsi.target.util.Debug;
  */
 public final class WriteStage extends ReadOrWriteStage {
 
-    private static final Logger LOGGER = Logger.getLogger(WriteStage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WriteStage.class);
 
     /**
      * The <code>DataSN</code> value the next Data-Out PDU must carry.

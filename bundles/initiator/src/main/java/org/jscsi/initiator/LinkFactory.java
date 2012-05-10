@@ -29,11 +29,11 @@ package org.jscsi.initiator;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jscsi.exception.NoSuchSessionException;
 import org.jscsi.initiator.connection.Connection;
 import org.jscsi.initiator.connection.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <h1>LinkFactory</h1>
@@ -51,7 +51,7 @@ public final class LinkFactory {
     // --------------------------------------------------------------------------
 
     /** The logger interface. */
-    private static final Log LOGGER = LogFactory.getLog(LinkFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LinkFactory.class);
 
     /** The calling Initiator. */
     private final Initiator initiator;

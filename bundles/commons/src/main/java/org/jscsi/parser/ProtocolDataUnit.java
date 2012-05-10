@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -35,18 +35,17 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.datasegment.AbstractDataSegment;
 import org.jscsi.parser.datasegment.IDataSegmentIterator.IDataSegmentChunk;
 import org.jscsi.parser.digest.IDigest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <h1>ProtocolDataUnit</h1>
  * <p>
- * This class encapsulates a Protocol Data Unit (PDU), which is defined in the
- * iSCSI Standard (RFC 3720).
+ * This class encapsulates a Protocol Data Unit (PDU), which is defined in the iSCSI Standard (RFC 3720).
  * 
  * @author Volker Wildi
  */
@@ -59,7 +58,7 @@ public final class ProtocolDataUnit {
     private static final int AHS_INITIAL_SIZE = 0;
 
     /** The Log interface. */
-    private static final Log LOGGER = LogFactory.getLog(ProtocolDataUnit.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolDataUnit.class);
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -72,8 +71,8 @@ public final class ProtocolDataUnit {
 
     /**
      * The (optional) Data Segment contains PDU associated data. Its payload
-     * effective length is provided in the BHS field -
-     * <code>DataSegmentLength</code>. The Data Segment is also padded to
+     * effective length is provided in the BHS field - <code>DataSegmentLength</code>. The Data Segment is
+     * also padded to
      * multiple of a <code>4</code> byte words.
      */
     private ByteBuffer dataSegment;
@@ -84,12 +83,11 @@ public final class ProtocolDataUnit {
      * after the header and PDU-specific data, and cover respectively the header
      * and the PDU data, each including the padding bytes, if any.
      * <p>
-     * <b>The existence and type of digests are negotiated during the Login
-     * Phase. </b>
+     * <b>The existence and type of digests are negotiated during the Login Phase. </b>
      * <p>
-     * The separation of the header and data digests is useful in iSCSI routing
-     * applications, in which only the header changes when a message is
-     * forwarded. In this case, only the header digest should be recalculated.
+     * The separation of the header and data digests is useful in iSCSI routing applications, in which only
+     * the header changes when a message is forwarded. In this case, only the header digest should be
+     * recalculated.
      * <p>
      * Digests are not included in data or header length fields.
      * <p>
@@ -115,14 +113,12 @@ public final class ProtocolDataUnit {
      *            The instance of the digest to use for the Data Segment
      *            protection.
      */
-    public ProtocolDataUnit(final IDigest initHeaderDigest,
-            final IDigest initDataDigest) {
+    public ProtocolDataUnit(final IDigest initHeaderDigest, final IDigest initDataDigest) {
 
         basicHeaderSegment = new BasicHeaderSegment();
         headerDigest = initHeaderDigest;
 
-        additionalHeaderSegments = new ArrayList<AdditionalHeaderSegment>(
-                AHS_INITIAL_SIZE);
+        additionalHeaderSegments = new ArrayList<AdditionalHeaderSegment>(AHS_INITIAL_SIZE);
 
         dataSegment = ByteBuffer.allocate(0);
         dataDigest = initDataDigest;
@@ -140,8 +136,7 @@ public final class ProtocolDataUnit {
      * @throws IOException
      *             if an I/O error occurs.
      */
-    public final ByteBuffer serialize() throws InternetSCSIException,
-            IOException {
+    public final ByteBuffer serialize() throws InternetSCSIException, IOException {
 
         basicHeaderSegment.getParser().checkIntegrity();
 
@@ -171,7 +166,7 @@ public final class ProtocolDataUnit {
             offset += serializeDigest(pdu, dataDigest);
         }
 
-        return (ByteBuffer) pdu.rewind();
+        return (ByteBuffer)pdu.rewind();
     }
 
     /**
@@ -188,8 +183,8 @@ public final class ProtocolDataUnit {
      * @throws DigestException
      *             There is a mismatch of the digest.
      */
-    public final int deserialize(final ByteBuffer pdu)
-            throws InternetSCSIException, IOException, DigestException {
+    public final int deserialize(final ByteBuffer pdu) throws InternetSCSIException, IOException,
+        DigestException {
 
         int offset = deserializeBasicHeaderSegment(pdu);
 
@@ -213,15 +208,15 @@ public final class ProtocolDataUnit {
      * @throws DigestException
      *             There is a mismatch of the digest.
      */
-    private final int deserializeBasicHeaderSegment(final ByteBuffer bhs)
-            throws InternetSCSIException, DigestException {
+    private final int deserializeBasicHeaderSegment(final ByteBuffer bhs) throws InternetSCSIException,
+        DigestException {
 
         int len = basicHeaderSegment.deserialize(this, bhs);
 
         // read header digest and validate
         if (basicHeaderSegment.getParser().canHaveDigests()) {
-            len += deserializeDigest(bhs, bhs.position()
-                    - BasicHeaderSegment.BHS_FIXED_SIZE,
+            len +=
+                deserializeDigest(bhs, bhs.position() - BasicHeaderSegment.BHS_FIXED_SIZE,
                     BasicHeaderSegment.BHS_FIXED_SIZE, headerDigest);
         }
 
@@ -242,8 +237,7 @@ public final class ProtocolDataUnit {
      * @throws InternetSCSIException
      *             If any violation of the iSCSI-Standard emerge.
      */
-    private final int deserializeAdditionalHeaderSegments(final ByteBuffer pdu)
-            throws InternetSCSIException {
+    private final int deserializeAdditionalHeaderSegments(final ByteBuffer pdu) throws InternetSCSIException {
 
         return deserializeAdditionalHeaderSegments(pdu, 0);
     }
@@ -260,8 +254,8 @@ public final class ProtocolDataUnit {
      * @throws InternetSCSIException
      *             If any violation of the iSCSI-Standard emerge.
      */
-    private final int deserializeAdditionalHeaderSegments(final ByteBuffer pdu,
-            final int offset) throws InternetSCSIException {
+    private final int deserializeAdditionalHeaderSegments(final ByteBuffer pdu, final int offset)
+        throws InternetSCSIException {
 
         // parsing Additional Header Segment
         int off = offset;
@@ -291,8 +285,8 @@ public final class ProtocolDataUnit {
      * @throws InternetSCSIException
      *             If any violation of the iSCSI-Standard emerge.
      */
-    private final int serializeAdditionalHeaderSegments(final ByteBuffer dst,
-            final int offset) throws InternetSCSIException {
+    private final int serializeAdditionalHeaderSegments(final ByteBuffer dst, final int offset)
+        throws InternetSCSIException {
 
         int off = offset;
         for (AdditionalHeaderSegment ahs : additionalHeaderSegments) {
@@ -315,7 +309,7 @@ public final class ProtocolDataUnit {
      *             If any violation of the iSCSI-Standard emerge.
      */
     public final int serializeDataSegment(final ByteBuffer dst, final int offset)
-            throws InternetSCSIException {
+        throws InternetSCSIException {
 
         dataSegment.rewind();
         dst.position(offset);
@@ -340,15 +334,13 @@ public final class ProtocolDataUnit {
      * @throws DigestException
      *             There is a mismatch of the digest.
      */
-    private final int deserializeDataSegment(final ByteBuffer pdu,
-            final int offset) throws IOException, InternetSCSIException,
-            DigestException {
+    private final int deserializeDataSegment(final ByteBuffer pdu, final int offset) throws IOException,
+        InternetSCSIException, DigestException {
 
         final int length = basicHeaderSegment.getDataSegmentLength();
 
         if (dataSegment == null || dataSegment.capacity() < length) {
-            dataSegment = ByteBuffer.allocate(AbstractDataSegment
-                    .getTotalLength(length));
+            dataSegment = ByteBuffer.allocate(AbstractDataSegment.getTotalLength(length));
         }
 
         dataSegment.put(pdu);
@@ -370,8 +362,7 @@ public final class ProtocolDataUnit {
     // --------------------------------------------------------------------------
 
     /**
-     * Writes this <code>ProtocolDataUnit</code> object to the given
-     * <code>SocketChannel</code>.
+     * Writes this <code>ProtocolDataUnit</code> object to the given <code>SocketChannel</code>.
      * 
      * @param sChannel
      *            <code>SocketChannel</code> to write to.
@@ -381,8 +372,7 @@ public final class ProtocolDataUnit {
      * @throws IOException
      *             if an I/O error occurs.
      */
-    public final int write(final SocketChannel sChannel)
-            throws InternetSCSIException, IOException {
+    public final int write(final SocketChannel sChannel) throws InternetSCSIException, IOException {
 
         // print debug informations
         if (LOGGER.isTraceEnabled()) {
@@ -414,15 +404,14 @@ public final class ProtocolDataUnit {
      * @throws DigestException
      *             if a mismatch of the digest exists.
      */
-    public final int read(final SocketChannel sChannel)
-            throws InternetSCSIException, IOException, DigestException {
+    public final int read(final SocketChannel sChannel) throws InternetSCSIException, IOException,
+        DigestException {
 
         // read Basic Header Segment first to determine the total length of this
         // Protocol Data Unit.
         clear();
 
-        final ByteBuffer bhs = ByteBuffer
-                .allocate(BasicHeaderSegment.BHS_FIXED_SIZE);
+        final ByteBuffer bhs = ByteBuffer.allocate(BasicHeaderSegment.BHS_FIXED_SIZE);
         int len = 0;
         while (len < BasicHeaderSegment.BHS_FIXED_SIZE) {
             int lens = sChannel.read(bhs);
@@ -432,8 +421,8 @@ public final class ProtocolDataUnit {
                 throw new ClosedChannelException();
             }
             len += lens;
-            LOGGER.trace("Receiving through SocketChannel: " + len
-                    + " of maximal " + BasicHeaderSegment.BHS_FIXED_SIZE);
+            LOGGER.trace("Receiving through SocketChannel: " + len + " of maximal "
+                + BasicHeaderSegment.BHS_FIXED_SIZE);
 
         }
         bhs.flip();
@@ -441,8 +430,7 @@ public final class ProtocolDataUnit {
         deserializeBasicHeaderSegment(bhs);
         // check for further reading
         if (getBasicHeaderSegment().getTotalAHSLength() > 0) {
-            final ByteBuffer ahs = ByteBuffer.allocate(basicHeaderSegment
-                    .getTotalAHSLength());
+            final ByteBuffer ahs = ByteBuffer.allocate(basicHeaderSegment.getTotalAHSLength());
             int ahsLength = 0;
             while (ahsLength < getBasicHeaderSegment().getTotalAHSLength()) {
                 ahsLength += sChannel.read(ahs);
@@ -453,11 +441,11 @@ public final class ProtocolDataUnit {
             deserializeAdditionalHeaderSegments(ahs);
         }
         if (basicHeaderSegment.getDataSegmentLength() > 0) {
-            dataSegment = ByteBuffer.allocate(AbstractDataSegment
-                    .getTotalLength(basicHeaderSegment.getDataSegmentLength()));
+            dataSegment =
+                ByteBuffer.allocate(AbstractDataSegment.getTotalLength(basicHeaderSegment
+                    .getDataSegmentLength()));
             int dataSegmentLength = 0;
-            while (dataSegmentLength < basicHeaderSegment
-                    .getDataSegmentLength()) {
+            while (dataSegmentLength < basicHeaderSegment.getDataSegmentLength()) {
                 dataSegmentLength += sChannel.read(dataSegment);
             }
             len += dataSegmentLength;
@@ -535,8 +523,7 @@ public final class ProtocolDataUnit {
      * Sets a new data segment in this PDU.
      * 
      * @param chunk
-     *            The new data segment of this <code>ProtocolDataUnit</code>
-     *            object.
+     *            The new data segment of this <code>ProtocolDataUnit</code> object.
      */
     public final void setDataSegment(final IDataSegmentChunk chunk) {
 
@@ -620,15 +607,13 @@ public final class ProtocolDataUnit {
     private final int calcSize() {
 
         int size = BasicHeaderSegment.BHS_FIXED_SIZE;
-        size += basicHeaderSegment.getTotalAHSLength()
-                * AdditionalHeaderSegment.AHS_FACTOR;
+        size += basicHeaderSegment.getTotalAHSLength() * AdditionalHeaderSegment.AHS_FACTOR;
 
         // plus the sizes of the used digests
         size += headerDigest.getSize();
         size += dataDigest.getSize();
 
-        size += AbstractDataSegment.getTotalLength(basicHeaderSegment
-                .getDataSegmentLength());
+        size += AbstractDataSegment.getTotalLength(basicHeaderSegment.getDataSegmentLength());
 
         return size;
     }
@@ -640,15 +625,15 @@ public final class ProtocolDataUnit {
             digest.reset();
             pdu.mark();
             digest.update(pdu, 0, BasicHeaderSegment.BHS_FIXED_SIZE);
-            pdu.putInt((int) digest.getValue());
+            pdu.putInt((int)digest.getValue());
             pdu.reset();
         }
 
         return size;
     }
 
-    private final int deserializeDigest(final ByteBuffer pdu, final int offset,
-            final int length, final IDigest digest) throws DigestException {
+    private final int deserializeDigest(final ByteBuffer pdu, final int offset, final int length,
+        final IDigest digest) throws DigestException {
 
         pdu.mark();
         digest.update(pdu, offset, length);

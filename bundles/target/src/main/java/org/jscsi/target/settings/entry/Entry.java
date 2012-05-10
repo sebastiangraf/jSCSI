@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import javax.naming.OperationNotSupportedException;
 
-import org.apache.log4j.Logger;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.LoginStage;
 import org.jscsi.target.TargetServer;
@@ -14,6 +13,8 @@ import org.jscsi.target.settings.NegotiationType;
 import org.jscsi.target.settings.SettingsNegotiator;
 import org.jscsi.target.settings.TextKeyword;
 import org.jscsi.target.settings.TextParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link Entry} objects are used by instances {@link SettingsNegotiator} during
@@ -30,7 +31,7 @@ import org.jscsi.target.settings.TextParameter;
  */
 public abstract class Entry {
 
-    private static final Logger LOGGER = Logger.getLogger(Entry.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Entry.class);
 
     /**
      * A {@link KeySet} containing all keys that can be used for negotiating
