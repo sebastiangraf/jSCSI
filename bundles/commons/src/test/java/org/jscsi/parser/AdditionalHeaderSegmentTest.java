@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -55,14 +55,11 @@ public class AdditionalHeaderSegmentTest extends ProtocolDataUnitTest {
     /**
      * Valid Test Case with the following expected values. <blockquote>
      * AHSLength = <code>0x0005</code><br/>
-     * AHSType =
-     * <code>AdditionalHeaderSegmentType.EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH</code>
-     * <br/>
+     * AHSType = <code>AdditionalHeaderSegmentType.EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH</code> <br/>
      * Expected Read-Data Length = <code>0xCA2526C4</code><br/>
      * </blockquote>
      */
-    private static final String TEST_CASE_1 = "00 05 02" + " "
-            + TEST_CASE_1_SPECIFIC_FIELD;
+    private static final String TEST_CASE_1 = "00 05 02" + " " + TEST_CASE_1_SPECIFIC_FIELD;
 
     private AdditionalHeaderSegment additionalHeaderSegment;
 
@@ -95,18 +92,15 @@ public class AdditionalHeaderSegmentTest extends ProtocolDataUnitTest {
     @Test
     public final void testDeserialize1() throws InternetSCSIException {
 
-        additionalHeaderSegment.deserialize(
-                WiresharkMessageParser.parseToByteBuffer(TEST_CASE_1), 0);
+        additionalHeaderSegment.deserialize(WiresharkMessageParser.parseToByteBuffer(TEST_CASE_1), 0);
 
-        ByteBuffer expectedReadDataLength = WiresharkMessageParser
-                .parseToByteBuffer(TEST_CASE_1_SPECIFIC_FIELD);
+        ByteBuffer expectedReadDataLength =
+            WiresharkMessageParser.parseToByteBuffer(TEST_CASE_1_SPECIFIC_FIELD);
 
-        assertEquals((short) 0x0005, additionalHeaderSegment.getLength());
-        assertEquals(
-                AdditionalHeaderSegmentType.EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH,
-                additionalHeaderSegment.getType());
-        assertTrue(expectedReadDataLength.equals(additionalHeaderSegment
-                .getSpecificField()));
+        assertEquals((short)0x0005, additionalHeaderSegment.getLength());
+        assertEquals(AdditionalHeaderSegmentType.EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH,
+            additionalHeaderSegment.getType());
+        assertTrue(expectedReadDataLength.equals(additionalHeaderSegment.getSpecificField()));
 
     }
 
@@ -122,8 +116,7 @@ public class AdditionalHeaderSegmentTest extends ProtocolDataUnitTest {
     @Test
     public final void testSerialize1() throws InternetSCSIException {
 
-        ByteBuffer expectedResult = WiresharkMessageParser
-                .parseToByteBuffer(TEST_CASE_1);
+        ByteBuffer expectedResult = WiresharkMessageParser.parseToByteBuffer(TEST_CASE_1);
         additionalHeaderSegment.deserialize(expectedResult, 0);
         ByteBuffer testSerialize = ByteBuffer.allocate(8);
         assertEquals(8, additionalHeaderSegment.serialize(testSerialize, 0));
