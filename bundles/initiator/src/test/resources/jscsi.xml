@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+    Copyright (c) 2012, University of Konstanz, Distributed Systems Group
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+        * Redistributions of source code must retain the above copyright
+          notice, this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright
+          notice, this list of conditions and the following disclaimer in the
+          documentation and/or other materials provided with the distribution.
+        * Neither the name of the University of Konstanz nor the
+          names of its contributors may be used to endorse or promote products
+          derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+<configuration xmlns="http://www.jscsi.org/2006-09"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.jscsi.org/2006-09 jscsi.xsd">
+
+	<global>
+		<AuthMethod>None</AuthMethod>
+		<DataDigest>None</DataDigest>
+		<DataPDUInOrder>Yes</DataPDUInOrder>
+		<DataSequenceInOrder>Yes</DataSequenceInOrder>
+		<DefaultTime2Retain>20</DefaultTime2Retain>
+		<DefaultTime2Wait>2</DefaultTime2Wait>
+		<ErrorRecoveryLevel>0</ErrorRecoveryLevel>
+		<FirstBurstLength>65536</FirstBurstLength>
+		<HeaderDigest>None</HeaderDigest>
+		<IFMarker>No</IFMarker>
+		<IFMarkInt>2048</IFMarkInt>
+		<ImmediateData>Yes</ImmediateData>
+		<InitialR2T>Yes</InitialR2T>
+		<InitiatorAlias>InitiatorAlias</InitiatorAlias>
+		<InitiatorName>InitiatorName</InitiatorName>
+		<MaxBurstLength>262144</MaxBurstLength>
+		<MaxConnections>1</MaxConnections>
+		<MaxOutstandingR2T>1</MaxOutstandingR2T>
+		<MaxRecvDataSegmentLength>8192</MaxRecvDataSegmentLength>
+		<OFMarker>No</OFMarker>
+		<OFMarkInt>2048</OFMarkInt>
+		<SessionType>Normal</SessionType>
+	</global>
+	
+	<target id="testing-xen2-disk1" address="localhost" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2010-04.local-test:disk-1</TargetName>
+	</target>
+	
+	<target id="testing-xen2-disk2" address="localhost" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2010-04.local-test:disk-2</TargetName>
+	</target>
+	
+	
+	<!-- "bench4.disy.inf.uni-konstanz.de" (134.34.165.156) is a openSolaris running an Sun  Solaris iSCSI Target with 1 disk (file)-->
+	<!-- only purpose is benching. It is used by many other projects, so you need to call the admin to get a timeslot for the jSCSI initiator project-->
+	<!-- <target id="testing-bench4" address="134.34.165.156" port="3260">
+		<ImmediateData>Yes</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.1986-03.com.sun:02:c0cb806a-afa0-62d1-877c-9f8df7543824.sandbox</TargetName>
+	</target> -->
+	
+	
+	<!-- "xen2.disy.inf.uni-konstanz.de" (134.34.165.133) is a vmlinux running an iSCSI Enterprise Target with 2 disks (files)-->
+	<!-- only purpose is testing the jSCSI initiator project, should be available 24/7 -->
+	<!-- multiple user tests at the same time can be possible, so don't wonder if data on disks changes from time to time -->
+<!-- 	<target id="testing-xen2-disk1" address="192.168.0.134" port="3260"> -->
+<!-- 		<ImmediateData>No</ImmediateData> -->
+<!-- 		<InitiatorName>IdefixInitiator</InitiatorName> -->
+<!-- 		<TargetName>iqn.2007-10.de.uni-konstanz.inf.disy.xen2:disk1</TargetName> -->
+<!-- 	</target> -->
+	
+<!-- 	<target id="testing-xen2-disk1" address="217.119.233.170" port="3260"> -->
+<!-- 		<ImmediateData>No</ImmediateData> -->
+<!-- 		<InitiatorName>IdefixInitiator</InitiatorName> -->
+<!-- 		<TargetName>iqn.2007-10.de.uni-konstanz.inf.disy.xen2:disk1</TargetName> -->
+<!-- 	</target> -->
+
+	<!-- "xen2.disy.inf.uni-konstanz.de" (134.34.165.133) is a vmlinux running an iSCSI Enterprise Target with 2 disks (files)-->
+	<!-- only purpose is testing the jSCSI initiator project, should be available 24/7 -->
+	<!-- multiple user tests at the same time can be possible, so don't wonder if data on disks changes from time to time-->
+<!-- 	<target id="testing-xen2-disk2" address="192.168.0.134" port="3260"> -->
+<!-- 		<ImmediateData>No</ImmediateData> -->
+<!-- 		<InitiatorName>IdefixInitiator</InitiatorName> -->
+<!-- 		<TargetName>iqn.2007-10.de.uni-konstanz.inf.disy.xen2:disk2</TargetName> -->
+<!-- 	</target> -->
+	
+	<!-- <target id="testing-xen1-disk3" address="134.34.165.132" port="3261">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<TargetName>iqn.2007-10.de.uni-konstanz.inf.disy.xen1:disk3</TargetName>
+		<MaxConnections>8</MaxConnections>
+		<IFMarkInt>2048~4048</IFMarkInt>
+		<OFMarkInt>2048~4048</OFMarkInt>
+	</target>
+	
+	<target id="xen1-disk1" address="134.34.165.132" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<MaxConnections>2</MaxConnections>
+		<TargetName>iqn.2007-10.de.uni-konstanz.inf.disy.xen1:disk1</TargetName>
+	</target>
+	
+	<target id="xen1-disk2" address="134.34.165.132" port="3260">
+		<ImmediateData>No</ImmediateData>
+		<InitiatorName>IdefixInitiator</InitiatorName>
+		<MaxConnections>2</MaxConnections>
+		<TargetName>iqn.2007-10.de.uni-konstanz.inf.disy.xen1:disk2</TargetName>
+	</target> -->
+
+
+
+</configuration>

@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2012, University of Konstanz, Distributed Systems Group
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+        * Redistributions of source code must retain the above copyright
+          notice, this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright
+          notice, this list of conditions and the following disclaimer in the
+          documentation and/or other materials provided with the distribution.
+        * Neither the name of the University of Konstanz nor the
+          names of its contributors may be used to endorse or promote products
+          derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+<xs:schema elementFormDefault="qualified" targetNamespace="http://www.jscsi.org/2006-09" xmlns="http://www.jscsi.org/2006-09" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:simpleType name="SessionType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Normal" />
+			<xs:enumeration value="Discovery" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="boolean">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Yes" />
+			<xs:enumeration value="No" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ResultFunction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="None" />
+			<xs:enumeration value="Min" />
+			<xs:enumeration value="Max" />
+			<xs:enumeration value="And" />
+			<xs:enumeration value="Or" />
+			<xs:enumeration value="Choose" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="Scope">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="None" />
+			<xs:enumeration value="Connection" />
+			<xs:enumeration value="Session" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="TimeOut">
+		<xs:restriction base="xs:short">
+			<xs:minInclusive value="0" />
+			<xs:maxInclusive value="3600" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="BurstLength">
+		<xs:restriction base="xs:positiveInteger">
+			<xs:minInclusive value="512" />
+			<xs:maxInclusive value="16777215" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ErrorRecoveryLevel">
+		<xs:restriction base="xs:byte">
+			<xs:minInclusive value="0" />
+			<xs:maxInclusive value="2" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="positiveShort">
+		<xs:restriction base="xs:unsignedShort">
+			<xs:minInclusive value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="DataSegmentLength">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="512" />
+			<xs:maxInclusive value="16777215" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="Senders">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Both" />
+			<xs:enumeration value="Initiator" />
+			<xs:enumeration value="Target" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="WhitespaceCollapsedString">
+		<xs:restriction base="xs:normalizedString">
+			<xs:whiteSpace value="collapse" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="AuthMethodType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="scope" type="Scope"
+					fixed="Connection" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Choose" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="DataDigestType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Choose" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="DataPDUInOrderType">
+		<xs:simpleContent>
+			<xs:extension base="boolean">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Or" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="DataSequenceInOrderType">
+		<xs:simpleContent>
+			<xs:extension base="boolean">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Or" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="DefaultTime2RetainType">
+		<xs:simpleContent>
+			<xs:extension base="TimeOut">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Min" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="DefaultTime2WaitType">
+		<xs:simpleContent>
+			<xs:extension base="TimeOut">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Max" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="ErrorRecoveryLevelType">
+		<xs:simpleContent>
+			<xs:extension base="ErrorRecoveryLevel">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Min" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="FirstBurstLengthType">
+		<xs:simpleContent>
+			<xs:extension base="BurstLength">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Min" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="HeaderDigestType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Choose" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="IFMarkerType">
+		<xs:simpleContent>
+			<xs:extension base="boolean">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="And" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="IFMarkIntType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="None" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="ImmediateDataType">
+		<xs:simpleContent>
+			<xs:extension base="boolean">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="And" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="InitialR2TType">
+		<xs:simpleContent>
+			<xs:extension base="boolean">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Or" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="InitiatorAliasType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="None" />
+				<xs:attribute name="sender" type="Senders"
+					fixed="Initiator" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="InitiatorNameType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="None" />
+				<xs:attribute name="sender" type="Senders"
+					fixed="Initiator" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="MaxBurstLengthType">
+		<xs:simpleContent>
+			<xs:extension base="BurstLength">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Min" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="MaxConnectionsType">
+		<xs:simpleContent>
+			<xs:extension base="positiveShort">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Min" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="MaxOutstandingR2TType">
+		<xs:simpleContent>
+			<xs:extension base="positiveShort">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Min" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="MaxRecvDataSegmentLengthType">
+		<xs:simpleContent>
+			<xs:extension base="DataSegmentLength">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Min" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="OFMarkerType">
+		<xs:simpleContent>
+			<xs:extension base="boolean">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="And" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="OFMarkIntType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="None" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="SendTargetsType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="None" />
+				<xs:attribute name="sender" type="Senders"
+					fixed="Initiator" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="SessionTypeType">
+		<xs:simpleContent>
+			<xs:extension base="SessionType">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Min" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="TargetAddressType">
+		<xs:simpleContent>
+			<xs:extension base="WhitespaceCollapsedString">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Min" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="TargetAliasType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Min" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="TargetNameType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="None" />
+				<xs:attribute name="sender" type="Senders"
+					fixed="Initiator" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="TargetPortalGroupTagType">
+		<xs:simpleContent>
+			<xs:extension base="positiveShort">
+				<xs:attribute name="scope" type="Scope" fixed="Session" />
+				<xs:attribute name="result" type="ResultFunction"
+					fixed="Min" />
+				<xs:attribute name="sender" type="Senders" fixed="Both" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:element name="configuration">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element name="global">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="AuthMethod" type="AuthMethodType" default="None" minOccurs="0" />
+						<xs:element name="DataDigest" type="DataDigestType" default="None" minOccurs="0" />
+						<xs:element name="DataPDUInOrder" type="DataPDUInOrderType" default="Yes" minOccurs="0" />
+						<xs:element name="DataSequenceInOrder" type="DataSequenceInOrderType" default="Yes" minOccurs="0" />
+						<xs:element name="DefaultTime2Retain" type="DefaultTime2RetainType" default="20" minOccurs="0" />
+						<xs:element name="DefaultTime2Wait" type="DefaultTime2WaitType" default="2" minOccurs="0" />
+						<xs:element name="ErrorRecoveryLevel" type="ErrorRecoveryLevelType" default="0" minOccurs="0" />
+						<xs:element name="FirstBurstLength" type="FirstBurstLengthType" default="65536" minOccurs="0" />
+						<xs:element name="HeaderDigest" type="HeaderDigestType" default="None" minOccurs="0" />
+						<xs:element name="IFMarker" type="IFMarkerType" default="No" minOccurs="0" />
+						<xs:element name="IFMarkInt" type="IFMarkIntType" default="2048" minOccurs="0" />
+						<xs:element name="ImmediateData" type="ImmediateDataType" default="Yes" minOccurs="0" />
+						<xs:element name="InitialR2T" type="InitialR2TType" default="Yes" minOccurs="0" />
+						<xs:element name="InitiatorAlias" type="InitiatorAliasType" minOccurs="0" />
+						<xs:element name="InitiatorName" type="InitiatorNameType" minOccurs="0" />
+						<xs:element name="MaxBurstLength" type="MaxBurstLengthType" default="262144" minOccurs="0" />
+						<xs:element name="MaxConnections" type="MaxConnectionsType" default="1" minOccurs="0" />
+						<xs:element name="MaxOutstandingR2T" type="MaxOutstandingR2TType" default="1" minOccurs="0" />
+						<xs:element name="MaxRecvDataSegmentLength" type="MaxRecvDataSegmentLengthType" default="8192" minOccurs="0" />
+						<xs:element name="OFMarker" type="OFMarkerType" default="No" minOccurs="0" />
+						<xs:element name="OFMarkInt" type="OFMarkIntType" default="2048" minOccurs="0" />
+						<xs:element name="SessionType" type="SessionTypeType" default="Normal" minOccurs="0" />
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="target" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:all>
+						<xs:element name="AuthMethod" type="AuthMethodType" default="None" minOccurs="0" />
+						<xs:element name="DataDigest" type="DataDigestType" default="None" minOccurs="0" />
+						<xs:element name="DataPDUInOrder" type="DataPDUInOrderType" default="Yes" minOccurs="0" />
+						<xs:element name="DataSequenceInOrder" type="DataSequenceInOrderType" default="Yes" minOccurs="0" />
+						<xs:element name="DefaultTime2Retain" type="DefaultTime2RetainType" default="20" minOccurs="0" />
+						<xs:element name="DefaultTime2Wait" type="DefaultTime2WaitType" default="2" minOccurs="0" />
+						<xs:element name="ErrorRecoveryLevel" type="ErrorRecoveryLevelType" default="0" minOccurs="0" />
+						<xs:element name="FirstBurstLength" type="FirstBurstLengthType" default="65536" minOccurs="0" />
+						<xs:element name="HeaderDigest" type="HeaderDigestType" default="None" minOccurs="0" />
+						<xs:element name="IFMarker" type="IFMarkerType" default="No" minOccurs="0" />
+						<xs:element name="IFMarkInt" type="IFMarkIntType" default="2048" minOccurs="0" />
+						<xs:element name="ImmediateData" type="ImmediateDataType" default="Yes" minOccurs="0" />
+						<xs:element name="InitialR2T" type="InitialR2TType" default="Yes" minOccurs="0" />
+						<xs:element name="InitiatorAlias" type="InitiatorAliasType" minOccurs="0" />
+						<xs:element name="InitiatorName" type="InitiatorNameType" minOccurs="0" />
+						<xs:element name="MaxBurstLength" type="MaxBurstLengthType" default="262144" minOccurs="0" />
+						<xs:element name="MaxConnections" type="MaxConnectionsType" default="1" minOccurs="0" />
+						<xs:element name="MaxOutstandingR2T" type="MaxOutstandingR2TType" default="1" minOccurs="0" />
+						<xs:element name="MaxRecvDataSegmentLength" type="MaxRecvDataSegmentLengthType" default="8192" minOccurs="0" />
+						<xs:element name="OFMarker" type="OFMarkerType" default="No" minOccurs="0" />
+						<xs:element name="OFMarkInt" type="OFMarkIntType" default="2048" minOccurs="0" />
+						<xs:element name="SendTargets" type="SendTargetsType" minOccurs="0" />
+						<xs:element name="SessionType" type="SessionTypeType" default="Normal" minOccurs="0" />
+						<xs:element name="TargetAddress" type="TargetAddressType" minOccurs="0" /> 
+						<xs:element name="TargetAlias" type="TargetAliasType" minOccurs="0" />
+						<xs:element name="TargetName" type="TargetNameType" />
+						<xs:element name="TargetPortalGroupTag" type="TargetPortalGroupTagType" minOccurs="0" />
+					</xs:all>
+				
+					<xs:attribute name="id" type="xs:string" use="required" />
+					<xs:attribute name="address" type="xs:string" use="required" />
+					<xs:attribute name="port" default="3260">
+						<xs:simpleType>
+							<xs:restriction base="xs:unsignedShort">
+								<xs:minInclusive value="1" />
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:element>
+</xs:schema>
