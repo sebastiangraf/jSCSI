@@ -422,25 +422,6 @@ public final class Session {
     }
 
     /**
-     * Returns the connection with the given ID.
-     * 
-     * @param connectionID
-     *            The ID of the connection to open.
-     * @return The connection with the given ID. Else <code>null</code>.
-     */
-    public final Connection getConnection(final short connectionID) {
-
-        for (Connection c : connections) {
-            if (c.getConnectionID() == connectionID) {
-                return c;
-            }
-        }
-        // the given connection id is valid in this session.
-        return null;
-
-    }
-
-    /**
      * Increments the Command Sequence Number as defined in RFC1982, where <code>SERIAL_BITS = 32</code>.
      */
     public final void incrementCommandSequenceNumber() {
