@@ -4,24 +4,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.Hashtable;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.collections.primitives.IntIterator;
 import org.jscsi.exception.ConfigurationException;
-import org.jscsi.exception.NoSuchSessionException;
-import org.jscsi.exception.TaskExecutionException;
-import org.jscsi.initiator.connection.Connection;
 import org.jscsi.initiator.connection.Session;
-import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.parser.ProtocolDataUnitFactory;
 import org.jscsi.target.TargetServer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -54,10 +46,10 @@ public class TargetRFCComplianceTest {
 
     /** The session object **/
     private static Session session;
-    
+
     /** The linkfactory object **/
     private static LinkFactory factory;
-    
+
     /** Initiator configuration */
     private static Configuration configuration;
 
@@ -111,11 +103,11 @@ public class TargetRFCComplianceTest {
             } else {
                 targetConfigurationFile = new File(CONFIG_DIR, "jscsi-target-linux.xml");
             }
-            
+
             org.jscsi.target.Configuration targetConfiguration =
                 new org.jscsi.target.Configuration().create(new File(CONFIG_DIR, "jscsi-target.xsd"),
                     targetConfigurationFile);
-            
+
             target = new TargetServer(targetConfiguration);
 
             // Getting an Executor
@@ -138,7 +130,7 @@ public class TargetRFCComplianceTest {
 
         configuration =
             Configuration.create(new File(CONFIG_DIR, "jscsi.xsd"), new File(CONFIG_DIR, "jscsi.xml"));
-        
+
         initiator = new Initiator(configuration);
 
         readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -148,18 +140,21 @@ public class TargetRFCComplianceTest {
 
         randomGenerator.nextBytes(writeBuffer.array());
 
-//      Not working
+        // Not working
         factory = new LinkFactory(initiator);
-        session = factory.getSession(configuration, TARGET_DRIVE_NAME, configuration.getTargetAddress(TARGET_DRIVE_NAME));
+        session =
+            factory.getSession(configuration, TARGET_DRIVE_NAME, configuration
+                .getTargetAddress(TARGET_DRIVE_NAME));
 
-//        Working:        
-//        initiator.createSession(TARGET_DRIVE_NAME);
+        // Working:
+        // initiator.createSession(TARGET_DRIVE_NAME);
         System.out.println("created Session succesfull");
     }
 
     @AfterClass
     public static final void close() throws Exception {
-//        initiator.closeSession(TARGET_DRIVE_NAME);
+        // initiator.closeSession(TARGET_DRIVE_NAME);
+        session.logout();
         session.close();
         CallableStart.stop();
     }
@@ -167,36 +162,38 @@ public class TargetRFCComplianceTest {
     /**
      * This test should check, whether or not a correct response is given for a
      * specific command.
-     * @throws Exception 
+     * 
+     * @throws Exception
      */
     @Test
     public final void testPDUResponses() throws Exception {
-        
-        
-//        Working Code:
-        
-//        initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
-//
-//        assertTrue(!writeBuffer.equals(readBuffer));
-//        
-//        initiator.read(TARGET_DRIVE_NAME,readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
-//
-//        assertTrue(writeBuffer.equals(readBuffer));
-        
-//      Not working:
-        session.write(writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
+
+        // Working Code:
+
+        // initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
+        //
+        // assertTrue(!writeBuffer.equals(readBuffer));
+        //
+        // initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
+        //
+        // assertArrayEquals(writeBuffer.array(), readBuffer.array());
+
+        // Not working:
+        Future<Void> returnVal1 = session.write(writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
+        returnVal1.get();
 
         assertTrue(!writeBuffer.equals(readBuffer));
-        
-        session.read(readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
+
+        Future<Void> returnVal2 = session.read(readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
+        returnVal2.get();
 
         assertTrue(writeBuffer.equals(readBuffer));
-        
+
         writeBuffer.flip();
         readBuffer.flip();
 
         assertTrue(writeBuffer.equals(readBuffer));
-        
+
     }
 
     private static boolean isWindows() {
