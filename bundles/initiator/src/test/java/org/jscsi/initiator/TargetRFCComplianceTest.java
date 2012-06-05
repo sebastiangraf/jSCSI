@@ -105,7 +105,7 @@ public class TargetRFCComplianceTest {
             }
 
             org.jscsi.target.Configuration targetConfiguration =
-                new org.jscsi.target.Configuration().create(new File(CONFIG_DIR, "jscsi-target.xsd"),
+                org.jscsi.target.Configuration.create(new File(CONFIG_DIR, "jscsi-target.xsd"),
                     targetConfigurationFile);
 
             target = new TargetServer(targetConfiguration);
