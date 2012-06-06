@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd-cpd>
 <duplication lines="40" tokens="125">
-<file line="26" path="/Users/sebi/Dropbox/github/jscsi/bundles/target/src/main/java/org/jscsi/target/scsi/cdb/Read6Cdb.java"/>
-<file line="24" path="/Users/sebi/Dropbox/github/jscsi/bundles/target/src/main/java/org/jscsi/target/scsi/cdb/Write6Cdb.java"/>
+<file line="26" path="/Users/sebi/Dropbox/github/jSCSI/bundles/target/src/main/java/org/jscsi/target/scsi/cdb/Read6Cdb.java"/>
+<file line="24" path="/Users/sebi/Dropbox/github/jSCSI/bundles/target/src/main/java/org/jscsi/target/scsi/cdb/Write6Cdb.java"/>
 <codefragment>
 <![CDATA[
     public Read6Cdb(ByteBuffer buffer) {

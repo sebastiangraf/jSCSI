@@ -285,7 +285,7 @@
 <a class="jxr_linenumber" name="275" href="#275">275</a>             <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="276" href="#276">276</a>         <em class="jxr_comment">// TargetName</em>
 <a class="jxr_linenumber" name="277" href="#277">277</a>         Node nextNode = chopWhiteSpaces(targetElement.getFirstChild());
-<a class="jxr_linenumber" name="278" href="#278">278</a>         assert nextNode.getLocalName().equals(OperationalTextKey.TARGET_NAME);
+<a class="jxr_linenumber" name="278" href="#278">278</a> <em class="jxr_comment">//        assert nextNode.getLocalName().equals(OperationalTextKey.TARGET_NAME);</em>
 <a class="jxr_linenumber" name="279" href="#279">279</a>         String targetName = nextNode.getTextContent();
 <a class="jxr_linenumber" name="280" href="#280">280</a> 
 <a class="jxr_linenumber" name="281" href="#281">281</a>         <em class="jxr_comment">// TargetAlias (optional)</em>
@@ -301,14 +301,14 @@
 <a class="jxr_linenumber" name="291" href="#291">291</a>         <strong class="jxr_keyword">if</strong> (nextNode.getLocalName().equals(ELEMENT_SYNCFILESTORAGE)) {
 <a class="jxr_linenumber" name="292" href="#292">292</a>             kind = STORAGEKIND.SyncFile;
 <a class="jxr_linenumber" name="293" href="#293">293</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="294" href="#294">294</a>             assert nextNode.getLocalName().equals(ELEMENT_ASYNCFILESTORAGE);
+<a class="jxr_linenumber" name="294" href="#294">294</a> <em class="jxr_comment">//            assert nextNode.getLocalName().equals(ELEMENT_ASYNCFILESTORAGE);</em>
 <a class="jxr_linenumber" name="295" href="#295">295</a>             kind = STORAGEKIND.AsyncFile;
 <a class="jxr_linenumber" name="296" href="#296">296</a>         }
 <a class="jxr_linenumber" name="297" href="#297">297</a> 
 <a class="jxr_linenumber" name="298" href="#298">298</a>         <em class="jxr_comment">// Getting storagepath</em>
 <a class="jxr_linenumber" name="299" href="#299">299</a>         nextNode = nextNode.getFirstChild();
 <a class="jxr_linenumber" name="300" href="#300">300</a>         nextNode = chopWhiteSpaces(nextNode);
-<a class="jxr_linenumber" name="301" href="#301">301</a>         assert nextNode.getLocalName().equals(ELEMENT_PATH);
+<a class="jxr_linenumber" name="301" href="#301">301</a> <em class="jxr_comment">//        assert nextNode.getLocalName().equals(ELEMENT_PATH);</em>
 <a class="jxr_linenumber" name="302" href="#302">302</a>         String storageFilePath = nextNode.getTextContent();
 <a class="jxr_linenumber" name="303" href="#303">303</a> 
 <a class="jxr_linenumber" name="304" href="#304">304</a>         <em class="jxr_comment">// CreateNode with size</em>
@@ -322,7 +322,7 @@
 <a class="jxr_linenumber" name="312" href="#312">312</a>                     .getTextContent())) * Math.pow(1024, 3)));
 <a class="jxr_linenumber" name="313" href="#313">313</a>         } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="314" href="#314">314</a>             create = false;
-<a class="jxr_linenumber" name="315" href="#315">315</a>             assert nextNode.getLocalName().equals(ELEMENT_DONTCREATE);
+<a class="jxr_linenumber" name="315" href="#315">315</a> <em class="jxr_comment">//            assert nextNode.getLocalName().equals(ELEMENT_DONTCREATE);</em>
 <a class="jxr_linenumber" name="316" href="#316">316</a>         }
 <a class="jxr_linenumber" name="317" href="#317">317</a>         <strong class="jxr_keyword">final</strong> <a href="../../../org/jscsi/target/storage/IStorageModule.html">IStorageModule</a> module = RandomAccessStorageModule.open(<strong class="jxr_keyword">new</strong> File(
 <a class="jxr_linenumber" name="318" href="#318">318</a>                 storageFilePath), storageLength, create, kind);
