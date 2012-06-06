@@ -275,7 +275,7 @@ public class Configuration {
             throws IOException {
         // TargetName
         Node nextNode = chopWhiteSpaces(targetElement.getFirstChild());
-        assert nextNode.getLocalName().equals(OperationalTextKey.TARGET_NAME);
+//        assert nextNode.getLocalName().equals(OperationalTextKey.TARGET_NAME);
         String targetName = nextNode.getTextContent();
 
         // TargetAlias (optional)
@@ -291,14 +291,14 @@ public class Configuration {
         if (nextNode.getLocalName().equals(ELEMENT_SYNCFILESTORAGE)) {
             kind = STORAGEKIND.SyncFile;
         } else {
-            assert nextNode.getLocalName().equals(ELEMENT_ASYNCFILESTORAGE);
+//            assert nextNode.getLocalName().equals(ELEMENT_ASYNCFILESTORAGE);
             kind = STORAGEKIND.AsyncFile;
         }
 
         // Getting storagepath
         nextNode = nextNode.getFirstChild();
         nextNode = chopWhiteSpaces(nextNode);
-        assert nextNode.getLocalName().equals(ELEMENT_PATH);
+//        assert nextNode.getLocalName().equals(ELEMENT_PATH);
         String storageFilePath = nextNode.getTextContent();
 
         // CreateNode with size
@@ -312,7 +312,7 @@ public class Configuration {
                     .getTextContent())) * Math.pow(1024, 3)));
         } else {
             create = false;
-            assert nextNode.getLocalName().equals(ELEMENT_DONTCREATE);
+//            assert nextNode.getLocalName().equals(ELEMENT_DONTCREATE);
         }
         final IStorageModule module = RandomAccessStorageModule.open(new File(
                 storageFilePath), storageLength, create, kind);
