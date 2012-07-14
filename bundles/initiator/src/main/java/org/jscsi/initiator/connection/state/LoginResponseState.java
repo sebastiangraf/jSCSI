@@ -117,6 +117,8 @@ public final class LoginResponseState extends AbstractState {
         connection.update(loginResponse.getSettings());
 
         LOGGER.info("Updated settings to these:\n" + connection.getSettings());
+        LOGGER.info("Nextstage is : " + nextStage);
+        
         // is a transit to the next stage possible
         if (protocolDataUnit.getBasicHeaderSegment().isFinalFlag()) {
             if (nextStage == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION) {
