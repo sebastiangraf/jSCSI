@@ -112,6 +112,9 @@ public final class TargetServer implements Callable<Void> {
                 new TargetServer(Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE, new File(
                     args[0])));
             break;
+        case 2:
+            target = new TargetServer(Configuration.create(new File(args[0]), new File(args[1])));
+            break;
         default:
             throw new IllegalArgumentException(
                 "Only zero or one Parameter (Path to Configuration-File) allowed!");
