@@ -50,6 +50,12 @@ jSCSI contains a server (target), a client (initiator) and common classes to wor
 * Use the target and/or the initiator-interfaces in your project
 
 Note that the target is capable to run on its own while the initiator can only be utilized as library.
+To run the target, please execute:
+```
+mvn SCHEMA.xsd CONFIG.xml
+``` 
+The schema and an example config are accessible as download as well and included under bundles/target/src/main/resources .
+
 For further documentation and as an example, please refer to the examples in the initiator- and target-module.
 
 ##Content
