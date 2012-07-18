@@ -23,7 +23,7 @@ public class LogicalUnitNumber implements ISerializable {
     private final byte[] bytes;
 
     public LogicalUnitNumber(final long logicalUnitNumber) {
-        bytes = ReadWrite.longToBytes(logicalUnitNumber);
+		bytes = ReadWrite.longToBytes(logicalUnitNumber);
     }
 
     public void serialize(ByteBuffer byteBuffer, int index) {

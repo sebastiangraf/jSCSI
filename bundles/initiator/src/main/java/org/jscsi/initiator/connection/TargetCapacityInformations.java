@@ -98,7 +98,6 @@ public final class TargetCapacityInformations {
      *            The input buffer to read from.
      */
     public final void deserialize(final ByteBuffer buf) {
-
         size = buf.getInt();
         blockSize = buf.getInt();
     }

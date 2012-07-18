@@ -31,7 +31,9 @@ import org.jscsi.initiator.connection.Connection;
 import org.jscsi.initiator.connection.TargetCapacityInformations;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.parser.ProtocolDataUnitFactory;
 import org.jscsi.parser.data.DataInParser;
+import org.jscsi.parser.datasegment.OperationalTextKey;
 import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIStatus;
 
@@ -45,72 +47,78 @@ import org.jscsi.parser.scsi.SCSIStatus;
  */
 final class CapacityResponseState extends AbstractState {
 
-    // --------------------------------------------------------------------------
-    // --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
 
-    /**
-     * This object contains the informations about the capacity of the connected
-     * target.
-     */
-    private final TargetCapacityInformations capacityInformation;
+	/**
+	 * This object contains the informations about the capacity of the connected
+	 * target.
+	 */
+	private final TargetCapacityInformations capacityInformation;
 
-    // --------------------------------------------------------------------------
-    // --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
 
-    /**
-     * Constructor to create a new, empty <code>CapacityResponseState</code>
-     * instance.
-     * 
-     * @param initConnection
-     *            This is the connection, which is used for the network
-     *            transmission.
-     * @param initCapacityInformation
-     *            Store the extracted informations in this instance.
-     */
-    protected CapacityResponseState(final Connection initConnection,
-            final TargetCapacityInformations initCapacityInformation) {
+	/**
+	 * Constructor to create a new, empty <code>CapacityResponseState</code>
+	 * instance.
+	 * 
+	 * @param initConnection
+	 *            This is the connection, which is used for the network
+	 *            transmission.
+	 * @param initCapacityInformation
+	 *            Store the extracted informations in this instance.
+	 */
+	protected CapacityResponseState(final Connection initConnection,
+			final TargetCapacityInformations initCapacityInformation) {
 
-        super(initConnection);
-        capacityInformation = initCapacityInformation;
-    }
+		super(initConnection);
+		capacityInformation = initCapacityInformation;
+	}
 
-    // --------------------------------------------------------------------------
-    // --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
 
-    /** {@inheritDoc} */
-    public final void execute() throws InternetSCSIException {
+	/** {@inheritDoc} */
+	public final void execute() throws InternetSCSIException {
 
-        final ProtocolDataUnit protocolDataUnit = connection.receive();
+		final ProtocolDataUnit protocolDataUnit = connection.receive();
 
-        // first, we extract capacity informations
-        if (!(protocolDataUnit.getBasicHeaderSegment().getParser() instanceof DataInParser)) {
-            throw new InternetSCSIException(protocolDataUnit
-                    .getBasicHeaderSegment().getParser().getClass()
-                    .getSimpleName()
-                    + " is not the expected type of PDU.");
-        }
+		// first, we extract capacity informations
+		if (!(protocolDataUnit.getBasicHeaderSegment().getParser() instanceof DataInParser)) {
+			throw new InternetSCSIException(protocolDataUnit
+					.getBasicHeaderSegment().getParser().getClass()
+					.getSimpleName()
+					+ " is not the expected type of PDU.");
+		}
 
-        final DataInParser parser = (DataInParser) protocolDataUnit
-                .getBasicHeaderSegment().getParser();
-        capacityInformation.deserialize(protocolDataUnit.getDataSegment());
+		/**
+		 * The server responded using the data-in-parser.
+		 */
+		final DataInParser parser = (DataInParser) protocolDataUnit
+				.getBasicHeaderSegment().getParser();
 
-        if (!parser.isStatusFlag() || parser.getStatus() != SCSIStatus.GOOD) {
-            // receive SCSI Response PDU and check status (no phase collapse)
-            final ProtocolDataUnit scsiPdu = connection.receive();
-            if (scsiPdu.getBasicHeaderSegment().getOpCode() == OperationCode.SCSI_RESPONSE) {
-                final SCSIResponseParser scsiParser = (SCSIResponseParser) scsiPdu
-                        .getBasicHeaderSegment().getParser();
-                if (scsiParser.getStatus() == SCSIStatus.GOOD)
-                    return;// done
-            }// else
-            throw new InternetSCSIException(
-                    "Error: Task did not finish successfully.");
-        }
-    }
+		capacityInformation.deserialize(protocolDataUnit.getDataSegment());
 
-    // --------------------------------------------------------------------------
-    // --------------------------------------------------------------------------
-    // --------------------------------------------------------------------------
-    // --------------------------------------------------------------------------
+		if (!parser.isStatusFlag() || parser.getStatus() != SCSIStatus.GOOD) {
+			// receive SCSI Response PDU and check status (no phase
+			// collapse)
+			final ProtocolDataUnit scsiPdu = connection.receive();
+			if (scsiPdu.getBasicHeaderSegment().getOpCode() == OperationCode.SCSI_RESPONSE) {
+				final SCSIResponseParser scsiParser = (SCSIResponseParser) scsiPdu
+						.getBasicHeaderSegment().getParser();
+				if (scsiParser.getStatus() == SCSIStatus.GOOD)
+					return;// done
+			}
+			throw new InternetSCSIException(
+					"Error: Task did not finish successfully.");
+		}
+
+	}
+
+	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
+	// --------------------------------------------------------------------------
 
 }

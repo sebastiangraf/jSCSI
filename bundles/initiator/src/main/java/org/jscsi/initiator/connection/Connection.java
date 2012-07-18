@@ -153,7 +153,6 @@ public final class Connection {
      */
     public final boolean getSettingAsBoolean(final OperationalTextKey textKey)
         throws OperationalTextKeyException {
-
         return getSetting(textKey).compareTo("Yes") == 0;
     }
 
@@ -249,6 +248,7 @@ public final class Connection {
         if (this.state != null) {
             do {
                 this.state.execute();
+                LOGGER.info("State is following: " + this.state.nextStateFollowing());
             } while (this.state.nextStateFollowing());
         }
 

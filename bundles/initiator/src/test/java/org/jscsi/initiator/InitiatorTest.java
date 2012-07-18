@@ -41,7 +41,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore("Lack of testembed, removing")
+//@Ignore("Lack of testembed, removing")
 public final class InitiatorTest {
 
     // --------------------------------------------------------------------------

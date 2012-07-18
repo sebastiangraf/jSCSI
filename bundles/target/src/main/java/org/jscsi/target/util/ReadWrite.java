@@ -2,8 +2,6 @@ package org.jscsi.target.util;
 
 import java.nio.ByteBuffer;
 
-import org.jscsi.parser.ProtocolDataUnit;
-
 /**
  * This utility class contains static methods for reading/writing integers of
  * various lengths and character strings from/to {@link ByteBuffer} objects and

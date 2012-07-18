@@ -121,7 +121,7 @@ abstract class AbstractState implements IState {
 
     /**
      * Constructor, which each subclass must implement to set the context
-     * connectioncorrectly.
+     * connection correctly.
      * 
      * @param initConnection
      *            The connection, which is used for the message transmission.
