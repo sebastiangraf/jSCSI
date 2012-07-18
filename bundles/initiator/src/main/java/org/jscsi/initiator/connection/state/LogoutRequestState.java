@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -62,8 +62,7 @@ public final class LogoutRequestState extends AbstractState {
      * @param initReasonCode
      *            The reason code for the logout.
      */
-    public LogoutRequestState(final Connection initConnection,
-            final LogoutReasonCode initReasonCode) {
+    public LogoutRequestState(final Connection initConnection, final LogoutReasonCode initReasonCode) {
 
         super(initConnection);
         reasonCode = initReasonCode;
@@ -75,14 +74,12 @@ public final class LogoutRequestState extends AbstractState {
     /** {@inheritDoc} */
     public final void execute() throws InternetSCSIException {
 
-        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory
-                .create(true,
-                        true,
-                        OperationCode.LOGOUT_REQUEST,
-                        connection.getSetting(OperationalTextKey.HEADER_DIGEST),
-                        connection.getSetting(OperationalTextKey.DATA_DIGEST));
-        final LogoutRequestParser logoutRequest = (LogoutRequestParser) protocolDataUnit
-                .getBasicHeaderSegment().getParser();
+        final ProtocolDataUnit protocolDataUnit =
+            protocolDataUnitFactory.create(true, true, OperationCode.LOGOUT_REQUEST, connection
+                .getSetting(OperationalTextKey.HEADER_DIGEST), connection
+                .getSetting(OperationalTextKey.DATA_DIGEST));
+        final LogoutRequestParser logoutRequest =
+            (LogoutRequestParser)protocolDataUnit.getBasicHeaderSegment().getParser();
 
         logoutRequest.setReasonCode(reasonCode);
         if (reasonCode != LogoutReasonCode.CLOSE_SESSION) {

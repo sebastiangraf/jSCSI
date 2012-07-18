@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -54,7 +54,7 @@ final class ReadResponseState extends AbstractState {
      * This is the wrap around divisor (2**32) of the modulo operation used by
      * incrementing the sequence numbers. See [RFC1982] for details.
      */
-    private static final int WRAP_AROUND_DIVISOR = (int) Math.pow(2, 32);
+    private static final int WRAP_AROUND_DIVISOR = (int)Math.pow(2, 32);
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -85,9 +85,8 @@ final class ReadResponseState extends AbstractState {
      *            The Expected Data Sequence Number of the next response
      *            message.
      */
-    public ReadResponseState(final Connection initConnection,
-            final ByteBuffer initBuffer, final int initBufferOffset,
-            final int initExpectedDataSequenceNumber) {
+    public ReadResponseState(final Connection initConnection, final ByteBuffer initBuffer,
+        final int initBufferOffset, final int initExpectedDataSequenceNumber) {
 
         super(initConnection);
         buffer = initBuffer;
@@ -107,39 +106,32 @@ final class ReadResponseState extends AbstractState {
             protocolDataUnit = connection.receive();
             boolean dataWasRead = false;
             if (protocolDataUnit.getBasicHeaderSegment().getParser() instanceof DataInParser) {
-                final DataInParser parser = (DataInParser) protocolDataUnit
-                        .getBasicHeaderSegment().getParser();
+                final DataInParser parser =
+                    (DataInParser)protocolDataUnit.getBasicHeaderSegment().getParser();
 
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Remaining, DataSegmentLength: "
-                            + buffer.remaining()
-                            + ", "
-                            + protocolDataUnit.getBasicHeaderSegment()
-                                    .getDataSegmentLength());
+                    LOGGER.debug("Remaining, DataSegmentLength: " + buffer.remaining() + ", "
+                        + protocolDataUnit.getBasicHeaderSegment().getDataSegmentLength());
                 }
 
-                final ByteBuffer dataSegment = protocolDataUnit
-                        .getDataSegment();
+                final ByteBuffer dataSegment = protocolDataUnit.getDataSegment();
                 while (buffer.hasRemaining() && dataSegment.hasRemaining()) {
                     buffer.put(dataSegment.get());
                 }
                 dataWasRead = true;
                 // last message with the status flag set
-                if (parser.isStatusFlag()
-                        && parser.getStatus() == SCSIStatus.GOOD) {
+                if (parser.isStatusFlag() && parser.getStatus() == SCSIStatus.GOOD) {
                     // return false;
                     return;
-                } else if (connection
-                        .getSettingAsInt(OperationalTextKey.ERROR_RECOVERY_LEVEL) > 0
-                        && parser.isAcknowledgeFlag()) {
+                } else if (connection.getSettingAsInt(OperationalTextKey.ERROR_RECOVERY_LEVEL) > 0
+                    && parser.isAcknowledgeFlag()) {
                     // TODO: Test this case
                     // send a DataAck
-                    connection.nextState(new SNACKRequestState(connection,
-                            this, parser.getTargetTaskTag()));
+                    connection.nextState(new SNACKRequestState(connection, this, parser.getTargetTaskTag()));
                     // return true;
                     return;
                 } else if (protocolDataUnit.getBasicHeaderSegment().getParser() instanceof SCSIResponseParser
-                        && !dataWasRead) {
+                    && !dataWasRead) {
                     readHandleImmediateData(protocolDataUnit);
                 }
             }
@@ -157,9 +149,9 @@ final class ReadResponseState extends AbstractState {
     }
 
     private void readHandleImmediateData(final ProtocolDataUnit protocolDataUnit)
-            throws InternetSCSIException {
-        final SCSIResponseParser parser = (SCSIResponseParser) protocolDataUnit
-                .getBasicHeaderSegment().getParser();
+        throws InternetSCSIException {
+        final SCSIResponseParser parser =
+            (SCSIResponseParser)protocolDataUnit.getBasicHeaderSegment().getParser();
 
         final ByteBuffer dataSegment = protocolDataUnit.getDataSegment();
         while (buffer.hasRemaining() && dataSegment.hasRemaining()) {
@@ -182,25 +174,19 @@ final class ReadResponseState extends AbstractState {
     @Override
     public Exception isCorrect(final ProtocolDataUnit protocolDataUnit) {
 
-        final AbstractMessageParser parser = protocolDataUnit
-                .getBasicHeaderSegment().getParser();
+        final AbstractMessageParser parser = protocolDataUnit.getBasicHeaderSegment().getParser();
 
         if (parser instanceof DataInParser) {
 
-            final DataInParser dataParser = (DataInParser) parser;
+            final DataInParser dataParser = (DataInParser)parser;
             try {
-                if (connection
-                        .getSettingAsBoolean(OperationalTextKey.DATA_PDU_IN_ORDER)
-                        && connection
-                                .getSettingAsBoolean(OperationalTextKey.DATA_SEQUENCE_IN_ORDER)) {
+                if (connection.getSettingAsBoolean(OperationalTextKey.DATA_PDU_IN_ORDER)
+                    && connection.getSettingAsBoolean(OperationalTextKey.DATA_SEQUENCE_IN_ORDER)) {
                     if (dataParser.getBufferOffset() < bufferOffset) {
-                        return new IllegalStateException(
-                                new StringBuilder(
-                                        "This buffer offsets must be in increasing order and overlays are forbidden.")
-                                        .append(" The parserOffset here is ")
-                                        .append(dataParser.getBufferOffset())
-                                        .append(" and the bufferOffset is ")
-                                        .append(bufferOffset).toString());
+                        return new IllegalStateException(new StringBuilder(
+                            "This buffer offsets must be in increasing order and overlays are forbidden.")
+                            .append(" The parserOffset here is ").append(dataParser.getBufferOffset())
+                            .append(" and the bufferOffset is ").append(bufferOffset).toString());
                     }
                     bufferOffset = dataParser.getBufferOffset();
                 }
@@ -210,9 +196,8 @@ final class ReadResponseState extends AbstractState {
 
             if (dataParser.getDataSequenceNumber() != expectedDataSequenceNumber) {
                 return new IllegalStateException(new StringBuilder(
-                        "Data Sequence Number Mismatch (received, expected): "
-                                + dataParser.getDataSequenceNumber() + ", "
-                                + expectedDataSequenceNumber).toString());
+                    "Data Sequence Number Mismatch (received, expected): "
+                        + dataParser.getDataSequenceNumber() + ", " + expectedDataSequenceNumber).toString());
 
             }
 
@@ -222,18 +207,18 @@ final class ReadResponseState extends AbstractState {
                 incrementExpectedDataSequenceNumber();
                 return super.isCorrect(protocolDataUnit);
             } else if (dataParser.getStatusSequenceNumber() != 0) {
-                return new IllegalStateException(new StringBuilder(
-                        "Status Sequence Number must be zero.").toString());
+                return new IllegalStateException(new StringBuilder("Status Sequence Number must be zero.")
+                    .toString());
             }
             return null;
         } else if (parser instanceof SCSIResponseParser) {
             try {
-                if (connection
-                        .getSettingAsBoolean(OperationalTextKey.IMMEDIATE_DATA)) {
+                if (connection.getSettingAsBoolean(OperationalTextKey.IMMEDIATE_DATA)) {
                     return new IllegalStateException(
-                            new StringBuilder("Parser ")
-                                    .append("should not be instance of SCSIResponseParser because of ImmendiateData-Flag \"no\" in config!")
-                                    .toString());
+                        new StringBuilder("Parser ")
+                            .append(
+                                "should not be instance of SCSIResponseParser because of ImmendiateData-Flag \"no\" in config!")
+                            .toString());
                 }
             } catch (OperationalTextKeyException e) {
                 return e;
@@ -241,15 +226,10 @@ final class ReadResponseState extends AbstractState {
 
             return null;
         } else {
-            return new IllegalStateException(
-                    new StringBuilder("Parser ")
-                            .append(protocolDataUnit.getBasicHeaderSegment()
-                                    .getParser().toString())
-                            .append(" is instance of ")
-                            .append(protocolDataUnit.getBasicHeaderSegment()
-                                    .getParser().getClass().toString())
-                            .append(" and not instance of either DataInParser or SCSIResponseParser!")
-                            .toString());
+            return new IllegalStateException(new StringBuilder("Parser ").append(
+                protocolDataUnit.getBasicHeaderSegment().getParser().toString()).append(" is instance of ")
+                .append(protocolDataUnit.getBasicHeaderSegment().getParser().getClass().toString()).append(
+                    " and not instance of either DataInParser or SCSIResponseParser!").toString());
         }
 
     }
@@ -262,8 +242,7 @@ final class ReadResponseState extends AbstractState {
      */
     private void incrementExpectedDataSequenceNumber() {
 
-        expectedDataSequenceNumber = (expectedDataSequenceNumber + 1)
-                % WRAP_AROUND_DIVISOR;
+        expectedDataSequenceNumber = (expectedDataSequenceNumber + 1) % WRAP_AROUND_DIVISOR;
     }
 
     // --------------------------------------------------------------------------

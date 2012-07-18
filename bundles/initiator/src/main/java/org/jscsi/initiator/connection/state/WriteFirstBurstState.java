@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -41,8 +41,8 @@ import org.jscsi.parser.datasegment.OperationalTextKey;
 /**
  * <h1>WriteFirstBurstState</h1>
  * <p/>
- * This state handles a first Write Sending State, which sends at most
- * <code>FirstBurstLength</code> bytes in the first sequence.
+ * This state handles a first Write Sending State, which sends at most <code>FirstBurstLength</code> bytes in
+ * the first sequence.
  * 
  * @author Volker Wildi
  */
@@ -85,10 +85,8 @@ final class WriteFirstBurstState extends AbstractState {
      * @param initBufferOffset
      *            The start offset of the data to send.
      */
-    public WriteFirstBurstState(final Connection initConnection,
-            final IDataSegmentIterator initIterator,
-            final int initTargetTransferTag, final int initDataSequenceNumber,
-            final int initBufferOffset) {
+    public WriteFirstBurstState(final Connection initConnection, final IDataSegmentIterator initIterator,
+        final int initTargetTransferTag, final int initDataSequenceNumber, final int initBufferOffset) {
 
         super(initConnection);
         iterator = initIterator;
@@ -109,13 +107,11 @@ final class WriteFirstBurstState extends AbstractState {
         DataOutParser dataOut;
         IDataSegmentChunk dataSegmentChunk;
         boolean finalFlag = false;
-        final int maxRecvDataSegmentLength = connection
-                .getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH);
+        final int maxRecvDataSegmentLength =
+            connection.getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH);
         // the remaining bytes to send (do not forget the immediately send
         // data!)
-        int bytes2Transfer = connection
-                .getSettingAsInt(OperationalTextKey.FIRST_BURST_LENGTH)
-                - bufferOffset;
+        int bytes2Transfer = connection.getSettingAsInt(OperationalTextKey.FIRST_BURST_LENGTH) - bufferOffset;
 
         while (bytes2Transfer > 0 && iterator.hasNext()) {
             if (bytes2Transfer <= maxRecvDataSegmentLength) {
@@ -126,15 +122,14 @@ final class WriteFirstBurstState extends AbstractState {
                 finalFlag = false;
             }
 
-            protocolDataUnit = protocolDataUnitFactory.create(false, finalFlag,
-                    OperationCode.SCSI_DATA_OUT,
-                    connection.getSetting(OperationalTextKey.HEADER_DIGEST),
-                    connection.getSetting(OperationalTextKey.DATA_DIGEST));
+            protocolDataUnit =
+                protocolDataUnitFactory.create(false, finalFlag, OperationCode.SCSI_DATA_OUT, connection
+                    .getSetting(OperationalTextKey.HEADER_DIGEST), connection
+                    .getSetting(OperationalTextKey.DATA_DIGEST));
             protocolDataUnit.getBasicHeaderSegment().setInitiatorTaskTag(
-                    connection.getSession().getInitiatorTaskTag());
+                connection.getSession().getInitiatorTaskTag());
 
-            dataOut = (DataOutParser) protocolDataUnit.getBasicHeaderSegment()
-                    .getParser();
+            dataOut = (DataOutParser)protocolDataUnit.getBasicHeaderSegment().getParser();
 
             dataOut.setTargetTransferTag(targetTransferTag);
             dataOut.setDataSequenceNumber(dataSequenceNumber++);
@@ -149,8 +144,8 @@ final class WriteFirstBurstState extends AbstractState {
 
         connection.send(protocolDataUnits);
 
-        connection.nextState(new WriteSecondResponseState(connection, iterator,
-                dataSequenceNumber, bufferOffset));
+        connection.nextState(new WriteSecondResponseState(connection, iterator, dataSequenceNumber,
+            bufferOffset));
         super.stateFollowing = true;
         // return true;
     }

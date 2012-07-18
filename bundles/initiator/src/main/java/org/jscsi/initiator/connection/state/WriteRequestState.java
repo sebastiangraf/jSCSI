@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -97,11 +97,10 @@ public final class WriteRequestState extends AbstractState {
      * @param initTransferLength
      *            The number of blocks to write.
      */
-    public WriteRequestState(final Connection initConnection,
-            final ByteBuffer initBuffer, final int initBufferPosition,
-            final TaskAttributes initTaskAttributes,
-            final int initExpectedDataTransferLength,
-            final int initLogicalBlockAddress, final short initTransferLength) {
+    public WriteRequestState(final Connection initConnection, final ByteBuffer initBuffer,
+        final int initBufferPosition, final TaskAttributes initTaskAttributes,
+        final int initExpectedDataTransferLength, final int initLogicalBlockAddress,
+        final short initTransferLength) {
 
         super(initConnection);
         buffer = initBuffer;
@@ -118,14 +117,12 @@ public final class WriteRequestState extends AbstractState {
     /** {@inheritDoc} */
     public final void execute() throws InternetSCSIException {
 
-        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory
-                .create(false,
-                        true,
-                        OperationCode.SCSI_COMMAND,
-                        connection.getSetting(OperationalTextKey.HEADER_DIGEST),
-                        connection.getSetting(OperationalTextKey.DATA_DIGEST));
-        final SCSICommandParser scsi = (SCSICommandParser) protocolDataUnit
-                .getBasicHeaderSegment().getParser();
+        final ProtocolDataUnit protocolDataUnit =
+            protocolDataUnitFactory.create(false, true, OperationCode.SCSI_COMMAND, connection
+                .getSetting(OperationalTextKey.HEADER_DIGEST), connection
+                .getSetting(OperationalTextKey.DATA_DIGEST));
+        final SCSICommandParser scsi =
+            (SCSICommandParser)protocolDataUnit.getBasicHeaderSegment().getParser();
 
         scsi.setReadExpectedFlag(false);
         scsi.setWriteExpectedFlag(true);
@@ -133,19 +130,20 @@ public final class WriteRequestState extends AbstractState {
 
         scsi.setExpectedDataTransferLength(expectedDataTransferLength);
 
-        final int maxRecvDataSegmentLength = connection
-                .getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH);
-        scsi.setCommandDescriptorBlock(SCSICommandDescriptorBlockParser
-                .createWriteMessage(logicalBlockAddress, transferLength));
+        final int maxRecvDataSegmentLength =
+            connection.getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH);
+        scsi.setCommandDescriptorBlock(SCSICommandDescriptorBlockParser.createWriteMessage(
+            logicalBlockAddress, transferLength));
 
-        final IDataSegment dataSegment = DataSegmentFactory.create(buffer,
-                bufferPosition, expectedDataTransferLength,
+        final IDataSegment dataSegment =
+            DataSegmentFactory.create(buffer, bufferPosition, expectedDataTransferLength,
                 DataSegmentFormat.BINARY, maxRecvDataSegmentLength);
         final IDataSegmentIterator iterator = dataSegment.iterator();
         int bufferOffset = 0;
 
         if (connection.getSettingAsBoolean(OperationalTextKey.IMMEDIATE_DATA)) {
-            final int min = Math.min(maxRecvDataSegmentLength, connection
+            final int min =
+                Math.min(maxRecvDataSegmentLength, connection
                     .getSettingAsInt(OperationalTextKey.FIRST_BURST_LENGTH));
             protocolDataUnit.setDataSegment(iterator.next(min));
             bufferOffset += min;
@@ -153,13 +151,10 @@ public final class WriteRequestState extends AbstractState {
 
         connection.send(protocolDataUnit);
 
-        if (!connection.getSettingAsBoolean(OperationalTextKey.INITIAL_R2T)
-                && iterator.hasNext()) {
-            connection.nextState(new WriteFirstBurstState(connection, iterator,
-                    0xFFFFFFFF, 0, bufferOffset));
+        if (!connection.getSettingAsBoolean(OperationalTextKey.INITIAL_R2T) && iterator.hasNext()) {
+            connection.nextState(new WriteFirstBurstState(connection, iterator, 0xFFFFFFFF, 0, bufferOffset));
         } else {
-            connection.nextState(new WriteSecondResponseState(connection,
-                    iterator, 0, bufferOffset));
+            connection.nextState(new WriteSecondResponseState(connection, iterator, 0, bufferOffset));
         }
         super.stateFollowing = true;
         // return true;

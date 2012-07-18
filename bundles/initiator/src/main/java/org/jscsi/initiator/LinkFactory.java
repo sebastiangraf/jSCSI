@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -38,8 +38,7 @@ import org.slf4j.LoggerFactory;
 /**
  * <h1>LinkFactory</h1>
  * <p>
- * Implements a Factory which enables the Initiator to switch between
- * multithreaded and singlethreaded modes.
+ * Implements a Factory which enables the Initiator to switch between multithreaded and singlethreaded modes.
  * </p>
  * 
  * @author Patrice Matthias Brend'amour
@@ -85,14 +84,14 @@ public final class LinkFactory {
      *            session.
      * @return AbsSession The SessionObject.
      */
-    public final Session getSession(final Configuration initConfiguration,
-            final String initTargetName, final InetSocketAddress inetAddress) {
+    public final Session getSession(final Configuration initConfiguration, final String initTargetName,
+        final InetSocketAddress inetAddress) {
 
         try {
             // Create a new Session
-            final Session newSession = new Session(this, initConfiguration,
-                    initTargetName, inetAddress,
-                    Executors.newSingleThreadExecutor());
+            final Session newSession =
+                new Session(this, initConfiguration, initTargetName, inetAddress, Executors
+                    .newSingleThreadExecutor());
             return newSession;
         } catch (Exception e) {
             LOGGER.error("This exception is thrown: " + e);
@@ -118,13 +117,12 @@ public final class LinkFactory {
      *            The ID of this connection.
      * @return AbsConnection The Connection Object.
      */
-    public final Connection getConnection(final Session session,
-            final Configuration initConfiguration,
-            final InetSocketAddress inetAddress, final short initConnectionID) {
+    public final Connection getConnection(final Session session, final Configuration initConfiguration,
+        final InetSocketAddress inetAddress, final short initConnectionID) {
 
         try {
-            final Connection newConnection = new Connection(session,
-                    initConfiguration, inetAddress, initConnectionID);
+            final Connection newConnection =
+                new Connection(session, initConfiguration, inetAddress, initConnectionID);
             return newConnection;
         } catch (Exception e) {
             LOGGER.error("This exception is thrown: " + e);

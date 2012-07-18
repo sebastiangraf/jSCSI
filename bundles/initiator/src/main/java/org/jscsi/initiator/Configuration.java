@@ -228,7 +228,7 @@ public final class Configuration {
      */
     public final String getSetting(final String targetName, final int connectionID,
         final OperationalTextKey textKey) throws OperationalTextKeyException {
-    	
+
         try {
             final SessionConfiguration sc;
             synchronized (sessionConfigs) {

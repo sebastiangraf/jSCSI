@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -88,11 +88,9 @@ public final class ReadRequestState extends AbstractState {
      * @param initTransferLength
      *            The number of blocks to read.
      */
-    public ReadRequestState(final Connection initConnection,
-            final ByteBuffer initBuffer,
-            final TaskAttributes initTaskAttributes,
-            final int initExpectedDataTransferLength,
-            final int initLogicalBlockAddress, final short initTransferLength) {
+    public ReadRequestState(final Connection initConnection, final ByteBuffer initBuffer,
+        final TaskAttributes initTaskAttributes, final int initExpectedDataTransferLength,
+        final int initLogicalBlockAddress, final short initTransferLength) {
 
         super(initConnection);
         buffer = initBuffer;
@@ -108,21 +106,19 @@ public final class ReadRequestState extends AbstractState {
     /** {@inheritDoc} */
     public final void execute() throws InternetSCSIException {
 
-        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory
-                .create(false,
-                        true,
-                        OperationCode.SCSI_COMMAND,
-                        connection.getSetting(OperationalTextKey.HEADER_DIGEST),
-                        connection.getSetting(OperationalTextKey.DATA_DIGEST));
-        final SCSICommandParser scsi = (SCSICommandParser) protocolDataUnit
-                .getBasicHeaderSegment().getParser();
+        final ProtocolDataUnit protocolDataUnit =
+            protocolDataUnitFactory.create(false, true, OperationCode.SCSI_COMMAND, connection
+                .getSetting(OperationalTextKey.HEADER_DIGEST), connection
+                .getSetting(OperationalTextKey.DATA_DIGEST));
+        final SCSICommandParser scsi =
+            (SCSICommandParser)protocolDataUnit.getBasicHeaderSegment().getParser();
 
         scsi.setReadExpectedFlag(true);
         scsi.setWriteExpectedFlag(false);
         scsi.setTaskAttributes(taskAttributes);
         scsi.setExpectedDataTransferLength(expectedDataTransferLength);
-        scsi.setCommandDescriptorBlock(SCSICommandDescriptorBlockParser
-                .createReadMessage(logicalBlockAddress, transferLength));
+        scsi.setCommandDescriptorBlock(SCSICommandDescriptorBlockParser.createReadMessage(
+            logicalBlockAddress, transferLength));
 
         connection.send(protocolDataUnit);
         connection.nextState(new ReadResponseState(connection, buffer, 0, 0));

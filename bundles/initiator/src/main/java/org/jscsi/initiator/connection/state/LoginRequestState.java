@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -87,8 +87,7 @@ public final class LoginRequestState extends AbstractState {
      * @param initNextStage
      *            The next stage to which should transfered to.
      */
-    public LoginRequestState(final Connection initConnection,
-            final LoginStage initNextStage) {
+    public LoginRequestState(final Connection initConnection, final LoginStage initNextStage) {
 
         super(initConnection);
         nextStage = initNextStage;
@@ -103,16 +102,16 @@ public final class LoginRequestState extends AbstractState {
         final SettingsMap loginParameters = connection.getSettings();
         LOGGER.info("Sending these login parameters:\n" + loginParameters);
 
-        final int maxRecvDataSegmentLength = connection
-                .getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH);
+        final int maxRecvDataSegmentLength =
+            connection.getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH);
         final ISID isid = ISID.createRandom(System.currentTimeMillis());
 
         LoginRequestParser loginRequest;
         boolean continueFlag;
         // here the finalFlag represents the transitFlag
         boolean finalFlag;
-        final IDataSegment dataSegment = DataSegmentFactory.create(
-                loginParameters.asByteBuffer(), DataSegmentFormat.TEXT,
+        final IDataSegment dataSegment =
+            DataSegmentFactory.create(loginParameters.asByteBuffer(), DataSegmentFormat.TEXT,
                 maxRecvDataSegmentLength);
         final IDataSegmentIterator iterator = dataSegment.iterator();
         final Queue<ProtocolDataUnit> protocolDataUnits = new LinkedList<ProtocolDataUnit>();
@@ -133,14 +132,12 @@ public final class LoginRequestState extends AbstractState {
             }
 
             finalFlag = !continueFlag;
-            protocolDataUnit = protocolDataUnitFactory.create(true, finalFlag,
-                    OperationCode.LOGIN_REQUEST, "None", "None");
-            loginRequest = (LoginRequestParser) protocolDataUnit
-                    .getBasicHeaderSegment().getParser();
+            protocolDataUnit =
+                protocolDataUnitFactory.create(true, finalFlag, OperationCode.LOGIN_REQUEST, "None", "None");
+            loginRequest = (LoginRequestParser)protocolDataUnit.getBasicHeaderSegment().getParser();
 
             loginRequest.setContinueFlag(continueFlag);
-            loginRequest.setCurrentStageNumber(connection.getSession()
-                    .getPhase());
+            loginRequest.setCurrentStageNumber(connection.getSession().getPhase());
             LOGGER.debug("Phase:\n" + loginRequest.getCurrentStageNumber());
             if (finalFlag) {
                 loginRequest.setNextStageNumber(nextStage);
@@ -149,8 +146,8 @@ public final class LoginRequestState extends AbstractState {
             loginRequest.setMinVersion(MINIMUM_VERSION);
 
             loginRequest.setInitiatorSessionID(isid);
-            loginRequest.setTargetSessionIdentifyingHandle(connection
-                    .getSession().getTargetSessionIdentifyingHandle());
+            loginRequest.setTargetSessionIdentifyingHandle(connection.getSession()
+                .getTargetSessionIdentifyingHandle());
 
             protocolDataUnit.setDataSegment(dataSegmentChunk);
 

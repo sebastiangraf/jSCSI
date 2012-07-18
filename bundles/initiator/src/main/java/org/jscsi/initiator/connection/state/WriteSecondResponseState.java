@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -39,8 +39,7 @@ import org.jscsi.parser.scsi.SCSIStatus;
 /**
  * <h1>WriteSecondResponseState</h1>
  * <p/>
- * This state handles the response(s) after the second and following data
- * sequences was/were sent.
+ * This state handles the response(s) after the second and following data sequences was/were sent.
  * 
  * @author Volker Wildi
  */
@@ -76,9 +75,8 @@ final class WriteSecondResponseState extends AbstractState {
      * @param initBufferOffset
      *            The start offset of the data to send.
      */
-    public WriteSecondResponseState(final Connection initConnection,
-            final IDataSegmentIterator initIterator,
-            final int initDataSequenceNumber, final int initBufferOffset) {
+    public WriteSecondResponseState(final Connection initConnection, final IDataSegmentIterator initIterator,
+        final int initDataSequenceNumber, final int initBufferOffset) {
 
         super(initConnection);
         iterator = initIterator;
@@ -96,34 +94,30 @@ final class WriteSecondResponseState extends AbstractState {
         LOGGER.trace("1" + protocolDataUnit);
         if (protocolDataUnit.getBasicHeaderSegment().getParser() instanceof Ready2TransferParser) {
             LOGGER.trace("2");
-            final Ready2TransferParser parser = (Ready2TransferParser) protocolDataUnit
-                    .getBasicHeaderSegment().getParser();
+            final Ready2TransferParser parser =
+                (Ready2TransferParser)protocolDataUnit.getBasicHeaderSegment().getParser();
 
             final int targetTransferTag = parser.getTargetTransferTag();
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("R2T has TTT set to " + targetTransferTag);
             }
 
-            final int desiredDataTransferLength = parser
-                    .getDesiredDataTransferLength();
-            if (desiredDataTransferLength > connection
-                    .getSettingAsInt(OperationalTextKey.MAX_BURST_LENGTH)) {
+            final int desiredDataTransferLength = parser.getDesiredDataTransferLength();
+            if (desiredDataTransferLength > connection.getSettingAsInt(OperationalTextKey.MAX_BURST_LENGTH)) {
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error("MaxBurstLength limit is exceed.");
                 }
-                throw new InternetSCSIException(
-                        "MaxBurstLength limit is exceed.");
+                throw new InternetSCSIException("MaxBurstLength limit is exceed.");
             }
 
-            connection.nextState(new WriteSecondBurstState(connection,
-                    iterator, targetTransferTag, desiredDataTransferLength,
-                    dataSequenceNumber, bufferOffset));
+            connection.nextState(new WriteSecondBurstState(connection, iterator, targetTransferTag,
+                desiredDataTransferLength, dataSequenceNumber, bufferOffset));
             super.stateFollowing = true;
             // return true;
             return;
         } else if (protocolDataUnit.getBasicHeaderSegment().getParser() instanceof SCSIResponseParser) {
-            final SCSIResponseParser parser = (SCSIResponseParser) protocolDataUnit
-                    .getBasicHeaderSegment().getParser();
+            final SCSIResponseParser parser =
+                (SCSIResponseParser)protocolDataUnit.getBasicHeaderSegment().getParser();
 
             if (!iterator.hasNext() && parser.getStatus() == SCSIStatus.GOOD) {
                 connection.getSession().incrementInitiatorTaskTag();
@@ -133,8 +127,7 @@ final class WriteSecondResponseState extends AbstractState {
             }
         }
 
-        throw new RuntimeException(protocolDataUnit.getBasicHeaderSegment()
-                .getParser().toString());
+        throw new RuntimeException(protocolDataUnit.getBasicHeaderSegment().getParser().toString());
     }
 
     // --------------------------------------------------------------------------
@@ -146,13 +139,11 @@ final class WriteSecondResponseState extends AbstractState {
 
         // FIXME: Implement
         try {
-            if (!connection
-                    .getSettingAsBoolean(OperationalTextKey.DATA_PDU_IN_ORDER)
-                    && !connection
-                            .getSettingAsBoolean(OperationalTextKey.DATA_SEQUENCE_IN_ORDER)) {
+            if (!connection.getSettingAsBoolean(OperationalTextKey.DATA_PDU_IN_ORDER)
+                && !connection.getSettingAsBoolean(OperationalTextKey.DATA_SEQUENCE_IN_ORDER)) {
                 return new UnsupportedOperationException(new StringBuilder(
-                        OperationalTextKey.DATA_PDU_IN_ORDER.toString())
-                        .append(" is yet not supported.").toString());
+                    OperationalTextKey.DATA_PDU_IN_ORDER.toString()).append(" is yet not supported.")
+                    .toString());
             } else {
                 return null;
             }

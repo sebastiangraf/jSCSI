@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -39,8 +39,7 @@ import org.jscsi.parser.scsi.SCSICommandParser.TaskAttributes;
 /**
  * <h1>CapacityRequestState</h1>
  * <p/>
- * This state handles a Capacity Request to retrieve the block size and the size
- * of the iSCSI Device.
+ * This state handles a Capacity Request to retrieve the block size and the size of the iSCSI Device.
  * 
  * @author Volker Wildi
  */
@@ -68,8 +67,7 @@ public final class CapacityRequestState extends AbstractState {
     // --------------------------------------------------------------------------
 
     /**
-     * Constructor to create a new, empty <code>CapacityRequestState</code>
-     * instance.
+     * Constructor to create a new, empty <code>CapacityRequestState</code> instance.
      * 
      * @param initConnection
      *            This is the connection, which is used for the network
@@ -81,8 +79,7 @@ public final class CapacityRequestState extends AbstractState {
      *            The task attributes, which are used with task.
      */
     public CapacityRequestState(final Connection initConnection,
-            final TargetCapacityInformations initCapacityInformation,
-            final TaskAttributes initTaskAttributes) {
+        final TargetCapacityInformations initCapacityInformation, final TaskAttributes initTaskAttributes) {
 
         super(initConnection);
         capacityInformation = initCapacityInformation;
@@ -95,14 +92,12 @@ public final class CapacityRequestState extends AbstractState {
     /** {@inheritDoc} */
     public final void execute() throws InternetSCSIException {
 
-        final ProtocolDataUnit protocolDataUnit = protocolDataUnitFactory
-                .create(false,
-                        true,
-                        OperationCode.SCSI_COMMAND,
-                        connection.getSetting(OperationalTextKey.HEADER_DIGEST),
-                        connection.getSetting(OperationalTextKey.DATA_DIGEST));
-        final SCSICommandParser scsi = (SCSICommandParser) protocolDataUnit
-                .getBasicHeaderSegment().getParser();
+        final ProtocolDataUnit protocolDataUnit =
+            protocolDataUnitFactory.create(false, true, OperationCode.SCSI_COMMAND, connection
+                .getSetting(OperationalTextKey.HEADER_DIGEST), connection
+                .getSetting(OperationalTextKey.DATA_DIGEST));
+        final SCSICommandParser scsi =
+            (SCSICommandParser)protocolDataUnit.getBasicHeaderSegment().getParser();
 
         scsi.setReadExpectedFlag(true);
         scsi.setWriteExpectedFlag(false);
@@ -110,12 +105,10 @@ public final class CapacityRequestState extends AbstractState {
 
         scsi.setExpectedDataTransferLength(EXPECTED_DATA_TRANSFER_LENGTH);
 
-        scsi.setCommandDescriptorBlock(SCSICommandDescriptorBlockParser
-                .createReadCapacityMessage());
+        scsi.setCommandDescriptorBlock(SCSICommandDescriptorBlockParser.createReadCapacityMessage());
 
         connection.send(protocolDataUnit);
-        connection.nextState(new CapacityResponseState(connection,
-                capacityInformation));
+        connection.nextState(new CapacityResponseState(connection, capacityInformation));
         super.stateFollowing = true;
         // return true;
     }
