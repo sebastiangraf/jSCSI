@@ -43,7 +43,7 @@ import org.jscsi.parser.scsi.SCSIStatus;
  * 
  * @author Volker Wildi
  */
-final class WriteSecondResponseState extends AbstractState {
+public final class WriteSecondResponseState extends AbstractState {
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------

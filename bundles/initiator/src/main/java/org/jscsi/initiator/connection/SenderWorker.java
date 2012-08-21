@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Volker Wildi
  */
-final class SenderWorker {
+public final class SenderWorker {
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------

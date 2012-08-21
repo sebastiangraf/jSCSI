@@ -36,6 +36,7 @@ import org.jscsi.parser.data.DataInParser;
 import org.jscsi.parser.datasegment.OperationalTextKey;
 import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIStatus;
+import org.jscsi.parser.scsi.SCSICommandParser.TaskAttributes;
 
 /**
  * <h1>CapacityResponseState</h1>
@@ -44,7 +45,7 @@ import org.jscsi.parser.scsi.SCSIStatus;
  * 
  * @author Volker Wildi
  */
-final class CapacityResponseState extends AbstractState {
+public final class CapacityResponseState extends AbstractState {
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -84,9 +85,21 @@ final class CapacityResponseState extends AbstractState {
 
         // first, we extract capacity informations
         if (!(protocolDataUnit.getBasicHeaderSegment().getParser() instanceof DataInParser)) {
-            throw new InternetSCSIException(protocolDataUnit.getBasicHeaderSegment().getParser().getClass()
-                .getSimpleName()
-                + " is not the expected type of PDU.");
+            
+            // In newer versions of iscsi targets there the target tells the initiator
+            // that the status is cleared using a scsi response. It's defined in the RFC 3720 on page 78 (or at least mentioned, it's
+            // actually defined in SAM-2 and). This is why we have to ask for capacity informations once again receiving this
+            // Response to our capacity request.
+            if (protocolDataUnit.getBasicHeaderSegment().getParser() instanceof SCSIResponseParser) {
+                connection.nextState(new CapacityRequestState(connection, capacityInformation,
+                    TaskAttributes.SIMPLE));
+                super.stateFollowing = true;
+                return;
+            } else {
+                throw new InternetSCSIException(protocolDataUnit.getBasicHeaderSegment().getParser()
+                    .getClass().getSimpleName()
+                    + " is not the expected type of PDU.");
+            }
         }
 
         /**
