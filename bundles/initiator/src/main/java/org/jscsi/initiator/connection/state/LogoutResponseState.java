@@ -41,7 +41,7 @@ import org.jscsi.parser.logout.LogoutResponseParser;
  * 
  * @author Volker Wildi
  */
-final class LogoutResponseState extends AbstractState {
+public final class LogoutResponseState extends AbstractState {
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------

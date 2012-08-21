@@ -46,7 +46,7 @@ import org.jscsi.parser.datasegment.OperationalTextKey;
  * 
  * @author Volker Wildi
  */
-final class WriteSecondBurstState extends AbstractState {
+public final class WriteSecondBurstState extends AbstractState {
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------

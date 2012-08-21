@@ -45,7 +45,7 @@ import org.jscsi.parser.scsi.SCSIStatus;
  * 
  * @author Volker Wildi
  */
-final class ReadResponseState extends AbstractState {
+public final class ReadResponseState extends AbstractState {
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------

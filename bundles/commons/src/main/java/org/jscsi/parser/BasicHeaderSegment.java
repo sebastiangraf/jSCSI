@@ -27,6 +27,7 @@
 package org.jscsi.parser;
 
 import java.nio.ByteBuffer;
+import java.util.logging.Logger;
 
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.utils.Utils;
@@ -400,6 +401,8 @@ public final class BasicHeaderSegment {
      */
     public final String toString() {
 
+        if(parser == null) return "Empty parser";
+        
         final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
 
         Utils.printField(sb, "ParserClass", parser.getClass().getSimpleName(),

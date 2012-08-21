@@ -1,5 +1,6 @@
-package org.jscsi.initiator.connection;
+package org.jscsi.initiator.monitors;
 
+import org.jscsi.initiator.connection.SenderWorker;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.data.DataOutParser;
 import org.jscsi.parser.login.LoginRequestParser;
