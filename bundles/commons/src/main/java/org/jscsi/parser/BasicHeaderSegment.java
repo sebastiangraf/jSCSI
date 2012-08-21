@@ -27,7 +27,6 @@
 package org.jscsi.parser;
 
 import java.nio.ByteBuffer;
-import java.util.logging.Logger;
 
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.utils.Utils;

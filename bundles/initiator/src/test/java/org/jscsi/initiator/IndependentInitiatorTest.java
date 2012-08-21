@@ -16,8 +16,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Assert;
 
 import org.jscsi.exception.ConfigurationException;
-import org.jscsi.exception.NoSuchConnectionException;
-import org.jscsi.exception.NoSuchSessionException;
 import org.jscsi.exception.TaskExecutionException;
 import org.jscsi.initiator.connection.Session;
 import org.jscsi.target.TargetServer;
@@ -75,9 +73,6 @@ public class IndependentInitiatorTest {
 
     /** The targets configuration file */
     private static File targetConfigurationFile;
-
-    /** The targets configuration file */
-    private static File targetConfigurationSchemaFile;
 
     /**
      * The relative path (to the project) of the main directory of all

@@ -31,12 +31,10 @@ import org.jscsi.initiator.connection.Connection;
 import org.jscsi.initiator.connection.TargetCapacityInformations;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.parser.ProtocolDataUnitFactory;
 import org.jscsi.parser.data.DataInParser;
-import org.jscsi.parser.datasegment.OperationalTextKey;
+import org.jscsi.parser.scsi.SCSICommandParser.TaskAttributes;
 import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIStatus;
-import org.jscsi.parser.scsi.SCSICommandParser.TaskAttributes;
 
 /**
  * <h1>CapacityResponseState</h1>
