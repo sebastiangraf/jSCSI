@@ -11,18 +11,18 @@
 <a class="jxr_linenumber" name="1" href="#1">1</a>   <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="2" href="#2">2</a>   <em class="jxr_javadoccomment"> * Copyright (c) 2012, University of Konstanz, Distributed Systems Group</em>
 <a class="jxr_linenumber" name="3" href="#3">3</a>   <em class="jxr_javadoccomment"> * All rights reserved.</em>
-<a class="jxr_linenumber" name="4" href="#4">4</a>   <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <em class="jxr_javadoccomment"> * </em>
 <a class="jxr_linenumber" name="5" href="#5">5</a>   <em class="jxr_javadoccomment"> * Redistribution and use in source and binary forms, with or without</em>
 <a class="jxr_linenumber" name="6" href="#6">6</a>   <em class="jxr_javadoccomment"> * modification, are permitted provided that the following conditions are met:</em>
-<a class="jxr_linenumber" name="7" href="#7">7</a>   <em class="jxr_javadoccomment"> *     * Redistributions of source code must retain the above copyright</em>
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <em class="jxr_javadoccomment"> *       notice, this list of conditions and the following disclaimer.</em>
-<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> *     * Redistributions in binary form must reproduce the above copyright</em>
-<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> *       notice, this list of conditions and the following disclaimer in the</em>
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> *       documentation and/or other materials provided with the distribution.</em>
-<a class="jxr_linenumber" name="12" href="#12">12</a>  <em class="jxr_javadoccomment"> *     * Neither the name of the University of Konstanz nor the</em>
-<a class="jxr_linenumber" name="13" href="#13">13</a>  <em class="jxr_javadoccomment"> *       names of its contributors may be used to endorse or promote products</em>
-<a class="jxr_linenumber" name="14" href="#14">14</a>  <em class="jxr_javadoccomment"> *       derived from this software without specific prior written permission.</em>
-<a class="jxr_linenumber" name="15" href="#15">15</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="7" href="#7">7</a>   <em class="jxr_javadoccomment"> * * Redistributions of source code must retain the above copyright</em>
+<a class="jxr_linenumber" name="8" href="#8">8</a>   <em class="jxr_javadoccomment"> * notice, this list of conditions and the following disclaimer.</em>
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> * * Redistributions in binary form must reproduce the above copyright</em>
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> * notice, this list of conditions and the following disclaimer in the</em>
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> * documentation and/or other materials provided with the distribution.</em>
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <em class="jxr_javadoccomment"> * * Neither the name of the University of Konstanz nor the</em>
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <em class="jxr_javadoccomment"> * names of its contributors may be used to endorse or promote products</em>
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <em class="jxr_javadoccomment"> * derived from this software without specific prior written permission.</em>
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <em class="jxr_javadoccomment"> * </em>
 <a class="jxr_linenumber" name="16" href="#16">16</a>  <em class="jxr_javadoccomment"> * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND</em>
 <a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment"> * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED</em>
 <a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment"> * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE</em>
@@ -51,12 +51,12 @@
 <a class="jxr_linenumber" name="41" href="#41">41</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="42" href="#42">42</a>  <em class="jxr_javadoccomment"> * &lt;h1&gt;WriteSecondBurstState&lt;/h1&gt;</em>
 <a class="jxr_linenumber" name="43" href="#43">43</a>  <em class="jxr_javadoccomment"> * &lt;p/&gt;</em>
-<a class="jxr_linenumber" name="44" href="#44">44</a>  <em class="jxr_javadoccomment"> * This state handles the second and all following Write Sending States, which</em>
-<a class="jxr_linenumber" name="45" href="#45">45</a>  <em class="jxr_javadoccomment"> * sends at most &lt;code&gt;MaxBurstLength&lt;/code&gt; bytes in each sequence.</em>
+<a class="jxr_linenumber" name="44" href="#44">44</a>  <em class="jxr_javadoccomment"> * This state handles the second and all following Write Sending States, which sends at most</em>
+<a class="jxr_linenumber" name="45" href="#45">45</a>  <em class="jxr_javadoccomment"> * &lt;code&gt;MaxBurstLength&lt;/code&gt; bytes in each sequence.</em>
 <a class="jxr_linenumber" name="46" href="#46">46</a>  <em class="jxr_javadoccomment"> * </em>
 <a class="jxr_linenumber" name="47" href="#47">47</a>  <em class="jxr_javadoccomment"> * @author Volker Wildi</em>
 <a class="jxr_linenumber" name="48" href="#48">48</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="49" href="#49">49</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/jscsi/initiator/connection/state/WriteSecondBurstState.html">WriteSecondBurstState</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../org/jscsi/initiator/connection/state/IState.html">AbstractState</a> {
+<a class="jxr_linenumber" name="49" href="#49">49</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/jscsi/initiator/connection/state/WriteSecondBurstState.html">WriteSecondBurstState</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../org/jscsi/initiator/connection/state/IState.html">AbstractState</a> {
 <a class="jxr_linenumber" name="50" href="#50">50</a>  
 <a class="jxr_linenumber" name="51" href="#51">51</a>      <em class="jxr_comment">// --------------------------------------------------------------------------</em>
 <a class="jxr_linenumber" name="52" href="#52">52</a>      <em class="jxr_comment">// --------------------------------------------------------------------------</em>
@@ -104,99 +104,94 @@
 <a class="jxr_linenumber" name="94" href="#94">94</a>  <em class="jxr_javadoccomment">     * @param initBufferOffset</em>
 <a class="jxr_linenumber" name="95" href="#95">95</a>  <em class="jxr_javadoccomment">     *            The start offset of the data to send.</em>
 <a class="jxr_linenumber" name="96" href="#96">96</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="97" href="#97">97</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/jscsi/initiator/connection/state/WriteSecondBurstState.html">WriteSecondBurstState</a>(<strong class="jxr_keyword">final</strong> <a href="../../../../../org/jscsi/initiator/connection/Connection.html">Connection</a> initConnection,
-<a class="jxr_linenumber" name="98" href="#98">98</a>              <strong class="jxr_keyword">final</strong> IDataSegmentIterator initIterator,
-<a class="jxr_linenumber" name="99" href="#99">99</a>              <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> initTargetTransferTag,
-<a class="jxr_linenumber" name="100" href="#100">100</a>             <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> initDesiredDataTransferLength,
-<a class="jxr_linenumber" name="101" href="#101">101</a>             <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> initDataSequenceNumber, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> initBufferOffset) {
-<a class="jxr_linenumber" name="102" href="#102">102</a> 
-<a class="jxr_linenumber" name="103" href="#103">103</a>         <strong class="jxr_keyword">super</strong>(initConnection);
-<a class="jxr_linenumber" name="104" href="#104">104</a>         iterator = initIterator;
-<a class="jxr_linenumber" name="105" href="#105">105</a>         targetTransferTag = initTargetTransferTag;
-<a class="jxr_linenumber" name="106" href="#106">106</a>         <strong class="jxr_keyword">if</strong> (LOGGER.isDebugEnabled()) {
-<a class="jxr_linenumber" name="107" href="#107">107</a>             LOGGER.debug(<span class="jxr_string">"TTT set to "</span> + targetTransferTag);
-<a class="jxr_linenumber" name="108" href="#108">108</a>         }
-<a class="jxr_linenumber" name="109" href="#109">109</a>         desiredDataTransferLength = initDesiredDataTransferLength;
-<a class="jxr_linenumber" name="110" href="#110">110</a>         <em class="jxr_comment">// dataSequenceNumber = initDataSequenceNumber;//FIXME always starts at</em>
-<a class="jxr_linenumber" name="111" href="#111">111</a>         <em class="jxr_comment">// 0</em>
-<a class="jxr_linenumber" name="112" href="#112">112</a>         dataSequenceNumber = 0;
-<a class="jxr_linenumber" name="113" href="#113">113</a>         bufferOffset = initBufferOffset;
-<a class="jxr_linenumber" name="114" href="#114">114</a>     }
-<a class="jxr_linenumber" name="115" href="#115">115</a> 
-<a class="jxr_linenumber" name="116" href="#116">116</a>     <em class="jxr_comment">// --------------------------------------------------------------------------</em>
-<a class="jxr_linenumber" name="117" href="#117">117</a>     <em class="jxr_comment">// --------------------------------------------------------------------------</em>
-<a class="jxr_linenumber" name="118" href="#118">118</a> 
-<a class="jxr_linenumber" name="119" href="#119">119</a>     <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> {@inheritDoc} */</em>
-<a class="jxr_linenumber" name="120" href="#120">120</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> execute() <strong class="jxr_keyword">throws</strong> InternetSCSIException {
+<a class="jxr_linenumber" name="97" href="#97">97</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/jscsi/initiator/connection/state/WriteSecondBurstState.html">WriteSecondBurstState</a>(<strong class="jxr_keyword">final</strong> <a href="../../../../../org/jscsi/initiator/connection/Connection.html">Connection</a> initConnection, <strong class="jxr_keyword">final</strong> IDataSegmentIterator initIterator,
+<a class="jxr_linenumber" name="98" href="#98">98</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> initTargetTransferTag, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> initDesiredDataTransferLength,
+<a class="jxr_linenumber" name="99" href="#99">99</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> initDataSequenceNumber, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> initBufferOffset) {
+<a class="jxr_linenumber" name="100" href="#100">100</a> 
+<a class="jxr_linenumber" name="101" href="#101">101</a>         <strong class="jxr_keyword">super</strong>(initConnection);
+<a class="jxr_linenumber" name="102" href="#102">102</a>         iterator = initIterator;
+<a class="jxr_linenumber" name="103" href="#103">103</a>         targetTransferTag = initTargetTransferTag;
+<a class="jxr_linenumber" name="104" href="#104">104</a>         <strong class="jxr_keyword">if</strong> (LOGGER.isDebugEnabled()) {
+<a class="jxr_linenumber" name="105" href="#105">105</a>             LOGGER.debug(<span class="jxr_string">"TTT set to "</span> + targetTransferTag);
+<a class="jxr_linenumber" name="106" href="#106">106</a>         }
+<a class="jxr_linenumber" name="107" href="#107">107</a>         desiredDataTransferLength = initDesiredDataTransferLength;
+<a class="jxr_linenumber" name="108" href="#108">108</a>         <em class="jxr_comment">// dataSequenceNumber = initDataSequenceNumber;//FIXME always starts at</em>
+<a class="jxr_linenumber" name="109" href="#109">109</a>         <em class="jxr_comment">// 0</em>
+<a class="jxr_linenumber" name="110" href="#110">110</a>         dataSequenceNumber = 0;
+<a class="jxr_linenumber" name="111" href="#111">111</a>         bufferOffset = initBufferOffset;
+<a class="jxr_linenumber" name="112" href="#112">112</a>     }
+<a class="jxr_linenumber" name="113" href="#113">113</a> 
+<a class="jxr_linenumber" name="114" href="#114">114</a>     <em class="jxr_comment">// --------------------------------------------------------------------------</em>
+<a class="jxr_linenumber" name="115" href="#115">115</a>     <em class="jxr_comment">// --------------------------------------------------------------------------</em>
+<a class="jxr_linenumber" name="116" href="#116">116</a> 
+<a class="jxr_linenumber" name="117" href="#117">117</a>     <em class="jxr_javadoccomment">/**</em><em class="jxr_javadoccomment"> {@inheritDoc} */</em>
+<a class="jxr_linenumber" name="118" href="#118">118</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> execute() <strong class="jxr_keyword">throws</strong> InternetSCSIException {
+<a class="jxr_linenumber" name="119" href="#119">119</a> 
+<a class="jxr_linenumber" name="120" href="#120">120</a>         <strong class="jxr_keyword">final</strong> Queue&lt;ProtocolDataUnit&gt; protocolDataUnits = <strong class="jxr_keyword">new</strong> LinkedList&lt;ProtocolDataUnit&gt;();
 <a class="jxr_linenumber" name="121" href="#121">121</a> 
-<a class="jxr_linenumber" name="122" href="#122">122</a>         <strong class="jxr_keyword">final</strong> Queue&lt;ProtocolDataUnit&gt; protocolDataUnits = <strong class="jxr_keyword">new</strong> LinkedList&lt;ProtocolDataUnit&gt;();
-<a class="jxr_linenumber" name="123" href="#123">123</a> 
-<a class="jxr_linenumber" name="124" href="#124">124</a>         ProtocolDataUnit protocolDataUnit;
-<a class="jxr_linenumber" name="125" href="#125">125</a>         DataOutParser dataOut;
-<a class="jxr_linenumber" name="126" href="#126">126</a>         IDataSegmentChunk dataSegmentChunk;
-<a class="jxr_linenumber" name="127" href="#127">127</a>         <strong class="jxr_keyword">boolean</strong> finalFlag = false;
-<a class="jxr_linenumber" name="128" href="#128">128</a>         <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> maxRecvDataSegmentLength = connection
-<a class="jxr_linenumber" name="129" href="#129">129</a>                 .getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH);
-<a class="jxr_linenumber" name="130" href="#130">130</a>         <strong class="jxr_keyword">int</strong> bytes2Transfer = Math
-<a class="jxr_linenumber" name="131" href="#131">131</a>                 .min(connection
-<a class="jxr_linenumber" name="132" href="#132">132</a>                         .getSettingAsInt(OperationalTextKey.MAX_BURST_LENGTH),
-<a class="jxr_linenumber" name="133" href="#133">133</a>                         desiredDataTransferLength);
-<a class="jxr_linenumber" name="134" href="#134">134</a> 
-<a class="jxr_linenumber" name="135" href="#135">135</a>         <strong class="jxr_keyword">if</strong> (LOGGER.isTraceEnabled()) {
-<a class="jxr_linenumber" name="136" href="#136">136</a>             LOGGER.trace(<span class="jxr_string">"bytes2Transfer: "</span> + bytes2Transfer
-<a class="jxr_linenumber" name="137" href="#137">137</a>                     + <span class="jxr_string">" iterator.hasNext(): "</span> + iterator.hasNext());
-<a class="jxr_linenumber" name="138" href="#138">138</a>         }
-<a class="jxr_linenumber" name="139" href="#139">139</a> 
-<a class="jxr_linenumber" name="140" href="#140">140</a>         <strong class="jxr_keyword">while</strong> (bytes2Transfer &gt; 0 &amp;&amp; iterator.hasNext()) {
-<a class="jxr_linenumber" name="141" href="#141">141</a>             <strong class="jxr_keyword">if</strong> (bytes2Transfer &lt;= maxRecvDataSegmentLength) {
-<a class="jxr_linenumber" name="142" href="#142">142</a>                 dataSegmentChunk = iterator.next(bytes2Transfer);
-<a class="jxr_linenumber" name="143" href="#143">143</a>                 finalFlag = <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="144" href="#144">144</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="145" href="#145">145</a>                 dataSegmentChunk = iterator.next(maxRecvDataSegmentLength);
-<a class="jxr_linenumber" name="146" href="#146">146</a>                 finalFlag = false;
-<a class="jxr_linenumber" name="147" href="#147">147</a>             }
-<a class="jxr_linenumber" name="148" href="#148">148</a> 
-<a class="jxr_linenumber" name="149" href="#149">149</a>             protocolDataUnit = protocolDataUnitFactory.create(false, finalFlag,
-<a class="jxr_linenumber" name="150" href="#150">150</a>                     OperationCode.SCSI_DATA_OUT,
-<a class="jxr_linenumber" name="151" href="#151">151</a>                     connection.getSetting(OperationalTextKey.HEADER_DIGEST),
-<a class="jxr_linenumber" name="152" href="#152">152</a>                     connection.getSetting(OperationalTextKey.DATA_DIGEST));
-<a class="jxr_linenumber" name="153" href="#153">153</a>             protocolDataUnit.getBasicHeaderSegment().setInitiatorTaskTag(
-<a class="jxr_linenumber" name="154" href="#154">154</a>                     connection.getSession().getInitiatorTaskTag());
-<a class="jxr_linenumber" name="155" href="#155">155</a> 
-<a class="jxr_linenumber" name="156" href="#156">156</a>             dataOut = (DataOutParser) protocolDataUnit.getBasicHeaderSegment()
-<a class="jxr_linenumber" name="157" href="#157">157</a>                     .getParser();
+<a class="jxr_linenumber" name="122" href="#122">122</a>         ProtocolDataUnit protocolDataUnit;
+<a class="jxr_linenumber" name="123" href="#123">123</a>         DataOutParser dataOut;
+<a class="jxr_linenumber" name="124" href="#124">124</a>         IDataSegmentChunk dataSegmentChunk;
+<a class="jxr_linenumber" name="125" href="#125">125</a>         <strong class="jxr_keyword">boolean</strong> finalFlag = false;
+<a class="jxr_linenumber" name="126" href="#126">126</a>         <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> maxRecvDataSegmentLength =
+<a class="jxr_linenumber" name="127" href="#127">127</a>             connection.getSettingAsInt(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH);
+<a class="jxr_linenumber" name="128" href="#128">128</a>         <strong class="jxr_keyword">int</strong> bytes2Transfer =
+<a class="jxr_linenumber" name="129" href="#129">129</a>             Math.min(connection.getSettingAsInt(OperationalTextKey.MAX_BURST_LENGTH),
+<a class="jxr_linenumber" name="130" href="#130">130</a>                 desiredDataTransferLength);
+<a class="jxr_linenumber" name="131" href="#131">131</a> 
+<a class="jxr_linenumber" name="132" href="#132">132</a>         <strong class="jxr_keyword">if</strong> (LOGGER.isTraceEnabled()) {
+<a class="jxr_linenumber" name="133" href="#133">133</a>             LOGGER.trace(<span class="jxr_string">"bytes2Transfer: "</span> + bytes2Transfer + <span class="jxr_string">" iterator.hasNext(): "</span> + iterator.hasNext());
+<a class="jxr_linenumber" name="134" href="#134">134</a>         }
+<a class="jxr_linenumber" name="135" href="#135">135</a> 
+<a class="jxr_linenumber" name="136" href="#136">136</a>         <strong class="jxr_keyword">while</strong> (bytes2Transfer &gt; 0 &amp;&amp; iterator.hasNext()) {
+<a class="jxr_linenumber" name="137" href="#137">137</a>             <strong class="jxr_keyword">if</strong> (bytes2Transfer &lt;= maxRecvDataSegmentLength) {
+<a class="jxr_linenumber" name="138" href="#138">138</a>                 dataSegmentChunk = iterator.next(bytes2Transfer);
+<a class="jxr_linenumber" name="139" href="#139">139</a>                 finalFlag = <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="140" href="#140">140</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="141" href="#141">141</a>                 dataSegmentChunk = iterator.next(maxRecvDataSegmentLength);
+<a class="jxr_linenumber" name="142" href="#142">142</a>                 finalFlag = false;
+<a class="jxr_linenumber" name="143" href="#143">143</a>             }
+<a class="jxr_linenumber" name="144" href="#144">144</a> 
+<a class="jxr_linenumber" name="145" href="#145">145</a>             protocolDataUnit =
+<a class="jxr_linenumber" name="146" href="#146">146</a>                 protocolDataUnitFactory.create(false, finalFlag, OperationCode.SCSI_DATA_OUT, connection
+<a class="jxr_linenumber" name="147" href="#147">147</a>                     .getSetting(OperationalTextKey.HEADER_DIGEST), connection
+<a class="jxr_linenumber" name="148" href="#148">148</a>                     .getSetting(OperationalTextKey.DATA_DIGEST));
+<a class="jxr_linenumber" name="149" href="#149">149</a>             protocolDataUnit.getBasicHeaderSegment().setInitiatorTaskTag(
+<a class="jxr_linenumber" name="150" href="#150">150</a>                 connection.getSession().getInitiatorTaskTag());
+<a class="jxr_linenumber" name="151" href="#151">151</a> 
+<a class="jxr_linenumber" name="152" href="#152">152</a>             dataOut = (DataOutParser)protocolDataUnit.getBasicHeaderSegment().getParser();
+<a class="jxr_linenumber" name="153" href="#153">153</a> 
+<a class="jxr_linenumber" name="154" href="#154">154</a>             dataOut.setTargetTransferTag(targetTransferTag);
+<a class="jxr_linenumber" name="155" href="#155">155</a>             dataOut.setDataSequenceNumber(dataSequenceNumber++);
+<a class="jxr_linenumber" name="156" href="#156">156</a>             dataOut.setBufferOffset(bufferOffset);
+<a class="jxr_linenumber" name="157" href="#157">157</a>             bufferOffset += maxRecvDataSegmentLength;
 <a class="jxr_linenumber" name="158" href="#158">158</a> 
-<a class="jxr_linenumber" name="159" href="#159">159</a>             dataOut.setTargetTransferTag(targetTransferTag);
-<a class="jxr_linenumber" name="160" href="#160">160</a>             dataOut.setDataSequenceNumber(dataSequenceNumber++);
-<a class="jxr_linenumber" name="161" href="#161">161</a>             dataOut.setBufferOffset(bufferOffset);
-<a class="jxr_linenumber" name="162" href="#162">162</a>             bufferOffset += maxRecvDataSegmentLength;
-<a class="jxr_linenumber" name="163" href="#163">163</a> 
-<a class="jxr_linenumber" name="164" href="#164">164</a>             protocolDataUnit.setDataSegment(dataSegmentChunk);
-<a class="jxr_linenumber" name="165" href="#165">165</a> 
-<a class="jxr_linenumber" name="166" href="#166">166</a>             protocolDataUnits.offer(protocolDataUnit);
-<a class="jxr_linenumber" name="167" href="#167">167</a>             bytes2Transfer -= maxRecvDataSegmentLength;
-<a class="jxr_linenumber" name="168" href="#168">168</a>         }
-<a class="jxr_linenumber" name="169" href="#169">169</a> 
-<a class="jxr_linenumber" name="170" href="#170">170</a>         connection.send(protocolDataUnits);
-<a class="jxr_linenumber" name="171" href="#171">171</a>         connection.nextState(<strong class="jxr_keyword">new</strong> <a href="../../../../../org/jscsi/initiator/connection/state/WriteSecondResponseState.html">WriteSecondResponseState</a>(connection, iterator,
-<a class="jxr_linenumber" name="172" href="#172">172</a>                 dataSequenceNumber, bufferOffset));
-<a class="jxr_linenumber" name="173" href="#173">173</a> 
-<a class="jxr_linenumber" name="174" href="#174">174</a>         <em class="jxr_comment">// return true;</em>
-<a class="jxr_linenumber" name="175" href="#175">175</a>     }
-<a class="jxr_linenumber" name="176" href="#176">176</a> 
-<a class="jxr_linenumber" name="177" href="#177">177</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="178" href="#178">178</a> <em class="jxr_javadoccomment">     * {@inheritDoc}</em>
-<a class="jxr_linenumber" name="179" href="#179">179</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="180" href="#180">180</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> nextStateFollowing() {
-<a class="jxr_linenumber" name="181" href="#181">181</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="182" href="#182">182</a>     }
+<a class="jxr_linenumber" name="159" href="#159">159</a>             protocolDataUnit.setDataSegment(dataSegmentChunk);
+<a class="jxr_linenumber" name="160" href="#160">160</a> 
+<a class="jxr_linenumber" name="161" href="#161">161</a>             protocolDataUnits.offer(protocolDataUnit);
+<a class="jxr_linenumber" name="162" href="#162">162</a>             bytes2Transfer -= maxRecvDataSegmentLength;
+<a class="jxr_linenumber" name="163" href="#163">163</a>         }
+<a class="jxr_linenumber" name="164" href="#164">164</a> 
+<a class="jxr_linenumber" name="165" href="#165">165</a>         connection.send(protocolDataUnits);
+<a class="jxr_linenumber" name="166" href="#166">166</a>         connection.nextState(<strong class="jxr_keyword">new</strong> <a href="../../../../../org/jscsi/initiator/connection/state/WriteSecondResponseState.html">WriteSecondResponseState</a>(connection, iterator, dataSequenceNumber,
+<a class="jxr_linenumber" name="167" href="#167">167</a>             bufferOffset));
+<a class="jxr_linenumber" name="168" href="#168">168</a> 
+<a class="jxr_linenumber" name="169" href="#169">169</a>         <em class="jxr_comment">// return true;</em>
+<a class="jxr_linenumber" name="170" href="#170">170</a>     }
+<a class="jxr_linenumber" name="171" href="#171">171</a> 
+<a class="jxr_linenumber" name="172" href="#172">172</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="173" href="#173">173</a> <em class="jxr_javadoccomment">     * {@inheritDoc}</em>
+<a class="jxr_linenumber" name="174" href="#174">174</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="175" href="#175">175</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> nextStateFollowing() {
+<a class="jxr_linenumber" name="176" href="#176">176</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="177" href="#177">177</a>     }
+<a class="jxr_linenumber" name="178" href="#178">178</a> 
+<a class="jxr_linenumber" name="179" href="#179">179</a>     <em class="jxr_comment">// --------------------------------------------------------------------------</em>
+<a class="jxr_linenumber" name="180" href="#180">180</a>     <em class="jxr_comment">// --------------------------------------------------------------------------</em>
+<a class="jxr_linenumber" name="181" href="#181">181</a>     <em class="jxr_comment">// --------------------------------------------------------------------------</em>
+<a class="jxr_linenumber" name="182" href="#182">182</a>     <em class="jxr_comment">// --------------------------------------------------------------------------</em>
 <a class="jxr_linenumber" name="183" href="#183">183</a> 
-<a class="jxr_linenumber" name="184" href="#184">184</a>     <em class="jxr_comment">// --------------------------------------------------------------------------</em>
-<a class="jxr_linenumber" name="185" href="#185">185</a>     <em class="jxr_comment">// --------------------------------------------------------------------------</em>
-<a class="jxr_linenumber" name="186" href="#186">186</a>     <em class="jxr_comment">// --------------------------------------------------------------------------</em>
-<a class="jxr_linenumber" name="187" href="#187">187</a>     <em class="jxr_comment">// --------------------------------------------------------------------------</em>
-<a class="jxr_linenumber" name="188" href="#188">188</a> 
-<a class="jxr_linenumber" name="189" href="#189">189</a> }
+<a class="jxr_linenumber" name="184" href="#184">184</a> }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

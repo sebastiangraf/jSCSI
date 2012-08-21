@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pmd-cpd>
-<duplication lines="34" tokens="170">
-<file line="120" path="/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/src/main/java/org/jscsi/initiator/connection/state/WriteFirstBurstState.java"/>
-<file line="140" path="/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/src/main/java/org/jscsi/initiator/connection/state/WriteSecondBurstState.java"/>
+<duplication lines="33" tokens="170">
+<file line="116" path="/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/src/main/java/org/jscsi/initiator/connection/state/WriteFirstBurstState.java"/>
+<file line="136" path="/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/src/main/java/org/jscsi/initiator/connection/state/WriteSecondBurstState.java"/>
 <codefragment>
 <![CDATA[
         while (bytes2Transfer > 0 && iterator.hasNext()) {
@@ -14,15 +14,14 @@
                 finalFlag = false;
             }
 
-            protocolDataUnit = protocolDataUnitFactory.create(false, finalFlag,
-                    OperationCode.SCSI_DATA_OUT,
-                    connection.getSetting(OperationalTextKey.HEADER_DIGEST),
-                    connection.getSetting(OperationalTextKey.DATA_DIGEST));
+            protocolDataUnit =
+                protocolDataUnitFactory.create(false, finalFlag, OperationCode.SCSI_DATA_OUT, connection
+                    .getSetting(OperationalTextKey.HEADER_DIGEST), connection
+                    .getSetting(OperationalTextKey.DATA_DIGEST));
             protocolDataUnit.getBasicHeaderSegment().setInitiatorTaskTag(
-                    connection.getSession().getInitiatorTaskTag());
+                connection.getSession().getInitiatorTaskTag());
 
-            dataOut = (DataOutParser) protocolDataUnit.getBasicHeaderSegment()
-                    .getParser();
+            dataOut = (DataOutParser)protocolDataUnit.getBasicHeaderSegment().getParser();
 
             dataOut.setTargetTransferTag(targetTransferTag);
             dataOut.setDataSequenceNumber(dataSequenceNumber++);
@@ -37,8 +36,8 @@
 
         connection.send(protocolDataUnits);
 
-        connection.nextState(new WriteSecondResponseState(connection, iterator,
-                dataSequenceNumber, bufferOffset));
+        connection.nextState(new WriteSecondResponseState(connection, iterator, dataSequenceNumber,
+            bufferOffset));
 ]]>
 </codefragment>
 </duplication>

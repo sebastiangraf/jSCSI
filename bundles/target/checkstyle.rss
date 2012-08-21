@@ -9,7 +9,7 @@
     <copyright>&#169;2012 University of Konstanz, Distributed Systems Group</copyright>
     <item>
       <title>File: 166,
-             Errors: 6251,
+             Errors: 6279,
              Warnings: 0,
              Infos: 0
       </title>
@@ -542,7 +542,7 @@
                   0
                 </td>
                 <td>
-                  41
+                  42
                 </td>
               </tr>
                           <tr>
@@ -1368,7 +1368,7 @@
                   0
                 </td>
                 <td>
-                  10
+                  11
                 </td>
               </tr>
                           <tr>
@@ -2236,7 +2236,7 @@
                   0
                 </td>
                 <td>
-                  130
+                  129
                 </td>
               </tr>
                           <tr>
@@ -2334,7 +2334,7 @@
                   0
                 </td>
                 <td>
-                  54
+                  81
                 </td>
               </tr>
                           <tr>
