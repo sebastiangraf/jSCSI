@@ -1,6 +1,6 @@
-package org.jscsi.initiator;
+package org.jscsi.initiator.independent;
 
-import static org.junit.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,15 +13,17 @@ import java.util.concurrent.Future;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import junit.framework.Assert;
-
 import org.jscsi.exception.ConfigurationException;
 import org.jscsi.exception.TaskExecutionException;
+import org.jscsi.initiator.Configuration;
+import org.jscsi.initiator.Initiator;
+import org.jscsi.initiator.LinkFactory;
 import org.jscsi.initiator.connection.Session;
 import org.jscsi.target.TargetServer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 import org.xml.sax.SAXException;
 
 /**

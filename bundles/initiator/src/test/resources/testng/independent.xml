@@ -1,0 +1,7 @@
+<suite name="Independent">
+	<test name="Independent">
+		<packages>
+			<package name="org.jscsi.initiator.independent" />
+		</packages>
+	</test>
+</suite>

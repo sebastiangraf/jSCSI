@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.jscsi.initiator;
+package org.jscsi.initiator.opentarget;
 
 import static org.junit.Assert.assertEquals;
 
@@ -32,6 +32,8 @@ import java.nio.ByteBuffer;
 import java.util.Random;
 import java.util.concurrent.Future;
 
+import org.jscsi.initiator.Configuration;
+import org.jscsi.initiator.Initiator;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.perfidix.Benchmark;

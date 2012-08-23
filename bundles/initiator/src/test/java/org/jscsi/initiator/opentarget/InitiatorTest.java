@@ -24,10 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.jscsi.initiator;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+package org.jscsi.initiator.opentarget;
 
 import java.nio.ByteBuffer;
 import java.util.Random;
@@ -36,12 +33,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.jscsi.initiator.Configuration;
+import org.jscsi.initiator.Initiator;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-// @Ignore("Lack of testembed, removing")
 public final class InitiatorTest {
 
     // --------------------------------------------------------------------------
@@ -97,22 +95,6 @@ public final class InitiatorTest {
     }
 
     // --------------------------------------------------------------------------
-    // --------------------------------------------------------------------------
-
-    /**
-     * Tests the correct behavior of the initiator for sending a read capacity
-     * message.
-     * 
-     * @throws Exception
-     *             These should never be thrown.
-     */
-    @Test
-    @Ignore("Not working on real xen1, size differs")
-    public final void testReadCapacity() throws Exception {
-
-        assertEquals((long)53372737, initiator.getCapacity(TARGET_DRIVE_NAME));
-        assertEquals((long)512, initiator.getBlockSize(TARGET_DRIVE_NAME));
-    }
 
     /**
      * Tests the correct behavior of the initiator for sending empty bytes and
@@ -130,7 +112,7 @@ public final class InitiatorTest {
         initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
         readBuffer.flip();
 
-        assertTrue(writeBuffer.equals(readBuffer));
+        Assert.assertTrue(writeBuffer.equals(readBuffer));
     }
 
     /**
@@ -149,7 +131,7 @@ public final class InitiatorTest {
         writeBuffer.flip();
         readBuffer.flip();
 
-        assertTrue(writeBuffer.equals(readBuffer));
+        Assert.assertTrue(writeBuffer.equals(readBuffer));
     }
 
     /**
@@ -170,7 +152,7 @@ public final class InitiatorTest {
         readBuffer.flip();
         readBuffer2.flip();
 
-        assertTrue(readBuffer.equals(readBuffer2));
+        Assert.assertTrue(readBuffer.equals(readBuffer2));
     }
 
     /**
@@ -211,7 +193,6 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
-    @Ignore
     public final void testMultipleWrites() throws Exception {
 
         // FIXME: Useful test case?
@@ -221,7 +202,6 @@ public final class InitiatorTest {
         initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
     }
 
-    @Ignore
     public final void testMultiThreading() throws Exception {
 
         final ExecutorService service = Executors.newCachedThreadPool();

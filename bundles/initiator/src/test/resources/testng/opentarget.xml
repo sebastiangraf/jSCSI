@@ -1,0 +1,7 @@
+<suite name="Opentarget">
+	<test name="Opentarget">
+		<packages>
+			<package name="org.jscsi.initiator.opentarget" />
+		</packages>
+	</test>
+</suite>

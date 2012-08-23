@@ -1,0 +1,13 @@
+<suite name="EntireSuite">
+	<test name="NormalBundles">
+		<packages>
+			<package name="org.jscsi.initiator" />
+		</packages>
+	</test>
+	<suite-files>
+	    <!-- You don't need a running target for this suite. -->
+		<suite-file path="./testng/independent.xml" />
+		<!-- There has to be a running target for this suite to work. -->
+		<suite-file path="./testng/opentarget.xml" />
+	</suite-files>
+</suite>

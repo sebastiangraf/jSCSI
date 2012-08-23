@@ -24,12 +24,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.jscsi.initiator;
+package org.jscsi.initiator.opentarget;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.jscsi.initiator.Configuration;
+import org.jscsi.initiator.Initiator;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.perfidix.Benchmark;
