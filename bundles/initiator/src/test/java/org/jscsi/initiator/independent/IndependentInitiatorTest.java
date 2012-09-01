@@ -1,5 +1,9 @@
 package org.jscsi.initiator.independent;
 
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.AssertJUnit;
 import static org.testng.AssertJUnit.assertTrue;
 
 import java.io.File;
@@ -171,17 +175,17 @@ public class IndependentInitiatorTest {
         Future<Void> returnVal1 = session.write(writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
         returnVal1.get();
 
-        assertTrue(!writeBuffer.equals(readBuffer));
+        AssertJUnit.assertTrue(!writeBuffer.equals(readBuffer));
 
         Future<Void> returnVal2 = session.read(readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
         returnVal2.get();
 
-        assertTrue(writeBuffer.equals(readBuffer));
+        AssertJUnit.assertTrue(writeBuffer.equals(readBuffer));
 
         writeBuffer.flip();
         readBuffer.flip();
 
-        assertTrue(writeBuffer.equals(readBuffer));
+        AssertJUnit.assertTrue(writeBuffer.equals(readBuffer));
 
     }
 
@@ -214,13 +218,13 @@ public class IndependentInitiatorTest {
 
                 returnVal1.get();
 
-                assertTrue(!writeBuffers[i].equals(readBuffers[i]));
+                AssertJUnit.assertTrue(!writeBuffers[i].equals(readBuffers[i]));
             } catch (TaskExecutionException e) {
-                Assert.fail();
+                AssertJUnit.fail();
             } catch (InterruptedException e) {
-                Assert.fail();
+                AssertJUnit.fail();
             } catch (ExecutionException e) {
-                Assert.fail();
+                AssertJUnit.fail();
             }
         }
 
@@ -232,16 +236,16 @@ public class IndependentInitiatorTest {
                 returnVal1.get();
 
             } catch (TaskExecutionException e) {
-                Assert.fail();
+                AssertJUnit.fail();
             } catch (InterruptedException e) {
-                Assert.fail();
+                AssertJUnit.fail();
             } catch (ExecutionException e) {
-                Assert.fail();
+                AssertJUnit.fail();
             }
         }
 
         for (int i = 0; i < writeBuffers.length; i++) {
-            assertTrue(writeBuffers[i].equals(readBuffers[writeBuffers.length - i - 1]));
+            AssertJUnit.assertTrue(writeBuffers[i].equals(readBuffers[writeBuffers.length - i - 1]));
 
             // Need to write them into a separate buffer since flip doesn't seem
             // to work in a Array of ByteBuffers..
@@ -253,7 +257,7 @@ public class IndependentInitiatorTest {
 
             write.flip();
             read.flip();
-            assertTrue(write.equals(read));
+            AssertJUnit.assertTrue(write.equals(read));
         }
 
     }
