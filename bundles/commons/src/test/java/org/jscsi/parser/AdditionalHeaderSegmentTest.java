@@ -26,18 +26,17 @@
  */
 package org.jscsi.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.AdditionalHeaderSegment.AdditionalHeaderSegmentType;
 import org.jscsi.utils.WiresharkMessageParser;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Testing the correctness of the AdditionalHeaderSegment.
@@ -66,13 +65,13 @@ public class AdditionalHeaderSegmentTest extends ProtocolDataUnitTest {
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
 
-    @Before
+    @BeforeMethod
     public final void setUp() {
 
         additionalHeaderSegment = new AdditionalHeaderSegment();
     }
 
-    @After
+    @AfterMethod
     public final void tearDown() {
 
         additionalHeaderSegment = null;

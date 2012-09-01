@@ -26,8 +26,8 @@
  */
 package org.jscsi.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -38,7 +38,7 @@ import org.jscsi.parser.datasegment.DataSegmentFactory;
 import org.jscsi.parser.datasegment.IDataSegment;
 import org.jscsi.parser.datasegment.SettingsMap;
 import org.jscsi.utils.WiresharkMessageParser;
-import org.junit.After;
+import org.testng.annotations.AfterMethod;
 
 /**
  * Base class of all parsers tests.
@@ -180,7 +180,7 @@ public abstract class ProtocolDataUnitTest {
     /**
      * This method resets the settings of this ProtocolDataUnit object.
      */
-    @After
+    @AfterMethod
     public void tearDown() {
 
         protocolDataUnit.clear();

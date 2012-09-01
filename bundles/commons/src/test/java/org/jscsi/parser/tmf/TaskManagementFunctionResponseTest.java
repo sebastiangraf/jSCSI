@@ -26,9 +26,9 @@
  */
 package org.jscsi.parser.tmf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
+import org.testng.annotations.Test;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.DigestException;
@@ -37,8 +37,6 @@ import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnitTest;
 import org.jscsi.utils.WiresharkMessageParser;
-import org.junit.Ignore;
-import org.junit.Test;
 
 /**
  * Testing the correctness of the TaskManagementFunctionResponseParser.
@@ -65,7 +63,7 @@ public class TaskManagementFunctionResponseTest extends ProtocolDataUnitTest {
      * @throws InternetSCSIException
      *             This exception should be never thrown.
      */
-    @Ignore
+    @Test(enabled = false)
     public void testDeserialize1() throws IOException, InternetSCSIException,
             DigestException {
 
@@ -91,7 +89,7 @@ public class TaskManagementFunctionResponseTest extends ProtocolDataUnitTest {
      * @throws IOException
      *             This exception should be never thrown.
      */
-    @Ignore
+    @Test(enabled = false)
     public void testSerialize1() throws InternetSCSIException, IOException,
             DigestException {
 

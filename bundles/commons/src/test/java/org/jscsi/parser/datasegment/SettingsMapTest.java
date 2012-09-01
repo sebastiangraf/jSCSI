@@ -26,12 +26,11 @@
  */
 package org.jscsi.parser.datasegment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
 
 /**
  * <h1>SettingsMapTest</h1>
@@ -49,7 +48,7 @@ public final class SettingsMapTest {
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
 
-    @Before
+    @BeforeMethod
     public final void setUp() {
 
         settingsMap = new SettingsMap();
@@ -72,7 +71,7 @@ public final class SettingsMapTest {
         assertEquals("512", settingsMap.get(OperationalTextKey.MAX_CONNECTIONS));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public final void testRemove1() {
 
         settingsMap.add(OperationalTextKey.AUTH_METHOD, "None");

@@ -26,9 +26,9 @@
  */
 package org.jscsi.parser.r2t;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
+import org.testng.annotations.Test;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.DigestException;
@@ -37,7 +37,6 @@ import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnitTest;
 import org.jscsi.utils.WiresharkMessageParser;
-import org.junit.Test;
 
 /**
  * Testing the correctness of the Ready2TransferParser.

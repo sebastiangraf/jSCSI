@@ -26,10 +26,9 @@
  */
 package org.jscsi.parser.digest;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
+import static org.testng.AssertJUnit.assertEquals;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
 
 /**
  * <h1>CRC32CDigestTest</h1>
@@ -98,7 +97,7 @@ public class CRC32CDigestTest {
     // --------------------------------------------------------------------------
 
     /** Reset the CRC to its initial value after each successful calculation. */
-    @Before
+    @BeforeMethod
     public void setUp() {
 
         crc.reset();

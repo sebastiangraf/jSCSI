@@ -26,14 +26,12 @@
  */
 package org.jscsi.parser.datasegment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertTrue;
+import org.testng.annotations.Test;
 import java.nio.ByteBuffer;
-
-import org.junit.Test;
 
 /**
  * Testing the correctness of the TextParameterDataSegment.
