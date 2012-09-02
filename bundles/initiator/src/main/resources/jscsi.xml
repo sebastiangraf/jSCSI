@@ -56,10 +56,10 @@
 		<SessionType>Normal</SessionType>
 	</global>
 	
-	<target id="testing-xen2-disk1" address="localhost" port="3260">
+	<target id="testing-xen2-disk1" address="134.34.165.151" port="3260">
 		<ImmediateData>No</ImmediateData>
 		<InitiatorName>IdefixInitiator</InitiatorName>
-		<TargetName>iqn.2010-04.local-test:disk-1</TargetName>
+		<TargetName>iqn.2012-04.kn.uni.disy:storage.lun1</TargetName>
 	</target>
 	
 	<target id="testing-xen2-disk2" address="localhost" port="3260">
