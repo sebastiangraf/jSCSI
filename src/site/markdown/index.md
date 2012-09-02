@@ -59,4 +59,5 @@ Within the switch of the hosting from [Sourceforge](http://sourceforge.net/proje
 
 * SCSI-layer; (thanks Cleversafe)
 * Flexible disk-size; (thanks Stephen Davidson)
-* Multiple target-handling within one instance; (thanks David L. Smith-Uchida) 
+* Multiple target-handling within one instance; (thanks David L. Smith-Uchida)
+* Working with Mac OS X Initiator (Thanks Rajesh Sharma)
