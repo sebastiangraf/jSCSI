@@ -115,17 +115,14 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                             break;
                         case MODE_SELECT_6:
                             stage = null;
-                            /*
-                             * Since the MODE SENSE (6) command is supported (in
-                             * order to accommodate the MS iSCSI Initiator), the
-                             * jSCSI Target is also required to support the MODE
-                             * SELECT (6) command. But since none of the tested
-                             * initiators use it, support for it will be treated
-                             * as optional.
-                             */
+                            scsiOpCode = null;
                             break;
                         case MODE_SENSE_6:
                             stage = new ModeSenseStage(this);
+                            if (!((ModeSenseStage)stage).canHandle(pdu)) {
+                                stage = null;
+                                scsiOpCode = null;
+                            }
                             break;
                         case SEND_DIAGNOSTIC:
                             stage = new SendDiagnosticStage(this);

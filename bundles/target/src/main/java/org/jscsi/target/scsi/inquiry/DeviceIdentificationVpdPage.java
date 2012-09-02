@@ -64,32 +64,9 @@ public class DeviceIdentificationVpdPage implements IResponseData {
      */
     private final byte pageCode = (byte)0x83;
 
-    private TargetServer target;
     private IdentificationDescriptor[] identificationDescriptors = new IdentificationDescriptor[0];
 
     public DeviceIdentificationVpdPage(TargetServer target) {
-        this.target = target;
-
-    }
-
-    /**
-     * Returns the combined length of all contained IDENTIFICATION DESCRIPTORs.
-     * 
-     * @return the combined length of all contained IDENTIFICATION DESCRIPTORs
-     */
-    private short getPageLength() {
-        short pageLength = 0;
-        for (int i = 0; i < identificationDescriptors.length; ++i) {
-            pageLength += (identificationDescriptors[i].size());
-        }
-        return pageLength;
-    }
-
-    public void serialize(ByteBuffer byteBuffer, int index) {
-        // serialize header
-        byteBuffer.position(index);
-        byteBuffer.put(peripheralQualifierAndPeripheralDeviceType);
-        byteBuffer.put(pageCode);
 
         /*
          * For each logical unit that is not a well known logical unit, the
@@ -112,21 +89,33 @@ public class DeviceIdentificationVpdPage implements IResponseData {
 
             identificationDescriptors[curTargetNum] = identDescriptor;
         }
-        ReadWrite.writeInt(getPageLength(),// value
-            byteBuffer,// buffer
-            index + PAGE_LENGTH_FIELD_INDEX);// index
 
-        // identification descriptor list
-        int iddIndex = index + HEADER_LENGTH;// index of the current ident.
-                                             // descr.
+    }
+
+    /**
+     * Returns the combined length of all contained IDENTIFICATION DESCRIPTORs.
+     * 
+     * @return the combined length of all contained IDENTIFICATION DESCRIPTORs
+     */
+    private short getPageLength() {
+        short pageLength = 0;
         for (int i = 0; i < identificationDescriptors.length; ++i) {
-            identificationDescriptors[i].serialize(byteBuffer, iddIndex);
-            iddIndex += identificationDescriptors[i].size();
+            pageLength += (identificationDescriptors[i].size());
         }
+        return pageLength;
+    }
+
+    public void serialize(ByteBuffer byteBuffer, int index) {
+        // serialize header
+        byteBuffer.position(index);
+        byteBuffer.put(peripheralQualifierAndPeripheralDeviceType);
+        byteBuffer.put(pageCode);
+
+        ReadWrite.writeTwoByteInt(byteBuffer,// buffer
+            getPageLength(), index + PAGE_LENGTH_FIELD_INDEX);// index
     }
 
     public int size() {
         return getPageLength() + HEADER_LENGTH;
     }
-
 }

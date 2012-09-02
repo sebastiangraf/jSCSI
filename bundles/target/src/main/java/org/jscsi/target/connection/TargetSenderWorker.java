@@ -8,12 +8,16 @@ import java.security.DigestException;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.InitiatorMessageParser;
+import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.ProtocolDataUnitFactory;
 import org.jscsi.parser.TargetMessageParser;
+import org.jscsi.parser.scsi.SCSICommandParser;
+import org.jscsi.target.scsi.cdb.ScsiOperationCode;
 import org.jscsi.target.settings.Settings;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.settings.TextKeyword;
+import org.jscsi.target.util.Debug;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,6 +156,25 @@ public class TargetSenderWorker {
         final int commandSequenceNumber = parser.getCommandSequenceNumber();
         final int expectedStatusSequenceNumber = parser.getExpectedStatusSequenceNumber();
 
+        if (LOGGER.isDebugEnabled()) {
+            // sharrajesh
+            // Needed to debug, out of order receiving of StatusSN and ExpStatSN
+            if (bhs.getOpCode() == OperationCode.SCSI_COMMAND) {
+                final SCSICommandParser scsiParser = (SCSICommandParser)bhs.getParser();
+                ScsiOperationCode scsiOpCode = ScsiOperationCode.valueOf(scsiParser.getCDB().get(0));
+                LOGGER.debug("scsiOpCode = " + scsiOpCode);
+                LOGGER.debug("CDB bytes: \n" + Debug.byteBufferToString(scsiParser.getCDB()));
+            }
+            LOGGER.debug("parser.expectedStatusSequenceNumber: " + expectedStatusSequenceNumber);
+            if (connection == null)
+                LOGGER.debug("connection: null");
+            else if (connection.getStatusSequenceNumber() == null)
+                LOGGER.debug("connection.getStatusSequenceNumber: null");
+            else
+                LOGGER.debug("connection.getStatusSequenceNumber: "
+                    + connection.getStatusSequenceNumber().getValue());
+        }
+
         // if this is the first PDU in the leading connection, then
         // initialize the session's ExpectedCommandSequenceNumber
         if (initialPdu) {
@@ -166,11 +189,12 @@ public class TargetSenderWorker {
             if (session.getMaximumCommandSequenceNumber().lessThan(commandSequenceNumber))
                 throw new InternetSCSIException("received CmdSN > local MaxCmdSN");
 
-            if (!connection.getStatusSequenceNumber().equals(expectedStatusSequenceNumber)
-                && expectedStatusSequenceNumber != 0)// required by MS iSCSI
-                                                     // initiator DATA-OUT
-                                                     // PDU sequence
-                throw new InternetSCSIException("received ExpStatusSN != local StatusSN + 1");
+            // verified, is working with Windows 8 initiator
+            // if (!connection.getStatusSequenceNumber().equals(expectedStatusSequenceNumber)
+            // && expectedStatusSequenceNumber != 0)// required by MS iSCSI
+            // // initiator DATA-OUT
+            // // PDU sequence
+            // throw new InternetSCSIException("received ExpStatusSN != local StatusSN + 1");
         }
 
         // increment CmdSN if not immediate PDU (or Data-Out PDU)
