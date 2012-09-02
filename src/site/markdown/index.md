@@ -33,16 +33,27 @@ Our target is suited to act as a base for further target-allocated applications 
 ##Who worked on jSCSI?
 
 jSCSI was created at the [Distributed Systems Group](http://www.disy.uni-konstanz.de/) from the [University of Konstanz](http://www.uni-konstanz.de/). jSCSI is licensed under the [BSD3-Clause Licence](http://www.opensource.org/licenses/BSD-3-Clause) offering easy ways to utilize the provided library. 
-The project was started in 2006 by Marc Kramis and transferred in 2007 to Sebastian Graf. Since its beginning, jSCSI acts as a base for student projects. The following students contributed to this project:
+The project was started in 2006 by Marc Kramis and transferred in 2007 to Sebastian Graf. Since its beginning, jSCSI acts as a base for student projects. 
 
+###Involved People
+
+jSCSI is maintained currently by
+
+* Sebastian Graf (Project Lead)
+
+Current subprojects are:
+
+* Andreas Rain, Test-cases
+* Nuray Gürler, jSCSI websites
+
+Concluded and adopted subprojects were:
+
+* Andreas Ergenzinger, jSCSI Target 1.0
+* Patrice Brend'amour, jSCSI Initiator 2.0
+* Markus Specht, jSCSI Target evaluation
+* Bastian Lemke, jSCSI Storage Pool
 * Volker Wildi, jSCSI Initiator 1.0
 * Halldor Janetzko, Whiskas Block-Visualization
-* Bastian Lemke, jSCSI Storage Pool
-* Markus Specht, jSCSI Target evaluation
-* Patrice Brend'amour, jSCSI Initiator 2.0
-* Andreas Ergenzinger, jSCSI Target 1.0
-* Nuray Gürler, jSCSI websites
-* Andreas Rain, Test-cases
 
 Within the switch of the hosting from [Sourceforge](http://sourceforge.net/projects/jscsi/) to [github](https://github.com/disy), jSCSI experiences impacts from the open-source community directly e.g.
 
