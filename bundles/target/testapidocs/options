@@ -1,5 +1,5 @@
 -classpath
-'/Users/sebi/Dropbox/github/jSCSI/bundles/target/target/classes:/Users/sebi/Dropbox/github/jSCSI/bundles/target/target/test-classes:/Users/sebi/.m2/repository/com/google/guava/guava/12.0/guava-12.0.jar:/Users/sebi/.m2/repository/joda-time/joda-time/2.1/joda-time-2.1.jar:/Users/sebi/.m2/repository/commons-math/commons-math/1.2/commons-math-1.2.jar:/Users/sebi/.m2/repository/commons-primitives/commons-primitives/20041207.202534/commons-primitives-20041207.202534.jar:/Users/sebi/.m2/repository/org/perfidix/perfidix/3.6.7-SNAPSHOT/perfidix-3.6.7-SNAPSHOT.jar:/Users/sebi/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar:/Users/sebi/.m2/repository/org/jscsi/commons/2.3-SNAPSHOT/commons-2.3-SNAPSHOT.jar:/Users/sebi/.m2/repository/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar:/Users/sebi/.m2/repository/junit/junit/4.10/junit-4.10.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-simple/1.6.4/slf4j-simple-1.6.4.jar'
+'/Users/sebi/Dropbox/github/jSCSI/bundles/target/target/classes:/Users/sebi/Dropbox/github/jSCSI/bundles/target/target/test-classes:/Users/sebi/.m2/repository/commons-primitives/commons-primitives/20041207.202534/commons-primitives-20041207.202534.jar:/Users/sebi/.m2/repository/org/beanshell/bsh/2.0b4/bsh-2.0b4.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-simple/1.6.4/slf4j-simple-1.6.4.jar:/Users/sebi/.m2/repository/junit/junit/4.10/junit-4.10.jar:/Users/sebi/.m2/repository/com/google/guava/guava/12.0/guava-12.0.jar:/Users/sebi/.m2/repository/org/yaml/snakeyaml/1.6/snakeyaml-1.6.jar:/Users/sebi/.m2/repository/joda-time/joda-time/2.1/joda-time-2.1.jar:/Users/sebi/.m2/repository/com/beust/jcommander/1.12/jcommander-1.12.jar:/Users/sebi/.m2/repository/commons-math/commons-math/1.2/commons-math-1.2.jar:/Users/sebi/.m2/repository/org/jscsi/commons/2.3-SNAPSHOT/commons-2.3-SNAPSHOT.jar:/Users/sebi/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar:/Users/sebi/.m2/repository/org/perfidix/perfidix/3.6.7-SNAPSHOT/perfidix-3.6.7-SNAPSHOT.jar:/Users/sebi/.m2/repository/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar:/Users/sebi/.m2/repository/org/testng/testng/6.5.2/testng-6.5.2.jar'
 -encoding
 'UTF-8'
 -protected
@@ -17,7 +17,9 @@
 -doctitle
 'Target 2.3-SNAPSHOT Test API'
 -link
-'http://java.sun.com/javase/6/docs/api'
+'../apidocs'
+-linkoffline
+'http://disy.github.com/jSCSI/apidocs' '/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/target/site/testapidocs'
 -use
 -version
 -windowtitle

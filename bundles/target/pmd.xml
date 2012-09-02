@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.3" timestamp="2012-08-21T14:49:46.688">
+<pmd version="4.3" timestamp="2012-09-02T17:24:31.136">
 <file name="/Users/sebi/Dropbox/github/jSCSI/bundles/target/src/main/java/org/jscsi/target/connection/phase/TargetFullFeaturePhase.java">
 <violation beginline="6" endline="6" begincolumn="1" endcolumn="51" rule="UnusedImports" ruleset="Import Statement Rules" package="org.jscsi.target.connection.phase" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
 Avoid unused imports such as 'javax.naming.OperationNotSupportedException'
@@ -25,7 +25,7 @@ Unnecessary final modifier in final class
 </violation>
 </file>
 <file name="/Users/sebi/Dropbox/github/jSCSI/bundles/target/src/main/java/org/jscsi/target/connection/stage/fullfeature/TextNegotiationStage.java">
-<violation beginline="137" endline="140" begincolumn="20" endcolumn="13" rule="EmptyIfStmt" ruleset="Basic Rules" package="org.jscsi.target.connection.stage.fullfeature" class="TextNegotiationStage" method="execute" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="3">
+<violation beginline="136" endline="139" begincolumn="20" endcolumn="13" rule="EmptyIfStmt" ruleset="Basic Rules" package="org.jscsi.target.connection.stage.fullfeature" class="TextNegotiationStage" method="execute" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="3">
 Avoid empty if statements
 </violation>
 </file>

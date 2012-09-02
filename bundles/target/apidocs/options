@@ -18,6 +18,8 @@
 'Target 2.3-SNAPSHOT API'
 -link
 'http://java.sun.com/javase/6/docs/api'
+-linkoffline
+'http://disy.github.com/jSCSI/apidocs' '/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/target/site/apidocs'
 -use
 -version
 -windowtitle

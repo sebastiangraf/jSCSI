@@ -1,4 +1,5 @@
 org.jscsi.target.settings
 org.jscsi.target.storage
 org.jscsi.target.util
-org.jscsi.initiator
+org.jscsi.initiator.independent
+org.jscsi.initiator.opentarget
