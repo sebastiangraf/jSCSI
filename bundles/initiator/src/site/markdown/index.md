@@ -20,7 +20,7 @@ As clearly visible, jSCSI offers the ability to either open multiple sessions to
 
 ## Working with different targets
 
-The jSCSI-initiator was tested with the [Linux ISCSI Enterprise Target](http://iscsitarget.sourceforge.net/) as well as with the jSCSI-target. A Wireshark pcab with the IET can be found [here](jscsiInitWithIET.pcab).
+The jSCSI-initiator was tested with the [Linux ISCSI Enterprise Target](http://iscsitarget.sourceforge.net/) as well as with the jSCSI-target. A Wireshark pcab with the IET can be found [here](jscsiInitWithIET.pcab) whereas a Wireshark pcab with our own target can be found [here](jscsiInitWithJSCSI.pcab).
 
 ## Own needs, own requirements
 
