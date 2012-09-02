@@ -18,6 +18,10 @@ The jSCSI-initiator represents a plain-java based adapter for accessing iSCSI-ta
 
 As clearly visible, jSCSI offers the ability to either open multiple sessions to one target as well as to handle multiple connections per session. It is important to note, that the multi-threaded ability of jSCSI is only utilized after login when accessing any target for read-/write-purposes.
 
+## Working with different targets
+
+The jSCSI-initiator was tested with the [Linux ISCSI Enterprise Target](http://iscsitarget.sourceforge.net/) as well as with the jSCSI-target. A Wireshark pcab with the IET can be found [here](jscsiInitWithIET.pcab).
+
 ## Own needs, own requirements
 
 jSCSI was created at the [University of Konstanz](http://www.uni-konstanz.de) at the [Distributed Systems Group](http://www.disy.uni-konstanz.de/) out of the necessity to provide an architecture for storing blocks directly out of Java without any hassle of filesystems.
