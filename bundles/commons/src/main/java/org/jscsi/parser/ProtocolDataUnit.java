@@ -339,11 +339,11 @@ public final class ProtocolDataUnit {
 
         final int length = basicHeaderSegment.getDataSegmentLength();
 
-        if (dataSegment == null || dataSegment.capacity() < length) {
+        if (dataSegment == null || dataSegment.limit() < length) {
             dataSegment = ByteBuffer.allocate(AbstractDataSegment.getTotalLength(length));
         }
-
         dataSegment.put(pdu);
+
         dataSegment.flip();
 
         // read data segment digest and validate

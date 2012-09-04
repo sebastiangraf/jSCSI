@@ -26,13 +26,12 @@
  */
 package org.jscsi.parser.datasegment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
+import org.testng.annotations.Test;
 import java.util.NoSuchElementException;
 
 import org.jscsi.parser.datasegment.ResultFunctionFactory.ChooseResultFunction;
-import org.junit.Test;
 
 /**
  * <h1>ResultFunctionFactoryTest</h1>
@@ -70,7 +69,7 @@ public final class ResultFunctionFactoryTest {
 
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expectedExceptions = NoSuchElementException.class)
     public final void testInvalidChoose() {
 
         final ResultFunctionFactory resultFunctionFactory = new ResultFunctionFactory();

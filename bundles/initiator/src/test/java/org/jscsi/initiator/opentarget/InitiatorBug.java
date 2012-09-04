@@ -26,14 +26,13 @@
  */
 package org.jscsi.initiator.opentarget;
 
+import org.testng.annotations.Test;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
 
 import org.jscsi.initiator.Configuration;
 import org.jscsi.initiator.Initiator;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.perfidix.Benchmark;
 import org.perfidix.annotation.Bench;
 import org.perfidix.ouput.TabularSummaryOutput;
@@ -47,10 +46,9 @@ import org.perfidix.result.BenchmarkResult;
  * 
  * @author Bastian Lemke
  */
-@Ignore("Lack of testembed, removing")
 public class InitiatorBug {
 
-    @Test
+    @Test(enabled=false)
     @Bench
     public void test() throws Exception {
 
