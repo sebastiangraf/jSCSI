@@ -26,12 +26,11 @@
  */
 package org.jscsi.parser.login;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
+import org.testng.annotations.Test;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.login.ISID.Format;
-import org.junit.Test;
 
 /**
  * Testing the correctness of the ISID.

@@ -35,7 +35,7 @@ import java.util.concurrent.Future;
 
 import org.jscsi.initiator.Configuration;
 import org.jscsi.initiator.Initiator;
-import org.testng.Assert;
+import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -103,7 +103,7 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
-    @Test
+    @Test(enabled=false)
     public final void testClearing() throws Exception {
 
         initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
@@ -112,7 +112,7 @@ public final class InitiatorTest {
         initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
         readBuffer.flip();
 
-        Assert.assertTrue(writeBuffer.equals(readBuffer));
+        AssertJUnit.assertTrue(writeBuffer.equals(readBuffer));
     }
 
     /**
@@ -122,7 +122,7 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
-    @Test
+    @Test(enabled=false)
     public final void testWriteRead() throws Exception {
 
         initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
@@ -131,7 +131,7 @@ public final class InitiatorTest {
         writeBuffer.flip();
         readBuffer.flip();
 
-        Assert.assertTrue(writeBuffer.equals(readBuffer));
+        AssertJUnit.assertTrue(writeBuffer.equals(readBuffer));
     }
 
     /**
@@ -141,7 +141,7 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
-    @Test
+    @Test(enabled=false)
     public final void testMultipleReads() throws Exception {
 
         initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
@@ -152,7 +152,7 @@ public final class InitiatorTest {
         readBuffer.flip();
         readBuffer2.flip();
 
-        Assert.assertTrue(readBuffer.equals(readBuffer2));
+        AssertJUnit.assertTrue(readBuffer.equals(readBuffer2));
     }
 
     /**
@@ -162,7 +162,7 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
-    @Test
+    @Test(enabled=false)
     public final void testPartialRead() throws Exception {
 
         // FIXME: implement test case
@@ -177,7 +177,7 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
-    @Test
+    @Test(enabled=false)
     public final void testPartialWrite() throws Exception {
 
         // FIXME: Implement test case
@@ -193,6 +193,7 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
+    @Test(enabled=false)
     public final void testMultipleWrites() throws Exception {
 
         // FIXME: Useful test case?
@@ -202,6 +203,7 @@ public final class InitiatorTest {
         initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
     }
 
+    @Test(enabled=false)
     public final void testMultiThreading() throws Exception {
 
         final ExecutorService service = Executors.newCachedThreadPool();

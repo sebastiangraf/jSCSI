@@ -26,9 +26,8 @@
  */
 package org.jscsi.utils;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
+import static org.testng.AssertJUnit.assertEquals;
+import org.testng.annotations.Test;
 
 /**
  * Tests the Utils class of correctness.

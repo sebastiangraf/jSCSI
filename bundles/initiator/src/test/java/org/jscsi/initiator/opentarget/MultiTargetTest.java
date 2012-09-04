@@ -26,16 +26,14 @@
  */
 package org.jscsi.initiator.opentarget;
 
-import static org.junit.Assert.assertEquals;
-
+import static org.testng.AssertJUnit.assertEquals;
+import org.testng.annotations.Test;
 import java.nio.ByteBuffer;
 import java.util.Random;
 import java.util.concurrent.Future;
 
 import org.jscsi.initiator.Configuration;
 import org.jscsi.initiator.Initiator;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.perfidix.Benchmark;
 import org.perfidix.annotation.Bench;
 import org.perfidix.ouput.TabularSummaryOutput;
@@ -46,10 +44,9 @@ import org.perfidix.result.BenchmarkResult;
  * 
  * @author Patrice
  */
-@Ignore("Lack of testembed, removing")
 public class MultiTargetTest {
 
-    @Test
+    @Test(enabled=false)
     @Bench
     public void testMultiThreaded() throws Exception {
 
@@ -104,7 +101,7 @@ public class MultiTargetTest {
 
     }
 
-    @Test
+    @Test(enabled=false)
     @Bench
     public void testSingleThreaded() throws Exception {
 

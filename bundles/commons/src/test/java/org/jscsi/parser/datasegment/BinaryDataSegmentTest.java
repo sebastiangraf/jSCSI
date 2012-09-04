@@ -26,14 +26,13 @@
  */
 package org.jscsi.parser.datasegment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertNotNull;
+import static org.testng.AssertJUnit.assertTrue;
+import org.testng.annotations.Test;
 import java.nio.ByteBuffer;
 
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
-import org.junit.Test;
 
 /**
  * Testing the correctness of the BinaryDataSegment.
@@ -169,7 +168,7 @@ public final class BinaryDataSegmentTest {
      * destination buffer has size, which is not a multiple of
      * Constants.BYTES_PER_INT.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public final void testSerialize2() {
 
         final BinaryDataSegment dataSegment = new BinaryDataSegment(CHUNK_SIZE);

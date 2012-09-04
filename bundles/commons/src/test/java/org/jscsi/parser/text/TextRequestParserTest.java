@@ -26,10 +26,10 @@
  */
 package org.jscsi.parser.text;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertTrue;
+import org.testng.annotations.Test;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.DigestException;
@@ -40,7 +40,6 @@ import org.jscsi.parser.ProtocolDataUnitTest;
 import org.jscsi.parser.datasegment.OperationalTextKey;
 import org.jscsi.parser.datasegment.SettingsMap;
 import org.jscsi.utils.WiresharkMessageParser;
-import org.junit.Test;
 
 /**
  * Testing the correctness of the TextRequestParser.

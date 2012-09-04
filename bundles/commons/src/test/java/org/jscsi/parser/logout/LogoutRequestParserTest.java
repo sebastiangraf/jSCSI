@@ -26,14 +26,13 @@
  */
 package org.jscsi.parser.logout;
 
-import static org.junit.Assert.assertTrue;
-
+import static org.testng.AssertJUnit.assertTrue;
+import org.testng.annotations.Test;
 import java.io.IOException;
 import java.security.DigestException;
 
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.ProtocolDataUnitTest;
-import org.junit.Test;
 
 /**
  * Testing the correctness of the LogoutRequestParser.

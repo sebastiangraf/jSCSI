@@ -26,9 +26,8 @@
  */
 package org.jscsi.parser.digest;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
+import static org.testng.AssertJUnit.assertEquals;
+import org.testng.annotations.Test;
 
 /**
  * This class is for testing of class CRC32Table

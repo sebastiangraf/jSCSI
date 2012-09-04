@@ -83,6 +83,22 @@ public final class TargetServer implements Callable<Void> {
 
     public TargetServer(final Configuration conf) {
         this.config = conf;
+
+        LOGGER.debug("Starting jSCSI-target: ");
+
+        // read target settings from configuration file
+
+        LOGGER.debug("   port:           " + getConfig().getPort());
+        LOGGER.debug("   loading targets.");
+        // open the storage medium
+        List<Target> targetInfo = getConfig().getTargets();
+        for (Target curTargetInfo : targetInfo) {
+
+            targets.put(curTargetInfo.getTargetName(), curTargetInfo);
+            // print configuration and medium details
+            LOGGER.debug("   target name:    " + curTargetInfo.getTargetName() + " loaded.");
+        }
+
         this.deviceIdentificationVpdPage = new DeviceIdentificationVpdPage(this);
     }
 
@@ -133,22 +149,6 @@ public final class TargetServer implements Callable<Void> {
     }
 
     public Void call() throws Exception {
-
-        LOGGER.debug("Starting jSCSI-target: ");
-
-        // read target settings from configuration file
-
-        LOGGER.debug("   port:           " + getConfig().getPort());
-        LOGGER.debug("   loading targets.");
-        // open the storage medium
-        List<Target> targetInfo = getConfig().getTargets();
-        for (Target curTargetInfo : targetInfo) {
-
-            targets.put(curTargetInfo.getTargetName(), curTargetInfo);
-            // print configuration and medium details
-            LOGGER.debug("   target name:    " + curTargetInfo.getTargetName() + " loaded.");
-        }
-
         initFinished = true;
 
         ExecutorService threadPool = Executors.newFixedThreadPool(4);

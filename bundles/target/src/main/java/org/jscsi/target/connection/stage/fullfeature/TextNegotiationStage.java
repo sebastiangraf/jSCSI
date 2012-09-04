@@ -9,7 +9,6 @@ import java.util.Vector;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.target.TargetServer;
 import org.jscsi.target.connection.TargetPduFactory;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.settings.SettingsException;
@@ -157,7 +156,7 @@ public final class TextNegotiationStage extends TargetFullFeatureStage {
         final ProtocolDataUnit responsePdu = TargetPduFactory.createTextResponsePdu(true,// finalFlag
             false,// continueFlag
             0,// logicalUnitNumber
-            initiatorTaskTag, TargetServer.getNextTargetTransferTag(),// targetTransferTag
+            initiatorTaskTag, 0xffffffff,// targetTransferTag 
             replyDataSegment);// dataSegment
 
         connection.sendPdu(responsePdu);

@@ -148,4 +148,21 @@ public final class ModeSenseStage extends TargetFullFeatureStage {
             20,// numberOfCacheSegments
             0);// cacheSegmentSize
     }
+
+    public boolean canHandle(final ProtocolDataUnit pdu) {
+        final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
+        final SCSICommandParser parser = (SCSICommandParser)bhs.getParser();
+        final ModeSense6Cdb cdb = new ModeSense6Cdb(parser.getCDB());
+        final ModePageCode modePageCode = cdb.getModePage();
+        if (modePageCode == ModePageCode.INFORMATIONAL_EXCEPTIONS_CONTROL_MODE_PAGE) {
+            return true;
+        } else if (modePageCode == ModePageCode.CACHING_MODE_PAGE) {
+            return true;
+        } else if (modePageCode == ModePageCode.RETURN_ALL_MODE_PAGES_ONLY) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
