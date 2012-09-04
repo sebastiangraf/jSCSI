@@ -1,6 +1,6 @@
 package org.jscsi.target.util;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class FastByteArrayProviderTest {
 

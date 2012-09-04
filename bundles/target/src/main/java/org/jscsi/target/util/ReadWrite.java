@@ -200,6 +200,8 @@ public final class ReadWrite {
      * Writes the given <i>value</i> to the <i>buffer</i> in big-endian format,
      * with the index position of the most significant byte being <i>start</i>.
      * 
+     * To get the value back from the buffer, use readUnsignedInt.
+     * 
      * @param value
      *            the integer to write to the ByteBuffer
      * @param buffer

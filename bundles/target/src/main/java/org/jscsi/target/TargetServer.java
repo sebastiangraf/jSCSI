@@ -60,6 +60,11 @@ public final class TargetServer implements Callable<Void> {
     private DeviceIdentificationVpdPage deviceIdentificationVpdPage;
 
     /**
+     * A boolean that indicates that the initialization of all targets has been finished
+     */
+    private boolean initFinished = false;
+
+    /**
      * The table of targets
      */
     private HashMap<String, Target> targets = new HashMap<String, Target>();
@@ -70,6 +75,11 @@ public final class TargetServer implements Callable<Void> {
      * that field is reserved.
      */
     private static final AtomicInteger nextTargetTransferTag = new AtomicInteger();
+
+    /**
+     * The connection the target server is using.
+     */
+    private TargetConnection connection;
 
     public TargetServer(final Configuration conf) {
         this.config = conf;
@@ -139,6 +149,8 @@ public final class TargetServer implements Callable<Void> {
             LOGGER.debug("   target name:    " + curTargetInfo.getTargetName() + " loaded.");
         }
 
+        initFinished = true;
+
         ExecutorService threadPool = Executors.newFixedThreadPool(4);
         // Create a blocking server socket and check for connections
         try {
@@ -157,7 +169,7 @@ public final class TargetServer implements Callable<Void> {
                 // deactivate Nagle algorithm
                 socketChannel.socket().setTcpNoDelay(true);
 
-                final TargetConnection connection = new TargetConnection(socketChannel, true);
+                connection = new TargetConnection(socketChannel, true);
                 try {
                     final ProtocolDataUnit pdu = connection.receivePdu();
                     // confirm OpCode
@@ -238,6 +250,22 @@ public final class TargetServer implements Callable<Void> {
      */
     public boolean isValidTargetName(String checkTargetName) {
         return targets.containsKey(checkTargetName);
+    }
+
+    /**
+     * Using this connection mainly for test pruposes.
+     * 
+     * @return the connection the target server established.
+     */
+    public TargetConnection getConnection() {
+        return this.connection;
+    }
+
+    /**
+     * @return true if the target is ready and all targets have been initialized (e.g. put into the list)
+     */
+    public boolean isReady() {
+        return initFinished;
     }
 
 }

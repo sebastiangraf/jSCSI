@@ -1,8 +1,7 @@
 package org.jscsi.target.settings;
 
-import static org.junit.Assert.fail;
-
-import org.junit.Test;
+import static org.testng.Assert.fail;
+import org.testng.annotations.Test;
 
 public class NumericValueTest {
 

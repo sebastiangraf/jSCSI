@@ -1,0 +1,5 @@
+<suite name="EntireSuite">
+	<suite-files>
+		<suite-file path="./testng/standard.xml" />
+	</suite-files>
+</suite>

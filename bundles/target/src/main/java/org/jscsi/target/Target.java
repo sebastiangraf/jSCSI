@@ -38,7 +38,7 @@ public class Target {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((targetName == null) ? 0 : targetName.hashCode());
+        result = prime + ((targetName == null) ? 0 : targetName.hashCode());
         return result;
     }
 

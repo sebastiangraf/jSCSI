@@ -1,0 +1,22 @@
+<suite name="Target">
+	<test name="Scsi">
+		<packages>
+			<package name="org.jscsi.target.scsi" />
+		</packages>
+	</test>
+	<test name="Utilities">
+		<packages>
+			<package name="org.jscsi.target.util" />
+		</packages>
+	</test>
+	<test name="Settings">
+		<packages>
+			<package name="org.jscsi.target.settings" />
+		</packages>
+	</test>
+	<test name="Storage">
+		<packages>
+			<package name="org.jscsi.target.storage" />
+		</packages>
+	</test>
+</suite>

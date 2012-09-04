@@ -1,0 +1,11 @@
+<suite name="EntireSuite">
+	<suite-files>
+		<suite-file path="./testng/standard.xml" />
+	</suite-files>
+	<suite-files>
+		<suite-file path="./testng/initiator.xml" />
+	</suite-files>
+	<suite-files>
+		<suite-file path="./testng/target.xml" />
+	</suite-files>
+</suite>
