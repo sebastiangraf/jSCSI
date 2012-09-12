@@ -3,7 +3,6 @@ package org.jscsi.testing;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.security.DigestException;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,9 +10,6 @@ import java.util.concurrent.Executors;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.jscsi.exception.ConfigurationException;
-import org.jscsi.exception.InternetSCSIException;
-import org.jscsi.exception.NoSuchSessionException;
-import org.jscsi.exception.TaskExecutionException;
 import org.jscsi.initiator.Initiator;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -32,7 +28,6 @@ import org.jscsi.target.connection.stage.fullfeature.SendDiagnosticStage;
 import org.jscsi.target.connection.stage.fullfeature.TestUnitReadyStage;
 import org.jscsi.target.connection.stage.fullfeature.TextNegotiationStage;
 import org.jscsi.target.connection.stage.fullfeature.UnsupportedOpCodeStage;
-import org.jscsi.target.settings.SettingsException;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -152,8 +147,7 @@ public class TargetTest {
          * @throws IOException
          * @throws ConfigurationException
          */
-        public static void start() throws SAXException, ParserConfigurationException, IOException,
-            ConfigurationException {
+        public static void start() throws Exception {
             if (isWindows()) {
                 targetConfigurationFile = new File(CONFIG_DIR, "jscsi-target-windows.xml");
             } else {
@@ -183,38 +177,27 @@ public class TargetTest {
     }
 
     @BeforeClass
-    public void beforeClass() {
-        try {
-            CallableStart.start();
+    public void beforeClass() throws Exception {
+        CallableStart.start();
 
-            while (!targetServer.isReady()) {
+        while (!targetServer.isReady()) {
 
-            }
-
-            configuration =
-                org.jscsi.initiator.Configuration.create(new File(CONFIG_DIR, "jscsi.xsd"), new File(
-                    CONFIG_DIR, "jscsi.xml"));
-
-            initiator = new Initiator(configuration);
-
-            readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
-            writeBuffer = ByteBuffer.allocate(BUFFER_SIZE);
-
-            randomGenerator = new Random(System.currentTimeMillis());
-
-            randomGenerator.nextBytes(writeBuffer.array());
-
-            try {
-                initiator.createSession(TARGET_DRIVE_NAME);
-            } catch (NoSuchSessionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        } catch (SAXException | ParserConfigurationException | IOException | ConfigurationException e) {
-            Assert.fail("The target could not be started due to an exception.");
-            e.printStackTrace();
         }
+
+        configuration =
+            org.jscsi.initiator.Configuration.create(new File(CONFIG_DIR, "jscsi.xsd"), new File(CONFIG_DIR,
+                "jscsi.xml"));
+
+        initiator = new Initiator(configuration);
+
+        readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
+        writeBuffer = ByteBuffer.allocate(BUFFER_SIZE);
+
+        randomGenerator = new Random(System.currentTimeMillis());
+
+        randomGenerator.nextBytes(writeBuffer.array());
+
+        initiator.createSession(TARGET_DRIVE_NAME);
     }
 
     @Test
@@ -241,19 +224,11 @@ public class TargetTest {
     }
 
     @Test
-    public void testConnectionEstablishment() {
-        try {
-            initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
+    public void testConnectionEstablishment() throws Exception {
+        initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
 
-            initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
+        initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
 
-        } catch (NoSuchSessionException e) {
-            Assert.fail("The session could not be created due to an exception.");
-            e.printStackTrace();
-        } catch (TaskExecutionException e) {
-            Assert.fail("Could not write or read on the established connection.");
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -261,20 +236,14 @@ public class TargetTest {
      * using a the target connection and a stub'ish pdu.
      */
     @Test
-    public void testInquiry() {
+    public void testInquiry() throws Exception {
         TargetConnection connection = targetServer.getConnection();
         inquiryStage = new InquiryStage(new TargetFullFeaturePhase(connection));
 
         final ProtocolDataUnit pdu =
             new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
 
-        try {
-            inquiryStage.execute(pdu);
-        } catch (DigestException | IOException | InterruptedException | InternetSCSIException
-        | SettingsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        inquiryStage.execute(pdu);
     }
 
     /**
@@ -282,19 +251,14 @@ public class TargetTest {
      * using a the target connection and a stub'ish pdu.
      */
     @Test
-    public void testFormatUnit() {
+    public void testFormatUnit() throws Exception {
         TargetConnection connection = targetServer.getConnection();
         formatUnitStage = new FormatUnitStage(new TargetFullFeaturePhase(connection));
 
         final ProtocolDataUnit pdu =
             new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
 
-        try {
-            formatUnitStage.execute(pdu);
-        } catch (DigestException | IOException | InterruptedException | InternetSCSIException
-        | SettingsException e) {
-            e.printStackTrace();
-        }
+        formatUnitStage.execute(pdu);
     }
 
     /**
@@ -302,19 +266,14 @@ public class TargetTest {
      * using a the target connection and a stub'ish pdu.
      */
     @Test
-    public void testUnsupportedOpCode() {
+    public void testUnsupportedOpCode() throws Exception {
         TargetConnection connection = targetServer.getConnection();
         unsupportedOpCodeStage = new UnsupportedOpCodeStage(new TargetFullFeaturePhase(connection));
 
         final ProtocolDataUnit pdu =
             new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_TM_REQUEST, "None", "None");
 
-        try {
-            unsupportedOpCodeStage.execute(pdu);
-        } catch (DigestException | IOException | InterruptedException | InternetSCSIException
-        | SettingsException e) {
-            e.printStackTrace();
-        }
+        unsupportedOpCodeStage.execute(pdu);
     }
 
     /**
@@ -322,7 +281,7 @@ public class TargetTest {
      * using a the target connection and a stub'ish pdu.
      */
     @Test
-    public void testTextNegotiationStage() {
+    public void testTextNegotiationStage() throws Exception {
         TargetConnection connection = targetServer.getConnection();
         textNegotiationStage = new TextNegotiationStage(new TargetFullFeaturePhase(connection));
 
@@ -331,12 +290,7 @@ public class TargetTest {
 
         pdu.setDataSegment(ByteBuffer.wrap("hello world".getBytes()));
 
-        try {
-            textNegotiationStage.execute(pdu);
-        } catch (DigestException | IOException | InterruptedException | InternetSCSIException
-        | SettingsException e) {
-            e.printStackTrace();
-        }
+        textNegotiationStage.execute(pdu);
     }
 
     /**
@@ -344,19 +298,14 @@ public class TargetTest {
      * using a the target connection and a stub'ish pdu.
      */
     @Test
-    public void testModeSenseStage() {
+    public void testModeSenseStage() throws Exception {
         TargetConnection connection = targetServer.getConnection();
         modeSenseStage = new ModeSenseStage(new TargetFullFeaturePhase(connection));
 
         final ProtocolDataUnit pdu =
             new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
 
-        try {
-            modeSenseStage.execute(pdu);
-        } catch (DigestException | IOException | InterruptedException | InternetSCSIException
-        | SettingsException e) {
-            e.printStackTrace();
-        }
+        modeSenseStage.execute(pdu);
     }
 
     /**
@@ -364,19 +313,14 @@ public class TargetTest {
      * using a the target connection and a stub'ish pdu.
      */
     @Test
-    public void testRequestSenseStage() {
+    public void testRequestSenseStage() throws Exception {
         TargetConnection connection = targetServer.getConnection();
         requestSenseStage = new RequestSenseStage(new TargetFullFeaturePhase(connection));
 
         final ProtocolDataUnit pdu =
             new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
 
-        try {
-            requestSenseStage.execute(pdu);
-        } catch (DigestException | IOException | InterruptedException | InternetSCSIException
-        | SettingsException e) {
-            e.printStackTrace();
-        }
+        requestSenseStage.execute(pdu);
     }
 
     /**
@@ -384,19 +328,14 @@ public class TargetTest {
      * using a the target connection and a stub'ish pdu.
      */
     @Test
-    public void testPingStage() {
+    public void testPingStage() throws Exception {
         TargetConnection connection = targetServer.getConnection();
         pingStage = new PingStage(new TargetFullFeaturePhase(connection));
 
         final ProtocolDataUnit pdu =
             new ProtocolDataUnitFactory().create(false, true, OperationCode.NOP_OUT, "None", "None");
 
-        try {
-            pingStage.execute(pdu);
-        } catch (DigestException | IOException | InterruptedException | InternetSCSIException
-        | SettingsException e) {
-            e.printStackTrace();
-        }
+        pingStage.execute(pdu);
     }
 
     /**
@@ -404,19 +343,14 @@ public class TargetTest {
      * using a the target connection and a stub'ish pdu.
      */
     @Test
-    public void testReportLunsStage() {
+    public void testReportLunsStage() throws Exception {
         TargetConnection connection = targetServer.getConnection();
         reportLunsStage = new ReportLunsStage(new TargetFullFeaturePhase(connection));
 
         final ProtocolDataUnit pdu =
             new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
 
-        try {
-            reportLunsStage.execute(pdu);
-        } catch (DigestException | IOException | InterruptedException | InternetSCSIException
-        | SettingsException e) {
-            e.printStackTrace();
-        }
+        reportLunsStage.execute(pdu);
     }
 
     /**
@@ -424,19 +358,14 @@ public class TargetTest {
      * using a the target connection and a stub'ish pdu.
      */
     @Test
-    public void testSendDiagnosticStage() {
+    public void testSendDiagnosticStage() throws Exception {
         TargetConnection connection = targetServer.getConnection();
         sendDiagnosticStage = new SendDiagnosticStage(new TargetFullFeaturePhase(connection));
 
         final ProtocolDataUnit pdu =
             new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
 
-        try {
-            sendDiagnosticStage.execute(pdu);
-        } catch (DigestException | IOException | InterruptedException | InternetSCSIException
-        | SettingsException e) {
-            e.printStackTrace();
-        }
+        sendDiagnosticStage.execute(pdu);
     }
 
     /**
@@ -444,30 +373,19 @@ public class TargetTest {
      * using a the target connection and a stub'ish pdu.
      */
     @Test
-    public void testTestUnitReadyStage() {
+    public void testTestUnitReadyStage() throws Exception {
         TargetConnection connection = targetServer.getConnection();
         testUnitReadyStage = new TestUnitReadyStage(new TargetFullFeaturePhase(connection));
 
         final ProtocolDataUnit pdu =
             new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
 
-        try {
-            testUnitReadyStage.execute(pdu);
-        } catch (DigestException | IOException | InterruptedException | InternetSCSIException
-        | SettingsException e) {
-            e.printStackTrace();
-        }
+        testUnitReadyStage.execute(pdu);
     }
 
     @AfterClass
-    public void afterClass() {
-        try {
-            initiator.closeSession(TARGET_DRIVE_NAME);
-        } catch (NoSuchSessionException e) {
-            e.printStackTrace();
-        } catch (TaskExecutionException e) {
-            e.printStackTrace();
-        }
+    public void afterClass() throws Exception {
+        initiator.closeSession(TARGET_DRIVE_NAME);
 
         targetServer.getConnection().close();
         CallableStart.stop();

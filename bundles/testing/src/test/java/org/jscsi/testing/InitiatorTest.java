@@ -100,8 +100,7 @@ public class InitiatorTest {
          * @throws IOException
          * @throws ConfigurationException
          */
-        public static void start() throws SAXException, ParserConfigurationException, IOException,
-            ConfigurationException {
+        public static void start() throws Exception {
             if (isWindows()) {
                 targetConfigurationFile = new File(CONFIG_DIR, "jscsi-target-windows.xml");
             } else {
