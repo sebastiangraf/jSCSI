@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
  * @author Andreas Rain
  * 
  */
-public class TargetServerTest {
+public class TargetTest {
 
     /**
      * The target server instance to be used

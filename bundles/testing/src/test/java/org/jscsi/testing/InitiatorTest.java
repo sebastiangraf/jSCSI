@@ -33,7 +33,7 @@ import org.xml.sax.SAXException;
  * @author Andreas Rain
  * 
  */
-public class IndependentInitiatorTest {
+public class InitiatorTest {
 
     /** Name of the device name on the iSCSI Target. */
     private static final String TARGET_DRIVE_NAME = "testing-xen2-disk1";
