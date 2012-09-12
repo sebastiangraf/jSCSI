@@ -1,11 +1,5 @@
 package org.jscsi.testing;
 
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeClass;
-import org.testng.AssertJUnit;
-import static org.testng.AssertJUnit.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -24,7 +18,7 @@ import org.jscsi.initiator.Initiator;
 import org.jscsi.initiator.LinkFactory;
 import org.jscsi.initiator.connection.Session;
 import org.jscsi.target.TargetServer;
-import org.testng.Assert;
+import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
