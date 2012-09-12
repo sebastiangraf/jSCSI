@@ -1,4 +1,4 @@
-package org.jscsi.testing.target;
+package org.jscsi.testing;
 
 import java.io.File;
 import java.io.IOException;

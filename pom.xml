@@ -305,7 +305,7 @@
 				<module>bundles/commons</module>
 				<module>bundles/initiator</module>
 				<module>bundles/target</module>
-				<module>bundles/initiatorExtensions/storagePool</module>
+				<module>bundles/testing</module>
 			</modules>
 		</profile>
 	</profiles>

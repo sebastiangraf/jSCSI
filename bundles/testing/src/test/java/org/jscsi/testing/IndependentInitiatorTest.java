@@ -1,4 +1,4 @@
-package org.jscsi.initiator.independent;
+package org.jscsi.testing;
 
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
