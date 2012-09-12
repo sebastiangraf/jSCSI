@@ -2,9 +2,8 @@ package org.jscsi.target.util;
 
 import java.nio.ByteBuffer;
 
-import org.testng.annotations.Test;
 import org.testng.Assert;
-import static org.testng.Assert.fail;
+import org.testng.annotations.Test;
 
 public class ReadWriteTest {
 
@@ -101,15 +100,6 @@ public class ReadWriteTest {
     public void testWriteLong() {
         ByteBuffer longBuffer = ByteBuffer.allocate(8);
         ReadWrite.writeLong(longBuffer, 42, 0);
-    }
-
-    // It seems that this method does not work. Writing
-    // a string resolves into a StringIndexOutOfBoundsException
-    // exceeding the index by 12 in more than one possible variation
-    // of calling the method.
-    // @Test
-    public void testStringToTextDataSegments() {
-        ByteBuffer[] buffers = ReadWrite.stringToTextDataSegments("Hello World", 1);
     }
 
     @Test

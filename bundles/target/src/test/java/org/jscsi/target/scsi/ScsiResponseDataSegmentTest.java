@@ -1,8 +1,5 @@
 package org.jscsi.target.scsi;
 
-import java.nio.ByteBuffer;
-
-import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.ProtocolDataUnitFactory;
@@ -18,9 +15,8 @@ import org.jscsi.target.scsi.sense.SenseKey;
 import org.jscsi.target.scsi.sense.information.FourByteInformation;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.SenseDataDescriptor;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
-import org.jscsi.target.scsi.cdb.ScsiOperationCode;
-import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * This class tests the behavior of a scsi response data segment.
