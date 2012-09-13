@@ -60,11 +60,6 @@ public final class TargetServer implements Callable<Void> {
     private DeviceIdentificationVpdPage deviceIdentificationVpdPage;
 
     /**
-     * A boolean that indicates that the initialization of all targets has been finished
-     */
-    private boolean initFinished = false;
-
-    /**
      * The table of targets
      */
     private HashMap<String, Target> targets = new HashMap<String, Target>();
@@ -149,7 +144,6 @@ public final class TargetServer implements Callable<Void> {
     }
 
     public Void call() throws Exception {
-        initFinished = true;
 
         ExecutorService threadPool = Executors.newFixedThreadPool(4);
         // Create a blocking server socket and check for connections
@@ -194,13 +188,7 @@ public final class TargetServer implements Callable<Void> {
 
                     sessions.add(session);
                     threadPool.submit(connection);// ignore returned Future
-                } catch (DigestException e) {
-                    LOGGER.info("Throws Exception", e);
-                    continue;
-                } catch (InternetSCSIException e) {
-                    LOGGER.info("Throws Exception", e);
-                    continue;
-                } catch (SettingsException e) {
+                } catch (DigestException | InternetSCSIException | SettingsException e) {
                     LOGGER.info("Throws Exception", e);
                     continue;
                 }
@@ -259,13 +247,6 @@ public final class TargetServer implements Callable<Void> {
      */
     public TargetConnection getConnection() {
         return this.connection;
-    }
-
-    /**
-     * @return true if the target is ready and all targets have been initialized (e.g. put into the list)
-     */
-    public boolean isReady() {
-        return initFinished;
     }
 
 }

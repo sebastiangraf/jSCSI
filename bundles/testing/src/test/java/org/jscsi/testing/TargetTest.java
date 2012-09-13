@@ -1,8 +1,13 @@
 package org.jscsi.testing;
 
+import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
+import static org.testng.AssertJUnit.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.security.DigestException;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,6 +15,7 @@ import java.util.concurrent.Executors;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.jscsi.exception.ConfigurationException;
+import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.initiator.Initiator;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -18,6 +24,7 @@ import org.jscsi.target.Configuration;
 import org.jscsi.target.TargetServer;
 import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
+import org.jscsi.target.connection.stage.TargetStage;
 import org.jscsi.target.connection.stage.fullfeature.FormatUnitStage;
 import org.jscsi.target.connection.stage.fullfeature.InquiryStage;
 import org.jscsi.target.connection.stage.fullfeature.ModeSenseStage;
@@ -28,9 +35,10 @@ import org.jscsi.target.connection.stage.fullfeature.SendDiagnosticStage;
 import org.jscsi.target.connection.stage.fullfeature.TestUnitReadyStage;
 import org.jscsi.target.connection.stage.fullfeature.TextNegotiationStage;
 import org.jscsi.target.connection.stage.fullfeature.UnsupportedOpCodeStage;
-import org.testng.Assert;
+import org.jscsi.target.settings.SettingsException;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.xml.sax.SAXException;
 
@@ -77,52 +85,12 @@ public class TargetTest {
     /**
      * This stage will be executed using a stub so the code in there is covered.
      */
-    static InquiryStage inquiryStage;
-
-    /**
-     * This stage will be executed using a stub so the code in there is covered.
-     */
-    static FormatUnitStage formatUnitStage;
-
-    /**
-     * This stage will be executed using a stub so the code in there is covered.
-     */
-    static UnsupportedOpCodeStage unsupportedOpCodeStage;
-
-    /**
-     * This stage will be executed using a stub so the code in there is covered.
-     */
-    static TextNegotiationStage textNegotiationStage;
-
-    /**
-     * This stage will be executed using a stub so the code in there is covered.
-     */
     static ModeSenseStage modeSenseStage;
 
     /**
      * This stage will be executed using a stub so the code in there is covered.
      */
-    static RequestSenseStage requestSenseStage;
-
-    /**
-     * This stage will be executed using a stub so the code in there is covered.
-     */
     static PingStage pingStage;
-
-    /**
-     * This stage will be executed using a stub so the code in there is covered.
-     */
-    static ReportLunsStage reportLunsStage;
-
-    /**
-     * This stage will be executed using a stub so the code in there is covered.
-     */
-    static SendDiagnosticStage sendDiagnosticStage;
-
-    /**
-     * This stage will be executed using a stub so the code in there is covered.
-     */
-    static TestUnitReadyStage testUnitReadyStage;
 
     /**
      * The relative path (to the project) of the main directory of all
@@ -163,26 +131,15 @@ public class TargetTest {
             threadPool = Executors.newSingleThreadExecutor();
             // Starting the target
             threadPool.submit(targetServer);
-        }
-
-        /**
-         * After the tests are finished shutdown the threadpool.
-         */
-        public static void stop() {
+            // not needed any more
             threadPool.shutdown();
-
-            while (!threadPool.isShutdown())
-                ;
         }
+
     }
 
     @BeforeClass
     public void beforeClass() throws Exception {
         CallableStart.start();
-
-        while (!targetServer.isReady()) {
-
-        }
 
         configuration =
             org.jscsi.initiator.Configuration.create(new File(CONFIG_DIR, "jscsi.xsd"), new File(CONFIG_DIR,
@@ -202,95 +159,30 @@ public class TargetTest {
 
     @Test
     public void testConfiguration() {
-        Assert.assertTrue(targetServer.getConfig().getTargets().size() == 2);
+        assertEquals(targetServer.getConfig().getTargets().size(), 2);
     }
 
     @Test
     public void testTargetProperties() {
-        Assert.assertTrue(targetServer.getTargetNames().length == targetServer.getConfig().getTargets()
-            .size());
-        Assert.assertTrue(targetServer.getTarget("iqn.2010-04.local-test:disk-1") != null);
-        Assert.assertTrue(targetServer.isValidTargetName("iqn.2010-04.local-test:disk-2"));
+        assertEquals(targetServer.getTargetNames().length, targetServer.getConfig().getTargets().size());
+        assertTrue(targetServer.getTarget("iqn.2010-04.local-test:disk-1") != null);
+        assertTrue(targetServer.isValidTargetName("iqn.2010-04.local-test:disk-2"));
 
-        Assert.assertTrue(targetServer.getTarget("iqn.2010-04.local-test:disk-1").getTargetName().equals(
-            "iqn.2010-04.local-test:disk-1"));
-        Assert.assertTrue(targetServer.getTarget("iqn.2010-04.local-test:disk-1").getTargetAlias().equals(
-            "jSCSI Target"));
-        Assert
-            .assertTrue(targetServer.getTarget("iqn.2010-04.local-test:disk-1").hashCode() == 31 + "iqn.2010-04.local-test:disk-1"
-                .hashCode());
-        Assert.assertFalse(targetServer.getTarget("iqn.2010-04.local-test:disk-1").equals(
+        assertEquals("iqn.2010-04.local-test:disk-1", targetServer.getTarget("iqn.2010-04.local-test:disk-1")
+            .getTargetName());
+        assertEquals("jSCSI Target", targetServer.getTarget("iqn.2010-04.local-test:disk-1").getTargetAlias());
+
+        assertEquals(targetServer.getTarget("iqn.2010-04.local-test:disk-1").hashCode(),
+            31 + "iqn.2010-04.local-test:disk-1".hashCode());
+        assertFalse(targetServer.getTarget("iqn.2010-04.local-test:disk-1").equals(
             targetServer.getTarget("iqn.2010-04.local-test:disk-2")));
     }
 
     @Test
     public void testConnectionEstablishment() throws Exception {
         initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
-
         initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
 
-    }
-
-    /**
-     * This test executes the inquiry stage covering the stage execution
-     * using a the target connection and a stub'ish pdu.
-     */
-    @Test
-    public void testInquiry() throws Exception {
-        TargetConnection connection = targetServer.getConnection();
-        inquiryStage = new InquiryStage(new TargetFullFeaturePhase(connection));
-
-        final ProtocolDataUnit pdu =
-            new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
-
-        inquiryStage.execute(pdu);
-    }
-
-    /**
-     * This test executes the format unit stage covering the stage execution
-     * using a the target connection and a stub'ish pdu.
-     */
-    @Test
-    public void testFormatUnit() throws Exception {
-        TargetConnection connection = targetServer.getConnection();
-        formatUnitStage = new FormatUnitStage(new TargetFullFeaturePhase(connection));
-
-        final ProtocolDataUnit pdu =
-            new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
-
-        formatUnitStage.execute(pdu);
-    }
-
-    /**
-     * This test executes the unsupported opcode stage covering the stage execution
-     * using a the target connection and a stub'ish pdu.
-     */
-    @Test
-    public void testUnsupportedOpCode() throws Exception {
-        TargetConnection connection = targetServer.getConnection();
-        unsupportedOpCodeStage = new UnsupportedOpCodeStage(new TargetFullFeaturePhase(connection));
-
-        final ProtocolDataUnit pdu =
-            new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_TM_REQUEST, "None", "None");
-
-        unsupportedOpCodeStage.execute(pdu);
-    }
-
-    /**
-     * This test executes the text negotiation stage covering the stage execution
-     * using a the target connection and a stub'ish pdu.
-     */
-    @Test
-    public void testTextNegotiationStage() throws Exception {
-        TargetConnection connection = targetServer.getConnection();
-        textNegotiationStage = new TextNegotiationStage(new TargetFullFeaturePhase(connection));
-
-        final ProtocolDataUnit pdu =
-            new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_TM_REQUEST, "None", "None");
-
-        pdu.setDataSegment(ByteBuffer.wrap("hello world".getBytes()));
-
-        textNegotiationStage.execute(pdu);
     }
 
     /**
@@ -309,21 +201,6 @@ public class TargetTest {
     }
 
     /**
-     * This test executes the request sense stage covering the stage execution
-     * using a the target connection and a stub'ish pdu.
-     */
-    @Test
-    public void testRequestSenseStage() throws Exception {
-        TargetConnection connection = targetServer.getConnection();
-        requestSenseStage = new RequestSenseStage(new TargetFullFeaturePhase(connection));
-
-        final ProtocolDataUnit pdu =
-            new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
-
-        requestSenseStage.execute(pdu);
-    }
-
-    /**
      * This test executes the ping stage covering the stage execution
      * using a the target connection and a stub'ish pdu.
      */
@@ -338,57 +215,58 @@ public class TargetTest {
         pingStage.execute(pdu);
     }
 
-    /**
-     * This test executes the report luns stage covering the stage execution
-     * using a the target connection and a stub'ish pdu.
-     */
-    @Test
-    public void testReportLunsStage() throws Exception {
-        TargetConnection connection = targetServer.getConnection();
-        reportLunsStage = new ReportLunsStage(new TargetFullFeaturePhase(connection));
+    @Test(dataProvider = "instantiateStages")
+    public void testStages(Class<TargetStage> pTargetStageClass, TargetStage[] pStages,
+        Class<ProtocolDataUnit> pDataUnitClass, ProtocolDataUnit[] pDataUnits) throws DigestException,
+        IOException, InterruptedException, InternetSCSIException, SettingsException {
+        assertEquals(pStages.length, pDataUnits.length);
+        for (int i = 0; i < pStages.length; i++) {
+            pStages[i].execute(pDataUnits[i]);
+        }
 
-        final ProtocolDataUnit pdu =
-            new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
-
-        reportLunsStage.execute(pdu);
     }
 
-    /**
-     * This test executes the send diagnostic stage covering the stage execution
-     * using a the target connection and a stub'ish pdu.
-     */
-    @Test
-    public void testSendDiagnosticStage() throws Exception {
-        TargetConnection connection = targetServer.getConnection();
-        sendDiagnosticStage = new SendDiagnosticStage(new TargetFullFeaturePhase(connection));
-
-        final ProtocolDataUnit pdu =
-            new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
-
-        sendDiagnosticStage.execute(pdu);
-    }
-
-    /**
-     * This test executes the test unit ready stage covering the stage execution
-     * using a the target connection and a stub'ish pdu.
-     */
-    @Test
-    public void testTestUnitReadyStage() throws Exception {
-        TargetConnection connection = targetServer.getConnection();
-        testUnitReadyStage = new TestUnitReadyStage(new TargetFullFeaturePhase(connection));
-
-        final ProtocolDataUnit pdu =
-            new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
-
-        testUnitReadyStage.execute(pdu);
+    @DataProvider(name = "instantiateStages")
+    public Object[][] provideStages() {
+        final TargetFullFeaturePhase phase = new TargetFullFeaturePhase(targetServer.getConnection());
+        Object[][] returnVal =
+            {
+                {
+                    TargetStage.class,
+                    new TargetStage[] {
+                        new TestUnitReadyStage(phase), new SendDiagnosticStage(phase),
+                        new ReportLunsStage(phase), new InquiryStage(phase), new RequestSenseStage(phase),
+                        new TextNegotiationStage(phase), new UnsupportedOpCodeStage(phase),
+                        new FormatUnitStage(phase)
+                    },
+                    ProtocolDataUnit.class,
+                    new ProtocolDataUnit[] {
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
+                            "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
+                            "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
+                            "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
+                            "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
+                            "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_TM_REQUEST,
+                            "None", "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_TM_REQUEST,
+                            "None", "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
+                            "None")
+                    }
+                }
+            };
+        return returnVal;
     }
 
     @AfterClass
     public void afterClass() throws Exception {
         initiator.closeSession(TARGET_DRIVE_NAME);
-
         targetServer.getConnection().close();
-        CallableStart.stop();
     }
 
     private static boolean isWindows() {
