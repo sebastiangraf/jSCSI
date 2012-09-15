@@ -189,7 +189,7 @@ public class TargetTest {
      * This test executes the mode sense stage covering the stage execution
      * using a the target connection and a stub'ish pdu.
      */
-    @Test
+    @Test(enabled=false)
     public void testModeSenseStage() throws Exception {
         TargetConnection connection = targetServer.getConnection();
         modeSenseStage = new ModeSenseStage(new TargetFullFeaturePhase(connection));
@@ -204,7 +204,7 @@ public class TargetTest {
      * This test executes the ping stage covering the stage execution
      * using a the target connection and a stub'ish pdu.
      */
-    @Test
+    @Test(enabled=false)
     public void testPingStage() throws Exception {
         TargetConnection connection = targetServer.getConnection();
         pingStage = new PingStage(new TargetFullFeaturePhase(connection));
