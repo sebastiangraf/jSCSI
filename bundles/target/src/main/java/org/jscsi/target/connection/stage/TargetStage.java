@@ -5,7 +5,7 @@ import java.security.DigestException;
 
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.target.connection.TargetConnection;
+import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.connection.phase.TargetPhase;
 import org.jscsi.target.settings.Settings;
@@ -31,7 +31,7 @@ public abstract class TargetStage {
     /**
      * The connection the {@link org.jscsi.target.connection.phase.TargetFullFeaturePhase} is a part of
      */
-    protected final TargetConnection connection;
+    protected final Connection connection;
 
     /**
      * The session the {@link #connection} is a part of.
@@ -78,5 +78,14 @@ public abstract class TargetStage {
      */
     public abstract void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
         InternetSCSIException, DigestException, SettingsException;
+
+    /**
+     * Getting connection of this stage.
+     * 
+     * @return the related Connection of this stage.
+     */
+    public Connection getConnection() {
+        return connection;
+    }
 
 }

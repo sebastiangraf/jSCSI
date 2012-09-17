@@ -1,34 +1,22 @@
 package org.jscsi.testing;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.security.DigestException;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.jscsi.exception.ConfigurationException;
 import org.jscsi.exception.InternetSCSIException;
-import org.jscsi.initiator.Initiator;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.ProtocolDataUnitFactory;
-import org.jscsi.target.Configuration;
 import org.jscsi.target.TargetServer;
-import org.jscsi.target.connection.TargetConnection;
+import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.connection.stage.TargetStage;
 import org.jscsi.target.connection.stage.fullfeature.FormatUnitStage;
 import org.jscsi.target.connection.stage.fullfeature.InquiryStage;
-import org.jscsi.target.connection.stage.fullfeature.ModeSenseStage;
-import org.jscsi.target.connection.stage.fullfeature.PingStage;
 import org.jscsi.target.connection.stage.fullfeature.ReportLunsStage;
 import org.jscsi.target.connection.stage.fullfeature.RequestSenseStage;
 import org.jscsi.target.connection.stage.fullfeature.SendDiagnosticStage;
@@ -36,11 +24,8 @@ import org.jscsi.target.connection.stage.fullfeature.TestUnitReadyStage;
 import org.jscsi.target.connection.stage.fullfeature.TextNegotiationStage;
 import org.jscsi.target.connection.stage.fullfeature.UnsupportedOpCodeStage;
 import org.jscsi.target.settings.SettingsException;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.xml.sax.SAXException;
 
 /**
  * This class tests the functionalities of {@link TargetServer}
@@ -50,205 +35,157 @@ import org.xml.sax.SAXException;
  */
 public class TargetTest {
 
-    /** The targets configuration file */
-    private static File targetConfigurationFile;
+    // /**
+    // * This test executes the mode sense stage covering the stage execution
+    // * using a the target connection and a stub'ish pdu.
+    // */
+    // @Test(enabled = false)
+    // public void testModeSenseStage() throws Exception {
+    // TargetConnection connection = targetServer.getConnection();
+    // modeSenseStage = new ModeSenseStage(new TargetFullFeaturePhase(connection));
+    //
+    // final ProtocolDataUnit pdu =
+    // new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
+    //
+    // modeSenseStage.execute(pdu);
+    // }
+    //
+    // /**
+    // * This test executes the ping stage covering the stage execution
+    // * using a the target connection and a stub'ish pdu.
+    // */
+    // @Test(enabled = false)
+    // public void testPingStage() throws Exception {
+    // TargetConnection connection = targetServer.getConnection();
+    // pingStage = new PingStage(new TargetFullFeaturePhase(connection));
+    //
+    // final ProtocolDataUnit pdu =
+    // new ProtocolDataUnitFactory().create(false, true, OperationCode.NOP_OUT, "None", "None");
+    //
+    // pingStage.execute(pdu);
+    // }
 
-    /** The initiator object. */
-    private static Initiator initiator;
-
-    /** Initiator configuration */
-    private static org.jscsi.initiator.Configuration configuration;
-
-    /** Buffer, which is used for storing a read operation. */
-    private static ByteBuffer readBuffer;
-
-    /** Buffer, which is used for storing a write operation. */
-    private static ByteBuffer writeBuffer;
-
-    /** The random number generator to fill the buffer to send. */
-    private static Random randomGenerator;
-
-    /** Name of the device name on the iSCSI Target. */
-    private static final String TARGET_DRIVE_NAME = "testing-xen2-disk1";
-
-    /** The size (in bytes) of the buffer to use for reads and writes. */
-    private static final int BUFFER_SIZE = 46 * 1024;
-
-    /** The logical block address of the start block to begin an operation. */
-    private static final int LOGICAL_BLOCK_ADDRESS = 20;
-
-    /**
-     * This stage will be executed using a stub so the code in there is covered.
-     */
-    static ModeSenseStage modeSenseStage;
-
-    /**
-     * This stage will be executed using a stub so the code in there is covered.
-     */
-    static PingStage pingStage;
-
-    /**
-     * The relative path (to the project) of the main directory of all
-     * configuration files.
-     */
-    private static final File CONFIG_DIR = new File(new StringBuilder("src").append(File.separator).append(
-        "test").append(File.separator).append("resources").append(File.separator).toString());
-
-    /**
-     * A helping class to start the target in a threadpool so the tests can run
-     * next to it.
-     * 
-     */
-    public static class CallableStart {
-        static ExecutorService threadPool;
-
-        /**
-         * This method starts a targetserver in a threadpool.
-         * 
-         * @throws SAXException
-         * @throws ParserConfigurationException
-         * @throws IOException
-         * @throws ConfigurationException
-         */
-        public static void start() throws Exception {
-            if (isWindows()) {
-                targetConfigurationFile = new File(CONFIG_DIR, "jscsi-target-windows.xml");
-            } else {
-                targetConfigurationFile = new File(CONFIG_DIR, "jscsi-target-linux.xml");
-            }
-
-            Configuration targetConfiguration =
-                Configuration.create(new File(CONFIG_DIR, "jscsi-target.xsd"), targetConfigurationFile);
-
-            TargetServer targetServer = new TargetServer(targetConfiguration);
-
-            // Getting an Executor
-            threadPool = Executors.newSingleThreadExecutor();
-            // Starting the target
-            threadPool.submit(targetServer);
-            // not needed any more
-            threadPool.shutdown();
+    @Test(dataProvider = "instantiateStages")
+    public void testStages(Class<TargetStage> pTargetStageClass, TargetStage[] pStages,
+        Class<ProtocolDataUnit> pDataUnitClass, ProtocolDataUnit[] pDataUnits, Class<Checker> pCheckerClass,
+        Checker[] pChecker) throws DigestException, IOException, InterruptedException, InternetSCSIException,
+        SettingsException {
+        assertEquals(pStages.length, pDataUnits.length);
+        assertEquals(pStages.length, pChecker.length);
+        for (int i = 0; i < pStages.length; i++) {
+            pStages[i].execute(pDataUnits[i]);
+            pChecker[i].check(pStages[i].getConnection());
         }
 
     }
 
-    @BeforeClass
-    public void beforeClass() throws Exception {
-        CallableStart.start();
+    @DataProvider(name = "instantiateStages")
+    public Object[][] provideStages() {
+        Connection connection = mock(Connection.class);
+        TargetFullFeaturePhase phase = new TargetFullFeaturePhase(connection);
+        Object[][] returnVal =
+            {
+                {
+                    TargetStage.class,
+                    new TargetStage[] {
+                        new TestUnitReadyStage(phase), new SendDiagnosticStage(phase),
+                        new ReportLunsStage(phase), new InquiryStage(phase), new RequestSenseStage(phase),
+                        new TextNegotiationStage(phase), new UnsupportedOpCodeStage(phase),
+                        new FormatUnitStage(phase)
+                    },
+                    ProtocolDataUnit.class,
+                    new ProtocolDataUnit[] {
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
+                            "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
+                            "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
+                            "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
+                            "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
+                            "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_TM_REQUEST,
+                            "None", "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_TM_REQUEST,
+                            "None", "None"),
+                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
+                            "None")
+                    }, Checker.class, new Checker[] {
+                        // TestUnitReadyStage checker
+                        new Checker() {
 
-        configuration =
-            org.jscsi.initiator.Configuration.create(new File(CONFIG_DIR, "jscsi.xsd"), new File(CONFIG_DIR,
-                "jscsi.xml"));
+                            @Override
+                            public void check(final Connection pConnection) throws DigestException,
+                                InternetSCSIException, IOException, SettingsException {
+                                when(pConnection.receivePdu()).thenReturn(null);
+                            }
+                        }, // SendDiagnosticStage checker
+                        new Checker() {
 
-        initiator = new Initiator(configuration);
+                            @Override
+                            public void check(final Connection pConnection) throws DigestException,
+                                InternetSCSIException, IOException, SettingsException {
+                                when(pConnection.receivePdu()).thenReturn(null);
+                            }
+                        }, // ReportLunsStage checker
+                        new Checker() {
 
-        readBuffer = ByteBuffer.allocate(BUFFER_SIZE);
-        writeBuffer = ByteBuffer.allocate(BUFFER_SIZE);
+                            @Override
+                            public void check(final Connection pConnection) throws DigestException,
+                                InternetSCSIException, IOException, SettingsException {
+                                when(pConnection.receivePdu()).thenReturn(null);
+                            }
+                        }, // InquiryStage checker
+                        new Checker() {
 
-        randomGenerator = new Random(System.currentTimeMillis());
+                            @Override
+                            public void check(final Connection pConnection) throws DigestException,
+                                InternetSCSIException, IOException, SettingsException {
+                                when(pConnection.receivePdu()).thenReturn(null);
+                            }
+                        }, // RequestSenseStage checker
+                        new Checker() {
 
-        randomGenerator.nextBytes(writeBuffer.array());
+                            @Override
+                            public void check(final Connection pConnection) throws DigestException,
+                                InternetSCSIException, IOException, SettingsException {
+                                when(pConnection.receivePdu()).thenReturn(null);
+                            }
+                        }, // TextNegotiationStage checker
+                        new Checker() {
 
-        initiator.createSession(TARGET_DRIVE_NAME);
+                            @Override
+                            public void check(final Connection pConnection) throws DigestException,
+                                InternetSCSIException, IOException, SettingsException {
+                                when(pConnection.receivePdu()).thenReturn(null);
+                            }
+                        }, // UnsupportedOpCodeStage checker
+                        new Checker() {
+
+                            @Override
+                            public void check(final Connection pConnection) throws DigestException,
+                                InternetSCSIException, IOException, SettingsException {
+                                when(pConnection.receivePdu()).thenReturn(null);
+                            }
+                        }, // FormatUnitStage checker
+                        new Checker() {
+
+                            @Override
+                            public void check(final Connection pConnection) throws DigestException,
+                                InternetSCSIException, IOException, SettingsException {
+                                when(pConnection.receivePdu()).thenReturn(null);
+                            }
+                        }
+                    }
+                }
+            };
+        return returnVal;
     }
 
-    @Test
-    public void testConnectionEstablishment() throws Exception {
-        initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
-        initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
-
-    }
-
-//    /**
-//     * This test executes the mode sense stage covering the stage execution
-//     * using a the target connection and a stub'ish pdu.
-//     */
-//    @Test(enabled = false)
-//    public void testModeSenseStage() throws Exception {
-//        TargetConnection connection = targetServer.getConnection();
-//        modeSenseStage = new ModeSenseStage(new TargetFullFeaturePhase(connection));
-//
-//        final ProtocolDataUnit pdu =
-//            new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None");
-//
-//        modeSenseStage.execute(pdu);
-//    }
-//
-//    /**
-//     * This test executes the ping stage covering the stage execution
-//     * using a the target connection and a stub'ish pdu.
-//     */
-//    @Test(enabled = false)
-//    public void testPingStage() throws Exception {
-//        TargetConnection connection = targetServer.getConnection();
-//        pingStage = new PingStage(new TargetFullFeaturePhase(connection));
-//
-//        final ProtocolDataUnit pdu =
-//            new ProtocolDataUnitFactory().create(false, true, OperationCode.NOP_OUT, "None", "None");
-//
-//        pingStage.execute(pdu);
-//    }
-//
-//    @Test(dataProvider = "instantiateStages", enabled = false)
-//    public void testStages(Class<TargetStage> pTargetStageClass, TargetStage[] pStages,
-//        Class<ProtocolDataUnit> pDataUnitClass, ProtocolDataUnit[] pDataUnits) throws DigestException,
-//        IOException, InterruptedException, InternetSCSIException, SettingsException {
-//        assertEquals(pStages.length, pDataUnits.length);
-//        for (int i = 0; i < pStages.length; i++) {
-//            pStages[i].execute(pDataUnits[i]);
-//        }
-//
-//    }
-//
-//    @DataProvider(name = "instantiateStages")
-//    public Object[][] provideStages() {
-//        final TargetFullFeaturePhase phase = new TargetFullFeaturePhase(targetServer.getConnection());
-//        Object[][] returnVal =
-//            {
-//                {
-//                    TargetStage.class,
-//                    new TargetStage[] {
-//                        new TestUnitReadyStage(phase), new SendDiagnosticStage(phase),
-//                        new ReportLunsStage(phase), new InquiryStage(phase), new RequestSenseStage(phase),
-//                        new TextNegotiationStage(phase), new UnsupportedOpCodeStage(phase),
-//                        new FormatUnitStage(phase)
-//                    },
-//                    ProtocolDataUnit.class,
-//                    new ProtocolDataUnit[] {
-//                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
-//                            "None"),
-//                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
-//                            "None"),
-//                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
-//                            "None"),
-//                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
-//                            "None"),
-//                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
-//                            "None"),
-//                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_TM_REQUEST,
-//                            "None", "None"),
-//                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_TM_REQUEST,
-//                            "None", "None"),
-//                        new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None",
-//                            "None")
-//                    }
-//                }
-//            };
-//        return returnVal;
-//    }
-
-    @AfterClass
-    public void afterClass() throws Exception {
-        initiator.closeSession(TARGET_DRIVE_NAME);
-//        targetServer.getConnection().close();
-    }
-
-    private static boolean isWindows() {
-
-        String os = System.getProperty("os.name").toLowerCase();
-        // windows
-        return (os.indexOf("win") >= 0);
-
+    static interface Checker {
+        void check(final Connection pConnection) throws DigestException, InternetSCSIException, IOException,
+            SettingsException;
     }
 
 }

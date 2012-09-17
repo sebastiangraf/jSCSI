@@ -6,7 +6,6 @@ import java.util.Vector;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.LoginStage;
 import org.jscsi.target.TargetServer;
-import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.settings.entry.BooleanEntry;
 import org.jscsi.target.settings.entry.Entry;

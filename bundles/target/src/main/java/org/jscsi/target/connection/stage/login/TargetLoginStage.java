@@ -11,7 +11,6 @@ import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.LoginRequestParser;
 import org.jscsi.parser.login.LoginStage;
 import org.jscsi.parser.login.LoginStatus;
-import org.jscsi.target.connection.TargetConnection;
 import org.jscsi.target.connection.TargetPduFactory;
 import org.jscsi.target.connection.phase.TargetLoginPhase;
 import org.jscsi.target.connection.stage.TargetStage;

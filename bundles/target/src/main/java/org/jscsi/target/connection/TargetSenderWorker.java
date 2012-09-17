@@ -34,7 +34,7 @@ public class TargetSenderWorker {
     /**
      * The connection which uses this object for sending and receiving PDUs.
      */
-    final private TargetConnection connection;
+    final private Connection connection;
 
     /**
      * The session to which {@link #connection} belongs to.
@@ -75,7 +75,7 @@ public class TargetSenderWorker {
      *            used for sending and receiving serialized PDU to and from the
      *            target
      */
-    public TargetSenderWorker(final TargetConnection connection, final SocketChannel socketChannel) {
+    public TargetSenderWorker(final Connection connection, final SocketChannel socketChannel) {
         this.connection = connection;
         this.socketChannel = socketChannel;
         protocolDataUnitFactory = new ProtocolDataUnitFactory();

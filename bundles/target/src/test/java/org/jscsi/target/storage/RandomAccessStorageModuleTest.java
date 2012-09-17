@@ -1,7 +1,8 @@
 package org.jscsi.target.storage;
 
 import static org.testng.Assert.fail;
-
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -41,7 +42,7 @@ public class RandomAccessStorageModuleTest {
     }
 
     @Test
-    public void testReadAndWrite() {
+    public void testReadAndWrite() throws IOException {
 
         // create and initialize arrays
         final byte[] writeArray = new byte[TEST_FILE_SIZE];
@@ -49,23 +50,17 @@ public class RandomAccessStorageModuleTest {
             writeArray[i] = (byte)(Math.random() * 256);
         final byte[] readArray = new byte[TEST_FILE_SIZE];
 
-        try {
+        // write
+        module.write(writeArray,// bytes (source)
+            0,// bytesOffset
+            TEST_FILE_SIZE,// length
+            0);// storage index
 
-            // write
-            module.write(writeArray,// bytes (source)
-                0,// bytesOffset
-                TEST_FILE_SIZE,// length
-                0);// storage index
-
-            // read
-            module.read(readArray,// bytes (destination)
-                0,// bytesOffset
-                TEST_FILE_SIZE,// length
-                0);// storageIndex
-
-        } catch (IOException e) {
-            fail("IOException was thrown");
-        }
+        // read
+        module.read(readArray,// bytes (destination)
+            0,// bytesOffset
+            TEST_FILE_SIZE,// length
+            0);// storageIndex
 
         // check for errors
         for (int i = 0; i < TEST_FILE_SIZE; ++i)
@@ -79,16 +74,16 @@ public class RandomAccessStorageModuleTest {
         // should all be within bounds
         int result = module.checkBounds(0,// logicalBlockAddress
             2);// transferLengthInBlocks
-        assert (result == 0);
+        assertEquals(0, result);
         result = module.checkBounds(1,// logicalBlockAddress
             1);// transferLengthInBlocks
-        assert (result == 0);
+        assertEquals(0, result);
         result = module.checkBounds(1,// logicalBlockAddress
             1);// transferLengthInBlocks
-        assert (result == 0);
+        assertEquals(0, result);
         result = module.checkBounds(0,// logicalBlockAddress
             0);// transferLengthInBlocks
-        assert (result == 0);
+        assertEquals(0, result);
     }
 
     @Test
@@ -96,26 +91,26 @@ public class RandomAccessStorageModuleTest {
         // wrong logical block address
         int result = module.checkBounds(-1,// logicalBlockAddress
             1);// transferLengthInBlocks
-        assert (result == 1);
+        assertEquals(1, result);
         result = module.checkBounds(2,// logicalBlockAddress
             1);// transferLengthInBlocks
-        assert (result == 1);
+        assertEquals(1, result);
     }
 
     @Test
     public void testCheckBounds2() {
         int result = module.checkBounds(0,// logicalBlockAddress
             3);// transferLengthInBlocks
-        assert (result == 2);
+        assertEquals(2, result);
         result = module.checkBounds(0,// logicalBlockAddress
             -1);// transferLengthInBlocks
-        assert (result == 2);
+        assertEquals(2, result);
     }
 
     @Test
     public void testOpen() {
         // behavior to test is performed in setUpBeforeClass()
-        assert (module != null);
+        assertTrue(module != null);
     }
 
 }

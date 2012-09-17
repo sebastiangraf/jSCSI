@@ -7,7 +7,7 @@ import javax.naming.OperationNotSupportedException;
 
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.ProtocolDataUnit;
-import org.jscsi.target.connection.TargetConnection;
+import org.jscsi.target.connection.Connection;
 import org.jscsi.target.settings.SettingsException;
 
 /**
@@ -24,7 +24,7 @@ public abstract class TargetPhase {
     /**
      * The connection this phase is a part of.
      */
-    protected TargetConnection connection;
+    protected Connection connection;
 
     /**
      * The abstract constructor.
@@ -32,7 +32,7 @@ public abstract class TargetPhase {
      * @param connection
      *            the connection is phase is a part of
      */
-    public TargetPhase(TargetConnection connection) {
+    public TargetPhase(Connection connection) {
         this.connection = connection;
     }
 
@@ -86,7 +86,7 @@ public abstract class TargetPhase {
         throw new OperationNotSupportedException();
     }
 
-    public TargetConnection getTargetConnection() {
+    public Connection getTargetConnection() {
         return connection;
     }
 }

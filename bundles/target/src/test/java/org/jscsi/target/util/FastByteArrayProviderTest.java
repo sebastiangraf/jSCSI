@@ -1,6 +1,7 @@
 package org.jscsi.target.util;
 
 import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
 
 public class FastByteArrayProviderTest {
 
@@ -26,7 +27,7 @@ public class FastByteArrayProviderTest {
         // ... and test
         final byte[][] arrays = PROVIDER.getAll();
         for (int i = 0; i < CAPACITY; ++i)
-            assert (arrays[i].length == i + 1);// [1][2][3][4]
+            assertEquals(arrays[i].length, i + 1);// [1][2][3][4]
 
         // move last element to the front (3 swaps) ...
         for (int i = 0; i < 3; ++i)
@@ -34,19 +35,19 @@ public class FastByteArrayProviderTest {
         // ... and test
         assert (arrays[0].length == 4);// [4][1][2][3]
         for (int i = 1; i < CAPACITY; ++i)
-            assert (arrays[i].length == i);
+            assertEquals(arrays[i].length, i);
 
         // replace last element
         PROVIDER.getArray(5);// [4][1][2][5]
-        assert (arrays[0].length == 4);
-        assert (arrays[1].length == 1);
-        assert (arrays[2].length == 2);
-        assert (arrays[3].length == 5);
+        assertEquals(4, arrays[0].length);
+        assertEquals(1, arrays[1].length);
+        assertEquals(2, arrays[2].length);
+        assertEquals(5, arrays[3].length);
     }
 
     @Test
     public void testGetAll() {
-        assert (PROVIDER.getAll().length == CAPACITY);
+        assertEquals(CAPACITY, PROVIDER.getAll().length);
     }
 
 }

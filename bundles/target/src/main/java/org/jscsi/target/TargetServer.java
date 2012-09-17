@@ -20,7 +20,8 @@ import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.ISID;
 import org.jscsi.parser.login.LoginRequestParser;
-import org.jscsi.target.connection.TargetConnection;
+import org.jscsi.target.connection.Connection;
+import org.jscsi.target.connection.Connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.scsi.inquiry.DeviceIdentificationVpdPage;
 import org.jscsi.target.settings.SettingsException;
@@ -74,7 +75,7 @@ public final class TargetServer implements Callable<Void> {
     /**
      * The connection the target server is using.
      */
-    private TargetConnection connection;
+    private Connection connection;
 
     public TargetServer(final Configuration conf) {
         this.config = conf;
@@ -245,7 +246,7 @@ public final class TargetServer implements Callable<Void> {
      * 
      * @return the connection the target server established.
      */
-    public TargetConnection getConnection() {
+    public Connection getConnection() {
         return this.connection;
     }
 

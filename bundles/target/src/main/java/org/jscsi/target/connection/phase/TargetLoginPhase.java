@@ -10,7 +10,7 @@ import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.LoginRequestParser;
 import org.jscsi.parser.login.LoginStage;
-import org.jscsi.target.connection.TargetConnection;
+import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.stage.login.LoginOperationalParameterNegotiationStage;
 import org.jscsi.target.connection.stage.login.SecurityNegotiationStage;
 import org.jscsi.target.connection.stage.login.TargetLoginStage;
@@ -57,7 +57,7 @@ public final class TargetLoginPhase extends TargetPhase {
      * @param connection
      *            {@inheritDoc}
      */
-    public TargetLoginPhase(TargetConnection connection) {
+    public TargetLoginPhase(Connection connection) {
         super(connection);
     }
 

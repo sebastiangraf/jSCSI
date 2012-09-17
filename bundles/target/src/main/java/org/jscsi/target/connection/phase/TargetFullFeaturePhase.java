@@ -9,7 +9,7 @@ import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.scsi.SCSICommandParser;
-import org.jscsi.target.connection.TargetConnection;
+import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.stage.fullfeature.FormatUnitStage;
 import org.jscsi.target.connection.stage.fullfeature.InquiryStage;
 import org.jscsi.target.connection.stage.fullfeature.LogoutStage;
@@ -58,7 +58,7 @@ public final class TargetFullFeaturePhase extends TargetPhase {
      * @param connection
      *            {@inheritDoc}
      */
-    public TargetFullFeaturePhase(TargetConnection connection) {
+    public TargetFullFeaturePhase(Connection connection) {
         super(connection);
     }
 

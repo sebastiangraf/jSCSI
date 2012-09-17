@@ -49,7 +49,7 @@ public class TargetSession {
      * The {@link TargetConnection} used for exchanging messages and data with
      * the session's initiator endpoint.
      */
-    private TargetConnection connection;
+    private Connection connection;
 
     /**
      * The {@link ISID} used by the initiator for identifying this session.
@@ -112,7 +112,7 @@ public class TargetSession {
      *            the value expected by the initiator in the next {@link ProtocolDataUnit}'s
      *            <code>StatSN</code> field
      */
-    public TargetSession(final TargetServer target, final TargetConnection connection,
+    public TargetSession(final TargetServer target, final Connection connection,
         final ISID initiatorSessionID, final int expectedCommandSequenceNumber, final int statusSequenceNumber) {
         this.targetServer = target;
         // set connection variables and parameters
@@ -145,7 +145,7 @@ public class TargetSession {
      * 
      * @return the session's {@link TargetConnection}
      */
-    public TargetConnection getConnection() {
+    public Connection getConnection() {
         return connection;
     }
 
@@ -235,7 +235,7 @@ public class TargetSession {
      * @param connection
      *            the connection to be removed
      */
-    void removeTargetConnection(TargetConnection connection) {
+    void removeTargetConnection(Connection connection) {
         // do this only if connection count == 0, currently it always is
         targetServer.removeTargetSession(this);
     }
