@@ -56,7 +56,7 @@ public class ConnectionTest {
     // pingStage.execute(pdu);
     // }
 
-    @Test(dataProvider = "instantiateStages")
+    @Test(dataProvider = "instantiateStages", enabled = false)
     public void testStages(Class<TargetStage> pTargetStageClass, TargetStage[] pStages,
         Class<ProtocolDataUnit> pDataUnitClass, ProtocolDataUnit[] pDataUnits, Class<Checker> pCheckerClass,
         Checker[] pChecker) throws DigestException, IOException, InterruptedException, InternetSCSIException,
