@@ -1,4 +1,4 @@
-package org.jscsi.testing;
+package org.jscsi.target.connection;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -11,8 +11,6 @@ import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.ProtocolDataUnitFactory;
-import org.jscsi.target.TargetServer;
-import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.connection.stage.TargetStage;
 import org.jscsi.target.connection.stage.fullfeature.FormatUnitStage;
@@ -27,14 +25,7 @@ import org.jscsi.target.settings.SettingsException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-/**
- * This class tests the functionalities of {@link TargetServer}
- * 
- * @author Andreas Rain
- * 
- */
-public class TargetTest {
-
+public class ConnectionTest {
     // /**
     // * This test executes the mode sense stage covering the stage execution
     // * using a the target connection and a stub'ish pdu.
