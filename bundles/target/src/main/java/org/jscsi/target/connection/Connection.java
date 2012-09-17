@@ -21,7 +21,6 @@ import org.jscsi.target.util.FastByteArrayProvider;
 import org.jscsi.target.util.SerialArithmeticNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.internal.DynamicGraph.Status;
 
 /**
  * A class for objects representing an iSCSI connection with all necessary
@@ -90,7 +89,7 @@ public interface Connection extends Callable<Void> {
 
         /**
          * A counter for the <code>StatSN</code> field of sent {@link ProtocolDataUnit} objects with
-         * {@link Status}.
+         *  Status.
          */
         private SerialArithmeticNumber statusSequenceNumber;
 
