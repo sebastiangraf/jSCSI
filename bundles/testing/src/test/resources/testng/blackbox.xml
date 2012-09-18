@@ -1,5 +1,5 @@
-<suite name="Standard">
-	<test name="Target Connection Tests">
+<suite name="BlackBox">
+	<test name="Black Box Tests">
 		<packages>
 			<package name="org.jscsi.testing" />
 		</packages>

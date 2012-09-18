@@ -212,11 +212,7 @@ public class BlackBoxTest {
                 returnVal1.get();
 
                 AssertJUnit.assertTrue(!writeBuffers[i].equals(readBuffers[i]));
-            } catch (TaskExecutionException e) {
-                AssertJUnit.fail();
-            } catch (InterruptedException e) {
-                AssertJUnit.fail();
-            } catch (ExecutionException e) {
+            } catch (TaskExecutionException | InterruptedException | ExecutionException e) {
                 AssertJUnit.fail();
             }
         }
@@ -228,11 +224,7 @@ public class BlackBoxTest {
 
                 returnVal1.get();
 
-            } catch (TaskExecutionException e) {
-                AssertJUnit.fail();
-            } catch (InterruptedException e) {
-                AssertJUnit.fail();
-            } catch (ExecutionException e) {
+            } catch (TaskExecutionException | InterruptedException | ExecutionException e) {
                 AssertJUnit.fail();
             }
         }
