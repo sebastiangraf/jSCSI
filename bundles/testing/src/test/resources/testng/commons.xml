@@ -1,0 +1,12 @@
+<suite name="Commons">
+	<test name="Parser">
+        <packages>
+            <package name="org.jscsi.parser.*" />
+        </packages>
+    </test>
+    <test name="Utils">
+		<packages>
+			<package name="org.jscsi.utils" />
+		</packages>
+	</test>
+</suite>

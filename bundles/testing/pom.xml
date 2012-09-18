@@ -42,6 +42,12 @@ testing both together.</description>
         </dependency>
         <dependency>
             <groupId>org.jscsi</groupId>
+            <artifactId>commons</artifactId>
+            <version>2.3-SNAPSHOT</version>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jscsi</groupId>
             <artifactId>initiator</artifactId>
             <version>2.3-SNAPSHOT</version>
         </dependency>
@@ -61,6 +67,12 @@ testing both together.</description>
             <artifactId>target</artifactId>
             <version>2.3-SNAPSHOT</version>
             <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.9.0</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
