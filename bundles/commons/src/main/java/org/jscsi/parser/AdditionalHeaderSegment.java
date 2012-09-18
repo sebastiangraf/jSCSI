@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -36,12 +36,10 @@ import org.jscsi.utils.Utils;
 /**
  * <h1>AdditionalHeaderSegment</h1>
  * <p>
- * This class encapsulate an Additional Header Segment (AHS) defined in iSCSI
- * Protocol (RFC3720).
+ * This class encapsulate an Additional Header Segment (AHS) defined in iSCSI Protocol (RFC3720).
  * <p>
- * It provides all methods to serialize and deserialize such an AHS. Further
- * there are getter methods to access the specific data, which is contained in
- * this AHS.
+ * It provides all methods to serialize and deserialize such an AHS. Further there are getter methods to
+ * access the specific data, which is contained in this AHS.
  * 
  * @author Volker Wildi
  */
@@ -80,16 +78,15 @@ final class AdditionalHeaderSegment {
     enum AdditionalHeaderSegmentType {
         /**
          * This type of AHS MUST NOT be used if the <code>CDBLength</code> is
-         * less than <code>17</code>. The length includes the reserved byte
-         * <code>3</code>.
+         * less than <code>17</code>. The length includes the reserved byte <code>3</code>.
          */
-        EXTENDED_CDB((byte) 1),
+        EXTENDED_CDB((byte)1),
 
         /**
          * The Expected Bidirectional Read Data Length. But this is not good
          * documented in the iSCSI Protocol (RFC3720).
          */
-        EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH((byte) 2);
+        EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH((byte)2);
 
         private final byte value;
 
@@ -122,12 +119,11 @@ final class AdditionalHeaderSegment {
          * 
          * @param value
          *            The value to search for.
-         * @return The constant defined for the given <code>value</code>. Or
-         *         <code>null</code>, if this value is not defined by this
+         * @return The constant defined for the given <code>value</code>. Or <code>null</code>, if this value
+         *         is not defined by this
          *         enumeration.
          */
-        private static final AdditionalHeaderSegmentType valueOf(
-                final byte value) {
+        private static final AdditionalHeaderSegmentType valueOf(final byte value) {
 
             return AdditionalHeaderSegmentType.mapping.get(value);
         }
@@ -138,8 +134,8 @@ final class AdditionalHeaderSegment {
     // --------------------------------------------------------------------------
 
     /**
-     * Factor, which must be muliplied with the <code>totalAHSLength</code>
-     * contained in a <code>BasicHeaderSegment</code> object.
+     * Factor, which must be muliplied with the <code>totalAHSLength</code> contained in a
+     * <code>BasicHeaderSegment</code> object.
      */
     static final int AHS_FACTOR = 4;
 
@@ -157,15 +153,14 @@ final class AdditionalHeaderSegment {
 
     /**
      * Length of the specific field <code>ByteBuffer</code>, which is expected,
-     * if the AHS type is the
-     * <code>AdditionalHeaderSegmentType.EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH</code>
+     * if the AHS type is the <code>AdditionalHeaderSegmentType.EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH</code>
      * .
      */
     private static final int EXPECTED_BIDIRECTIONAL_SPECIFIC_FIELD_LENGTH = 5;
 
     /**
-     * This is the size (in bytes) of the <code>AHSLength</code> and the
-     * <code>AHSType</code>, which are also included in the serialized AHS form
+     * This is the size (in bytes) of the <code>AHSLength</code> and the <code>AHSType</code>, which are also
+     * included in the serialized AHS form
      * of this object.
      */
     private static final int FIX_SIZE_OVERHEAD = 3;
@@ -235,13 +230,11 @@ final class AdditionalHeaderSegment {
      * @throws InternetSCSIException
      *             If any violation of the iSCSI-Standard emerge.
      */
-    final int serialize(final ByteBuffer dst, final int offset)
-            throws InternetSCSIException {
+    final int serialize(final ByteBuffer dst, final int offset) throws InternetSCSIException {
 
         dst.position(offset);
         if (dst.remaining() < length) {
-            throw new IllegalArgumentException(
-                    "Destination array is too small.");
+            throw new IllegalArgumentException("Destination array is too small.");
         }
 
         dst.putShort(length);
@@ -266,8 +259,7 @@ final class AdditionalHeaderSegment {
      * @throws InternetSCSIException
      *             If any violation of the iSCSI-Standard emerge.
      */
-    final void deserialize(final ByteBuffer pdu, final int offset)
-            throws InternetSCSIException {
+    final void deserialize(final ByteBuffer pdu, final int offset) throws InternetSCSIException {
 
         pdu.position(offset);
         length = pdu.getShort();
@@ -289,8 +281,8 @@ final class AdditionalHeaderSegment {
     // --------------------------------------------------------------------------
 
     /**
-     * Returns the length of this AHS object. Expected values are greater than
-     * <code>0</code> and a maximum of <code>65536</code>
+     * Returns the length of this AHS object. Expected values are greater than <code>0</code> and a maximum of
+     * <code>65536</code>
      * 
      * @return The length of this AHS object.
      */
@@ -306,7 +298,7 @@ final class AdditionalHeaderSegment {
      */
     final ByteBuffer getSpecificField() {
 
-        return (ByteBuffer) specificField.rewind();
+        return (ByteBuffer)specificField.rewind();
     }
 
     /**
@@ -348,8 +340,7 @@ final class AdditionalHeaderSegment {
             break;
 
         case EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH:
-            Utils.printField(sb, "Expected Data Length",
-                    specificField.getInt(), 1);
+            Utils.printField(sb, "Expected Data Length", specificField.getInt(), 1);
             break;
 
         default:
@@ -364,8 +355,7 @@ final class AdditionalHeaderSegment {
     }
 
     /**
-     * Clears all the stored content of this
-     * <code>AdditionalHeaderSegment</code> object.
+     * Clears all the stored content of this <code>AdditionalHeaderSegment</code> object.
      */
     final void clear() {
 
@@ -404,14 +394,12 @@ final class AdditionalHeaderSegment {
             break;
 
         case EXPECTED_BIDIRECTIONAL_READ_DATA_LENGTH:
-            Utils.isExpected(specificField.limit(),
-                    EXPECTED_BIDIRECTIONAL_SPECIFIC_FIELD_LENGTH);
+            Utils.isExpected(specificField.limit(), EXPECTED_BIDIRECTIONAL_SPECIFIC_FIELD_LENGTH);
             Utils.isExpected(length, EXPECTED_BIDIRECTIONAL_LENGTH);
             break;
 
         default:
-            throw new InternetSCSIException(
-                    "Unknown additional header segment type.");
+            throw new InternetSCSIException("Unknown additional header segment type.");
         }
 
         specificField.rewind();

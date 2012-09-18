@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -78,12 +78,10 @@ public final class Utils {
      * @throws InternetSCSIException
      *             If the field is not reserved, then throw an exception
      */
-    public static final void isReserved(final long field)
-            throws InternetSCSIException {
+    public static final void isReserved(final long field) throws InternetSCSIException {
 
         if (field != 0) {
-            throw new InternetSCSIException(
-                    "Field is reserved, so it must be zero.");
+            throw new InternetSCSIException("Field is reserved, so it must be zero.");
         }
     }
 
@@ -97,12 +95,10 @@ public final class Utils {
      * @throws InternetSCSIException
      *             If this comparison failed, this exception will be thrown
      */
-    public static final void isExpected(final int field, final int expected)
-            throws InternetSCSIException {
+    public static final void isExpected(final int field, final int expected) throws InternetSCSIException {
 
         if (field != expected) {
-            throw new InternetSCSIException(
-                    "This field does not contain the expected value.");
+            throw new InternetSCSIException("This field does not contain the expected value.");
         }
     }
 
@@ -134,8 +130,8 @@ public final class Utils {
      * @param indent
      *            The level of indention.
      */
-    public static final void printField(final StringBuilder sb,
-            final String fieldName, final String fieldValue, final int indent) {
+    public static final void printField(final StringBuilder sb, final String fieldName,
+        final String fieldValue, final int indent) {
 
         indent(sb, indent);
         sb.append(fieldName);
@@ -157,8 +153,8 @@ public final class Utils {
      * @param indent
      *            The level of indention.
      */
-    public static final void printField(final StringBuilder sb,
-            final String fieldName, final int fieldValue, final int indent) {
+    public static final void printField(final StringBuilder sb, final String fieldName, final int fieldValue,
+        final int indent) {
 
         indent(sb, indent);
         sb.append(fieldName);
@@ -180,8 +176,8 @@ public final class Utils {
      * @param indent
      *            The level of indention.
      */
-    public static final void printField(final StringBuilder sb,
-            final String fieldName, final long fieldValue, final int indent) {
+    public static final void printField(final StringBuilder sb, final String fieldName,
+        final long fieldValue, final int indent) {
 
         indent(sb, indent);
         sb.append(fieldName);
@@ -203,10 +199,10 @@ public final class Utils {
      * @param indent
      *            The level of indention.
      */
-    public static final void printField(final StringBuilder sb,
-            final String fieldName, final byte fieldValue, final int indent) {
+    public static final void printField(final StringBuilder sb, final String fieldName,
+        final byte fieldValue, final int indent) {
 
-        printField(sb, fieldName, (int) fieldValue, indent);
+        printField(sb, fieldName, (int)fieldValue, indent);
     }
 
     /**
@@ -222,8 +218,8 @@ public final class Utils {
      * @param indent
      *            The level of indention.
      */
-    public static final void printField(final StringBuilder sb,
-            final String fieldName, final boolean fieldValue, final int indent) {
+    public static final void printField(final StringBuilder sb, final String fieldName,
+        final boolean fieldValue, final int indent) {
 
         indent(sb, indent);
         sb.append(fieldName);
@@ -245,9 +241,8 @@ public final class Utils {
      * @param indent
      *            The level of indention.
      */
-    public static final void printField(final StringBuilder sb,
-            final String fieldName, final ByteBuffer fieldValue,
-            final int indent) {
+    public static final void printField(final StringBuilder sb, final String fieldName,
+        final ByteBuffer fieldValue, final int indent) {
 
         fieldValue.rewind();
         indent(sb, indent);

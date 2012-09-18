@@ -83,10 +83,12 @@ public final class CapacityResponseState extends AbstractState {
 
         // first, we extract capacity informations
         if (!(protocolDataUnit.getBasicHeaderSegment().getParser() instanceof DataInParser)) {
-            
+
             // In newer versions of iscsi targets there the target tells the initiator
-            // that the status is cleared using a scsi response. It's defined in the RFC 3720 on page 78 (or at least mentioned, it's
-            // actually defined in SAM-2 and). This is why we have to ask for capacity informations once again receiving this
+            // that the status is cleared using a scsi response. It's defined in the RFC 3720 on page 78 (or
+            // at least mentioned, it's
+            // actually defined in SAM-2 and). This is why we have to ask for capacity informations once again
+            // receiving this
             // Response to our capacity request.
             if (protocolDataUnit.getBasicHeaderSegment().getParser() instanceof SCSIResponseParser) {
                 connection.nextState(new CapacityRequestState(connection, capacityInformation,

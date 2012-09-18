@@ -156,7 +156,7 @@ public final class TextNegotiationStage extends TargetFullFeatureStage {
         final ProtocolDataUnit responsePdu = TargetPduFactory.createTextResponsePdu(true,// finalFlag
             false,// continueFlag
             0,// logicalUnitNumber
-            initiatorTaskTag, 0xffffffff,// targetTransferTag 
+            initiatorTaskTag, 0xffffffff,// targetTransferTag
             replyDataSegment);// dataSegment
 
         connection.sendPdu(responsePdu);

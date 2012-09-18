@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -66,29 +66,26 @@ public final class DataSegmentFactory {
 
     /**
      * Creates a data segment of the given format and with the given chunk size
-     * (in bytes). This data segment is initialized with the data of
-     * <code>buffer</code>.
+     * (in bytes). This data segment is initialized with the data of <code>buffer</code>.
      * 
      * @param buffer
      *            The initialization buffer.
      * @param format
      *            A format from the <code>DataSegmentFormat</code> enumeration.
      * @param maxChunkSize
-     *            The size (in bytes) of one chunk, which represents the
-     *            <code>MaxRecvDataSegmentLength</code>.
+     *            The size (in bytes) of one chunk, which represents the <code>MaxRecvDataSegmentLength</code>
+     *            .
      * @return The instance of an <codE>DataSegment</code> object.
      */
-    public static final IDataSegment create(final ByteBuffer buffer,
-            final DataSegmentFormat format, final int maxChunkSize) {
+    public static final IDataSegment create(final ByteBuffer buffer, final DataSegmentFormat format,
+        final int maxChunkSize) {
 
-        return create(buffer, buffer.position(), buffer.remaining(), format,
-                maxChunkSize);
+        return create(buffer, buffer.position(), buffer.remaining(), format, maxChunkSize);
     }
 
     /**
      * Creates a data segment of the given format and with the given chunk size
-     * (in bytes). This data segment is initialized with the data of
-     * <code>buffer</code>.
+     * (in bytes). This data segment is initialized with the data of <code>buffer</code>.
      * 
      * @param buffer
      *            The initialization buffer.
@@ -99,16 +96,14 @@ public final class DataSegmentFactory {
      * @param format
      *            A format from the <code>DataSegmentFormat</code> enumeration.
      * @param maxChunkSize
-     *            The size (in bytes) of one chunk, which represents the
-     *            <code>MaxRecvDataSegmentLength</code>.
+     *            The size (in bytes) of one chunk, which represents the <code>MaxRecvDataSegmentLength</code>
+     *            .
      * @return The instance of an <codE>DataSegment</code> object.
      */
-    public static final IDataSegment create(final ByteBuffer buffer,
-            final int position, final int length,
-            final DataSegmentFormat format, final int maxChunkSize) {
+    public static final IDataSegment create(final ByteBuffer buffer, final int position, final int length,
+        final DataSegmentFormat format, final int maxChunkSize) {
 
-        final IDataSegment dataSegment = DataSegmentFactory.create(format,
-                maxChunkSize);
+        final IDataSegment dataSegment = DataSegmentFactory.create(format, maxChunkSize);
         dataSegment.setDataBuffer(buffer, position, length);
 
         return dataSegment;
@@ -121,12 +116,11 @@ public final class DataSegmentFactory {
      * @param format
      *            A format from the <code>DataSegmentFormat</code> enumeration.
      * @param maxChunkSize
-     *            The size (in bytes) of one chunk, which represents the
-     *            <code>MaxRecvDataSegmentLength</code>.
+     *            The size (in bytes) of one chunk, which represents the <code>MaxRecvDataSegmentLength</code>
+     *            .
      * @return The instance of an <codE>DataSegment</code> object.
      */
-    public static final IDataSegment create(final DataSegmentFormat format,
-            final int maxChunkSize) {
+    public static final IDataSegment create(final DataSegmentFormat format, final int maxChunkSize) {
 
         final IDataSegment dataSegment;
         switch (format) {

@@ -48,7 +48,7 @@ import org.perfidix.result.BenchmarkResult;
  */
 public class InitiatorBug {
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     @Bench
     public void test() throws Exception {
 

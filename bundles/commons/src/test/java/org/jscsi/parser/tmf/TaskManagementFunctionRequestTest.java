@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -46,8 +46,8 @@ import org.jscsi.utils.WiresharkMessageParser;
 public class TaskManagementFunctionRequestTest extends ProtocolDataUnitTest {
 
     private static final String TEST_CASE_1 = "42 72 00 00 F6 D3 7A 9F 0C B2 38 2A A3 FE 69 E3 "
-            + "B5 BF D4 9D D0 4F B3 91 E4 34 2C 30 F6 04 A9 5E "
-            + "7F DA F2 1E AA EA F7 5A 00 00 00 00 00 00 00 00";
+        + "B5 BF D4 9D D0 4F B3 91 E4 34 2C 30 F6 04 A9 5E "
+        + "7F DA F2 1E AA EA F7 5A 00 00 00 00 00 00 00 00";
 
     @Test
     public void test() {
@@ -64,16 +64,14 @@ public class TaskManagementFunctionRequestTest extends ProtocolDataUnitTest {
      *             This exception should be never thrown.
      */
     @Test(enabled = false)
-    public void testDeserialize1() throws IOException, InternetSCSIException,
-            DigestException {
+    public void testDeserialize1() throws IOException, InternetSCSIException, DigestException {
 
         super.setUp(TEST_CASE_1);
-        super.testDeserialize(true, true, OperationCode.SCSI_TM_REQUEST,
-                0x000000F6, 0x00000000, 0xB5BFD49D);
+        super.testDeserialize(true, true, OperationCode.SCSI_TM_REQUEST, 0x000000F6, 0x00000000, 0xB5BFD49D);
 
         assertTrue(recognizedParser instanceof TaskManagementFunctionRequestParser);
 
-        TaskManagementFunctionRequestParser parser = (TaskManagementFunctionRequestParser) recognizedParser;
+        TaskManagementFunctionRequestParser parser = (TaskManagementFunctionRequestParser)recognizedParser;
 
         assertEquals(0xD04FB391, parser.getReferencedTaskTag());
         assertEquals(0xE4342C30, parser.getCommandSequenceNumber());
@@ -91,13 +89,11 @@ public class TaskManagementFunctionRequestTest extends ProtocolDataUnitTest {
      *             This exception should be never thrown.
      */
     @Test(enabled = false)
-    public void testSerialize1() throws InternetSCSIException, IOException,
-            DigestException {
+    public void testSerialize1() throws InternetSCSIException, IOException, DigestException {
 
         super.setUp(TEST_CASE_1);
 
-        ByteBuffer expectedResult = WiresharkMessageParser
-                .parseToByteBuffer(TEST_CASE_1);
+        ByteBuffer expectedResult = WiresharkMessageParser.parseToByteBuffer(TEST_CASE_1);
         assertTrue(expectedResult.equals(protocolDataUnit.serialize()));
     }
 }

@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,15 +29,14 @@ package org.jscsi.parser.digest;
 /**
  * <h1>CRCTables</h1>
  * <p>
- * This class generates tables for CRC algorithm. It is possible to change the
- * generator polynom and the offset. Usage:
+ * This class generates tables for CRC algorithm. It is possible to change the generator polynom and the
+ * offset. Usage:
  * <ol>
  * <li>Make new <code>CRCTables</code> object.</li>
  * <li>Put <code>generatorPolynom</code> in the constructor.</li>
- * <li>Invoke the method <code>getTable</code> with offset as an argument. The
- * offset is an integer number, which specifies the number of bits to shift,
- * e.g. for <code>A</code> offset is <code>56</code>, for <code>D</code>
- * <code>32</code>.</li>
+ * <li>Invoke the method <code>getTable</code> with offset as an argument. The offset is an integer number,
+ * which specifies the number of bits to shift, e.g. for <code>A</code> offset is <code>56</code>, for
+ * <code>D</code> <code>32</code>.</li>
  * <li>You will have CRC table(<code>0-255</code>) for the requested polynom.</li>
  * </ol>
  * 
@@ -129,7 +128,7 @@ public final class CRCTables {
         long l = value;
         int register = 0;
         // We are going to throw the first bit away. Then making int from long.
-        final int gxInt = (int) (generatorPolynom & BIN_MASK_33BIT);
+        final int gxInt = (int)(generatorPolynom & BIN_MASK_33BIT);
 
         // the first bit before bit shifting in the input polynom
         int bit = 0;

@@ -1,66 +1,66 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.jscsi</groupId>
-		<artifactId>pom</artifactId>
-		<version>2.3-SNAPSHOT</version>
-		<relativePath>../../pom.xml</relativePath>
-	</parent>
-	<groupId>org.jscsi.testing</groupId>
-	<artifactId>testing</artifactId>
-	<name>Testing module</name>
-	<description>This module breaks the cyclic dependency within target and initiator and enables
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jscsi</groupId>
+        <artifactId>pom</artifactId>
+        <version>2.3-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <groupId>org.jscsi.testing</groupId>
+    <artifactId>testing</artifactId>
+    <name>Testing module</name>
+    <description>This module breaks the cyclic dependency within target and initiator and enables
 testing both together.</description>
 
-	<url>http://disy.github.com/jSCSI/</url>
-	<scm>
-		<url>git@github.com:disy/jSCSI.git</url>
-		<connection>scm:git:git@github.com:disy/jSCSI.git</connection>
-		<developerConnection>scm:git:git@github.com:disy/jSCSI.git</developerConnection>
-	</scm>
+    <url>http://disy.github.com/jSCSI/</url>
+    <scm>
+        <url>git@github.com:disy/jSCSI.git</url>
+        <connection>scm:git:git@github.com:disy/jSCSI.git</connection>
+        <developerConnection>scm:git:git@github.com:disy/jSCSI.git</developerConnection>
+    </scm>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor>src/main/assembly/jarAssembly.xml</descriptor>
-					</descriptors>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/jarAssembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.jscsi</groupId>
-			<artifactId>commons</artifactId>
-			<version>2.3-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jscsi</groupId>
-			<artifactId>initiator</artifactId>
-			<version>2.3-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jscsi</groupId>
-			<artifactId>initiator</artifactId>
-			<version>2.3-SNAPSHOT</version>
-			<type>test-jar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.jscsi</groupId>
-			<artifactId>target</artifactId>
-			<version>2.3-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>1.5.4</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.jscsi</groupId>
+            <artifactId>commons</artifactId>
+            <version>2.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jscsi</groupId>
+            <artifactId>initiator</artifactId>
+            <version>2.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jscsi</groupId>
+            <artifactId>initiator</artifactId>
+            <version>2.3-SNAPSHOT</version>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jscsi</groupId>
+            <artifactId>target</artifactId>
+            <version>2.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.5.4</version>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 </project>

@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -34,14 +34,12 @@ import org.jscsi.utils.Utils;
 /**
  * <h1>BasicHeaderSegment</h1>
  * <p>
- * This class encapsulate a Basic Header Segment (BHS), which is defined in the
- * iSCSI Protocol (RFC3720). It provides methods for serializing or
- * deserializing such an object. The contained data can be accessed seperately
- * by the getter methods.
+ * This class encapsulate a Basic Header Segment (BHS), which is defined in the iSCSI Protocol (RFC3720). It
+ * provides methods for serializing or deserializing such an object. The contained data can be accessed
+ * seperately by the getter methods.
  * <p>
- * The BHS has a fixed size, which is stored in the variable
- * <code>BHS_FIXED_SIZE</code>. And these must the first bytes in a valid iSCSI
- * Protocol Data Unit (PDU). org.jscsi.utils
+ * The BHS has a fixed size, which is stored in the variable <code>BHS_FIXED_SIZE</code>. And these must the
+ * first bytes in a valid iSCSI Protocol Data Unit (PDU). org.jscsi.utils
  * 
  * @author Volker Wildi
  */
@@ -85,13 +83,12 @@ public final class BasicHeaderSegment {
 
     /**
      * The operation code indicates the type of iSCSI PDU the header
-     * encapsulates. The operation codes are divided into two categories:
-     * <em>initiator</em> opcodes and <em>target</em> opcodes. Initiator opcodes
+     * encapsulates. The operation codes are divided into two categories: <em>initiator</em> opcodes and
+     * <em>target</em> opcodes. Initiator opcodes
      * are in PDUs sent by the initiator (request PDUs). Target opcodes are in
      * PDUs sent by the target (response PDUs).
      * <p>
-     * Initiators MUST NOT use target opcodes and targets MUST NOT use initiator
-     * opcodes.
+     * Initiators MUST NOT use target opcodes and targets MUST NOT use initiator opcodes.
      */
     private OperationCode operationCode;
 
@@ -102,11 +99,11 @@ public final class BasicHeaderSegment {
     private boolean finalFlag;
 
     /**
-     * Total length of all AHS header segments in units of <code>four</code>
-     * byte words including padding, if any.
+     * Total length of all AHS header segments in units of <code>four</code> byte words including padding, if
+     * any.
      * <p>
-     * The <code>TotalAHSLength</code> is only used in PDUs that have an AHS and
-     * MUST be <code>0</code> in all other PDUs.
+     * The <code>TotalAHSLength</code> is only used in PDUs that have an AHS and MUST be <code>0</code> in all
+     * other PDUs.
      */
     private byte totalAHSLength;
 
@@ -154,15 +151,13 @@ public final class BasicHeaderSegment {
      * @throws InternetSCSIException
      *             If any violation of the iSCSI-Standard emerge.
      */
-    final int serialize(final ByteBuffer dst, final int offset)
-            throws InternetSCSIException {
+    final int serialize(final ByteBuffer dst, final int offset) throws InternetSCSIException {
 
         // has the destination array enough space to store this basic header
         // segment
         dst.position(offset);
         if (dst.remaining() < BHS_FIXED_SIZE) {
-            throw new IllegalArgumentException(
-                    "Destination array is too small.");
+            throw new IllegalArgumentException("Destination array is too small.");
         }
 
         int line = 0;
@@ -177,8 +172,7 @@ public final class BasicHeaderSegment {
         }
         dst.putInt(line);
 
-        dst.putInt(dataSegmentLength
-                | (totalAHSLength << Constants.THREE_BYTES_SHIFT));
+        dst.putInt(dataSegmentLength | (totalAHSLength << Constants.THREE_BYTES_SHIFT));
         dst.putInt(BYTES_16_19, initiatorTaskTag);
 
         parser.serializeBasicHeaderSegment(dst, offset);
@@ -200,19 +194,18 @@ public final class BasicHeaderSegment {
      * @throws InternetSCSIException
      *             If any violation of the iSCSI-Standard emerge.
      */
-    final int deserialize(final ProtocolDataUnit protocolDataUnit,
-            final ByteBuffer src) throws InternetSCSIException {
+    final int deserialize(final ProtocolDataUnit protocolDataUnit, final ByteBuffer src)
+        throws InternetSCSIException {
 
         if (src.remaining() < BHS_FIXED_SIZE) {
-            throw new InternetSCSIException(
-                    "This Protocol Data Unit does not contain"
-                            + " an valid Basic Header Segment.");
+            throw new InternetSCSIException("This Protocol Data Unit does not contain"
+                + " an valid Basic Header Segment.");
         }
 
         final int firstLine = src.getInt();
         immediateFlag = Utils.isBitSet(firstLine & IMMEDIATE_FLAG_MASK);
         final int code = (firstLine & OPERATION_CODE_MASK) >> Constants.THREE_BYTES_SHIFT;
-        operationCode = OperationCode.valueOf((byte) code);
+        operationCode = OperationCode.valueOf((byte)code);
         finalFlag = Utils.isBitSet(firstLine & FINAL_FLAG_MASK);
 
         totalAHSLength = src.get();
@@ -224,8 +217,7 @@ public final class BasicHeaderSegment {
 
         src.rewind();
 
-        parser = MessageParserFactory
-                .getParser(protocolDataUnit, operationCode);
+        parser = MessageParserFactory.getParser(protocolDataUnit, operationCode);
         parser.deserializeBasicHeaderSegment(src);
 
         return BHS_FIXED_SIZE;
@@ -246,8 +238,7 @@ public final class BasicHeaderSegment {
 
     /**
      * When this flag is set it indicates the final (or only) PDU of a sequence.
-     * In some kinds of messages (PDU) this methods has the meaning of the
-     * <code>TransitFlag</code>.
+     * In some kinds of messages (PDU) this methods has the meaning of the <code>TransitFlag</code>.
      * 
      * @return The state of the final flag.
      */
@@ -382,12 +373,11 @@ public final class BasicHeaderSegment {
      * @param initOperationCode
      *            The new operation code.
      */
-    final void setOperationCode(final ProtocolDataUnit protocolDataUnit,
-            final OperationCode initOperationCode) {
+    final void
+        setOperationCode(final ProtocolDataUnit protocolDataUnit, final OperationCode initOperationCode) {
 
         operationCode = initOperationCode;
-        parser = MessageParserFactory.getParser(protocolDataUnit,
-                initOperationCode);
+        parser = MessageParserFactory.getParser(protocolDataUnit, initOperationCode);
     }
 
     // --------------------------------------------------------------------------
@@ -400,12 +390,12 @@ public final class BasicHeaderSegment {
      */
     public final String toString() {
 
-        if(parser == null) return "Empty parser";
-        
+        if (parser == null)
+            return "Empty parser";
+
         final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
 
-        Utils.printField(sb, "ParserClass", parser.getClass().getSimpleName(),
-                1);
+        Utils.printField(sb, "ParserClass", parser.getClass().getSimpleName(), 1);
 
         Utils.printField(sb, "ImmediateFlag", immediateFlag, 1);
         Utils.printField(sb, "OpCode", operationCode.value(), 1);

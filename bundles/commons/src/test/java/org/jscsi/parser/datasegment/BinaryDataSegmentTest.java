@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -47,11 +47,13 @@ public final class BinaryDataSegmentTest {
     private static final int CHUNK_SIZE = 4;
 
     /** Test case arrays. */
-    private static final byte[] TEST_CASE_1_ARRAY = { 0x34, 0x54, 0x77, 0x32,
-            (byte) 0xAF };
+    private static final byte[] TEST_CASE_1_ARRAY = {
+        0x34, 0x54, 0x77, 0x32, (byte)0xAF
+    };
 
-    private static final byte[] TEST_CASE_1_ARRAY_LONG = { 0x34, 0x54, 0x77,
-            0x32, (byte) 0xAF, 0x00, 0x00, 0x00 };
+    private static final byte[] TEST_CASE_1_ARRAY_LONG = {
+        0x34, 0x54, 0x77, 0x32, (byte)0xAF, 0x00, 0x00, 0x00
+    };
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -67,8 +69,7 @@ public final class BinaryDataSegmentTest {
         dataSegment.deserialize(testBuffer, TEST_CASE_1_ARRAY.length);
         assertEquals(TEST_CASE_1_ARRAY.length, dataSegment.getLength());
 
-        final ByteBuffer expectedResult = ByteBuffer
-                .wrap(TEST_CASE_1_ARRAY_LONG);
+        final ByteBuffer expectedResult = ByteBuffer.wrap(TEST_CASE_1_ARRAY_LONG);
         dataSegment.dataBuffer.rewind();
         assertTrue(expectedResult.equals(dataSegment.dataBuffer));
     }
@@ -85,8 +86,7 @@ public final class BinaryDataSegmentTest {
         assertNotNull(dataSegment);
         assertEquals(TEST_CASE_1_ARRAY.length, dataSegment.getLength());
 
-        final ByteBuffer expectedResult = ByteBuffer
-                .wrap(TEST_CASE_1_ARRAY_LONG);
+        final ByteBuffer expectedResult = ByteBuffer.wrap(TEST_CASE_1_ARRAY_LONG);
         dataSegment.dataBuffer.rewind();
         assertTrue(expectedResult.equals(dataSegment.dataBuffer));
     }
@@ -102,13 +102,11 @@ public final class BinaryDataSegmentTest {
         dataSegment.deserialize(testBuffer, TEST_CASE_1_ARRAY.length);
         assertEquals(TEST_CASE_1_ARRAY.length, dataSegment.getLength());
 
-        final ByteBuffer expectedResult = ByteBuffer
-                .wrap(TEST_CASE_1_ARRAY_LONG);
+        final ByteBuffer expectedResult = ByteBuffer.wrap(TEST_CASE_1_ARRAY_LONG);
         dataSegment.dataBuffer.rewind();
 
-        final ByteBuffer exportedDataSegment = ByteBuffer
-                .allocate(AbstractDataSegment.getTotalLength(dataSegment
-                        .getLength()));
+        final ByteBuffer exportedDataSegment =
+            ByteBuffer.allocate(AbstractDataSegment.getTotalLength(dataSegment.getLength()));
         dataSegment.serialize(exportedDataSegment, 0);
         exportedDataSegment.rewind();
 
@@ -142,8 +140,7 @@ public final class BinaryDataSegmentTest {
     @Test
     public final void testEquals() {
 
-        final ByteBuffer testBuffer = ByteBuffer
-                .allocate(TEST_CASE_1_ARRAY.length);
+        final ByteBuffer testBuffer = ByteBuffer.allocate(TEST_CASE_1_ARRAY.length);
         assertNotNull(testBuffer);
         testBuffer.put(TEST_CASE_1_ARRAY);
         testBuffer.rewind();
@@ -153,8 +150,7 @@ public final class BinaryDataSegmentTest {
         assertNotNull(dataSegment);
         assertEquals(5, dataSegment.getLength());
 
-        final BinaryDataSegment anotherDataSegment = new BinaryDataSegment(
-                CHUNK_SIZE);
+        final BinaryDataSegment anotherDataSegment = new BinaryDataSegment(CHUNK_SIZE);
         testBuffer.rewind();
         anotherDataSegment.append(testBuffer, testBuffer.limit());
         assertNotNull(anotherDataSegment);
@@ -172,8 +168,7 @@ public final class BinaryDataSegmentTest {
     public final void testSerialize2() {
 
         final BinaryDataSegment dataSegment = new BinaryDataSegment(CHUNK_SIZE);
-        final ByteBuffer serialized = ByteBuffer
-                .allocate(TEST_CASE_1_ARRAY.length);
+        final ByteBuffer serialized = ByteBuffer.allocate(TEST_CASE_1_ARRAY.length);
         dataSegment.serialize(serialized, 0);
     }
 
@@ -192,35 +187,30 @@ public final class BinaryDataSegmentTest {
         assertNotNull(dataSegment);
         assertEquals(TEST_CASE_1_ARRAY.length, dataSegment.getLength());
 
-        final int totalSize = AbstractDataSegment
-                .getTotalLength(TEST_CASE_1_ARRAY.length);
+        final int totalSize = AbstractDataSegment.getTotalLength(TEST_CASE_1_ARRAY.length);
         final ByteBuffer serialized = ByteBuffer.allocate(totalSize);
         assertEquals(totalSize, dataSegment.serialize(serialized, 0));
         serialized.rewind();
 
-        final BinaryDataSegment anotherDataSegment = new BinaryDataSegment(
-                CHUNK_SIZE);
+        final BinaryDataSegment anotherDataSegment = new BinaryDataSegment(CHUNK_SIZE);
         assertNotNull(anotherDataSegment);
         assertEquals(0, anotherDataSegment.getLength());
 
-        assertEquals(
-                totalSize,
-                anotherDataSegment.deserialize(serialized,
-                        serialized.remaining()));
+        assertEquals(totalSize, anotherDataSegment.deserialize(serialized, serialized.remaining()));
         assertNotNull(anotherDataSegment);
         assertEquals(totalSize, anotherDataSegment.getLength());
     }
 
     /**
-     * Tests the correct functionality of the <code>DataSegmentFactory</code>
-     * and the corresponding <code>DataSegmentIterator</code>.
+     * Tests the correct functionality of the <code>DataSegmentFactory</code> and the corresponding
+     * <code>DataSegmentIterator</code>.
      */
     @Test
     public final void testDataSegmentIterator() {
 
         final ByteBuffer testBuffer = ByteBuffer.allocate(10 * 16 * 1024);
-        final IDataSegment dataSegment = DataSegmentFactory.create(testBuffer,
-                10000, 57344, DataSegmentFormat.BINARY, 8192);
+        final IDataSegment dataSegment =
+            DataSegmentFactory.create(testBuffer, 10000, 57344, DataSegmentFormat.BINARY, 8192);
         final IDataSegmentIterator iterator = dataSegment.iterator();
 
         int counter = 0;
@@ -233,15 +223,15 @@ public final class BinaryDataSegmentTest {
     }
 
     /**
-     * Tests the correct functionality of the <code>DataSegmentFactory</code>
-     * and the corresponding <code>DataSegmentIterator</code>.
+     * Tests the correct functionality of the <code>DataSegmentFactory</code> and the corresponding
+     * <code>DataSegmentIterator</code>.
      */
     @Test
     public final void testDataSegmentIterator2() {
 
         final ByteBuffer testBuffer = ByteBuffer.allocate(10 * 16 * 1024);
-        final IDataSegment dataSegment = DataSegmentFactory.create(testBuffer,
-                10000, 56344, DataSegmentFormat.BINARY, 8192);
+        final IDataSegment dataSegment =
+            DataSegmentFactory.create(testBuffer, 10000, 56344, DataSegmentFormat.BINARY, 8192);
         final IDataSegmentIterator iterator = dataSegment.iterator();
 
         int counter = 0;

@@ -28,8 +28,8 @@ public enum ModePageCode {
                                                              // data
                                                              // is
                                                              // 0
-        INFORMATIONAL_EXCEPTIONS_CONTROL_MODE_PAGE(0x1c, 0x00), LOGICAL_BLOCK_PROVISIONING_MODE_PAGE(0x1c,
-            0x02),
+        INFORMATIONAL_EXCEPTIONS_CONTROL_MODE_PAGE(0x1c, 0x00),
+        LOGICAL_BLOCK_PROVISIONING_MODE_PAGE(0x1c, 0x02),
         POWER_CONDITION_MODE_PAGE(0x1a, 0x00),
         PROTOCOL_SPECIFIC_LUN_MODE_PAGE(0x18, 0x00),
         PROTOCOL_SPECIFIC_PORT_MODE_PAGE(0x19, 0x00),

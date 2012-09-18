@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -35,8 +35,8 @@ import org.jscsi.parser.Constants;
 /**
  * <h1>DataSegment</h1>
  * <p>
- * This class represents a basic interface for a data segment contained in a
- * <code>ProtocolDataUnit</code> object.
+ * This class represents a basic interface for a data segment contained in a <code>ProtocolDataUnit</code>
+ * object.
  * 
  * @author Volker Wildi
  */
@@ -94,9 +94,8 @@ public abstract class AbstractDataSegment implements IDataSegment {
         dst.position(off);
 
         if (dst.remaining() % Constants.BYTES_PER_INT != 0) {
-            throw new IllegalArgumentException(
-                    "The buffer length must be a multiple of "
-                            + Constants.BYTES_PER_INT + ".");
+            throw new IllegalArgumentException("The buffer length must be a multiple of "
+                + Constants.BYTES_PER_INT + ".");
         }
 
         dataBuffer.rewind();
@@ -153,12 +152,10 @@ public abstract class AbstractDataSegment implements IDataSegment {
      *            buffer. <code>false</code> indicates, that the new buffer is
      *            initialized with zeros.
      */
-    protected void resizeBuffer(final int additionalLength,
-            final boolean copyData) {
+    protected void resizeBuffer(final int additionalLength, final boolean copyData) {
 
         if (additionalLength < 0) {
-            throw new IllegalArgumentException(
-                    "The length must be greater or equal than 0.");
+            throw new IllegalArgumentException("The length must be greater or equal than 0.");
         }
 
         dataBuffer.position(length);
@@ -166,8 +163,7 @@ public abstract class AbstractDataSegment implements IDataSegment {
         // reallocate a bigger dataBuffer, if needed
         if (length + additionalLength > dataBuffer.capacity()) {
 
-            final ByteBuffer newBuffer = ByteBuffer
-                    .allocate(getTotalLength(length + additionalLength));
+            final ByteBuffer newBuffer = ByteBuffer.allocate(getTotalLength(length + additionalLength));
 
             // copy old data...
             if (copyData) {
@@ -215,7 +211,7 @@ public abstract class AbstractDataSegment implements IDataSegment {
         }
 
         if (anObject instanceof AbstractDataSegment) {
-            final AbstractDataSegment anotherDS = (AbstractDataSegment) anObject;
+            final AbstractDataSegment anotherDS = (AbstractDataSegment)anObject;
 
             if (length != anotherDS.length) {
                 return false;
@@ -241,8 +237,7 @@ public abstract class AbstractDataSegment implements IDataSegment {
     // --------------------------------------------------------------------------
 
     /** {@inheritDoc} */
-    public final int setDataBuffer(final ByteBuffer src, final int off,
-            final int len) {
+    public final int setDataBuffer(final ByteBuffer src, final int off, final int len) {
 
         resizeBuffer(len, false);
         src.position(off);
@@ -288,8 +283,7 @@ public abstract class AbstractDataSegment implements IDataSegment {
 
     /**
      * This methods calculates the number of padding bytes of the given length.
-     * This number of the padding bytes is in the range of
-     * <code>0, ..., BYTES_PER_INT</code>.
+     * This number of the padding bytes is in the range of <code>0, ..., BYTES_PER_INT</code>.
      * 
      * @param len
      *            The length for which the padding bytes are calculated.
@@ -298,8 +292,7 @@ public abstract class AbstractDataSegment implements IDataSegment {
     protected static final int calcPadding(final int len) {
 
         if (len < 0) {
-            throw new IllegalArgumentException(
-                    "Length must be a positive number");
+            throw new IllegalArgumentException("Length must be a positive number");
         }
 
         final int rest = len % Constants.BYTES_PER_INT;
@@ -318,8 +311,7 @@ public abstract class AbstractDataSegment implements IDataSegment {
     /**
      * Iterator through the chunks of a <code>DataSegment</code>.
      * <p/>
-     * <b>This class is not resistant against changes to the
-     * <code>dataBuffer</code> .</b>
+     * <b>This class is not resistant against changes to the <code>dataBuffer</code> .</b>
      */
     private final class DataSegmentIterator implements IDataSegmentIterator {
 
@@ -365,8 +357,7 @@ public abstract class AbstractDataSegment implements IDataSegment {
             }
 
             final int dataSegmentLength = data.position();
-            final int totalLength = dataSegmentLength
-                    + calcPadding(dataSegmentLength);
+            final int totalLength = dataSegmentLength + calcPadding(dataSegmentLength);
 
             // set limit to the next nearest bound (with padding)
             data.limit(totalLength);
@@ -407,19 +398,16 @@ public abstract class AbstractDataSegment implements IDataSegment {
             private final int totalLength;
 
             /**
-             * Constructor to create a new, empty <code>DataSegmentChunk</code>
-             * instance with a given length and a total length of this data
+             * Constructor to create a new, empty <code>DataSegmentChunk</code> instance with a given length
+             * and a total length of this data
              * segment chunk.
              * 
              * @param initLength
-             *            The used length (in bytes) of this new
-             *            <code>DataSegmentChunk</code> instance.
+             *            The used length (in bytes) of this new <code>DataSegmentChunk</code> instance.
              * @param initTotalLength
-             *            The total length (in bytes) of this new
-             *            <code>DataSegmentChunk</code> instance.
+             *            The total length (in bytes) of this new <code>DataSegmentChunk</code> instance.
              */
-            private DataSegmentChunk(final int initLength,
-                    final int initTotalLength) {
+            private DataSegmentChunk(final int initLength, final int initTotalLength) {
 
                 usedLength = initLength;
                 totalLength = initTotalLength;

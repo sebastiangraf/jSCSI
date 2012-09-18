@@ -89,7 +89,7 @@ public interface Connection extends Callable<Void> {
 
         /**
          * A counter for the <code>StatSN</code> field of sent {@link ProtocolDataUnit} objects with
-         *  Status.
+         * Status.
          */
         private SerialArithmeticNumber statusSequenceNumber;
 

@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -46,7 +46,7 @@ import org.jscsi.utils.WiresharkMessageParser;
 public class AsynchronousMessageParserTest extends ProtocolDataUnitTest {
 
     private static final String TEST_CASE_1 = "32 80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
-            + "FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00 ";
+        + "FF FF FF FF 00 00 00 00 00 00 00 00 00 00 00 00 ";
 
     @Test
     public void test() {
@@ -65,16 +65,14 @@ public class AsynchronousMessageParserTest extends ProtocolDataUnitTest {
      *             This exception should be never thrown.
      */
     @Test(enabled = false)
-    public void testDeserialize1() throws IOException, InternetSCSIException,
-            DigestException {
+    public void testDeserialize1() throws IOException, InternetSCSIException, DigestException {
 
         super.setUp(TEST_CASE_1);
-        super.testDeserialize(false, true, OperationCode.ASYNC_MESSAGE,
-                0x00000000, 0x00000001, 0x48044B81);
+        super.testDeserialize(false, true, OperationCode.ASYNC_MESSAGE, 0x00000000, 0x00000001, 0x48044B81);
 
         assertTrue(recognizedParser instanceof AsynchronousMessageParser);
 
-        AsynchronousMessageParser parser = (AsynchronousMessageParser) recognizedParser;
+        AsynchronousMessageParser parser = (AsynchronousMessageParser)recognizedParser;
 
         assertEquals(0x0000000000000000L, parser.getLogicalUnitNumber());
 
@@ -93,13 +91,11 @@ public class AsynchronousMessageParserTest extends ProtocolDataUnitTest {
      *             This exception should be never thrown.
      */
     @Test(enabled = false)
-    public void testSerialize() throws InternetSCSIException, IOException,
-            DigestException {
+    public void testSerialize() throws InternetSCSIException, IOException, DigestException {
 
         super.setUp(TEST_CASE_1);
         // int[] expectedResult = WiresharkMessageParser.parse(TEST_CASE_1);
-        ByteBuffer expectedResult = WiresharkMessageParser
-                .parseToByteBuffer(TEST_CASE_1);
+        ByteBuffer expectedResult = WiresharkMessageParser.parseToByteBuffer(TEST_CASE_1);
 
         // assertTrue(Arrays.equals(expectedResult,
         // protocolDataUnit.serialize()));

@@ -46,7 +46,7 @@ import org.perfidix.result.BenchmarkResult;
  */
 public class MultiTargetTest {
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     @Bench
     public void testMultiThreaded() throws Exception {
 
@@ -101,7 +101,7 @@ public class MultiTargetTest {
 
     }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     @Bench
     public void testSingleThreaded() throws Exception {
 

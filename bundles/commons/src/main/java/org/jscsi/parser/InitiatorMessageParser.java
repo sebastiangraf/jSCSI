@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -32,9 +32,9 @@ import org.jscsi.utils.Utils;
 /**
  * <h1>InitiatorMessageParser</h1>
  * <p>
- * This abstract class is the base class of all initiator message parsers
- * defined in the iSCSI Protocol (RFC3720). This class defines some methods,
- * which are common in all parsers to simplify the parsing process.
+ * This abstract class is the base class of all initiator message parsers defined in the iSCSI Protocol
+ * (RFC3720). This class defines some methods, which are common in all parsers to simplify the parsing
+ * process.
  * 
  * @author Volker Wildi
  */
@@ -53,9 +53,8 @@ public abstract class InitiatorMessageParser extends AbstractMessageParser {
     /**
      * Expected Status Sequence Number.
      * <p>
-     * Command responses up to
-     * <code>expectedStatusSequenceNumber - 1 (mod 2**32)</code> have been
-     * received (acknowledges status) on the connection.
+     * Command responses up to <code>expectedStatusSequenceNumber - 1 (mod 2**32)</code> have been received
+     * (acknowledges status) on the connection.
      */
     protected int expectedStatusSequenceNumber;
 
@@ -81,9 +80,8 @@ public abstract class InitiatorMessageParser extends AbstractMessageParser {
     @Override
     public String getShortInfo() {
 
-        return "-> " + getClass().getSimpleName() + ": cmdSN: "
-                + getCommandSequenceNumber() + ", expStatSN: "
-                + getExpectedStatusSequenceNumber();
+        return "-> " + getClass().getSimpleName() + ": cmdSN: " + getCommandSequenceNumber()
+            + ", expStatSN: " + getExpectedStatusSequenceNumber();
     }
 
     /** {@inheritDoc} */
@@ -93,8 +91,7 @@ public abstract class InitiatorMessageParser extends AbstractMessageParser {
         final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
 
         Utils.printField(sb, "CommandSequenceNumber", commandSequenceNumber, 1);
-        Utils.printField(sb, "ExpectedStatusSequenceNumber",
-                expectedStatusSequenceNumber, 1);
+        Utils.printField(sb, "ExpectedStatusSequenceNumber", expectedStatusSequenceNumber, 1);
 
         return sb.toString();
     }
@@ -116,8 +113,7 @@ public abstract class InitiatorMessageParser extends AbstractMessageParser {
      * This <code>AbstractMessageParser</code> instance affects the
      * incrementation of the <code>Command Sequence Number</code>.
      * 
-     * @return <code>true</code>, if the counter has to be incremented. Else
-     *         <code>false</code>.
+     * @return <code>true</code>, if the counter has to be incremented. Else <code>false</code>.
      */
     @Override
     public boolean incrementSequenceNumber() {
@@ -129,8 +125,7 @@ public abstract class InitiatorMessageParser extends AbstractMessageParser {
     // --------------------------------------------------------------------------
 
     /**
-     * Returns the Command Sequence Number of this
-     * <code>InitiatorMessageParser</code> object.
+     * Returns the Command Sequence Number of this <code>InitiatorMessageParser</code> object.
      * 
      * @return The Command Sequence Number.
      */
@@ -140,8 +135,7 @@ public abstract class InitiatorMessageParser extends AbstractMessageParser {
     }
 
     /**
-     * Returns the Expected Status Sequence Number of this
-     * <code>InitiatorMessageParser</code> object.
+     * Returns the Expected Status Sequence Number of this <code>InitiatorMessageParser</code> object.
      * 
      * @return The Expected Status Sequence Number.
      */
@@ -151,8 +145,7 @@ public abstract class InitiatorMessageParser extends AbstractMessageParser {
     }
 
     /**
-     * Sets the Command Sequence Number of this
-     * <code>InitiatorMessageParser</code> object to the given value.
+     * Sets the Command Sequence Number of this <code>InitiatorMessageParser</code> object to the given value.
      * 
      * @param initCmdSN
      *            The new Command Sequence Number.
@@ -163,8 +156,8 @@ public abstract class InitiatorMessageParser extends AbstractMessageParser {
     }
 
     /**
-     * Sets the Expected Status Sequence Number of this
-     * <code>InitiatorMessageParser</code> object to the given value.
+     * Sets the Expected Status Sequence Number of this <code>InitiatorMessageParser</code> object to the
+     * given value.
      * 
      * @param initExpStatSN
      *            The new Expected Status Sequence Number.
@@ -179,64 +172,56 @@ public abstract class InitiatorMessageParser extends AbstractMessageParser {
 
     /** {@inheritDoc} */
     @Override
-    protected void deserializeBytes1to3(final int line)
-            throws InternetSCSIException {
+    protected void deserializeBytes1to3(final int line) throws InternetSCSIException {
 
         Utils.isReserved(line);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void deserializeBytes20to23(final int line)
-            throws InternetSCSIException {
+    protected void deserializeBytes20to23(final int line) throws InternetSCSIException {
 
         Utils.isReserved(line);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes24to27(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes24to27(final int line) throws InternetSCSIException {
 
         commandSequenceNumber = line;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes28to31(final int line)
-            throws InternetSCSIException {
+    protected final void deserializeBytes28to31(final int line) throws InternetSCSIException {
 
         expectedStatusSequenceNumber = line;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void deserializeBytes32to35(final int line)
-            throws InternetSCSIException {
+    protected void deserializeBytes32to35(final int line) throws InternetSCSIException {
 
         Utils.isReserved(line);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void deserializeBytes36to39(final int line)
-            throws InternetSCSIException {
+    protected void deserializeBytes36to39(final int line) throws InternetSCSIException {
 
         Utils.isReserved(line);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void deserializeBytes40to43(final int line)
-            throws InternetSCSIException {
+    protected void deserializeBytes40to43(final int line) throws InternetSCSIException {
 
         Utils.isReserved(line);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void deserializeBytes44to47(final int line)
-            throws InternetSCSIException {
+    protected void deserializeBytes44to47(final int line) throws InternetSCSIException {
 
         Utils.isReserved(line);
     }

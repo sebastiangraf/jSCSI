@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -33,8 +33,7 @@ import org.jscsi.exception.InternetSCSIException;
 /**
  * <h1>IDataSegment</h1>
  * <p>
- * This interface defines all methods, which a class must to support, if it is a
- * DataSegment.
+ * This interface defines all methods, which a class must to support, if it is a DataSegment.
  * 
  * @author Volker Wildi
  */
@@ -44,8 +43,7 @@ public interface IDataSegment {
     // --------------------------------------------------------------------------
 
     /**
-     * This method imports <code>len</code> bytes from the given
-     * <code>ByteBuffer</code>.
+     * This method imports <code>len</code> bytes from the given <code>ByteBuffer</code>.
      * 
      * @param src
      *            Source <code>ByteBuffer</code> object.
@@ -58,8 +56,8 @@ public interface IDataSegment {
     public int deserialize(final ByteBuffer src, final int len);
 
     /**
-     * This method appends <code>len</code> bytes from the given
-     * <code>ByteBuffer</code> at the end of the data buffer of this instance.
+     * This method appends <code>len</code> bytes from the given <code>ByteBuffer</code> at the end of the
+     * data buffer of this instance.
      * 
      * @param src
      *            Source <code>ByteBuffer</code> object.
@@ -70,8 +68,8 @@ public interface IDataSegment {
     public int append(final ByteBuffer src, final int len);
 
     /**
-     * This method exports the data buffer to the given <code>ByteBuffer</code>
-     * object, which is padded to a integer number of <code>4</code> byte words.
+     * This method exports the data buffer to the given <code>ByteBuffer</code> object, which is padded to a
+     * integer number of <code>4</code> byte words.
      * 
      * @param dst
      *            Destination <code>ByteBuffer</code> object.
@@ -95,12 +93,10 @@ public interface IDataSegment {
     public IDataSegmentIterator iterator();
 
     /**
-     * Returns a <code>SettingsMap</code> instance of this
-     * <code>IDataSegment</code> instance. This is only useful with a
-     * <code>TextParameterDataSegment</code> instance.
+     * Returns a <code>SettingsMap</code> instance of this <code>IDataSegment</code> instance. This is only
+     * useful with a <code>TextParameterDataSegment</code> instance.
      * 
-     * @return The settings of this <code>TextParameterDataSegment</code>
-     *         instance.
+     * @return The settings of this <code>TextParameterDataSegment</code> instance.
      * @throws InternetSCSIException
      *             if any violation of the iSCSI Standard occurs.
      */

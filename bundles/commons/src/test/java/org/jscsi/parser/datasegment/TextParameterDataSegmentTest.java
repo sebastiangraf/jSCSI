@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -54,8 +54,7 @@ public final class TextParameterDataSegmentTest {
     @Test
     public final void testConstructor1() {
 
-        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(
-                CHUNK_SIZE);
+        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(CHUNK_SIZE);
         assertNotNull(dataSegment);
         assertEquals(0, dataSegment.getLength());
     }
@@ -72,8 +71,7 @@ public final class TextParameterDataSegmentTest {
     @Test
     public final void testClear() throws Exception {
 
-        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(
-                CHUNK_SIZE);
+        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(CHUNK_SIZE);
         assertNotNull(dataSegment);
 
         assertTrue(dataSegment.getSettings().entrySet().isEmpty());
@@ -95,8 +93,7 @@ public final class TextParameterDataSegmentTest {
     @Test
     public final void testAdd() throws Exception {
 
-        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(
-                CHUNK_SIZE);
+        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(CHUNK_SIZE);
         assertNotNull(dataSegment);
 
         dataSegment.add(OperationalTextKey.DATA_DIGEST, "Yes");
@@ -116,8 +113,7 @@ public final class TextParameterDataSegmentTest {
     @Test
     public final void testAddAll() throws Exception {
 
-        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(
-                CHUNK_SIZE);
+        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(CHUNK_SIZE);
 
         assertNotNull(dataSegment);
 
@@ -128,8 +124,7 @@ public final class TextParameterDataSegmentTest {
         assertEquals(3, dataSegment.getSettings().entrySet().size());
         assertFalse(dataSegment.getSettings().entrySet().isEmpty());
 
-        final TextParameterDataSegment anotherDataSegment = new TextParameterDataSegment(
-                CHUNK_SIZE);
+        final TextParameterDataSegment anotherDataSegment = new TextParameterDataSegment(CHUNK_SIZE);
         assertNotNull(anotherDataSegment);
 
         anotherDataSegment.addAll(dataSegment.getSettings());
@@ -148,8 +143,7 @@ public final class TextParameterDataSegmentTest {
     @Test
     public final void testEquals() throws Exception {
 
-        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(
-                CHUNK_SIZE);
+        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(CHUNK_SIZE);
 
         assertNotNull(dataSegment);
         assertEquals(0, dataSegment.getLength());
@@ -161,8 +155,7 @@ public final class TextParameterDataSegmentTest {
         assertEquals(3, dataSegment.getSettings().entrySet().size());
         assertFalse(dataSegment.getSettings().entrySet().isEmpty());
 
-        final TextParameterDataSegment anotherDataSegment = new TextParameterDataSegment(
-                CHUNK_SIZE);
+        final TextParameterDataSegment anotherDataSegment = new TextParameterDataSegment(CHUNK_SIZE);
         assertNotNull(anotherDataSegment);
 
         anotherDataSegment.add(OperationalTextKey.HEADER_DIGEST, "No");
@@ -185,8 +178,7 @@ public final class TextParameterDataSegmentTest {
     @Test
     public final void testUnEquals() throws Exception {
 
-        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(
-                CHUNK_SIZE);
+        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(CHUNK_SIZE);
 
         assertNotNull(dataSegment);
         assertEquals(0, dataSegment.getLength());
@@ -198,8 +190,7 @@ public final class TextParameterDataSegmentTest {
         assertEquals(3, dataSegment.getSettings().entrySet().size());
         assertFalse(dataSegment.getSettings().entrySet().isEmpty());
 
-        final TextParameterDataSegment anotherDataSegment = new TextParameterDataSegment(
-                CHUNK_SIZE);
+        final TextParameterDataSegment anotherDataSegment = new TextParameterDataSegment(CHUNK_SIZE);
         assertNotNull(anotherDataSegment);
 
         anotherDataSegment.add(OperationalTextKey.DATA_DIGEST, "Yes");
@@ -218,34 +209,27 @@ public final class TextParameterDataSegmentTest {
     @Test
     public final void testSerializeAndDeserialize() {
 
-        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(
-                CHUNK_SIZE);
+        final TextParameterDataSegment dataSegment = new TextParameterDataSegment(CHUNK_SIZE);
 
         assertNotNull(dataSegment);
         dataSegment.add(OperationalTextKey.DATA_DIGEST, "Yes");
         dataSegment.add(OperationalTextKey.HEADER_DIGEST, "No");
         dataSegment.add(OperationalTextKey.MAX_CONNECTIONS, "50");
 
-        final int totalSize = AbstractDataSegment.getTotalLength(dataSegment
-                .getLength());
+        final int totalSize = AbstractDataSegment.getTotalLength(dataSegment.getLength());
         final ByteBuffer serialized = ByteBuffer.allocate(totalSize);
         assertEquals(totalSize, dataSegment.serialize(serialized, 0));
         serialized.rewind();
 
-        final TextParameterDataSegment anotherDataSegment = new TextParameterDataSegment(
-                dataSegment.getLength());
-        assertEquals(
-                AbstractDataSegment.getTotalLength(dataSegment.getLength()),
-                anotherDataSegment.deserialize(serialized,
-                        serialized.remaining()));
+        final TextParameterDataSegment anotherDataSegment =
+            new TextParameterDataSegment(dataSegment.getLength());
+        assertEquals(AbstractDataSegment.getTotalLength(dataSegment.getLength()), anotherDataSegment
+            .deserialize(serialized, serialized.remaining()));
         assertNotNull(anotherDataSegment);
-        assertEquals(
-                AbstractDataSegment.getTotalLength(dataSegment.getLength()),
-                anotherDataSegment.getLength());
-        assertEquals(
-                AbstractDataSegment.getTotalLength(dataSegment.getLength()),
-                AbstractDataSegment.getTotalLength(anotherDataSegment
-                        .getLength()));
+        assertEquals(AbstractDataSegment.getTotalLength(dataSegment.getLength()), anotherDataSegment
+            .getLength());
+        assertEquals(AbstractDataSegment.getTotalLength(dataSegment.getLength()), AbstractDataSegment
+            .getTotalLength(anotherDataSegment.getLength()));
 
         assertFalse(dataSegment.equals(anotherDataSegment));
     }

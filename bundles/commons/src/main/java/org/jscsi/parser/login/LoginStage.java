@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -32,23 +32,22 @@ import java.util.Map;
 /**
  * <h1>LoginStage</h1>
  * <p>
- * This enumeration defines all valid constants for the Login Stages used in the
- * fields <em>Current Stage (CSG)</em> and <em>Next Stage(NSG)</em> fields of a
- * Login Request message. This values are defined in the iSCSI Protocol
- * (RFC3720).
+ * This enumeration defines all valid constants for the Login Stages used in the fields
+ * <em>Current Stage (CSG)</em> and <em>Next Stage(NSG)</em> fields of a Login Request message. This values
+ * are defined in the iSCSI Protocol (RFC3720).
  * 
  * @author Volker Wildi
  */
 public enum LoginStage {
 
     /** The Security Negotiation Flag. */
-    SECURITY_NEGOTIATION((byte) 0),
+    SECURITY_NEGOTIATION((byte)0),
 
     /** The Login Operational Negotiation Flag. */
-    LOGIN_OPERATIONAL_NEGOTIATION((byte) 1),
+    LOGIN_OPERATIONAL_NEGOTIATION((byte)1),
 
     /** The Full Feature Phase Flag. */
-    FULL_FEATURE_PHASE((byte) 3);
+    FULL_FEATURE_PHASE((byte)3);
 
     private final byte value;
 
@@ -81,8 +80,8 @@ public enum LoginStage {
      * 
      * @param value
      *            The value to search for.
-     * @return The constant defined for the given <code>value</code>. Or
-     *         <code>null</code>, if this value is not defined by this
+     * @return The constant defined for the given <code>value</code>. Or <code>null</code>, if this value is
+     *         not defined by this
      *         enumeration.
      */
     public static final LoginStage valueOf(final byte value) {

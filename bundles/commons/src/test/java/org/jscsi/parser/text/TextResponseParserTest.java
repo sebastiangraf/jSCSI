@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -63,19 +63,17 @@ public class TextResponseParserTest extends ProtocolDataUnitTest {
      * MaxCmdSN = <code>0x00000000</code><br/>
      * <br/>
      * <b>Key-Values:</b><br/>
-     * TARGET_NAME =
-     * <code>iqn.1987-05.com.cisco.00.58031e1d068ac226d385847592c0b670.IBM-Disk</code>
-     * <br/>
+     * TARGET_NAME = <code>iqn.1987-05.com.cisco.00.58031e1d068ac226d385847592c0b670.IBM-Disk</code> <br/>
      * </blockquote>
      */
     private static final String TEST_CASE_1 = "24 80 00 00 00 00 00 4e 00 00 00 00 00 00 00 00 "
-            + "03 00 00 00 ff ff ff ff 00 00 00 02 00 00 00 00 "
-            + "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
-            + "54 61 72 67 65 74 4e 61 6d 65 3d 69 71 6e 2e 31 "
-            + "39 38 37 2d 30 35 2e 63 6f 6d 2e 63 69 73 63 6f "
-            + "2e 30 30 2e 35 38 30 33 31 65 31 64 30 36 38 61 "
-            + "63 32 32 36 64 33 38 35 38 34 37 35 39 32 63 30 "
-            + "62 36 37 30 2e 49 42 4d 2d 44 69 73 6b 00 00 00";
+        + "03 00 00 00 ff ff ff ff 00 00 00 02 00 00 00 00 "
+        + "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+        + "54 61 72 67 65 74 4e 61 6d 65 3d 69 71 6e 2e 31 "
+        + "39 38 37 2d 30 35 2e 63 6f 6d 2e 63 69 73 63 6f "
+        + "2e 30 30 2e 35 38 30 33 31 65 31 64 30 36 38 61 "
+        + "63 32 32 36 64 33 38 35 38 34 37 35 39 32 63 30 "
+        + "62 36 37 30 2e 49 42 4d 2d 44 69 73 6b 00 00 00";
 
     /**
      * This test case validates the parsing process.
@@ -86,22 +84,19 @@ public class TextResponseParserTest extends ProtocolDataUnitTest {
      *             This exception should be never thrown.
      */
     @Test
-    public void testDeserialize() throws IOException, InternetSCSIException,
-            DigestException {
+    public void testDeserialize() throws IOException, InternetSCSIException, DigestException {
 
         SettingsMap expectedKeyValuePair = new SettingsMap();
-        expectedKeyValuePair
-                .add(OperationalTextKey.TARGET_NAME,
-                        "iqn.1987-05.com.cisco.00.58031e1d068ac226d385847592c0b670.IBM-Disk");
+        expectedKeyValuePair.add(OperationalTextKey.TARGET_NAME,
+            "iqn.1987-05.com.cisco.00.58031e1d068ac226d385847592c0b670.IBM-Disk");
 
         super.setUp(TEST_CASE_1);
-        super.testDeserialize(false, true, OperationCode.TEXT_RESPONSE,
-                0x00000000, 0x0000004E, 0x03000000);
+        super.testDeserialize(false, true, OperationCode.TEXT_RESPONSE, 0x00000000, 0x0000004E, 0x03000000);
         super.testDataSegment(expectedKeyValuePair);
 
         assertTrue(recognizedParser instanceof TextResponseParser);
 
-        TextResponseParser parser = (TextResponseParser) recognizedParser;
+        TextResponseParser parser = (TextResponseParser)recognizedParser;
 
         assertFalse(parser.isContinueFlag());
         assertEquals(0x0000000000000000L, parser.getLogicalUnitNumber());
@@ -121,13 +116,11 @@ public class TextResponseParserTest extends ProtocolDataUnitTest {
      *             This exception should be never thrown.
      */
     @Test
-    public void testSerialize() throws InternetSCSIException, IOException,
-            DigestException {
+    public void testSerialize() throws InternetSCSIException, IOException, DigestException {
 
         super.setUp(TEST_CASE_1);
 
-        ByteBuffer expectedResult = WiresharkMessageParser
-                .parseToByteBuffer(TEST_CASE_1);
+        ByteBuffer expectedResult = WiresharkMessageParser.parseToByteBuffer(TEST_CASE_1);
         assertTrue(expectedResult.equals(protocolDataUnit.serialize()));
     }
 

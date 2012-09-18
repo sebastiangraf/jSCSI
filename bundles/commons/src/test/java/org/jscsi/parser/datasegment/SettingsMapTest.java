@@ -1,18 +1,18 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the University of Konstanz nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * * Neither the name of the University of Konstanz nor the
+ * names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -117,8 +117,7 @@ public final class SettingsMapTest {
     public final void testClear() {
 
         settingsMap.add(OperationalTextKey.DEFAULT_TIME_2_WAIT, "2");
-        assertEquals("2",
-                settingsMap.get(OperationalTextKey.DEFAULT_TIME_2_WAIT));
+        assertEquals("2", settingsMap.get(OperationalTextKey.DEFAULT_TIME_2_WAIT));
 
         settingsMap.clear();
         settingsMap.get(OperationalTextKey.DEFAULT_TIME_2_WAIT);
@@ -135,14 +134,12 @@ public final class SettingsMapTest {
         assertEquals(2, settingsMap.entrySet().size());
 
         final ResultFunctionFactory resultFactory = new ResultFunctionFactory();
-        settingsMap.update(OperationalTextKey.IF_MARKER, "Yes",
-                resultFactory.create("And"));
+        settingsMap.update(OperationalTextKey.IF_MARKER, "Yes", resultFactory.create("And"));
 
         assertEquals(2, settingsMap.entrySet().size());
         assertEquals("Yes", settingsMap.get(OperationalTextKey.IF_MARKER));
 
-        settingsMap.update(OperationalTextKey.OF_MARKER, "No",
-                resultFactory.create("And"));
+        settingsMap.update(OperationalTextKey.OF_MARKER, "No", resultFactory.create("And"));
 
         assertEquals(2, settingsMap.entrySet().size());
         assertEquals("No", settingsMap.get(OperationalTextKey.OF_MARKER));
@@ -156,12 +153,10 @@ public final class SettingsMapTest {
         assertEquals(2, settingsMap.entrySet().size());
 
         final ResultFunctionFactory resultFactory = new ResultFunctionFactory();
-        settingsMap.update(OperationalTextKey.DATA_PDU_IN_ORDER, "No",
-                resultFactory.create("Or"));
+        settingsMap.update(OperationalTextKey.DATA_PDU_IN_ORDER, "No", resultFactory.create("Or"));
 
         assertEquals(2, settingsMap.entrySet().size());
-        assertEquals("Yes",
-                settingsMap.get(OperationalTextKey.DATA_PDU_IN_ORDER));
+        assertEquals("Yes", settingsMap.get(OperationalTextKey.DATA_PDU_IN_ORDER));
     }
 
     // --------------------------------------------------------------------------
@@ -175,37 +170,30 @@ public final class SettingsMapTest {
         assertEquals(2, settingsMap.entrySet().size());
 
         final ResultFunctionFactory resultFactory = new ResultFunctionFactory();
-        settingsMap.update(OperationalTextKey.DEFAULT_TIME_2_WAIT, "5",
-                resultFactory.create("Max"));
+        settingsMap.update(OperationalTextKey.DEFAULT_TIME_2_WAIT, "5", resultFactory.create("Max"));
 
         assertEquals(2, settingsMap.entrySet().size());
-        assertEquals("5",
-                settingsMap.get(OperationalTextKey.DEFAULT_TIME_2_WAIT));
+        assertEquals("5", settingsMap.get(OperationalTextKey.DEFAULT_TIME_2_WAIT));
     }
 
     @Test
     public final void testMinMerge() {
 
-        settingsMap.add(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH,
-                "16384");
+        settingsMap.add(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH, "16384");
         settingsMap.add(OperationalTextKey.FIRST_BURST_LENGTH, "4096");
         assertEquals(2, settingsMap.entrySet().size());
 
         final ResultFunctionFactory resultFactory = new ResultFunctionFactory();
-        settingsMap.update(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH,
-                "4096", resultFactory.create("Min"));
+        settingsMap.update(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH, "4096", resultFactory
+            .create("Min"));
 
         assertEquals(2, settingsMap.entrySet().size());
-        assertEquals("4096",
-                settingsMap
-                        .get(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH));
+        assertEquals("4096", settingsMap.get(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH));
 
-        settingsMap.update(OperationalTextKey.FIRST_BURST_LENGTH, "8192",
-                resultFactory.create("Min"));
+        settingsMap.update(OperationalTextKey.FIRST_BURST_LENGTH, "8192", resultFactory.create("Min"));
 
         assertEquals(2, settingsMap.entrySet().size());
-        assertEquals("4096",
-                settingsMap.get(OperationalTextKey.FIRST_BURST_LENGTH));
+        assertEquals("4096", settingsMap.get(OperationalTextKey.FIRST_BURST_LENGTH));
     }
 
     // --------------------------------------------------------------------------

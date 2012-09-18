@@ -103,7 +103,7 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
-    @Test(enabled=false)
+    @Test(enabled = false)
     public final void testClearing() throws Exception {
 
         initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
@@ -122,7 +122,7 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
-    @Test(enabled=false)
+    @Test(enabled = false)
     public final void testWriteRead() throws Exception {
 
         initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
@@ -141,7 +141,7 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
-    @Test(enabled=false)
+    @Test(enabled = false)
     public final void testMultipleReads() throws Exception {
 
         initiator.read(TARGET_DRIVE_NAME, readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
@@ -162,7 +162,7 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
-    @Test(enabled=false)
+    @Test(enabled = false)
     public final void testPartialRead() throws Exception {
 
         // FIXME: implement test case
@@ -177,7 +177,7 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
-    @Test(enabled=false)
+    @Test(enabled = false)
     public final void testPartialWrite() throws Exception {
 
         // FIXME: Implement test case
@@ -193,7 +193,7 @@ public final class InitiatorTest {
      * @throws Exception
      *             These should never be thrown.
      */
-    @Test(enabled=false)
+    @Test(enabled = false)
     public final void testMultipleWrites() throws Exception {
 
         // FIXME: Useful test case?
@@ -203,7 +203,7 @@ public final class InitiatorTest {
         initiator.write(TARGET_DRIVE_NAME, writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
     }
 
-    @Test(enabled=false)
+    @Test(enabled = false)
     public final void testMultiThreading() throws Exception {
 
         final ExecutorService service = Executors.newCachedThreadPool();
