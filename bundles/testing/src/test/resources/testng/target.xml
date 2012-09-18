@@ -1,5 +1,10 @@
 <suite name="Target">
-	<test name="Scsi">
+	<test name="Connection">
+        <packages>
+            <package name="org.jscsi.target.connection" />
+        </packages>
+    </test>
+    <test name="Scsi">
 		<packages>
 			<package name="org.jscsi.target.scsi" />
 		</packages>

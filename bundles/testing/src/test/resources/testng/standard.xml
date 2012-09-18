@@ -1,7 +1,7 @@
 <suite name="Standard">
 	<test name="Target Connection Tests">
 		<packages>
-			<package name="org.jscsi.testing.target" />
+			<package name="org.jscsi.testing" />
 		</packages>
 	</test>
 </suite>
