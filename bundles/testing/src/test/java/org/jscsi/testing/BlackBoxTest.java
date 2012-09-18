@@ -1,5 +1,7 @@
 package org.jscsi.testing;
 
+import static org.testng.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -18,7 +20,6 @@ import org.jscsi.initiator.Initiator;
 import org.jscsi.initiator.LinkFactory;
 import org.jscsi.initiator.connection.Session;
 import org.jscsi.target.TargetServer;
-import org.testng.AssertJUnit;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -168,26 +169,31 @@ public class BlackBoxTest {
         Future<Void> returnVal1 = session.write(writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
         returnVal1.get();
 
-        AssertJUnit.assertTrue(!writeBuffer.equals(readBuffer));
+        assertTrue(!writeBuffer.equals(readBuffer));
 
         Future<Void> returnVal2 = session.read(readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
         returnVal2.get();
 
-        AssertJUnit.assertTrue(writeBuffer.equals(readBuffer));
+        assertTrue(writeBuffer.equals(readBuffer));
 
         writeBuffer.flip();
         readBuffer.flip();
 
-        AssertJUnit.assertTrue(writeBuffer.equals(readBuffer));
+        assertTrue(writeBuffer.equals(readBuffer));
 
     }
 
     /**
      * This test writes multiple buffers into the target and reads them
      * afterwards.
+     * 
+     * @throws TaskExecutionException
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
     @Test
-    public final void testMultipleReadWrite() {
+    public final void testMultipleReadWrite() throws TaskExecutionException, InterruptedException,
+        ExecutionException {
         /**
          * Creating multiple buffers.
          */
@@ -205,33 +211,22 @@ public class BlackBoxTest {
 
         for (int i = 0; i < writeBuffers.length; i++) {
             Future<Void> returnVal1;
-            try {
-                returnVal1 =
-                    session.write(writeBuffers[i], LOGICAL_BLOCK_ADDRESS, writeBuffers[i].remaining());
+            returnVal1 = session.write(writeBuffers[i], LOGICAL_BLOCK_ADDRESS, writeBuffers[i].remaining());
 
-                returnVal1.get();
+            returnVal1.get();
 
-                AssertJUnit.assertTrue(!writeBuffers[i].equals(readBuffers[i]));
-            } catch (TaskExecutionException | InterruptedException | ExecutionException e) {
-                AssertJUnit.fail();
-            }
+            assertTrue(!writeBuffers[i].equals(readBuffers[i]));
         }
 
         for (int i = 0; i < writeBuffers.length; i++) {
             Future<Void> returnVal1;
-            try {
-                returnVal1 = session.read(readBuffers[i], LOGICAL_BLOCK_ADDRESS, readBuffers[i].remaining());
+            returnVal1 = session.read(readBuffers[i], LOGICAL_BLOCK_ADDRESS, readBuffers[i].remaining());
+            returnVal1.get();
 
-                returnVal1.get();
-
-            } catch (TaskExecutionException | InterruptedException | ExecutionException e) {
-                AssertJUnit.fail();
-            }
         }
 
         for (int i = 0; i < writeBuffers.length; i++) {
-            AssertJUnit.assertTrue(writeBuffers[i].equals(readBuffers[writeBuffers.length - i - 1]));
-
+            assertTrue(writeBuffers[i].equals(readBuffers[writeBuffers.length - i - 1]));
             // Need to write them into a separate buffer since flip doesn't seem
             // to work in a Array of ByteBuffers..
             ByteBuffer write = ByteBuffer.allocate(BUFFER_SIZE);
@@ -242,7 +237,7 @@ public class BlackBoxTest {
 
             write.flip();
             read.flip();
-            AssertJUnit.assertTrue(write.equals(read));
+            assertTrue(write.equals(read));
         }
 
     }
