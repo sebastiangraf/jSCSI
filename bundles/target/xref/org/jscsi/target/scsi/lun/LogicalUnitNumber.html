@@ -33,7 +33,7 @@
 <a class="jxr_linenumber" name="23" href="#23">23</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> byte[] bytes;
 <a class="jxr_linenumber" name="24" href="#24">24</a>  
 <a class="jxr_linenumber" name="25" href="#25">25</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/jscsi/target/scsi/lun/LogicalUnitNumber.html">LogicalUnitNumber</a>(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> logicalUnitNumber) {
-<a class="jxr_linenumber" name="26" href="#26">26</a>  		bytes = ReadWrite.longToBytes(logicalUnitNumber);
+<a class="jxr_linenumber" name="26" href="#26">26</a>          bytes = ReadWrite.longToBytes(logicalUnitNumber);
 <a class="jxr_linenumber" name="27" href="#27">27</a>      }
 <a class="jxr_linenumber" name="28" href="#28">28</a>  
 <a class="jxr_linenumber" name="29" href="#29">29</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> serialize(ByteBuffer byteBuffer, <strong class="jxr_keyword">int</strong> index) {

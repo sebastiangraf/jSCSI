@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>ScsiResponseDataSegmentTest xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../testapidocs/org/jscsi/target/scsi/ScsiResponseDataSegmentTest.html">View Javadoc</a></div><pre>
+
+<a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> org.jscsi.target.scsi;
+<a class="jxr_linenumber" name="2" href="#2">2</a>   
+<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.OperationCode;
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.ProtocolDataUnit;
+<a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.ProtocolDataUnitFactory;
+<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.scsi.SCSICommandParser;
+<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.cdb.RequestSenseCdb;
+<a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.AdditionalSenseBytes;
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.AdditionalSenseCodeAndQualifier;
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.DescriptorFormatSenseData;
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.ErrorType;
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.FixedFormatSenseData;
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.SenseData;
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.SenseKey;
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.information.FourByteInformation;
+<a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.senseDataDescriptor.SenseDataDescriptor;
+<a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> org.testng.annotations.BeforeClass;
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <strong class="jxr_keyword">import</strong> org.testng.annotations.Test;
+<a class="jxr_linenumber" name="20" href="#20">20</a>  
+<a class="jxr_linenumber" name="21" href="#21">21</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="22" href="#22">22</a>  <em class="jxr_javadoccomment"> * This class tests the behavior of a scsi response data segment.</em>
+<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment"> * @author Andreas Rain</em>
+<a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="26" href="#26">26</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="27" href="#27">27</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/jscsi/target/scsi/ScsiResponseDataSegmentTest.html">ScsiResponseDataSegmentTest</a> {
+<a class="jxr_linenumber" name="28" href="#28">28</a>  
+<a class="jxr_linenumber" name="29" href="#29">29</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="30" href="#30">30</a>  <em class="jxr_javadoccomment">     * None-empty data segment</em>
+<a class="jxr_linenumber" name="31" href="#31">31</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="32" href="#32">32</a>  
+<a class="jxr_linenumber" name="33" href="#33">33</a>      <strong class="jxr_keyword">static</strong> ScsiResponseDataSegment nonEmpty;
+<a class="jxr_linenumber" name="34" href="#34">34</a>  
+<a class="jxr_linenumber" name="35" href="#35">35</a>      @BeforeClass
+<a class="jxr_linenumber" name="36" href="#36">36</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> beforeClass() {
+<a class="jxr_linenumber" name="37" href="#37">37</a>  
+<a class="jxr_linenumber" name="38" href="#38">38</a>          <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="39" href="#39">39</a>  <em class="jxr_javadoccomment">         * The following part simulates a none-empty ScsiResponseDataSegment.</em>
+<a class="jxr_linenumber" name="40" href="#40">40</a>  <em class="jxr_javadoccomment">         * It's copied for the most part from the RequestSenseStage</em>
+<a class="jxr_linenumber" name="41" href="#41">41</a>  <em class="jxr_javadoccomment">         */</em>
+<a class="jxr_linenumber" name="42" href="#42">42</a>  
+<a class="jxr_linenumber" name="43" href="#43">43</a>          <strong class="jxr_keyword">final</strong> ProtocolDataUnit pdu =
+<a class="jxr_linenumber" name="44" href="#44">44</a>              <strong class="jxr_keyword">new</strong> ProtocolDataUnitFactory().create(false, <strong class="jxr_keyword">true</strong>, OperationCode.LOGIN_REQUEST, <span class="jxr_string">"None"</span>, <span class="jxr_string">"None"</span>);
+<a class="jxr_linenumber" name="45" href="#45">45</a>  
+<a class="jxr_linenumber" name="46" href="#46">46</a>          <strong class="jxr_keyword">final</strong> SCSICommandParser parser = <strong class="jxr_keyword">new</strong> SCSICommandParser(pdu);
+<a class="jxr_linenumber" name="47" href="#47">47</a>          parser.setExpectedDataTransferLength(8);
+<a class="jxr_linenumber" name="48" href="#48">48</a>  
+<a class="jxr_linenumber" name="49" href="#49">49</a>          <em class="jxr_comment">// get command details in CDB</em>
+<a class="jxr_linenumber" name="50" href="#50">50</a>          <strong class="jxr_keyword">final</strong> RequestSenseCdb cdb = <strong class="jxr_keyword">new</strong> RequestSenseCdb(parser.getCDB());
+<a class="jxr_linenumber" name="51" href="#51">51</a>  
+<a class="jxr_linenumber" name="52" href="#52">52</a>          SenseData senseData;
+<a class="jxr_linenumber" name="53" href="#53">53</a>  
+<a class="jxr_linenumber" name="54" href="#54">54</a>          <strong class="jxr_keyword">if</strong> (cdb.getDescriptorFormat()) {
+<a class="jxr_linenumber" name="55" href="#55">55</a>              <em class="jxr_comment">// descriptor format sense data has been requested</em>
+<a class="jxr_linenumber" name="56" href="#56">56</a>  
+<a class="jxr_linenumber" name="57" href="#57">57</a>              senseData = <strong class="jxr_keyword">new</strong> DescriptorFormatSenseData(ErrorType.CURRENT,<em class="jxr_comment">// errorType</em>
+<a class="jxr_linenumber" name="58" href="#58">58</a>                  SenseKey.ILLEGAL_REQUEST,<em class="jxr_comment">// sense key</em>
+<a class="jxr_linenumber" name="59" href="#59">59</a>                  AdditionalSenseCodeAndQualifier.INVALID_FIELD_IN_CDB,<em class="jxr_comment">// additional</em>
+<a class="jxr_linenumber" name="60" href="#60">60</a>                                                                       <em class="jxr_comment">// sense</em>
+<a class="jxr_linenumber" name="61" href="#61">61</a>                                                                       <em class="jxr_comment">// code</em>
+<a class="jxr_linenumber" name="62" href="#62">62</a>                                                                       <em class="jxr_comment">// and</em>
+<a class="jxr_linenumber" name="63" href="#63">63</a>                                                                       <em class="jxr_comment">// qualifier</em>
+<a class="jxr_linenumber" name="64" href="#64">64</a>                  <strong class="jxr_keyword">new</strong> SenseDataDescriptor[0]);<em class="jxr_comment">// sense data descriptors</em>
+<a class="jxr_linenumber" name="65" href="#65">65</a>  
+<a class="jxr_linenumber" name="66" href="#66">66</a>          } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="67" href="#67">67</a>              <em class="jxr_comment">// fixed format sense data has been requested</em>
+<a class="jxr_linenumber" name="68" href="#68">68</a>  
+<a class="jxr_linenumber" name="69" href="#69">69</a>              senseData = <strong class="jxr_keyword">new</strong> FixedFormatSenseData(false,<em class="jxr_comment">// valid</em>
+<a class="jxr_linenumber" name="70" href="#70">70</a>                  ErrorType.CURRENT,<em class="jxr_comment">// error type</em>
+<a class="jxr_linenumber" name="71" href="#71">71</a>                  false,<em class="jxr_comment">// file mark</em>
+<a class="jxr_linenumber" name="72" href="#72">72</a>                  false,<em class="jxr_comment">// end of medium</em>
+<a class="jxr_linenumber" name="73" href="#73">73</a>                  false,<em class="jxr_comment">// incorrect length indicator</em>
+<a class="jxr_linenumber" name="74" href="#74">74</a>                  SenseKey.ILLEGAL_REQUEST,<em class="jxr_comment">// sense key</em>
+<a class="jxr_linenumber" name="75" href="#75">75</a>                  <strong class="jxr_keyword">new</strong> FourByteInformation(),<em class="jxr_comment">// information</em>
+<a class="jxr_linenumber" name="76" href="#76">76</a>                  <strong class="jxr_keyword">new</strong> FourByteInformation(),<em class="jxr_comment">// command specific</em>
+<a class="jxr_linenumber" name="77" href="#77">77</a>                                            <em class="jxr_comment">// information</em>
+<a class="jxr_linenumber" name="78" href="#78">78</a>                  AdditionalSenseCodeAndQualifier.INVALID_FIELD_IN_CDB,<em class="jxr_comment">// additional</em>
+<a class="jxr_linenumber" name="79" href="#79">79</a>                                                                       <em class="jxr_comment">// sense</em>
+<a class="jxr_linenumber" name="80" href="#80">80</a>                                                                       <em class="jxr_comment">// code</em>
+<a class="jxr_linenumber" name="81" href="#81">81</a>                                                                       <em class="jxr_comment">// and</em>
+<a class="jxr_linenumber" name="82" href="#82">82</a>                                                                       <em class="jxr_comment">// qualifier</em>
+<a class="jxr_linenumber" name="83" href="#83">83</a>                  (byte)0,<em class="jxr_comment">// field replaceable unit code</em>
+<a class="jxr_linenumber" name="84" href="#84">84</a>                  <strong class="jxr_keyword">new</strong> FieldPointerSenseKeySpecificData(<strong class="jxr_keyword">true</strong>,<em class="jxr_comment">// senseKeySpecificDataValid</em>
+<a class="jxr_linenumber" name="85" href="#85">85</a>                      <strong class="jxr_keyword">true</strong>,<em class="jxr_comment">// commandData (i.e. invalid field in CDB)</em>
+<a class="jxr_linenumber" name="86" href="#86">86</a>                      <strong class="jxr_keyword">true</strong>,<em class="jxr_comment">// bitPointerValid</em>
+<a class="jxr_linenumber" name="87" href="#87">87</a>                      3,<em class="jxr_comment">// bitPointer</em>
+<a class="jxr_linenumber" name="88" href="#88">88</a>                      8),<em class="jxr_comment">// fieldPointer,// sense key specific data, only</em>
+<a class="jxr_linenumber" name="89" href="#89">89</a>                         <em class="jxr_comment">// report first problem</em>
+<a class="jxr_linenumber" name="90" href="#90">90</a>                  <strong class="jxr_keyword">new</strong> AdditionalSenseBytes());<em class="jxr_comment">// additional sense bytes</em>
+<a class="jxr_linenumber" name="91" href="#91">91</a>          }
+<a class="jxr_linenumber" name="92" href="#92">92</a>  
+<a class="jxr_linenumber" name="93" href="#93">93</a>          nonEmpty = <strong class="jxr_keyword">new</strong> ScsiResponseDataSegment(senseData, parser.getExpectedDataTransferLength());
+<a class="jxr_linenumber" name="94" href="#94">94</a>      }
+<a class="jxr_linenumber" name="95" href="#95">95</a>  
+<a class="jxr_linenumber" name="96" href="#96">96</a>      @Test
+<a class="jxr_linenumber" name="97" href="#97">97</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testNoneEmpty() {
+<a class="jxr_linenumber" name="98" href="#98">98</a>          nonEmpty.serialize();
+<a class="jxr_linenumber" name="99" href="#99">99</a>      }
+<a class="jxr_linenumber" name="100" href="#100">100</a> 
+<a class="jxr_linenumber" name="101" href="#101">101</a>     @Test
+<a class="jxr_linenumber" name="102" href="#102">102</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testEmpty() {
+<a class="jxr_linenumber" name="103" href="#103">103</a>         ScsiResponseDataSegment.EMPTY_DATA_SEGMENT.serialize();
+<a class="jxr_linenumber" name="104" href="#104">104</a>     }
+<a class="jxr_linenumber" name="105" href="#105">105</a> 
+<a class="jxr_linenumber" name="106" href="#106">106</a> }
+</pre>
+<hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
+</html>
+

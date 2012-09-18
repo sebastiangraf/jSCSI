@@ -44,7 +44,7 @@
 <a class="jxr_linenumber" name="34" href="#34">34</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="35" href="#35">35</a>  <em class="jxr_javadoccomment">     * The connection which uses this object for sending and receiving PDUs.</em>
 <a class="jxr_linenumber" name="36" href="#36">36</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="37" href="#37">37</a>      <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">private</strong> <a href="../../../../org/jscsi/target/connection/TargetConnection.html">TargetConnection</a> connection;
+<a class="jxr_linenumber" name="37" href="#37">37</a>      <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">private</strong> <a href="../../../../org/jscsi/target/connection/Connection.html">Connection</a> connection;
 <a class="jxr_linenumber" name="38" href="#38">38</a>  
 <a class="jxr_linenumber" name="39" href="#39">39</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="40" href="#40">40</a>  <em class="jxr_javadoccomment">     * The session to which {@link #connection} belongs to.</em>
@@ -85,7 +85,7 @@
 <a class="jxr_linenumber" name="75" href="#75">75</a>  <em class="jxr_javadoccomment">     *            used for sending and receiving serialized PDU to and from the</em>
 <a class="jxr_linenumber" name="76" href="#76">76</a>  <em class="jxr_javadoccomment">     *            target</em>
 <a class="jxr_linenumber" name="77" href="#77">77</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="78" href="#78">78</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../org/jscsi/target/connection/TargetSenderWorker.html">TargetSenderWorker</a>(<strong class="jxr_keyword">final</strong> <a href="../../../../org/jscsi/target/connection/TargetConnection.html">TargetConnection</a> connection, <strong class="jxr_keyword">final</strong> SocketChannel socketChannel) {
+<a class="jxr_linenumber" name="78" href="#78">78</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../org/jscsi/target/connection/TargetSenderWorker.html">TargetSenderWorker</a>(<strong class="jxr_keyword">final</strong> <a href="../../../../org/jscsi/target/connection/Connection.html">Connection</a> connection, <strong class="jxr_keyword">final</strong> SocketChannel socketChannel) {
 <a class="jxr_linenumber" name="79" href="#79">79</a>          <strong class="jxr_keyword">this</strong>.connection = connection;
 <a class="jxr_linenumber" name="80" href="#80">80</a>          <strong class="jxr_keyword">this</strong>.socketChannel = socketChannel;
 <a class="jxr_linenumber" name="81" href="#81">81</a>          protocolDataUnitFactory = <strong class="jxr_keyword">new</strong> ProtocolDataUnitFactory();

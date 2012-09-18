@@ -1,3 +1,5 @@
+org.jscsi.target.connection
+org.jscsi.target.scsi
 org.jscsi.target.settings
 org.jscsi.target.storage
 org.jscsi.target.util

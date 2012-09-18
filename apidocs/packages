@@ -1,3 +1,9 @@
+org.jscsi.initiator
+org.jscsi.initiator.connection
+org.jscsi.initiator.connection.phase
+org.jscsi.initiator.connection.state
+org.jscsi.initiator.example
+org.jscsi.initiator.taskbalancer
 org.jscsi.target
 org.jscsi.target.connection
 org.jscsi.target.connection.phase
@@ -19,9 +25,3 @@ org.jscsi.target.settings
 org.jscsi.target.settings.entry
 org.jscsi.target.storage
 org.jscsi.target.util
-org.jscsi.initiator
-org.jscsi.initiator.connection
-org.jscsi.initiator.connection.phase
-org.jscsi.initiator.connection.state
-org.jscsi.initiator.example
-org.jscsi.initiator.taskbalancer

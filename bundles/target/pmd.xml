@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.3" timestamp="2012-09-02T17:24:31.136">
+<pmd version="4.3" timestamp="2012-09-18T12:40:09.225">
 <file name="/Users/sebi/Dropbox/github/jSCSI/bundles/target/src/main/java/org/jscsi/target/connection/phase/TargetFullFeaturePhase.java">
 <violation beginline="6" endline="6" begincolumn="1" endcolumn="51" rule="UnusedImports" ruleset="Import Statement Rules" package="org.jscsi.target.connection.phase" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
 Avoid unused imports such as 'javax.naming.OperationNotSupportedException'
@@ -164,7 +164,7 @@ Unnecessary final modifier in final class
 <violation beginline="193" endline="197" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.target.util" class="ReadWrite" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
 Unnecessary final modifier in final class
 </violation>
-<violation beginline="210" endline="216" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.target.util" class="ReadWrite" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+<violation beginline="212" endline="218" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.target.util" class="ReadWrite" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
 Unnecessary final modifier in final class
 </violation>
 </file>

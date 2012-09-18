@@ -210,117 +210,119 @@
 <a class="jxr_linenumber" name="200" href="#200">200</a> <em class="jxr_javadoccomment">     * Writes the given &lt;i&gt;value&lt;/i&gt; to the &lt;i&gt;buffer&lt;/i&gt; in big-endian format,</em>
 <a class="jxr_linenumber" name="201" href="#201">201</a> <em class="jxr_javadoccomment">     * with the index position of the most significant byte being &lt;i&gt;start&lt;/i&gt;.</em>
 <a class="jxr_linenumber" name="202" href="#202">202</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="203" href="#203">203</a> <em class="jxr_javadoccomment">     * @param value</em>
-<a class="jxr_linenumber" name="204" href="#204">204</a> <em class="jxr_javadoccomment">     *            the integer to write to the ByteBuffer</em>
-<a class="jxr_linenumber" name="205" href="#205">205</a> <em class="jxr_javadoccomment">     * @param buffer</em>
-<a class="jxr_linenumber" name="206" href="#206">206</a> <em class="jxr_javadoccomment">     *            where the integer will be stored</em>
-<a class="jxr_linenumber" name="207" href="#207">207</a> <em class="jxr_javadoccomment">     * @param start</em>
-<a class="jxr_linenumber" name="208" href="#208">208</a> <em class="jxr_javadoccomment">     *            index of the most significant byte of the stored &lt;i&gt;value&lt;/i&gt;</em>
-<a class="jxr_linenumber" name="209" href="#209">209</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="210" href="#210">210</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> writeInt(<strong class="jxr_keyword">int</strong> value, <strong class="jxr_keyword">final</strong> ByteBuffer buffer, <strong class="jxr_keyword">int</strong> start) {
-<a class="jxr_linenumber" name="211" href="#211">211</a>         buffer.position(start);
-<a class="jxr_linenumber" name="212" href="#212">212</a>         buffer.put((byte)(value &gt;&gt;&gt; 24));
-<a class="jxr_linenumber" name="213" href="#213">213</a>         buffer.put((byte)(value &gt;&gt;&gt; 16));
-<a class="jxr_linenumber" name="214" href="#214">214</a>         buffer.put((byte)(value &gt;&gt;&gt; 8));
-<a class="jxr_linenumber" name="215" href="#215">215</a>         buffer.put((byte)value);
-<a class="jxr_linenumber" name="216" href="#216">216</a>     }
-<a class="jxr_linenumber" name="217" href="#217">217</a> 
-<a class="jxr_linenumber" name="218" href="#218">218</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="219" href="#219">219</a> <em class="jxr_javadoccomment">     * Returns the bytes in a {@link ByteBuffer} as a UTF-8 encoded {@link String}.</em>
-<a class="jxr_linenumber" name="220" href="#220">220</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="221" href="#221">221</a> <em class="jxr_javadoccomment">     * @param buffer</em>
-<a class="jxr_linenumber" name="222" href="#222">222</a> <em class="jxr_javadoccomment">     *            a {@link ByteBuffer} containing UTF-8 encoded characters.</em>
-<a class="jxr_linenumber" name="223" href="#223">223</a> <em class="jxr_javadoccomment">     * @return a String representation of the &lt;i&gt;buffer&lt;/i&gt;'s content</em>
-<a class="jxr_linenumber" name="224" href="#224">224</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="225" href="#225">225</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String byteBufferToString(<strong class="jxr_keyword">final</strong> ByteBuffer buffer) {
-<a class="jxr_linenumber" name="226" href="#226">226</a>         buffer.rewind();
-<a class="jxr_linenumber" name="227" href="#227">227</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> String(buffer.array());
-<a class="jxr_linenumber" name="228" href="#228">228</a>     }
-<a class="jxr_linenumber" name="229" href="#229">229</a> 
-<a class="jxr_linenumber" name="230" href="#230">230</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="231" href="#231">231</a> <em class="jxr_javadoccomment">     * Splits the passed &lt;i&gt;value&lt;/i&gt; into bytes and returns them in an array,</em>
-<a class="jxr_linenumber" name="232" href="#232">232</a> <em class="jxr_javadoccomment">     * in big-endian format.</em>
-<a class="jxr_linenumber" name="233" href="#233">233</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="234" href="#234">234</a> <em class="jxr_javadoccomment">     * @param value</em>
-<a class="jxr_linenumber" name="235" href="#235">235</a> <em class="jxr_javadoccomment">     *            the long to split</em>
-<a class="jxr_linenumber" name="236" href="#236">236</a> <em class="jxr_javadoccomment">     * @return byte representation of the parameter</em>
-<a class="jxr_linenumber" name="237" href="#237">237</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="238" href="#238">238</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> byte[] longToBytes(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> value) {
-<a class="jxr_linenumber" name="239" href="#239">239</a>         <strong class="jxr_keyword">final</strong> byte[] bytes = <strong class="jxr_keyword">new</strong> byte[8];
-<a class="jxr_linenumber" name="240" href="#240">240</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; bytes.length; ++i)
-<a class="jxr_linenumber" name="241" href="#241">241</a>             bytes[i] = (byte)(value &gt;&gt; (8 * (bytes.length - 1 - i)));
-<a class="jxr_linenumber" name="242" href="#242">242</a>         <strong class="jxr_keyword">return</strong> bytes;
-<a class="jxr_linenumber" name="243" href="#243">243</a>     }
-<a class="jxr_linenumber" name="244" href="#244">244</a> 
-<a class="jxr_linenumber" name="245" href="#245">245</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="246" href="#246">246</a> <em class="jxr_javadoccomment">     * Writes the given &lt;i&gt;value&lt;/i&gt; to the &lt;i&gt;buffer&lt;/i&gt; in big-endian format,</em>
-<a class="jxr_linenumber" name="247" href="#247">247</a> <em class="jxr_javadoccomment">     * with the index position of the most significant byte being &lt;i&gt;index&lt;/i&gt;.</em>
-<a class="jxr_linenumber" name="248" href="#248">248</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="249" href="#249">249</a> <em class="jxr_javadoccomment">     * @param value</em>
-<a class="jxr_linenumber" name="250" href="#250">250</a> <em class="jxr_javadoccomment">     *            the integer to write to the ByteBuffer</em>
-<a class="jxr_linenumber" name="251" href="#251">251</a> <em class="jxr_javadoccomment">     * @param buffer</em>
-<a class="jxr_linenumber" name="252" href="#252">252</a> <em class="jxr_javadoccomment">     *            where the integer will be stored</em>
-<a class="jxr_linenumber" name="253" href="#253">253</a> <em class="jxr_javadoccomment">     * @param index</em>
-<a class="jxr_linenumber" name="254" href="#254">254</a> <em class="jxr_javadoccomment">     *            index of the most significant byte of the stored &lt;i&gt;value&lt;/i&gt;</em>
-<a class="jxr_linenumber" name="255" href="#255">255</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="256" href="#256">256</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> writeLong(<strong class="jxr_keyword">final</strong> ByteBuffer buffer, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> value, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> index) {
-<a class="jxr_linenumber" name="257" href="#257">257</a>         <strong class="jxr_keyword">final</strong> byte[] bytes = longToBytes(value);
-<a class="jxr_linenumber" name="258" href="#258">258</a>         buffer.position(index);
-<a class="jxr_linenumber" name="259" href="#259">259</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; bytes.length; ++i)
-<a class="jxr_linenumber" name="260" href="#260">260</a>             buffer.put(bytes[i]);
-<a class="jxr_linenumber" name="261" href="#261">261</a>     }
-<a class="jxr_linenumber" name="262" href="#262">262</a> 
-<a class="jxr_linenumber" name="263" href="#263">263</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="264" href="#264">264</a> <em class="jxr_javadoccomment">     * Writes the two least-significant big-endian-ordered bytes of an integer</em>
-<a class="jxr_linenumber" name="265" href="#265">265</a> <em class="jxr_javadoccomment">     * the a specified position in a {@link ByteBuffer}.</em>
-<a class="jxr_linenumber" name="266" href="#266">266</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="267" href="#267">267</a> <em class="jxr_javadoccomment">     * @param buffer</em>
-<a class="jxr_linenumber" name="268" href="#268">268</a> <em class="jxr_javadoccomment">     *            where the bytes will be written</em>
-<a class="jxr_linenumber" name="269" href="#269">269</a> <em class="jxr_javadoccomment">     * @param value</em>
-<a class="jxr_linenumber" name="270" href="#270">270</a> <em class="jxr_javadoccomment">     *            the value to convert and copy</em>
-<a class="jxr_linenumber" name="271" href="#271">271</a> <em class="jxr_javadoccomment">     * @param index</em>
-<a class="jxr_linenumber" name="272" href="#272">272</a> <em class="jxr_javadoccomment">     *            the position of the most significant byte in the {@link ByteBuffer}</em>
-<a class="jxr_linenumber" name="273" href="#273">273</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="274" href="#274">274</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> writeTwoByteInt(<strong class="jxr_keyword">final</strong> ByteBuffer buffer, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> value, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> index) {
-<a class="jxr_linenumber" name="275" href="#275">275</a>         buffer.position(index);
-<a class="jxr_linenumber" name="276" href="#276">276</a>         buffer.put((byte)(value &gt;&gt; 8));<em class="jxr_comment">// most significant byte</em>
-<a class="jxr_linenumber" name="277" href="#277">277</a>         buffer.put((byte)value);<em class="jxr_comment">// least significant byte</em>
-<a class="jxr_linenumber" name="278" href="#278">278</a>     }
-<a class="jxr_linenumber" name="279" href="#279">279</a> 
-<a class="jxr_linenumber" name="280" href="#280">280</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="281" href="#281">281</a> <em class="jxr_javadoccomment">     * Writes the three least-significant big-endian-ordered bytes of an integer</em>
-<a class="jxr_linenumber" name="282" href="#282">282</a> <em class="jxr_javadoccomment">     * the a specified position in a {@link ByteBuffer}.</em>
-<a class="jxr_linenumber" name="283" href="#283">283</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="284" href="#284">284</a> <em class="jxr_javadoccomment">     * @param buffer</em>
-<a class="jxr_linenumber" name="285" href="#285">285</a> <em class="jxr_javadoccomment">     *            where the bytes will be written</em>
-<a class="jxr_linenumber" name="286" href="#286">286</a> <em class="jxr_javadoccomment">     * @param value</em>
-<a class="jxr_linenumber" name="287" href="#287">287</a> <em class="jxr_javadoccomment">     *            the value to convert and copy</em>
-<a class="jxr_linenumber" name="288" href="#288">288</a> <em class="jxr_javadoccomment">     * @param index</em>
-<a class="jxr_linenumber" name="289" href="#289">289</a> <em class="jxr_javadoccomment">     *            the position of the most significant byte in the {@link ByteBuffer}</em>
-<a class="jxr_linenumber" name="290" href="#290">290</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="291" href="#291">291</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> writeThreeByteInt(<strong class="jxr_keyword">final</strong> ByteBuffer buffer, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> value, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> index) {
-<a class="jxr_linenumber" name="292" href="#292">292</a> 
-<a class="jxr_linenumber" name="293" href="#293">293</a>         buffer.position(index);
-<a class="jxr_linenumber" name="294" href="#294">294</a>         buffer.put((byte)(value &gt;&gt; 16));<em class="jxr_comment">// most significant byte</em>
-<a class="jxr_linenumber" name="295" href="#295">295</a>         buffer.put((byte)(value &gt;&gt; 8));
-<a class="jxr_linenumber" name="296" href="#296">296</a>         buffer.put((byte)value);<em class="jxr_comment">// least significant byte</em>
-<a class="jxr_linenumber" name="297" href="#297">297</a>     }
-<a class="jxr_linenumber" name="298" href="#298">298</a> 
-<a class="jxr_linenumber" name="299" href="#299">299</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="300" href="#300">300</a> <em class="jxr_javadoccomment">     * Reads an unsigned 4-byte integer from four consecutive big-endian-ordered</em>
-<a class="jxr_linenumber" name="301" href="#301">301</a> <em class="jxr_javadoccomment">     * bytes of a {@link ByteBuffer} object and returns the value.</em>
-<a class="jxr_linenumber" name="302" href="#302">302</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="303" href="#303">303</a> <em class="jxr_javadoccomment">     * @param buffer</em>
-<a class="jxr_linenumber" name="304" href="#304">304</a> <em class="jxr_javadoccomment">     *            the {@link ByteBuffer} containing the bytes</em>
-<a class="jxr_linenumber" name="305" href="#305">305</a> <em class="jxr_javadoccomment">     * @param start</em>
-<a class="jxr_linenumber" name="306" href="#306">306</a> <em class="jxr_javadoccomment">     *            the index position of the most-significant byte</em>
-<a class="jxr_linenumber" name="307" href="#307">307</a> <em class="jxr_javadoccomment">     * @return the value of the unsigned four-byte integer</em>
-<a class="jxr_linenumber" name="308" href="#308">308</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="309" href="#309">309</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">long</strong> readUnsignedInt(<strong class="jxr_keyword">final</strong> ByteBuffer buffer, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> start) {
-<a class="jxr_linenumber" name="310" href="#310">310</a>         <strong class="jxr_keyword">return</strong> readFourByteInt(buffer, start) &amp; 0xffffffffL;
-<a class="jxr_linenumber" name="311" href="#311">311</a>     }
-<a class="jxr_linenumber" name="312" href="#312">312</a> 
-<a class="jxr_linenumber" name="313" href="#313">313</a> }
+<a class="jxr_linenumber" name="203" href="#203">203</a> <em class="jxr_javadoccomment">     * To get the value back from the buffer, use readUnsignedInt.</em>
+<a class="jxr_linenumber" name="204" href="#204">204</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="205" href="#205">205</a> <em class="jxr_javadoccomment">     * @param value</em>
+<a class="jxr_linenumber" name="206" href="#206">206</a> <em class="jxr_javadoccomment">     *            the integer to write to the ByteBuffer</em>
+<a class="jxr_linenumber" name="207" href="#207">207</a> <em class="jxr_javadoccomment">     * @param buffer</em>
+<a class="jxr_linenumber" name="208" href="#208">208</a> <em class="jxr_javadoccomment">     *            where the integer will be stored</em>
+<a class="jxr_linenumber" name="209" href="#209">209</a> <em class="jxr_javadoccomment">     * @param start</em>
+<a class="jxr_linenumber" name="210" href="#210">210</a> <em class="jxr_javadoccomment">     *            index of the most significant byte of the stored &lt;i&gt;value&lt;/i&gt;</em>
+<a class="jxr_linenumber" name="211" href="#211">211</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="212" href="#212">212</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> writeInt(<strong class="jxr_keyword">int</strong> value, <strong class="jxr_keyword">final</strong> ByteBuffer buffer, <strong class="jxr_keyword">int</strong> start) {
+<a class="jxr_linenumber" name="213" href="#213">213</a>         buffer.position(start);
+<a class="jxr_linenumber" name="214" href="#214">214</a>         buffer.put((byte)(value &gt;&gt;&gt; 24));
+<a class="jxr_linenumber" name="215" href="#215">215</a>         buffer.put((byte)(value &gt;&gt;&gt; 16));
+<a class="jxr_linenumber" name="216" href="#216">216</a>         buffer.put((byte)(value &gt;&gt;&gt; 8));
+<a class="jxr_linenumber" name="217" href="#217">217</a>         buffer.put((byte)value);
+<a class="jxr_linenumber" name="218" href="#218">218</a>     }
+<a class="jxr_linenumber" name="219" href="#219">219</a> 
+<a class="jxr_linenumber" name="220" href="#220">220</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="221" href="#221">221</a> <em class="jxr_javadoccomment">     * Returns the bytes in a {@link ByteBuffer} as a UTF-8 encoded {@link String}.</em>
+<a class="jxr_linenumber" name="222" href="#222">222</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="223" href="#223">223</a> <em class="jxr_javadoccomment">     * @param buffer</em>
+<a class="jxr_linenumber" name="224" href="#224">224</a> <em class="jxr_javadoccomment">     *            a {@link ByteBuffer} containing UTF-8 encoded characters.</em>
+<a class="jxr_linenumber" name="225" href="#225">225</a> <em class="jxr_javadoccomment">     * @return a String representation of the &lt;i&gt;buffer&lt;/i&gt;'s content</em>
+<a class="jxr_linenumber" name="226" href="#226">226</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="227" href="#227">227</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> String byteBufferToString(<strong class="jxr_keyword">final</strong> ByteBuffer buffer) {
+<a class="jxr_linenumber" name="228" href="#228">228</a>         buffer.rewind();
+<a class="jxr_linenumber" name="229" href="#229">229</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> String(buffer.array());
+<a class="jxr_linenumber" name="230" href="#230">230</a>     }
+<a class="jxr_linenumber" name="231" href="#231">231</a> 
+<a class="jxr_linenumber" name="232" href="#232">232</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="233" href="#233">233</a> <em class="jxr_javadoccomment">     * Splits the passed &lt;i&gt;value&lt;/i&gt; into bytes and returns them in an array,</em>
+<a class="jxr_linenumber" name="234" href="#234">234</a> <em class="jxr_javadoccomment">     * in big-endian format.</em>
+<a class="jxr_linenumber" name="235" href="#235">235</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="236" href="#236">236</a> <em class="jxr_javadoccomment">     * @param value</em>
+<a class="jxr_linenumber" name="237" href="#237">237</a> <em class="jxr_javadoccomment">     *            the long to split</em>
+<a class="jxr_linenumber" name="238" href="#238">238</a> <em class="jxr_javadoccomment">     * @return byte representation of the parameter</em>
+<a class="jxr_linenumber" name="239" href="#239">239</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="240" href="#240">240</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> byte[] longToBytes(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> value) {
+<a class="jxr_linenumber" name="241" href="#241">241</a>         <strong class="jxr_keyword">final</strong> byte[] bytes = <strong class="jxr_keyword">new</strong> byte[8];
+<a class="jxr_linenumber" name="242" href="#242">242</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; bytes.length; ++i)
+<a class="jxr_linenumber" name="243" href="#243">243</a>             bytes[i] = (byte)(value &gt;&gt; (8 * (bytes.length - 1 - i)));
+<a class="jxr_linenumber" name="244" href="#244">244</a>         <strong class="jxr_keyword">return</strong> bytes;
+<a class="jxr_linenumber" name="245" href="#245">245</a>     }
+<a class="jxr_linenumber" name="246" href="#246">246</a> 
+<a class="jxr_linenumber" name="247" href="#247">247</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="248" href="#248">248</a> <em class="jxr_javadoccomment">     * Writes the given &lt;i&gt;value&lt;/i&gt; to the &lt;i&gt;buffer&lt;/i&gt; in big-endian format,</em>
+<a class="jxr_linenumber" name="249" href="#249">249</a> <em class="jxr_javadoccomment">     * with the index position of the most significant byte being &lt;i&gt;index&lt;/i&gt;.</em>
+<a class="jxr_linenumber" name="250" href="#250">250</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="251" href="#251">251</a> <em class="jxr_javadoccomment">     * @param value</em>
+<a class="jxr_linenumber" name="252" href="#252">252</a> <em class="jxr_javadoccomment">     *            the integer to write to the ByteBuffer</em>
+<a class="jxr_linenumber" name="253" href="#253">253</a> <em class="jxr_javadoccomment">     * @param buffer</em>
+<a class="jxr_linenumber" name="254" href="#254">254</a> <em class="jxr_javadoccomment">     *            where the integer will be stored</em>
+<a class="jxr_linenumber" name="255" href="#255">255</a> <em class="jxr_javadoccomment">     * @param index</em>
+<a class="jxr_linenumber" name="256" href="#256">256</a> <em class="jxr_javadoccomment">     *            index of the most significant byte of the stored &lt;i&gt;value&lt;/i&gt;</em>
+<a class="jxr_linenumber" name="257" href="#257">257</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="258" href="#258">258</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> writeLong(<strong class="jxr_keyword">final</strong> ByteBuffer buffer, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> value, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> index) {
+<a class="jxr_linenumber" name="259" href="#259">259</a>         <strong class="jxr_keyword">final</strong> byte[] bytes = longToBytes(value);
+<a class="jxr_linenumber" name="260" href="#260">260</a>         buffer.position(index);
+<a class="jxr_linenumber" name="261" href="#261">261</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; bytes.length; ++i)
+<a class="jxr_linenumber" name="262" href="#262">262</a>             buffer.put(bytes[i]);
+<a class="jxr_linenumber" name="263" href="#263">263</a>     }
+<a class="jxr_linenumber" name="264" href="#264">264</a> 
+<a class="jxr_linenumber" name="265" href="#265">265</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="266" href="#266">266</a> <em class="jxr_javadoccomment">     * Writes the two least-significant big-endian-ordered bytes of an integer</em>
+<a class="jxr_linenumber" name="267" href="#267">267</a> <em class="jxr_javadoccomment">     * the a specified position in a {@link ByteBuffer}.</em>
+<a class="jxr_linenumber" name="268" href="#268">268</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="269" href="#269">269</a> <em class="jxr_javadoccomment">     * @param buffer</em>
+<a class="jxr_linenumber" name="270" href="#270">270</a> <em class="jxr_javadoccomment">     *            where the bytes will be written</em>
+<a class="jxr_linenumber" name="271" href="#271">271</a> <em class="jxr_javadoccomment">     * @param value</em>
+<a class="jxr_linenumber" name="272" href="#272">272</a> <em class="jxr_javadoccomment">     *            the value to convert and copy</em>
+<a class="jxr_linenumber" name="273" href="#273">273</a> <em class="jxr_javadoccomment">     * @param index</em>
+<a class="jxr_linenumber" name="274" href="#274">274</a> <em class="jxr_javadoccomment">     *            the position of the most significant byte in the {@link ByteBuffer}</em>
+<a class="jxr_linenumber" name="275" href="#275">275</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="276" href="#276">276</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> writeTwoByteInt(<strong class="jxr_keyword">final</strong> ByteBuffer buffer, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> value, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> index) {
+<a class="jxr_linenumber" name="277" href="#277">277</a>         buffer.position(index);
+<a class="jxr_linenumber" name="278" href="#278">278</a>         buffer.put((byte)(value &gt;&gt; 8));<em class="jxr_comment">// most significant byte</em>
+<a class="jxr_linenumber" name="279" href="#279">279</a>         buffer.put((byte)value);<em class="jxr_comment">// least significant byte</em>
+<a class="jxr_linenumber" name="280" href="#280">280</a>     }
+<a class="jxr_linenumber" name="281" href="#281">281</a> 
+<a class="jxr_linenumber" name="282" href="#282">282</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="283" href="#283">283</a> <em class="jxr_javadoccomment">     * Writes the three least-significant big-endian-ordered bytes of an integer</em>
+<a class="jxr_linenumber" name="284" href="#284">284</a> <em class="jxr_javadoccomment">     * the a specified position in a {@link ByteBuffer}.</em>
+<a class="jxr_linenumber" name="285" href="#285">285</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="286" href="#286">286</a> <em class="jxr_javadoccomment">     * @param buffer</em>
+<a class="jxr_linenumber" name="287" href="#287">287</a> <em class="jxr_javadoccomment">     *            where the bytes will be written</em>
+<a class="jxr_linenumber" name="288" href="#288">288</a> <em class="jxr_javadoccomment">     * @param value</em>
+<a class="jxr_linenumber" name="289" href="#289">289</a> <em class="jxr_javadoccomment">     *            the value to convert and copy</em>
+<a class="jxr_linenumber" name="290" href="#290">290</a> <em class="jxr_javadoccomment">     * @param index</em>
+<a class="jxr_linenumber" name="291" href="#291">291</a> <em class="jxr_javadoccomment">     *            the position of the most significant byte in the {@link ByteBuffer}</em>
+<a class="jxr_linenumber" name="292" href="#292">292</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="293" href="#293">293</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> writeThreeByteInt(<strong class="jxr_keyword">final</strong> ByteBuffer buffer, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> value, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> index) {
+<a class="jxr_linenumber" name="294" href="#294">294</a> 
+<a class="jxr_linenumber" name="295" href="#295">295</a>         buffer.position(index);
+<a class="jxr_linenumber" name="296" href="#296">296</a>         buffer.put((byte)(value &gt;&gt; 16));<em class="jxr_comment">// most significant byte</em>
+<a class="jxr_linenumber" name="297" href="#297">297</a>         buffer.put((byte)(value &gt;&gt; 8));
+<a class="jxr_linenumber" name="298" href="#298">298</a>         buffer.put((byte)value);<em class="jxr_comment">// least significant byte</em>
+<a class="jxr_linenumber" name="299" href="#299">299</a>     }
+<a class="jxr_linenumber" name="300" href="#300">300</a> 
+<a class="jxr_linenumber" name="301" href="#301">301</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="302" href="#302">302</a> <em class="jxr_javadoccomment">     * Reads an unsigned 4-byte integer from four consecutive big-endian-ordered</em>
+<a class="jxr_linenumber" name="303" href="#303">303</a> <em class="jxr_javadoccomment">     * bytes of a {@link ByteBuffer} object and returns the value.</em>
+<a class="jxr_linenumber" name="304" href="#304">304</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="305" href="#305">305</a> <em class="jxr_javadoccomment">     * @param buffer</em>
+<a class="jxr_linenumber" name="306" href="#306">306</a> <em class="jxr_javadoccomment">     *            the {@link ByteBuffer} containing the bytes</em>
+<a class="jxr_linenumber" name="307" href="#307">307</a> <em class="jxr_javadoccomment">     * @param start</em>
+<a class="jxr_linenumber" name="308" href="#308">308</a> <em class="jxr_javadoccomment">     *            the index position of the most-significant byte</em>
+<a class="jxr_linenumber" name="309" href="#309">309</a> <em class="jxr_javadoccomment">     * @return the value of the unsigned four-byte integer</em>
+<a class="jxr_linenumber" name="310" href="#310">310</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="311" href="#311">311</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">long</strong> readUnsignedInt(<strong class="jxr_keyword">final</strong> ByteBuffer buffer, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> start) {
+<a class="jxr_linenumber" name="312" href="#312">312</a>         <strong class="jxr_keyword">return</strong> readFourByteInt(buffer, start) &amp; 0xffffffffL;
+<a class="jxr_linenumber" name="313" href="#313">313</a>     }
+<a class="jxr_linenumber" name="314" href="#314">314</a> 
+<a class="jxr_linenumber" name="315" href="#315">315</a> }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

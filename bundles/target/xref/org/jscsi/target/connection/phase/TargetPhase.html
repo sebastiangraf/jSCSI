@@ -17,7 +17,7 @@
 <a class="jxr_linenumber" name="7" href="#7">7</a>   
 <a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> org.jscsi.exception.InternetSCSIException;
 <a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.ProtocolDataUnit;
-<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.connection.TargetConnection;
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.connection.Connection;
 <a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.settings.SettingsException;
 <a class="jxr_linenumber" name="12" href="#12">12</a>  
 <a class="jxr_linenumber" name="13" href="#13">13</a>  <em class="jxr_javadoccomment">/**</em>
@@ -34,7 +34,7 @@
 <a class="jxr_linenumber" name="24" href="#24">24</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment">     * The connection this phase is a part of.</em>
 <a class="jxr_linenumber" name="26" href="#26">26</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="27" href="#27">27</a>      <strong class="jxr_keyword">protected</strong> <a href="../../../../../org/jscsi/target/connection/TargetConnection.html">TargetConnection</a> connection;
+<a class="jxr_linenumber" name="27" href="#27">27</a>      <strong class="jxr_keyword">protected</strong> <a href="../../../../../org/jscsi/target/connection/Connection.html">Connection</a> connection;
 <a class="jxr_linenumber" name="28" href="#28">28</a>  
 <a class="jxr_linenumber" name="29" href="#29">29</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="30" href="#30">30</a>  <em class="jxr_javadoccomment">     * The abstract constructor.</em>
@@ -42,7 +42,7 @@
 <a class="jxr_linenumber" name="32" href="#32">32</a>  <em class="jxr_javadoccomment">     * @param connection</em>
 <a class="jxr_linenumber" name="33" href="#33">33</a>  <em class="jxr_javadoccomment">     *            the connection is phase is a part of</em>
 <a class="jxr_linenumber" name="34" href="#34">34</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="35" href="#35">35</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/jscsi/target/connection/phase/TargetPhase.html">TargetPhase</a>(<a href="../../../../../org/jscsi/target/connection/TargetConnection.html">TargetConnection</a> connection) {
+<a class="jxr_linenumber" name="35" href="#35">35</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/jscsi/target/connection/phase/TargetPhase.html">TargetPhase</a>(<a href="../../../../../org/jscsi/target/connection/Connection.html">Connection</a> connection) {
 <a class="jxr_linenumber" name="36" href="#36">36</a>          <strong class="jxr_keyword">this</strong>.connection = connection;
 <a class="jxr_linenumber" name="37" href="#37">37</a>      }
 <a class="jxr_linenumber" name="38" href="#38">38</a>  
@@ -96,7 +96,7 @@
 <a class="jxr_linenumber" name="86" href="#86">86</a>          <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> OperationNotSupportedException();
 <a class="jxr_linenumber" name="87" href="#87">87</a>      }
 <a class="jxr_linenumber" name="88" href="#88">88</a>  
-<a class="jxr_linenumber" name="89" href="#89">89</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/jscsi/target/connection/TargetConnection.html">TargetConnection</a> getTargetConnection() {
+<a class="jxr_linenumber" name="89" href="#89">89</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/jscsi/target/connection/Connection.html">Connection</a> getTargetConnection() {
 <a class="jxr_linenumber" name="90" href="#90">90</a>          <strong class="jxr_keyword">return</strong> connection;
 <a class="jxr_linenumber" name="91" href="#91">91</a>      }
 <a class="jxr_linenumber" name="92" href="#92">92</a>  }
