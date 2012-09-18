@@ -27,6 +27,7 @@ import org.jscsi.target.settings.SessionSettingsNegotiator;
 import org.jscsi.target.settings.SettingsException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import static org.mockito.Mockito.verify;
 
 public class ConnectionTest {
     // /**
@@ -59,7 +60,7 @@ public class ConnectionTest {
     // pingStage.execute(pdu);
     // }
 
-    @Test(dataProvider = "instantiateStages", enabled = true)
+    @Test(dataProvider = "instantiateStages", enabled = false)
     public void testStages(Class<TargetStage> pTargetStageClass, TargetStage[] pStages,
         Class<ProtocolDataUnit> pDataUnitClass, ProtocolDataUnit[] pDataUnits, Class<Checker> pCheckerClass,
         Checker[] pChecker) throws DigestException, IOException, InterruptedException, InternetSCSIException,
@@ -68,7 +69,7 @@ public class ConnectionTest {
         assertEquals(pStages.length, pChecker.length);
         for (int i = 0; i < pStages.length; i++) {
             pStages[i].execute(pDataUnits[i]);
-            // pChecker[i].check(pStages[i].getConnection());
+            pChecker[i].check(pStages[i].getConnection());
         }
 
     }
@@ -86,8 +87,8 @@ public class ConnectionTest {
             new ConnectionSettingsNegotiator(sessionSettingsNegotiator);
         Connection connection = mock(Connection.class);
         when(connection.getSettings()).thenReturn(connectionSettingsNegotiator.getSettings());
-        
-        //setting up the phases
+
+        // setting up the phases
         TargetFullFeaturePhase phase = new TargetFullFeaturePhase(connection);
         Object[][] returnVal =
             {
@@ -129,65 +130,65 @@ public class ConnectionTest {
                         new Checker() {
 
                             @Override
-                            public void check(final Connection pConnection) throws DigestException,
-                                InternetSCSIException, IOException, SettingsException {
-                                when(pConnection.receivePdu()).thenReturn(null);
+                            public void check(final Connection pConnection) throws InterruptedException,
+                                IOException, InternetSCSIException {
+                                verify(pConnection).sendPdu(null);
                             }
                         }, // SendDiagnosticStage checker
                         new Checker() {
 
                             @Override
-                            public void check(final Connection pConnection) throws DigestException,
-                                InternetSCSIException, IOException, SettingsException {
-                                when(pConnection.receivePdu()).thenReturn(null);
+                            public void check(final Connection pConnection) throws InterruptedException,
+                                IOException, InternetSCSIException {
+                                verify(pConnection).sendPdu(null);
                             }
                         }, // ReportLunsStage checker
                         new Checker() {
 
                             @Override
-                            public void check(final Connection pConnection) throws DigestException,
-                                InternetSCSIException, IOException, SettingsException {
-                                when(pConnection.receivePdu()).thenReturn(null);
+                            public void check(final Connection pConnection) throws InterruptedException,
+                                IOException, InternetSCSIException {
+                                verify(pConnection).sendPdu(null);
                             }
                         }, // InquiryStage checker
                         new Checker() {
 
                             @Override
-                            public void check(final Connection pConnection) throws DigestException,
-                                InternetSCSIException, IOException, SettingsException {
-                                when(pConnection.receivePdu()).thenReturn(null);
+                            public void check(final Connection pConnection) throws InterruptedException,
+                                IOException, InternetSCSIException {
+                                verify(pConnection).sendPdu(null);
                             }
                         }, // RequestSenseStage checker
                         new Checker() {
 
                             @Override
-                            public void check(final Connection pConnection) throws DigestException,
-                                InternetSCSIException, IOException, SettingsException {
-                                when(pConnection.receivePdu()).thenReturn(null);
+                            public void check(final Connection pConnection) throws InterruptedException,
+                                IOException, InternetSCSIException {
+                                verify(pConnection).sendPdu(null);
                             }
                         }, // TextNegotiationStage checker
                         new Checker() {
 
                             @Override
-                            public void check(final Connection pConnection) throws DigestException,
-                                InternetSCSIException, IOException, SettingsException {
-                                when(pConnection.receivePdu()).thenReturn(null);
+                            public void check(final Connection pConnection) throws InterruptedException,
+                                IOException, InternetSCSIException {
+                                verify(pConnection).sendPdu(null);
                             }
                         }, // UnsupportedOpCodeStage checker
                         new Checker() {
 
                             @Override
-                            public void check(final Connection pConnection) throws DigestException,
-                                InternetSCSIException, IOException, SettingsException {
-                                when(pConnection.receivePdu()).thenReturn(null);
+                            public void check(final Connection pConnection) throws InterruptedException,
+                                IOException, InternetSCSIException {
+                                verify(pConnection).sendPdu(null);
                             }
                         }, // FormatUnitStage checker
                         new Checker() {
 
                             @Override
-                            public void check(final Connection pConnection) throws DigestException,
-                                InternetSCSIException, IOException, SettingsException {
-                                when(pConnection.receivePdu()).thenReturn(null);
+                            public void check(final Connection pConnection) throws InterruptedException,
+                                IOException, InternetSCSIException {
+                                verify(pConnection).sendPdu(null);
                             }
                         }
                     }
@@ -197,8 +198,8 @@ public class ConnectionTest {
     }
 
     static interface Checker {
-        void check(final Connection pConnection) throws DigestException, InternetSCSIException, IOException,
-            SettingsException;
+        void check(final Connection pConnection) throws InterruptedException, IOException,
+            InternetSCSIException;
     }
 
 }
