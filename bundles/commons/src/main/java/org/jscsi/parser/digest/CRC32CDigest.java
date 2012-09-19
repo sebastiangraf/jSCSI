@@ -360,6 +360,21 @@ final class CRC32CDigest implements IDigest {
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof CRC32CDigest == false) return false;
+        
+        CRC32CDigest oCrc = (CRC32CDigest) o;
+        
+        if(oCrc.getValue() == this.getValue()) return true;
+        
+        return false;
+    }
+
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+
     /**
      * This method calculates the CRC with Slicing-by-4 algorithm.
      * 

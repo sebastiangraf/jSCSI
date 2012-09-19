@@ -409,6 +409,25 @@ public final class BasicHeaderSegment {
         return sb.toString();
     }
 
+    /** {@inheritDoc} */
+    @Override
+    final public boolean equals(Object o) {
+        if (o instanceof BasicHeaderSegment == false)
+            return false;
+
+        BasicHeaderSegment oBhs = (BasicHeaderSegment)o;
+
+        if (oBhs.isFinalFlag() == this.isFinalFlag() && oBhs.isImmediateFlag() == this.isImmediateFlag()
+            && oBhs.getParser().getClass() == this.getParser().getClass()
+            && oBhs.getDataSegmentLength() == this.getDataSegmentLength()
+            && oBhs.getInitiatorTaskTag() == this.getInitiatorTaskTag()
+            && oBhs.getOpCode().compareTo(this.getOpCode()) == 0
+            && oBhs.getTotalAHSLength() == this.getTotalAHSLength())
+            return true;
+
+        return false;
+    }
+
     /**
      * Clears all the stored content of this BasicHeaderSegment object.
      */

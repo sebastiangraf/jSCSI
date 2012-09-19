@@ -31,7 +31,63 @@ testing both together.</description>
                     </descriptors>
                 </configuration>
             </plugin>
+		    <plugin>
+		        <groupId>org.codehaus.mojo</groupId>
+		        <artifactId>aspectj-maven-plugin</artifactId>
+		        <version>1.4</version>
+		        <configuration>
+					<aspectLibraries>
+					  <aspectLibrary>
+					    <groupId>org.jscsi</groupId>
+					    <artifactId>initiator</artifactId>
+					  </aspectLibrary>
+					</aspectLibraries>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>utf-8</encoding>
+					<complianceLevel>1.7</complianceLevel>
+					<verbose>true</verbose>
+					<showWeaveInfo>true</showWeaveInfo>
+		        </configuration>
+		        <executions>
+		          <execution>
+		            <goals>
+		              <goal>compile</goal>       <!-- use this goal to weave all your main classes -->
+		              <goal>test-compile</goal>  <!-- use this goal to weave all your test classes -->
+		            </goals>
+		          </execution>
+		        </executions>
+		    </plugin>
         </plugins>
+	    <pluginManagement>
+	        <plugins>
+		        <plugin>
+	                <groupId>org.eclipse.m2e</groupId>
+	                <artifactId>lifecycle-mapping</artifactId>
+	                <version>1.0.0</version>
+	                <configuration>
+	                    <lifecycleMappingMetadata>
+	                        <pluginExecutions>
+	                            <pluginExecution>
+	                                <pluginExecutionFilter>
+	                                    <groupId>org.codehaus.mojo</groupId>
+	                                    <artifactId>aspectj-maven-plugin</artifactId>
+	                                    <versionRange>[1.4,)</versionRange>
+	                                    <goals>
+	                                        <goal>compile</goal>
+	                                        <goal>test-compile</goal>
+	                                    </goals>
+	                                </pluginExecutionFilter>
+	                                <action>
+	                                    <ignore></ignore>
+	                                </action>
+	                            </pluginExecution>
+	                        </pluginExecutions>
+	                    </lifecycleMappingMetadata>
+	                </configuration>
+	            </plugin>
+            </plugins>
+	    </pluginManagement>
     </build>
 
     <dependencies>
@@ -77,7 +133,7 @@ testing both together.</description>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.5.4</version>
+            <version>1.6.11</version>
         </dependency>
 
     </dependencies>

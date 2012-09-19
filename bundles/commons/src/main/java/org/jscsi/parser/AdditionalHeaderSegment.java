@@ -367,6 +367,21 @@ final class AdditionalHeaderSegment {
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
 
+    /** {@inheritDoc} */
+    @Override
+    final public boolean equals(Object o) {
+        if (o instanceof AdditionalHeaderSegment == false)
+            return false;
+
+        AdditionalHeaderSegment oAhs = (AdditionalHeaderSegment)o;
+
+        if (oAhs.getType().equals(this.getType()) && oAhs.getSpecificField().equals(this.getSpecificField())
+            && oAhs.getLength() == this.getLength())
+            return true;
+
+        return false;
+    }
+
     /**
      * This method checks the integrity of the this Additional Header Segment
      * object to garantee a valid specification.

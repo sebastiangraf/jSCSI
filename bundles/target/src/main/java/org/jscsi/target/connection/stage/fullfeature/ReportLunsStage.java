@@ -43,7 +43,6 @@ public class ReportLunsStage extends TargetFullFeatureStage {
         final FieldPointerSenseKeySpecificData[] illegalFieldPointers = cdb.getIllegalFieldPointers();
 
         if (illegalFieldPointers != null) {
-
             // an illegal request has been made
             responsePdu = createFixedFormatErrorPdu(illegalFieldPointers,// senseKeySpecificData
                 bhs.getInitiatorTaskTag(),// initiatorTaskTag
