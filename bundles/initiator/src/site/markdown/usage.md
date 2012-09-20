@@ -4,6 +4,17 @@
 
 The initiator is entirely written in Java. Based on its use-case as library, it has no functionality to run as a demon process but the ability to be bound as dependency in any java-based project.
 
+It is easily available over maven provided over central-repo:
+
+```xml
+
+<dependency>
+	<groupId>org.jscsi</groupId>
+	<artifactId>initiator</artifactId>
+	<version>2.3</version>
+</dependency>
+```
+
 ### Configuration
 
 The configuration of the initiator takes place over the class org.jscsi.initiator.Configuration storing global configurations as well as session-specific ones. Instead of building a suitable configuration by hand, a xsd is provided under src/main/resources/jscsi.xsd.

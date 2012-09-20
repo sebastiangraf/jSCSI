@@ -3,6 +3,17 @@
 # Description
 
 The target is entirely written in Java. Based on its use-case as stand-alone process, it offers the ability to be started in an own process.
+It is easily available over maven provided over central-repo:
+
+```xml
+
+<dependency>
+	<groupId>org.jscsi</groupId>
+	<artifactId>target</artifactId>
+	<version>2.3</version>
+</dependency>
+```
+
 
 ### Configuration
 

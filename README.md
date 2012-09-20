@@ -38,12 +38,12 @@ jSCSI contains a server (target), a client (initiator) and common classes to wor
 <dependency>
 	<groupId>org.jscsi</groupId>
 	<artifactId>target</artifactId>
-	<version>2.2</version>
+	<version>2.3</version>
 </dependency>
 <dependency>
 	<groupId>org.jscsi</groupId>
 	<artifactId>initiator</artifactId>
-	<version>2.2</version>
+	<version>2.3</version>
 </dependency>
 ```
 
@@ -94,11 +94,11 @@ Any questions, just contact sebastian.graf AT uni-konstanz.de
 jSCSI is maintained by:
 
 * Sebastian Graf (Current Project Lead)
-* Nuray Gürler (Websites Refactoring)
-* Andreas Rain (Testing)
 
 Former people include:
 
+* Andreas Rain (Testing)
+* Nuray Gürler (Websites Refactoring)
 * Andreas Ergenzinger (jSCSI 2.0, target)
 * Patrice Brend'amour (jSCSI 2.0, initiator)
 * Marcus Specht (jSCSI target evaluation)

@@ -18,6 +18,22 @@ Furthermore, recent research indicates that user-level iSCSI initiators can impr
 
 jSCSI includes a Java iSCSI initiator and a Java iSCSI target. Besides an initiator and target implementation, jSCSI furthermore offers convenient methods to parse PDUs independently from the concrete appliance as server or client. Entirely written in Java, jSCSI offers easy possibilities to be extended while staying completely platform independent.
 
+Both, intiator and target, are freely available over maven central-repo:
+
+```xml
+
+<dependency>
+	<groupId>org.jscsi</groupId>
+	<artifactId>target</artifactId>
+	<version>2.3</version>
+</dependency>
+<dependency>
+	<groupId>org.jscsi</groupId>
+	<artifactId>initiator</artifactId>
+	<version>2.3</version>
+</dependency>
+```
+
 ###jSCSI initiator
 
 The jSCSI-initiator is represented by a library offering easy access to (nearly) any iSCSI target. The interface is leaned on common IO-interfaces making adapters quite easy. Leveraging from the easy utilization of multiple threads within Java, the initiator is able to work on Multi-Connection/Session as well as on Multi-Session basis. For more information, please refer to the initiator-bundle.
@@ -41,13 +57,10 @@ jSCSI is maintained currently by
 
 * Sebastian Graf (Project Lead)
 
-Current subprojects are:
+Concluded and adopted subprojects were:
 
 * Andreas Rain, Test-cases
 * Nuray Gürler, jSCSI websites
-
-Concluded and adopted subprojects were:
-
 * Andreas Ergenzinger, jSCSI Target 1.0
 * Patrice Brend'amour, jSCSI Initiator 2.0
 * Markus Specht, jSCSI Target evaluation
