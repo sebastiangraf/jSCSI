@@ -604,16 +604,17 @@ public final class ProtocolDataUnit {
             return false;
 
         ProtocolDataUnit oPdu = (ProtocolDataUnit)o;
-        
+
         Iterator<AdditionalHeaderSegment> ahs1 = oPdu.getAdditionalHeaderSegments();
         Iterator<AdditionalHeaderSegment> ahs2 = this.getAdditionalHeaderSegments();
-        
-        while(ahs1.hasNext()){
-            if(!ahs1.equals(ahs2)) return false;
+
+        while (ahs1.hasNext()) {
+            if (!ahs1.equals(ahs2))
+                return false;
             ahs1.next();
             ahs2.next();
         }
-        
+
         if (oPdu.getBasicHeaderSegment().equals(this.getBasicHeaderSegment())
             && oPdu.getDataDigest().equals(this.getDataDigest())
             && oPdu.getHeaderDigest().equals(this.getHeaderDigest())

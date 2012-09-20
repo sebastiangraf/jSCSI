@@ -112,8 +112,9 @@ final class NullDigest implements IDigest {
 
     /** {@inheritDoc} */
     @Override
-    public boolean equals(Object o){
-        if(o instanceof NullDigest == false) return false;
+    public boolean equals(Object o) {
+        if (o instanceof NullDigest == false)
+            return false;
         return true;
     }
 

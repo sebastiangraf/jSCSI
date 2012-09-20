@@ -110,29 +110,33 @@ public class ConnectionTest {
         for (int i = 0; i < 8; i++) {
             pStages[i].execute(pDataUnits[i]);
             units.add(pChecker[i].check(pStages[i].getConnection()));
-            
+
             // Some output that makes watching the pdus easiert
-            /* System.out.println("************** STAGE UNIT *************** ");
-                System.out.println(pStages[i].getClass());
-                System.out.println();
-                System.out.println(units.get(i));**/
+            /*
+             * System.out.println("************** STAGE UNIT *************** ");
+             * System.out.println(pStages[i].getClass());
+             * System.out.println();
+             * System.out.println(units.get(i));*
+             */
         }
 
         verify(connection, times(9)).sendPdu(captor.capture());
 
         // Some output that makes watching the pdus easiert
-        /* for (int i = 0; i < 8; i++) {
-            if (captor.getAllValues().get(i).getBasicHeaderSegment().getParser() instanceof DataInParser)
-                continue;
-
-            System.out.println("************** TEST UNIT *************** ");
-            if (i > 0)
-                System.out.println(pStages[i].getClass() + "(" + (pStages[i - 1].getClass()) + ")");
-            else
-                System.out.println(pStages[i].getClass());
-            System.out.println();
-            System.out.println(captor.getAllValues().get(i));
-        } */
+        /*
+         * for (int i = 0; i < 8; i++) {
+         * if (captor.getAllValues().get(i).getBasicHeaderSegment().getParser() instanceof DataInParser)
+         * continue;
+         * 
+         * System.out.println("************** TEST UNIT *************** ");
+         * if (i > 0)
+         * System.out.println(pStages[i].getClass() + "(" + (pStages[i - 1].getClass()) + ")");
+         * else
+         * System.out.println(pStages[i].getClass());
+         * System.out.println();
+         * System.out.println(captor.getAllValues().get(i));
+         * }
+         */
 
         for (int i = 0; i < units.size(); i++) {
             if (captor.getAllValues().get(0).getBasicHeaderSegment().getParser() instanceof DataInParser == false)
@@ -246,23 +250,27 @@ public class ConnectionTest {
                                     SenseKey.ILLEGAL_REQUEST,// sense key
                                     new FourByteInformation(),// information
                                     new FourByteInformation(),// command specific information
-                                    AdditionalSenseCodeAndQualifier.INVALID_FIELD_IN_CDB,// additional sense code and
-                                                                    // qualifier
+                                    AdditionalSenseCodeAndQualifier.INVALID_FIELD_IN_CDB,// additional sense
+                                                                                         // code and
+                                    // qualifier
                                     (byte)0,// field replaceable unit code
                                     cdb.getIllegalFieldPointers()[0],// sense key specific data, only report
-                                                            // first problem
+                                    // first problem
                                     new AdditionalSenseBytes());// additional sense bytes
 
                                 // keep only the part of the sense data that will be sent
                                 final ScsiResponseDataSegment dataSegment =
-                                    new ScsiResponseDataSegment(senseData, parser.getExpectedDataTransferLength());
+                                    new ScsiResponseDataSegment(senseData, parser
+                                        .getExpectedDataTransferLength());
                                 final int senseDataSize = senseData.size();
 
                                 // calculate residuals and flags
                                 final int residualCount =
                                     Math.abs(parser.getExpectedDataTransferLength() - senseDataSize);
-                                final boolean residualOverflow = parser.getExpectedDataTransferLength() < senseDataSize;
-                                final boolean residualUnderflow = parser.getExpectedDataTransferLength() > senseDataSize;
+                                final boolean residualOverflow =
+                                    parser.getExpectedDataTransferLength() < senseDataSize;
+                                final boolean residualUnderflow =
+                                    parser.getExpectedDataTransferLength() > senseDataSize;
 
                                 // create and return PDU
                                 responsePdu = TargetPduFactory.createSCSIResponsePdu(false,// bidirectionalReadResidualOverflow

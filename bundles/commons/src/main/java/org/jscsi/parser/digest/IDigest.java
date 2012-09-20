@@ -65,5 +65,5 @@ public interface IDigest extends Checksum {
      * @return The number of bytes of this digest.
      */
     public int getSize();
-    
+
 }
