@@ -1,10 +1,9 @@
 package org.jscsi.target.connection;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.inOrder;
 import static org.testng.AssertJUnit.assertEquals;
 
 import java.io.IOException;
@@ -40,7 +39,6 @@ import org.jscsi.target.scsi.ScsiResponseDataSegment;
 import org.jscsi.target.scsi.cdb.InquiryCDB;
 import org.jscsi.target.scsi.cdb.ReportLunsCDB;
 import org.jscsi.target.scsi.cdb.RequestSenseCdb;
-import org.jscsi.target.scsi.cdb.SelectReport;
 import org.jscsi.target.scsi.cdb.SendDiagnosticCdb;
 import org.jscsi.target.scsi.inquiry.PageCode.VitalProductDataPageName;
 import org.jscsi.target.scsi.inquiry.StandardInquiryData;
@@ -62,7 +60,6 @@ import org.jscsi.target.settings.TextKeyword;
 import org.jscsi.target.settings.TextParameter;
 import org.jscsi.target.util.ReadWrite;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InOrder;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -239,7 +236,6 @@ public class ConnectionTest {
                                         OperationCode.SCSI_COMMAND, "None", "None").getBasicHeaderSegment();
                                 final SCSICommandParser parser = (SCSICommandParser)bhs.getParser();
                                 final SendDiagnosticCdb cdb = new SendDiagnosticCdb(parser.getCDB());
-                                final FieldPointerSenseKeySpecificData[] illegalFieldPointers = cdb.getIllegalFieldPointers();
 
                                 // create the whole sense data
                                 FixedFormatSenseData senseData = new FixedFormatSenseData(false,// valid
@@ -295,7 +291,6 @@ public class ConnectionTest {
                                         OperationCode.SCSI_COMMAND, "None", "None").getBasicHeaderSegment();
                                 final SCSICommandParser parser = (SCSICommandParser)bhs.getParser();
                                 final ReportLunsCDB cdb = new ReportLunsCDB(parser.getCDB());
-                                final SelectReport selectReport = cdb.getSelectReport();
                                 final FieldPointerSenseKeySpecificData[] illegalFieldPointers =
                                     cdb.getIllegalFieldPointers();
 

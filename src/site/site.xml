@@ -39,6 +39,7 @@
 			<item name="History" href="history.html" />
 			<item name="Project Structure" href="projectstructure.html" />
 			<item name="FAQ" href="faq.html" />
+			<item name="Changelog" href="changelog.html" />
 		</menu>
 		<menu ref="modules"/>
 		<menu ref="reports" />
