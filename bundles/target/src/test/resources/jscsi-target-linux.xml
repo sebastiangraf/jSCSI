@@ -29,7 +29,7 @@
 			<TargetName>iqn.2010-04.local-test:disk-1</TargetName>
 			<TargetAlias>jSCSI Target</TargetAlias>
 			<SyncFileStorage>
-				<Path>/tmp/testdevices/storage1.dat</Path>
+				<Path>/tmp/storage1.dat</Path>
 				<Create size="0.075" />
 			</SyncFileStorage>
 		</Target>
@@ -37,7 +37,7 @@
 			<TargetName>iqn.2010-04.local-test:disk-2</TargetName>
 			<TargetAlias>jSCSI Target</TargetAlias>
 			<AsyncFileStorage>
-				<Path>/tmp/testdevices/storage2.dat</Path>
+				<Path>/tmp/storage2.dat</Path>
 				<Create size="0.075" />
 			</AsyncFileStorage>
 		</Target>
