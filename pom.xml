@@ -245,29 +245,29 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.4</version>
+			<version>1.7.1</version>
 		</dependency>
 		<dependency><!-- A binding to the logger is necessary. -->
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.6.4</version>
+			<version>1.7.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>6.5.2</version>
+			<version>6.8</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.perfidix</groupId>
 			<artifactId>perfidix</artifactId>
-			<version>3.6.7-SNAPSHOT</version>
+			<version>3.6.6</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>12.0</version>
+			<version>13.0.1</version>
 		</dependency>
 	</dependencies>
 	<repositories>
