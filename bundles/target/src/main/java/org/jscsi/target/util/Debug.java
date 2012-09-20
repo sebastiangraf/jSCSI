@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
  * values will be printed in
  * hexadecimal format in a tabular arrangement.
  * 
- * @author Andreas Ergenzinger
+ * @author Andreas Ergenzinger, University of Konstanz
  */
 public class Debug {
 

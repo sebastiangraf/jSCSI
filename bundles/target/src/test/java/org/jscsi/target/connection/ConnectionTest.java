@@ -315,9 +315,6 @@ public class ConnectionTest {
                                     new ScsiResponseDataSegment(senseData, parser
                                         .getExpectedDataTransferLength());
                                 final int senseDataSize = senseData.size();
-
-                                System.out.println(senseData.size());
-
                                 // calculate residuals and flags
                                 final int residualCount =
                                     Math.abs(parser.getExpectedDataTransferLength() - senseDataSize);
