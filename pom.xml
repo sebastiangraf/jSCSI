@@ -308,6 +308,17 @@
 			</modules>
 		</profile>
 	</profiles>
+	
+	<profiles>
+		<profile>
+			<id>release</id>
+			<modules>
+				<module>bundles/commons</module>
+				<module>bundles/initiator</module>
+				<module>bundles/target</module>
+			</modules>
+		</profile>
+	</profiles>
 
 
 	<properties>
