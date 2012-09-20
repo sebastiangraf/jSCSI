@@ -307,9 +307,6 @@
 				<module>bundles/testing</module>
 			</modules>
 		</profile>
-	</profiles>
-	
-	<profiles>
 		<profile>
 			<id>release</id>
 			<modules>
