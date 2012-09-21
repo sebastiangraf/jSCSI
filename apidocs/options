@@ -1,5 +1,5 @@
 -classpath
-'/Users/sebi/Dropbox/github/jSCSI/target/classes:/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/target/classes:/Users/sebi/Dropbox/github/jSCSI/bundles/target/target/classes:/Users/sebi/.m2/repository/com/google/guava/guava/12.0/guava-12.0.jar:/Users/sebi/.m2/repository/org/jscsi/commons/2.3-SNAPSHOT/commons-2.3-SNAPSHOT.jar:/Users/sebi/.m2/repository/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-simple/1.6.4/slf4j-simple-1.6.4.jar'
+'/Users/sebi/Dropbox/github/jSCSI/target/classes:/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/target/classes:/Users/sebi/Dropbox/github/jSCSI/bundles/target/target/classes:/Users/sebi/.m2/repository/com/google/guava/guava/13.0.1/guava-13.0.1.jar:/Users/sebi/.m2/repository/org/jscsi/commons/2.4-SNAPSHOT/commons-2.4-SNAPSHOT.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-api/1.7.1/slf4j-api-1.7.1.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-simple/1.7.1/slf4j-simple-1.7.1.jar'
 -encoding
 'UTF-8'
 -protected
@@ -15,10 +15,10 @@
 -docencoding
 'UTF-8'
 -doctitle
-'Builder 2.3-SNAPSHOT API'
+'Builder 2.4-SNAPSHOT API'
 -link
 'http://java.sun.com/javase/6/docs/api'
 -use
 -version
 -windowtitle
-'Builder 2.3-SNAPSHOT API'
+'Builder 2.4-SNAPSHOT API'
