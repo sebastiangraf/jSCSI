@@ -39,23 +39,23 @@ import org.xml.sax.SAXException;
  */
 public class Configuration {
 
-    private static final String ELEMENT_TARGET_LIST = "TargetList"; // Name of
+    public static final String ELEMENT_TARGET_LIST = "TargetList"; // Name of
                                                                     // node that
                                                                     // contains
                                                                     // list of
     // targets
 
-    private static final String ELEMENT_TARGET = "Target"; // Name for nodes
+    public static final String ELEMENT_TARGET = "Target"; // Name for nodes
                                                            // that contain a
                                                            // target
     // Target configuration elements
-    private static final String ELEMENT_SYNCFILESTORAGE = "SyncFileStorage";
-    private static final String ELEMENT_CREATE = "Create";
-    private static final String ATTRIBUTE_SIZE = "size";
+    public static final String ELEMENT_SYNCFILESTORAGE = "SyncFileStorage";
+    public static final String ELEMENT_CREATE = "Create";
+    public static final String ATTRIBUTE_SIZE = "size";
 
     // Global configuration elements
-    private static final String ELEMENT_ALLOWSLOPPYNEGOTIATION = "AllowSloppyNegotiation";
-    private static final String ELEMENT_PORT = "Port";
+    public static final String ELEMENT_ALLOWSLOPPYNEGOTIATION = "AllowSloppyNegotiation";
+    public static final String ELEMENT_PORT = "Port";
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -79,14 +79,14 @@ public class Configuration {
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
 
-    private final List<Target> targets;
+    protected final List<Target> targets;
 
     /**
      * The <code>TargetAddress</code> parameter (the jSCSI Target's IP address).
      * <p>
      * This parameter is initialized automatically.
      */
-    private String targetAddress;
+    protected String targetAddress;
 
     /**
      * The port used by the jSCSI Target for listening for new connections.
@@ -94,7 +94,7 @@ public class Configuration {
      * The default port number is 3260. This value may be overridden by specifying a different value in the
      * configuration file.
      */
-    private int port;
+    protected int port;
 
     /**
      * This variable toggles the strictness with which the parameters <code>IFMarkInt</code> and
@@ -107,18 +107,18 @@ public class Configuration {
      * consequences by setting {@link #allowSloppyNegotiation} to <code>true</code> in the configuration file.
      * The default is <code>false</code>.
      */
-    private boolean allowSloppyNegotiation;// TODO fix in jSCSI Initiator and
+    protected boolean allowSloppyNegotiation;// TODO fix in jSCSI Initiator and
                                            // remove
 
     /**
      * The <code>TargetPortalGroupTag</code> parameter.
      */
-    private final int targetPortalGroupTag = 1;
+    protected final int targetPortalGroupTag = 1;
 
     /**
      * The Logical Unit Number of the virtual Logical Unit.
      */
-    private final LogicalUnitNumber logicalUnitNumber = new LogicalUnitNumber(0L);
+    protected final LogicalUnitNumber logicalUnitNumber = new LogicalUnitNumber(0L);
 
     /**
      * The <code>MaxRecvDataSegmentLength</code> parameter for PDUs sent in the
@@ -127,7 +127,7 @@ public class Configuration {
      * Since the value of this variable is equal to the specified default value, it does not have to be
      * declared during login.
      */
-    private final int outMaxRecvDataSegmentLength = 8192;
+    protected final int outMaxRecvDataSegmentLength = 8192;
 
     /**
      * The maximum number of consecutive Login PDUs or Text Negotiation PDUs the
@@ -182,7 +182,7 @@ public class Configuration {
         return targets;
     }
 
-    public static final Configuration create() throws SAXException, ParserConfigurationException, IOException {
+    public static Configuration create() throws SAXException, ParserConfigurationException, IOException {
         return create(CONFIGURATION_SCHEMA_FILE, CONFIGURATION_CONFIG_FILE);
     }
 
@@ -198,7 +198,7 @@ public class Configuration {
      * @throws IOException
      *             If any IO errors occur.
      */
-    public static final Configuration create(final File schemaLocation, final File configFile)
+    public static Configuration create(final File schemaLocation, final File configFile)
         throws SAXException, ParserConfigurationException, IOException {
         final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         final Schema schema = schemaFactory.newSchema(schemaLocation);
@@ -251,7 +251,9 @@ public class Configuration {
 
     }
 
-    private static final Target parseTargetElement(Element targetElement) throws IOException {
+    protected static Target parseTargetElement(Element targetElement)
+            throws IOException {
+        // TargetName
         // TargetName
         Node nextNode = chopWhiteSpaces(targetElement.getFirstChild());
         // assert
@@ -300,7 +302,7 @@ public class Configuration {
 
     }
 
-    private static Node chopWhiteSpaces(final Node node) {
+    protected static Node chopWhiteSpaces(final Node node) {
         Node toIterate = node;
         while (toIterate instanceof Text && toIterate.getTextContent().trim().length() == 0) {
             toIterate = toIterate.getNextSibling();

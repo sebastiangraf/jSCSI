@@ -31,6 +31,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -192,20 +193,21 @@ public class BlackBoxTest {
      */
     @Test
     public final void testReadWriteEquality() throws Exception {
-        Future<Void> returnVal1 = session.write(writeBuffer, LOGICAL_BLOCK_ADDRESS, writeBuffer.remaining());
+    	
+        Future<Void> returnVal1 = session.write(writeBuffer, 0, writeBuffer.remaining());
         returnVal1.get();
+        
+        assertTrue(!Arrays.equals(writeBuffer.array(),readBuffer.array()));
 
-        assertTrue(!writeBuffer.equals(readBuffer));
-
-        Future<Void> returnVal2 = session.read(readBuffer, LOGICAL_BLOCK_ADDRESS, readBuffer.remaining());
+        Future<Void> returnVal2 = session.read(readBuffer, 0, readBuffer.remaining());
         returnVal2.get();
 
-        assertTrue(writeBuffer.equals(readBuffer));
+        assertTrue(Arrays.equals(writeBuffer.array(),readBuffer.array()));
 
         writeBuffer.flip();
         readBuffer.flip();
 
-        assertTrue(writeBuffer.equals(readBuffer));
+        assertTrue(Arrays.equals(writeBuffer.array(),readBuffer.array()));
 
     }
 
@@ -240,26 +242,22 @@ public class BlackBoxTest {
             returnVal1 = session.write(writeBuffers[i], LOGICAL_BLOCK_ADDRESS, writeBuffers[i].remaining());
 
             returnVal1.get();
-
-            assertTrue(!writeBuffers[i].equals(readBuffers[i]));
-        }
-
-        for (int i = 0; i < writeBuffers.length; i++) {
-            Future<Void> returnVal1;
-            returnVal1 = session.read(readBuffers[i], LOGICAL_BLOCK_ADDRESS, readBuffers[i].remaining());
-            returnVal1.get();
+            
+            Future<Void> returnVal2;
+            returnVal2 = session.read(readBuffers[i], LOGICAL_BLOCK_ADDRESS, readBuffers[i].remaining());
+            returnVal2.get();
 
         }
 
         for (int i = 0; i < writeBuffers.length; i++) {
-            assertTrue(writeBuffers[i].equals(readBuffers[writeBuffers.length - i - 1]));
+            assertTrue(Arrays.equals(writeBuffers[i].array(),readBuffers[i].array()));
             // Need to write them into a separate buffer since flip doesn't seem
             // to work in a Array of ByteBuffers..
             ByteBuffer write = ByteBuffer.allocate(BUFFER_SIZE);
             ByteBuffer read = ByteBuffer.allocate(BUFFER_SIZE);
 
             write.put(writeBuffers[i]);
-            read.put(readBuffers[writeBuffers.length - i - 1]);
+            read.put(readBuffers[i]);
 
             write.flip();
             read.flip();
