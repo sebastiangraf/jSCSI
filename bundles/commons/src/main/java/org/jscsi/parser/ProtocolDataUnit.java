@@ -418,7 +418,8 @@ public final class ProtocolDataUnit {
             if (lens == -1) {
                 // The Channel was closed at the Target (e.g. the Target does
                 // not support Multiple Connections)
-                throw new ClosedChannelException();
+                // throw new ClosedChannelException();
+                return lens;
             }
             len += lens;
             LOGGER.trace("Receiving through SocketChannel: " + len + " of maximal "
