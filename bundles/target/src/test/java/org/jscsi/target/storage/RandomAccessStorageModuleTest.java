@@ -34,7 +34,7 @@ public class RandomAccessStorageModuleTest {
         rf.close();
         module =
             RandomAccessStorageModule.open(file, TEST_FILE_SIZE, true,
-                SynchronizedRandomAccessStorageModule.class);
+                JCloudsStorageModule.class);
     }
 
     @AfterClass

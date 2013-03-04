@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.domain.Blob;
@@ -30,18 +32,16 @@ public class BufferedTaskWorker implements Callable<Void> {
     /**
      * The tasks that have to be performed.
      */
-    private ConcurrentLinkedQueue<BufferedWriteTask> mTasks;
-
-    /**
-     * Whether or not this worker has been disposed.
-     */
-    private boolean mDisposed;
+    private LinkedBlockingQueue<BufferedWriteTask> mTasks;
 
     /** Reference to blobstore. */
     private final BlobStore mBlobStore;
 
     /** Container name. */
     private final String mContainerName;
+
+    /** Map for storing tasks again. */
+    private final Map<Long, BufferedWriteTask> mElements;
 
     /**
      * Create a new worker.
@@ -50,10 +50,10 @@ public class BufferedTaskWorker implements Callable<Void> {
      * @param pBytesInCluster
      */
     public BufferedTaskWorker(BlobStore pBlobStore, String pContainerName) {
-        mTasks = new ConcurrentLinkedQueue<>();
-        mDisposed = false;
+        mTasks = new LinkedBlockingQueue<BufferedWriteTask>();
         mBlobStore = pBlobStore;
         mContainerName = pContainerName;
+        mElements = new ConcurrentHashMap<Long, BufferedWriteTask>();
 
     }
 
@@ -65,23 +65,25 @@ public class BufferedTaskWorker implements Callable<Void> {
      * @param pOffset
      * @param pLength
      * @param pStorageIndex
+     * @throws InterruptedException
      */
-    public synchronized void newTask(byte[] pBytes, int pOffset, int pLength, long pStorageIndex) {
-        mTasks.add(new BufferedWriteTask(pBytes, pOffset, pLength, pStorageIndex));
-        this.notify();
+    public synchronized void newTask(BufferedWriteTask task) throws InterruptedException {
+        mElements.put(new Long(task.getStorageIndex()), task);
+        mTasks.put(task);
     }
 
     @Override
     public Void call() throws Exception {
 
-        while (!mDisposed) {
-            if (mTasks.isEmpty()) {
-                this.wait();
+        while (true) {
+            BufferedWriteTask task = mTasks.take();
+            if (task.getBytes().length == 0 && task.getLength() == -1 && task.getOffset() == -1
+                && task.getStorageIndex() == -1) {
+                break;
+            } else {
+                performTask(task);
             }
-
-            performTask();
         }
-
         return null;
     }
 
@@ -91,9 +93,8 @@ public class BufferedTaskWorker implements Callable<Void> {
      * 
      * @throws IOException
      */
-    private void performTask() throws IOException {
+    private void performTask(BufferedWriteTask currentTask) throws IOException {
 
-        BufferedWriteTask currentTask = mTasks.poll();
         byte[] bytes = currentTask.getBytes();
         int bytesOffset = currentTask.getOffset();
         int length = currentTask.getLength();
@@ -147,8 +148,9 @@ public class BufferedTaskWorker implements Callable<Void> {
                             + ((JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE) * (i - startIndex)),
                         val, 0, (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
             }
-
+            blob.setPayload(val);
             mBlobStore.putBlob(mContainerName, blob);
+            mElements.remove(new Long(currentTask.getStorageIndex()));
         }
 
     }
@@ -164,7 +166,7 @@ public class BufferedTaskWorker implements Callable<Void> {
     public List<Collision> checkForCollisions(int pLength, long pStorageIndex) {
         List<Collision> collisions = new ArrayList<Collision>();
 
-        for (BufferedWriteTask task : mTasks) {
+        for (BufferedWriteTask task : mElements.values()) {
             if (overlappingIndizes(pLength, pStorageIndex, task.getLength(), task.getStorageIndex())) {
                 // Determining where the two tasks collide
                 int start = 0;
@@ -219,13 +221,6 @@ public class BufferedTaskWorker implements Callable<Void> {
         }
 
         return true;
-    }
-
-    /**
-     * Dispose this worker so it stops working.
-     */
-    public void dispose() {
-        mDisposed = true;
     }
 
 }

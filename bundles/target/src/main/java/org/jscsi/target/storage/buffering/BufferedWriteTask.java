@@ -1,6 +1,7 @@
 package org.jscsi.target.storage.buffering;
 
 
+
 /**
  * BufferedWriteTasks are used to
  * keep the information of a write request
@@ -79,5 +80,19 @@ public class BufferedWriteTask {
     public long getStorageIndex() {
         return mStorageIndex;
     }
+    public static class PoisonTask extends BufferedWriteTask {
 
+        /**
+         * Constructor.
+         * 
+         * @param pBytes
+         * @param pOffset
+         * @param pLength
+         * @param pStorageIndex
+         */
+        public PoisonTask() {
+            super(new byte[0], -1, -1, -1);
+        }
+
+    }
 }

@@ -11,12 +11,15 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
 import org.jscsi.target.storage.buffering.BufferedTaskWorker;
+import org.jscsi.target.storage.buffering.BufferedWriteTask;
+import org.jscsi.target.storage.buffering.BufferedWriteTask.PoisonTask;
 import org.jscsi.target.storage.buffering.Collision;
 
 import com.google.common.io.ByteArrayDataOutput;
@@ -75,7 +78,7 @@ public class JCloudsStorageModule implements IStorageModule {
                 mStore.createContainerInLocation(null, mContainerName);
             }
             mWriterService = Executors.newSingleThreadExecutor();
-            mWorker = new BufferedTaskWorker(mStore, pFile.getName());
+            mWorker = new BufferedTaskWorker(mStore, mContainerName);
             mWriterService.submit(mWorker);
             mWriterService.shutdown();
         } catch (Exception e) {
@@ -115,6 +118,9 @@ public class JCloudsStorageModule implements IStorageModule {
      */
     @Override
     public void read(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
+
+        // Overwriting segments in the byte array using the writer tasks that are still in progress.
+        List<Collision> collisions = mWorker.checkForCollisions(length, storageIndex);
 
         // Using the most recent revision
         if (bytesOffset + length > bytes.length) {
@@ -157,9 +163,6 @@ public class JCloudsStorageModule implements IStorageModule {
 
         System.arraycopy(output.toByteArray(), 0, bytes, bytesOffset, length);
 
-        // Overwriting segments in the byte array using the writer tasks that are still in progress.
-        List<Collision> collisions = mWorker.checkForCollisions(length, storageIndex);
-
         for (Collision collision : collisions) {
             if (collision.getStart() != storageIndex) {
                 System.arraycopy(collision.getBytes(), 0, bytes,
@@ -176,7 +179,11 @@ public class JCloudsStorageModule implements IStorageModule {
      */
     @Override
     public void write(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
-        mWorker.newTask(bytes, bytesOffset, length, storageIndex);
+        try {
+            mWorker.newTask(new BufferedWriteTask(bytes, bytesOffset, length, storageIndex));
+        } catch (InterruptedException e) {
+            throw new IOException(e);
+        }
     }
 
     /**
@@ -184,7 +191,13 @@ public class JCloudsStorageModule implements IStorageModule {
      */
     @Override
     public void close() throws IOException {
-        mWorker.dispose();
+
+        try {
+            mWorker.newTask(new PoisonTask());
+            mWriterService.awaitTermination(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new IOException(e);
+        }
         mContext.close();
     }
 
