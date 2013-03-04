@@ -1,15 +1,14 @@
 package org.jscsi.target.storage;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 
 public class SynchronizedRandomAccessStorageModule extends RandomAccessStorageModule implements
     IStorageModule {
 
-    protected SynchronizedRandomAccessStorageModule(long sizeInBlocks, RandomAccessFile randomAccessFile)
-        throws FileNotFoundException {
-        super(sizeInBlocks, randomAccessFile);
+    public SynchronizedRandomAccessStorageModule(long sizeInBlocks, File file) throws FileNotFoundException {
+        super(sizeInBlocks, file);
     }
 
     @Override

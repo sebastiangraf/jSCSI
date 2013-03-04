@@ -19,8 +19,9 @@ import javax.xml.validation.Validator;
 import org.jscsi.target.scsi.lun.LogicalUnitNumber;
 import org.jscsi.target.settings.TextKeyword;
 import org.jscsi.target.storage.IStorageModule;
-import org.jscsi.target.storage.IStorageModule.STORAGEKIND;
+import org.jscsi.target.storage.JCloudsStorageModule;
 import org.jscsi.target.storage.RandomAccessStorageModule;
+import org.jscsi.target.storage.SynchronizedRandomAccessStorageModule;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -40,16 +41,18 @@ import org.xml.sax.SAXException;
 public class Configuration {
 
     public static final String ELEMENT_TARGET_LIST = "TargetList"; // Name of
-                                                                    // node that
-                                                                    // contains
-                                                                    // list of
+                                                                   // node that
+                                                                   // contains
+                                                                   // list of
     // targets
 
     public static final String ELEMENT_TARGET = "Target"; // Name for nodes
-                                                           // that contain a
-                                                           // target
+                                                          // that contain a
+                                                          // target
     // Target configuration elements
     public static final String ELEMENT_SYNCFILESTORAGE = "SyncFileStorage";
+    public static final String ELEMENT_ASYNCFILESTORAGE = "AsyncFileStorage";
+    public static final String ELEMENT_JCLOUDSSTORAGE = "JCloudsStorage";
     public static final String ELEMENT_CREATE = "Create";
     public static final String ATTRIBUTE_SIZE = "size";
 
@@ -108,7 +111,7 @@ public class Configuration {
      * The default is <code>false</code>.
      */
     protected boolean allowSloppyNegotiation;// TODO fix in jSCSI Initiator and
-                                           // remove
+                                             // remove
 
     /**
      * The <code>TargetPortalGroupTag</code> parameter.
@@ -198,8 +201,8 @@ public class Configuration {
      * @throws IOException
      *             If any IO errors occur.
      */
-    public static Configuration create(final File schemaLocation, final File configFile)
-        throws SAXException, ParserConfigurationException, IOException {
+    public static Configuration create(final File schemaLocation, final File configFile) throws SAXException,
+        ParserConfigurationException, IOException {
         final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         final Schema schema = schemaFactory.newSchema(schemaLocation);
 
@@ -251,8 +254,7 @@ public class Configuration {
 
     }
 
-    protected static Target parseTargetElement(Element targetElement)
-            throws IOException {
+    protected static Target parseTargetElement(Element targetElement) throws IOException {
         // TargetName
         // TargetName
         Node nextNode = chopWhiteSpaces(targetElement.getFirstChild());
@@ -269,12 +271,17 @@ public class Configuration {
         }
 
         // Finding out the concrete storage
-        IStorageModule.STORAGEKIND kind = null;
-        if (nextNode.getLocalName().equals(ELEMENT_SYNCFILESTORAGE)) {
-            kind = STORAGEKIND.SyncFile;
-        } else {
-            // assert nextNode.getLocalName().equals(ELEMENT_ASYNCFILESTORAGE);
-            kind = STORAGEKIND.AsyncFile;
+        Class<? extends IStorageModule> kind = null;
+        switch (nextNode.getLocalName()) {
+        case ELEMENT_SYNCFILESTORAGE:
+            kind = SynchronizedRandomAccessStorageModule.class;
+            break;
+        case ELEMENT_ASYNCFILESTORAGE:
+            kind = RandomAccessStorageModule.class;
+            break;
+        case ELEMENT_JCLOUDSSTORAGE:
+            kind = JCloudsStorageModule.class;
+            break;
         }
 
         // Getting storagepath

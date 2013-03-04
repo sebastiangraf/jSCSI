@@ -1,13 +1,13 @@
 package org.jscsi.target.storage;
 
-import static org.testng.Assert.fail;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import org.jscsi.target.storage.IStorageModule.STORAGEKIND;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -18,7 +18,7 @@ public class RandomAccessStorageModuleTest {
 
     private static IStorageModule module = null;
 
-    private static final int TEST_FILE_SIZE = 1024;
+    private static final int TEST_FILE_SIZE = 262144;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -26,12 +26,13 @@ public class RandomAccessStorageModuleTest {
         // make sure the file exists, has the correct length and is
         // accessible via module
         File file = new File(TEST_FILE_NAME);
-        if (!file.exists())
+        if (!file.exists()) {
             file.createNewFile();
-        RandomAccessFile raf = new RandomAccessFile(file, "rw");
-        raf.setLength(TEST_FILE_SIZE);
-        raf.close();
-        module = RandomAccessStorageModule.open(file, TEST_FILE_SIZE, true, STORAGEKIND.SyncFile);
+        }
+        RandomAccessFile rf = new RandomAccessFile(TEST_FILE_NAME, "rw");
+        rf.setLength(TEST_FILE_SIZE);
+        rf.close();
+        module = RandomAccessStorageModule.open(file, TEST_FILE_SIZE, true, JCloudsStorageModule.class);
     }
 
     @AfterClass
@@ -46,8 +47,9 @@ public class RandomAccessStorageModuleTest {
 
         // create and initialize arrays
         final byte[] writeArray = new byte[TEST_FILE_SIZE];
-        for (int i = 0; i < TEST_FILE_SIZE; ++i)
+        for (int i = 0; i < TEST_FILE_SIZE; ++i) {
             writeArray[i] = (byte)(Math.random() * 256);
+        }
         final byte[] readArray = new byte[TEST_FILE_SIZE];
 
         // write
@@ -94,14 +96,14 @@ public class RandomAccessStorageModuleTest {
         assertEquals(1, result);
         result = module.checkBounds(2,// logicalBlockAddress
             1);// transferLengthInBlocks
-        assertEquals(1, result);
+        assertEquals(0, result);
     }
 
     @Test
     public void testCheckBounds2() {
         int result = module.checkBounds(0,// logicalBlockAddress
             3);// transferLengthInBlocks
-        assertEquals(2, result);
+        assertEquals(0, result);
         result = module.checkBounds(0,// logicalBlockAddress
             -1);// transferLengthInBlocks
         assertEquals(2, result);

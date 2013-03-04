@@ -18,11 +18,6 @@ import org.jscsi.target.scsi.cdb.CommandDescriptorBlock;
  */
 public interface IStorageModule {
 
-    /** Enum to denote the modules. */
-    enum STORAGEKIND {
-        SyncFile, AsyncFile;
-    }
-
     /**
      * A fictitious block size.
      */
@@ -118,4 +113,5 @@ public interface IStorageModule {
      *             to be closed
      */
     void close() throws IOException;
+
 }

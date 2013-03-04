@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.channels.FileChannel;
 
 import org.slf4j.Logger;
@@ -59,10 +61,9 @@ public class RandomAccessStorageModule implements IStorageModule {
      * @throws FileNotFoundException
      *             if the specified file does not exist
      */
-    protected RandomAccessStorageModule(final long sizeInBlocks, final RandomAccessFile randomAccessFile)
-        throws FileNotFoundException {
+    public RandomAccessStorageModule(final long sizeInBlocks, final File file) throws FileNotFoundException {
         this.sizeInBlocks = sizeInBlocks;
-        this.randomAccessFile = randomAccessFile;
+        this.randomAccessFile = new RandomAccessFile(file, MODE);
     }
 
     /**
@@ -128,9 +129,8 @@ public class RandomAccessStorageModule implements IStorageModule {
      * @throws IOException
      */
     public static synchronized final IStorageModule open(final File file, final long storageLength,
-        final boolean create, IStorageModule.STORAGEKIND kind) throws IOException {
+        final boolean create, Class<? extends IStorageModule> kind) throws IOException {
         long sizeInBlocks;
-        RandomAccessFile randomAccessFile;
         if (create) {
             sizeInBlocks = storageLength / VIRTUAL_BLOCK_SIZE;
             createStorageVolume(file, storageLength);
@@ -138,15 +138,15 @@ public class RandomAccessStorageModule implements IStorageModule {
             sizeInBlocks = file.length() / VIRTUAL_BLOCK_SIZE;
         }
         // throws exc. if !file.exists()
-        randomAccessFile = new RandomAccessFile(file, MODE);
-        switch (kind) {
-        case SyncFile:
-            return new SynchronizedRandomAccessStorageModule(sizeInBlocks, randomAccessFile);
-        case AsyncFile:
-            return new RandomAccessStorageModule(sizeInBlocks, randomAccessFile);
+        @SuppressWarnings("unchecked")
+        Constructor<? extends IStorageModule> cons =
+            (Constructor<? extends IStorageModule>)kind.getConstructors()[0];
+        try {
+            IStorageModule mod = cons.newInstance(sizeInBlocks, file);
+            return mod;
+        } catch (InvocationTargetException | IllegalAccessException | InstantiationException exc) {
+            throw new IOException(exc);
         }
-        throw new IllegalStateException("No kind found, no storage initialized");
-
     }
 
     /**
