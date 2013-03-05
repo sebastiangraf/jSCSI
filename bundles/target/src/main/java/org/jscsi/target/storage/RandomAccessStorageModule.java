@@ -131,11 +131,9 @@ public class RandomAccessStorageModule implements IStorageModule {
     public static synchronized final IStorageModule open(final File file, final long storageLength,
         final boolean create, Class<? extends IStorageModule> kind) throws IOException {
         long sizeInBlocks;
-        if (create) {
-            sizeInBlocks = storageLength / VIRTUAL_BLOCK_SIZE;
+        sizeInBlocks = storageLength / VIRTUAL_BLOCK_SIZE;
+        if (create && !(kind.equals(JCloudsStorageModule.class))) {
             createStorageVolume(file, storageLength);
-        } else {
-            sizeInBlocks = storageLength / VIRTUAL_BLOCK_SIZE;
         }
         // throws exc. if !file.exists()
         @SuppressWarnings("unchecked")

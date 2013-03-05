@@ -6,6 +6,7 @@ import static org.testng.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -23,15 +24,9 @@ public class RandomAccessStorageModuleTest {
     public static void setUpBeforeClass() throws Exception {
 
         File file = new File(TEST_FILE_NAME);
-        // //make sure the file exists, has the correct length and is
-        // // accessible via module, if RandomAccessModule is chosen
-        // if (!file.exists()) {
-        // file.createNewFile();
-        // }
-        // RandomAccessFile rf = new RandomAccessFile(TEST_FILE_NAME, "rw");
-        // rf.setLength(TEST_FILE_SIZE);
-        // rf.close();
-        module = RandomAccessStorageModule.open(file, TEST_FILE_SIZE, false, JCloudsStorageModule.class);
+        // make sure the file exists, has the correct length and is
+        // accessible via module, if RandomAccessModule is chosen
+        module = RandomAccessStorageModule.open(file, TEST_FILE_SIZE, true, RandomAccessStorageModule.class);
     }
 
     @AfterClass

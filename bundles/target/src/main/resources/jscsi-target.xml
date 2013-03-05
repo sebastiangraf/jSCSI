@@ -36,20 +36,20 @@
         <Target>
             <TargetName>iqn.2010-04.local-test:disk-1</TargetName>
             <TargetAlias>jSCSI Target</TargetAlias>
-            <SyncFileStorage>
+            <JCloudsStorage>
                 <Path>/tmp/storage1.dat</Path>
                 <NoCreate />
                 <!-- <Create size="0.75"/>-->
-            </SyncFileStorage>
+            </JCloudsStorage>
         </Target>
         <Target>
             <TargetName>iqn.2010-04.local-test:disk-2</TargetName>
             <TargetAlias>jSCSI Target</TargetAlias>
-            <AsyncFileStorage>
+            <JCloudsStorage>
                 <Path>/tmp/storage2.dat</Path>
                 <NoCreate />
                 <!-- <Create size="0.75"/>-->
-            </AsyncFileStorage>
+            </JCloudsStorage>
         </Target>
     </TargetList>
     <GlobalConfig>
