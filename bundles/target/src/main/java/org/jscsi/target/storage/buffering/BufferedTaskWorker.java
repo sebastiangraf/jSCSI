@@ -111,39 +111,37 @@ public class BufferedTaskWorker implements Callable<Void> {
         int endIndex = (int)((storageIndex + length) / SIZE_PER_BUCKET);
         int endIndexMax = (int)((storageIndex + length) % SIZE_PER_BUCKET);
 
-        for (int i = startIndex; i <= endIndex; i++) {
-            Blob blob;
-            byte[] val;
-            if (mBlobStore.blobExists(mContainerName, Long.toString(i))) {
-                blob = mBlobStore.getBlob(mContainerName, Long.toString(i));
-                val = ByteStreams.toByteArray(blob.getPayload().getInput());
-            } else {
-                blob = mBlobStore.blobBuilder(Long.toString(i)).build();
-                val = new byte[SIZE_PER_BUCKET];
-            }
-            if (i == startIndex && i == endIndex) {
-                System.arraycopy(bytes, bytesOffset, val, startIndexOffset,
-                    bytes.length - bytesOffset < endIndexMax ? bytes.length - bytesOffset : endIndexMax);
-            } else if (i == startIndex) {
-                System.arraycopy(bytes, bytesOffset, val, startIndexOffset,
-                    bytes.length - bytesOffset < SIZE_PER_BUCKET - startIndexOffset ? bytes.length
-                        - bytesOffset : SIZE_PER_BUCKET - startIndexOffset);
-            } else if (i == endIndex) {
-                try {
-                    System.arraycopy(bytes, bytesOffset + (SIZE_PER_BUCKET * (i - startIndex)), val, 0,
-                        endIndexMax);
-                } catch (ArrayIndexOutOfBoundsException exc) {
-                    throw exc;
-                }
-            } else {
-                System.arraycopy(bytes, bytesOffset + (SIZE_PER_BUCKET * (i - startIndex)), val, 0,
-                    SIZE_PER_BUCKET);
-            }
-            blob.setPayload(val);
-            mBlobStore.putBlob(mContainerName, blob);
-            mElements.remove(new Long(currentTask.getStorageIndex()));
+        // caring about first bucket
+        Blob firstBucket = getBlob(Long.toString(startIndex));
+        byte[] firstBytes = ByteStreams.toByteArray(firstBucket.getPayload().getInput());
+        int bytesWritten =
+            SIZE_PER_BUCKET - startIndexOffset < length ? SIZE_PER_BUCKET - startIndexOffset : length;
+        System.arraycopy(bytes, bytesOffset, firstBytes, startIndexOffset, bytesWritten);
+        firstBucket.setPayload(firstBytes);
+        mBlobStore.putBlob(mContainerName, firstBucket);
+
+        // getting all clusters in between
+        for (int i = startIndex + 1; i < endIndex; i++) {
+            Blob nextBucket = getBlob(Long.toString(i));
+            byte[] nextBytes = ByteStreams.toByteArray(nextBucket.getPayload().getInput());
+            System.arraycopy(bytes, bytesWritten, nextBytes, 0, SIZE_PER_BUCKET);
+            nextBucket.setPayload(nextBytes);
+            mBlobStore.putBlob(mContainerName, nextBucket);
+            bytesWritten = bytesWritten + SIZE_PER_BUCKET;
         }
 
+        // checking if there is a last cluster
+        if (startIndex != endIndex) {
+            Blob lastBucket = getBlob(Long.toString(endIndex));
+            byte[] lastBytes = ByteStreams.toByteArray(lastBucket.getPayload().getInput());
+            System.arraycopy(bytes, bytesWritten, lastBytes, 0, endIndexMax < SIZE_PER_BUCKET ? endIndexMax
+                : SIZE_PER_BUCKET);
+            lastBucket.setPayload(lastBytes);
+            mBlobStore.putBlob(mContainerName, lastBucket);
+            bytesWritten = bytesWritten + SIZE_PER_BUCKET;
+        }
+
+        mElements.remove(new Long(currentTask.getStorageIndex()));
     }
 
     /**
@@ -194,6 +192,19 @@ public class BufferedTaskWorker implements Callable<Void> {
         }
 
         return collisions;
+    }
+
+    private Blob getBlob(String pKey) throws IOException {
+
+        Blob blob;
+        if (!mBlobStore.blobExists(mContainerName, pKey)) {
+            blob = mBlobStore.blobBuilder(pKey).build();
+            byte[] val = new byte[SIZE_PER_BUCKET];
+            blob.setPayload(val);
+        } else {
+            blob = mBlobStore.getBlob(mContainerName, pKey);
+        }
+        return blob;
     }
 
     /**

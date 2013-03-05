@@ -6,7 +6,6 @@ package org.jscsi.target.storage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 import java.util.Properties;
 
 import org.jclouds.ContextBuilder;
@@ -16,7 +15,6 @@ import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.filesystem.reference.FilesystemConstants;
 import org.jscsi.target.storage.buffering.BufferedTaskWorker;
 import org.jscsi.target.storage.buffering.BufferedWriteTask;
-import org.jscsi.target.storage.buffering.Collision;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -141,27 +139,21 @@ public class JCloudsStorageModule implements IStorageModule {
 
         ByteArrayDataOutput output = ByteStreams.newDataOutput(length);
 
-        for (long i = startIndex; i <= endIndex; i++) {
+        // getting the blob at the first cluster
+        byte[] firstCluster = getBlobOrBuild(Long.toString(startIndex));
+        output.write(firstCluster, startIndexOffset, SIZE_PER_BUCKET - startIndexOffset < length
+            ? SIZE_PER_BUCKET - startIndexOffset : length);
 
-            Blob blob;
-            byte[] val;
-            if (mStore.blobExists(mContainerName, Long.toString(i))) {
-                blob = mStore.getBlob(mContainerName, Long.toString(i));
-                val = ByteStreams.toByteArray(blob.getPayload().getInput());
-            } else {
-                blob = mStore.blobBuilder(Long.toString(i)).build();
-                val = new byte[SIZE_PER_BUCKET];
-            }
+        // getting all clusters in between
+        for (long i = startIndex + 1; i < endIndex; i++) {
+            byte[] nextCluster = getBlobOrBuild(Long.toString(i));
+            output.write(nextCluster, 0, SIZE_PER_BUCKET);
+        }
 
-            if (i == startIndex && i == endIndex) {
-                output.write(val, startIndexOffset, length);
-            } else if (i == startIndex) {
-                output.write(val, startIndexOffset, SIZE_PER_BUCKET - startIndexOffset);
-            } else if (i == endIndex) {
-                output.write(val, 0, endIndexMax);
-            } else {
-                output.write(val);
-            }
+        // checking if there is a last cluster
+        if (startIndex != endIndex) {
+            byte[] lastCluster = getBlobOrBuild(Long.toString(endIndex));
+            output.write(lastCluster, 0, endIndexMax < SIZE_PER_BUCKET ? endIndexMax : SIZE_PER_BUCKET);
 
         }
 
@@ -203,6 +195,20 @@ public class JCloudsStorageModule implements IStorageModule {
         // throw new IOException(e);
         // }
         mContext.close();
+    }
+
+    private byte[] getBlobOrBuild(String pKey) throws IOException {
+
+        Blob blob;
+        byte[] val;
+        if (mStore.blobExists(mContainerName, pKey)) {
+            blob = mStore.getBlob(mContainerName, pKey);
+            val = ByteStreams.toByteArray(blob.getPayload().getInput());
+        } else {
+            blob = mStore.blobBuilder(pKey).build();
+            val = new byte[SIZE_PER_BUCKET];
+        }
+        return val;
     }
 
     private static String[] getCredentials() {
