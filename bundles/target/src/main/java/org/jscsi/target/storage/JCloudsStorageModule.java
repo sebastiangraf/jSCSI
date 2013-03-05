@@ -5,13 +5,9 @@ package org.jscsi.target.storage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.BlobStore;
@@ -20,7 +16,6 @@ import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.filesystem.reference.FilesystemConstants;
 import org.jscsi.target.storage.buffering.BufferedTaskWorker;
 import org.jscsi.target.storage.buffering.BufferedWriteTask;
-import org.jscsi.target.storage.buffering.BufferedWriteTask.PoisonTask;
 import org.jscsi.target.storage.buffering.Collision;
 
 import com.google.common.io.ByteArrayDataOutput;
@@ -34,6 +29,9 @@ public class JCloudsStorageModule implements IStorageModule {
 
     /** Number of Blocks in one Cluster. */
     public static final int BLOCK_IN_CLUSTER = 512;
+
+    /** Number of Bytes in Bucket. */
+    public final static int SIZE_PER_BUCKET = BLOCK_IN_CLUSTER * VIRTUAL_BLOCK_SIZE;
 
     private final long mNumberOfCluster;
 
@@ -129,19 +127,17 @@ public class JCloudsStorageModule implements IStorageModule {
     public void read(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
 
         // Overwriting segments in the byte array using the writer tasks that are still in progress.
-        List<Collision> collisions = mWorker.checkForCollisions(length, storageIndex);
+        // List<Collision> collisions = mWorker.checkForCollisions(length, storageIndex);
 
         // Using the most recent revision
         if (bytesOffset + length > bytes.length) {
             throw new IOException();
         }
-        int startIndex = (int)(storageIndex / (BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
-        int startIndexOffset = (int)(storageIndex % (BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
+        int startIndex = (int)(storageIndex / SIZE_PER_BUCKET);
+        int startIndexOffset = (int)(storageIndex % SIZE_PER_BUCKET);
 
-        int endIndex =
-            (int)((storageIndex + length) / (BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
-        int endIndexMax =
-            (int)((storageIndex + length) % (BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
+        int endIndex = (int)((storageIndex + length) / SIZE_PER_BUCKET);
+        int endIndexMax = (int)((storageIndex + length) % SIZE_PER_BUCKET);
 
         ByteArrayDataOutput output = ByteStreams.newDataOutput(length);
 
@@ -154,14 +150,13 @@ public class JCloudsStorageModule implements IStorageModule {
                 val = ByteStreams.toByteArray(blob.getPayload().getInput());
             } else {
                 blob = mStore.blobBuilder(Long.toString(i)).build();
-                val = new byte[IStorageModule.VIRTUAL_BLOCK_SIZE * JCloudsStorageModule.BLOCK_IN_CLUSTER];
+                val = new byte[SIZE_PER_BUCKET];
             }
 
             if (i == startIndex && i == endIndex) {
                 output.write(val, startIndexOffset, length);
             } else if (i == startIndex) {
-                output.write(val, startIndexOffset, (BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE)
-                    - startIndexOffset);
+                output.write(val, startIndexOffset, SIZE_PER_BUCKET - startIndexOffset);
             } else if (i == endIndex) {
                 output.write(val, 0, endIndexMax);
             } else {
@@ -172,14 +167,14 @@ public class JCloudsStorageModule implements IStorageModule {
 
         System.arraycopy(output.toByteArray(), 0, bytes, bytesOffset, length);
 
-        for (Collision collision : collisions) {
-            if (collision.getStart() != storageIndex) {
-                System.arraycopy(collision.getBytes(), 0, bytes,
-                    (int)(bytesOffset + (collision.getStart() - storageIndex)), collision.getBytes().length);
-            } else {
-                System.arraycopy(collision.getBytes(), 0, bytes, bytesOffset, collision.getBytes().length);
-            }
-        }
+        // for (Collision collision : collisions) {
+        // if (collision.getStart() != storageIndex) {
+        // System.arraycopy(collision.getBytes(), 0, bytes,
+        // (int)(bytesOffset + (collision.getStart() - storageIndex)), collision.getBytes().length);
+        // } else {
+        // System.arraycopy(collision.getBytes(), 0, bytes, bytesOffset, collision.getBytes().length);
+        // }
+        // }
 
     }
 
