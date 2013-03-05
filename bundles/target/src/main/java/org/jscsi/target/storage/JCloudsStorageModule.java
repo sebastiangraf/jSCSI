@@ -66,7 +66,7 @@ public class JCloudsStorageModule implements IStorageModule {
      */
     public JCloudsStorageModule(final long pSizeInBlocks, final File pFile) {
         try {
-            mNumberOfCluster = pSizeInBlocks / BLOCK_IN_CLUSTER;
+            mNumberOfCluster = 2097152 / BLOCK_IN_CLUSTER;
             mContainerName = "grave9283746";
             String[] credentials = getCredentials();
             if (credentials.length == 0) {
