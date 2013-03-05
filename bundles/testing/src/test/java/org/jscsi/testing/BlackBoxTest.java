@@ -193,21 +193,21 @@ public class BlackBoxTest {
      */
     @Test
     public final void testReadWriteEquality() throws Exception {
-    	
+
         Future<Void> returnVal1 = session.write(writeBuffer, 0, writeBuffer.remaining());
         returnVal1.get();
-        
-        assertTrue(!Arrays.equals(writeBuffer.array(),readBuffer.array()));
+
+        assertTrue(!Arrays.equals(writeBuffer.array(), readBuffer.array()));
 
         Future<Void> returnVal2 = session.read(readBuffer, 0, readBuffer.remaining());
         returnVal2.get();
 
-        assertTrue(Arrays.equals(writeBuffer.array(),readBuffer.array()));
+        assertTrue(Arrays.equals(writeBuffer.array(), readBuffer.array()));
 
         writeBuffer.flip();
         readBuffer.flip();
 
-        assertTrue(Arrays.equals(writeBuffer.array(),readBuffer.array()));
+        assertTrue(Arrays.equals(writeBuffer.array(), readBuffer.array()));
 
     }
 
@@ -240,9 +240,8 @@ public class BlackBoxTest {
         for (int i = 0; i < writeBuffers.length; i++) {
             Future<Void> returnVal1;
             returnVal1 = session.write(writeBuffers[i], LOGICAL_BLOCK_ADDRESS, writeBuffers[i].remaining());
-
             returnVal1.get();
-            
+
             Future<Void> returnVal2;
             returnVal2 = session.read(readBuffers[i], LOGICAL_BLOCK_ADDRESS, readBuffers[i].remaining());
             returnVal2.get();
@@ -250,7 +249,7 @@ public class BlackBoxTest {
         }
 
         for (int i = 0; i < writeBuffers.length; i++) {
-            assertTrue(Arrays.equals(writeBuffers[i].array(),readBuffers[i].array()));
+            assertTrue(Arrays.equals(writeBuffers[i].array(), readBuffers[i].array()));
             // Need to write them into a separate buffer since flip doesn't seem
             // to work in a Array of ByteBuffers..
             ByteBuffer write = ByteBuffer.allocate(BUFFER_SIZE);

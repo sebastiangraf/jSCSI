@@ -43,10 +43,10 @@ public class JCloudsStorageModule implements IStorageModule {
 
     private final BlobStoreContext mContext;
 
-    /**
-     * The service that holds the BufferedTaskWorker
-     */
-    private final ExecutorService mWriterService;
+    // /**
+    // * The service that holds the BufferedTaskWorker
+    // */
+    // private final ExecutorService mWriterService;
 
     /**
      * The worker to process write tasks
@@ -86,10 +86,10 @@ public class JCloudsStorageModule implements IStorageModule {
             if (!mStore.containerExists(mContainerName)) {
                 mStore.createContainerInLocation(null, mContainerName);
             }
-            mWriterService = Executors.newSingleThreadExecutor();
+            // mWriterService = Executors.newSingleThreadExecutor();
             mWorker = new BufferedTaskWorker(mStore, mContainerName);
-            mWriterService.submit(mWorker);
-            mWriterService.shutdown();
+            // mWriterService.submit(mWorker);
+            // mWriterService.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -188,11 +188,11 @@ public class JCloudsStorageModule implements IStorageModule {
      */
     @Override
     public void write(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
-        try {
-            mWorker.newTask(new BufferedWriteTask(bytes, bytesOffset, length, storageIndex));
-        } catch (InterruptedException e) {
-            throw new IOException(e);
-        }
+        // try {
+        mWorker.performTask(new BufferedWriteTask(bytes, bytesOffset, length, storageIndex));
+        // } catch (InterruptedException e) {
+        // throw new IOException(e);
+        // }
     }
 
     /**
@@ -201,12 +201,12 @@ public class JCloudsStorageModule implements IStorageModule {
     @Override
     public void close() throws IOException {
 
-        try {
-            mWorker.newTask(new PoisonTask());
-            mWriterService.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            throw new IOException(e);
-        }
+        // try {
+        // mWorker.newTask(new PoisonTask());
+        // mWriterService.awaitTermination(10, TimeUnit.SECONDS);
+        // } catch (InterruptedException e) {
+        // throw new IOException(e);
+        // }
         mContext.close();
     }
 

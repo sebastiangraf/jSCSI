@@ -93,64 +93,71 @@ public class BufferedTaskWorker implements Callable<Void> {
      * 
      * @throws IOException
      */
-    private void performTask(BufferedWriteTask currentTask) throws IOException {
+    public void performTask(BufferedWriteTask currentTask) throws IOException {
+        try {
+            byte[] bytes = currentTask.getBytes();
+            int bytesOffset = currentTask.getOffset();
+            int length = currentTask.getLength();
+            long storageIndex = currentTask.getStorageIndex();
 
-        byte[] bytes = currentTask.getBytes();
-        int bytesOffset = currentTask.getOffset();
-        int length = currentTask.getLength();
-        long storageIndex = currentTask.getStorageIndex();
-
-        LOGGER.info("Starting to write with param: \nbytes = " + Arrays.toString(bytes).substring(0, 100)
-            + "\nbytesOffset = " + bytesOffset + "\nlength = " + length + "\nstorageIndex = " + storageIndex);
-        // Using the most recent revision
-        if (bytesOffset + length > bytes.length) {
-            throw new IOException();
-        }
-        int startIndex =
-            (int)(storageIndex / (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
-        int startIndexOffset =
-            (int)(storageIndex % (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
-
-        int endIndex =
-            (int)((storageIndex + length) / (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
-        int endIndexMax =
-            (int)((storageIndex + length) % (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
-
-        for (int i = startIndex; i <= endIndex; i++) {
-            Blob blob;
-            byte[] val;
-            if (mBlobStore.blobExists(mContainerName, Long.toString(i))) {
-                blob = mBlobStore.getBlob(mContainerName, Long.toString(i));
-                val = ByteStreams.toByteArray(blob.getPayload().getInput());
-            } else {
-                blob = mBlobStore.blobBuilder(Long.toString(i)).build();
-                val = new byte[IStorageModule.VIRTUAL_BLOCK_SIZE * JCloudsStorageModule.BLOCK_IN_CLUSTER];
+            LOGGER.info("Starting to write with param: \nbytes = " + Arrays.toString(bytes).substring(0, 100)
+                + "\nbytesOffset = " + bytesOffset + "\nlength = " + length + "\nstorageIndex = "
+                + storageIndex);
+            // Using the most recent revision
+            if (bytesOffset + length > bytes.length) {
+                throw new IOException();
             }
+            int startIndex =
+                (int)(storageIndex / (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
+            int startIndexOffset =
+                (int)(storageIndex % (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
 
-            if (i == startIndex && i == endIndex) {
-                System.arraycopy(bytes, bytesOffset, val, startIndexOffset, endIndexMax);
-            } else if (i == startIndex) {
-                System.arraycopy(bytes, bytesOffset, val, startIndexOffset,
-                    (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE)
-                        - startIndexOffset);
-            } else if (i == endIndex) {
-                System
-                    .arraycopy(
-                        bytes,
-                        bytesOffset
-                            + ((JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE) * (i - startIndex)),
-                        val, 0, endIndexMax);
-            } else {
-                System
-                    .arraycopy(
-                        bytes,
-                        bytesOffset
-                            + ((JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE) * (i - startIndex)),
-                        val, 0, (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
+            int endIndex =
+                (int)((storageIndex + length) / (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
+            int endIndexMax =
+                (int)((storageIndex + length) % (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
+
+            for (int i = startIndex; i <= endIndex; i++) {
+                Blob blob;
+                byte[] val;
+                if (mBlobStore.blobExists(mContainerName, Long.toString(i))) {
+                    blob = mBlobStore.getBlob(mContainerName, Long.toString(i));
+                    val = ByteStreams.toByteArray(blob.getPayload().getInput());
+                } else {
+                    blob = mBlobStore.blobBuilder(Long.toString(i)).build();
+                    val = new byte[IStorageModule.VIRTUAL_BLOCK_SIZE * JCloudsStorageModule.BLOCK_IN_CLUSTER];
+                }
+
+                if (i == startIndex && i == endIndex) {
+                    System.arraycopy(bytes, bytesOffset, val, startIndexOffset,
+                        bytes.length - bytesOffset < endIndexMax ? bytes.length - bytesOffset : endIndexMax);
+                } else if (i == startIndex) {
+                    System.arraycopy(bytes, bytesOffset, val, startIndexOffset,
+                        (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE)
+                            - startIndexOffset);
+                } else if (i == endIndex) {
+                    System
+                        .arraycopy(
+                            bytes,
+                            bytesOffset
+                                + ((JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE) * (i - startIndex)),
+                            val, 0, endIndexMax);
+                } else {
+                    System
+                        .arraycopy(
+                            bytes,
+                            bytesOffset
+                                + ((JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE) * (i - startIndex)),
+                            val, 0,
+                            (JCloudsStorageModule.BLOCK_IN_CLUSTER * IStorageModule.VIRTUAL_BLOCK_SIZE));
+                }
+                blob.setPayload(val);
+                mBlobStore.putBlob(mContainerName, blob);
+                mElements.remove(new Long(currentTask.getStorageIndex()));
             }
-            blob.setPayload(val);
-            mBlobStore.putBlob(mContainerName, blob);
-            mElements.remove(new Long(currentTask.getStorageIndex()));
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            throw new IOException(exc);
         }
 
     }
