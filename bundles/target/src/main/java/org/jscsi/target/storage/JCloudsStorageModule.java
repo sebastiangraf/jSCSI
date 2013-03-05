@@ -17,6 +17,7 @@ import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
+import org.jclouds.filesystem.reference.FilesystemConstants;
 import org.jscsi.target.storage.buffering.BufferedTaskWorker;
 import org.jscsi.target.storage.buffering.BufferedWriteTask;
 import org.jscsi.target.storage.buffering.BufferedWriteTask.PoisonTask;
@@ -67,10 +68,18 @@ public class JCloudsStorageModule implements IStorageModule {
         try {
             mNumberOfCluster = pSizeInBlocks / BLOCK_IN_CLUSTER;
             mContainerName = "grave9283746";
-            // Init
-            mContext =
-                ContextBuilder.newBuilder("aws-s3").credentials(getCredentials()[0], getCredentials()[1])
-                    .buildView(BlobStoreContext.class);
+            String[] credentials = getCredentials();
+            if (credentials.length == 0) {
+                Properties properties = new Properties();
+                properties.setProperty(FilesystemConstants.PROPERTY_BASEDIR, pFile.getAbsolutePath());
+                mContext =
+                    ContextBuilder.newBuilder("filesystem").overrides(properties).credentials("testUser",
+                        "testPass").buildView(BlobStoreContext.class);
+            } else {
+                mContext =
+                    ContextBuilder.newBuilder("aws-s3").credentials(getCredentials()[0], getCredentials()[1])
+                        .buildView(BlobStoreContext.class);
+            }
 
             // Create Container
             mStore = mContext.getBlobStore();
@@ -202,6 +211,7 @@ public class JCloudsStorageModule implements IStorageModule {
     }
 
     private static String[] getCredentials() {
+//        return new String[0];
         File userStore =
             new File(System.getProperty("user.home"), new StringBuilder(".credentials")
                 .append(File.separator).append("aws.properties").toString());
@@ -218,7 +228,7 @@ public class JCloudsStorageModule implements IStorageModule {
             } catch (IOException exc) {
                 throw new RuntimeException(exc);
             }
-        }
-
+ }
+        
     }
 }

@@ -135,7 +135,7 @@ public class RandomAccessStorageModule implements IStorageModule {
             sizeInBlocks = storageLength / VIRTUAL_BLOCK_SIZE;
             createStorageVolume(file, storageLength);
         } else {
-            sizeInBlocks = file.length() / VIRTUAL_BLOCK_SIZE;
+            sizeInBlocks = storageLength / VIRTUAL_BLOCK_SIZE;
         }
         // throws exc. if !file.exists()
         @SuppressWarnings("unchecked")
@@ -200,6 +200,24 @@ public class RandomAccessStorageModule implements IStorageModule {
             }
         }
 
+    }
+
+    /**
+     * Deleting a storage recursive. Used for deleting a databases
+     * 
+     * @param pFile
+     *            which should be deleted included descendants
+     * @return true if delete is valid
+     */
+    public static boolean recursiveDelete(final File pFile) {
+        if (pFile.isDirectory()) {
+            for (final File child : pFile.listFiles()) {
+                if (!recursiveDelete(child)) {
+                    return false;
+                }
+            }
+        }
+        return pFile.delete();
     }
 
 }
