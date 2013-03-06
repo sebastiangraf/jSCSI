@@ -122,27 +122,23 @@ public class JCloudsStorageModule implements IStorageModule {
      * {@inheritDoc}
      */
     @Override
-    public void read(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
+    public void read(byte[] bytes, long storageIndex) throws IOException {
 
         // Overwriting segments in the byte array using the writer tasks that are still in progress.
         // List<Collision> collisions = mWorker.checkForCollisions(length, storageIndex);
 
-        // Using the most recent revision
-        if (bytesOffset + length > bytes.length) {
-            throw new IOException();
-        }
         int startIndex = (int)(storageIndex / SIZE_PER_BUCKET);
         int startIndexOffset = (int)(storageIndex % SIZE_PER_BUCKET);
 
-        int endIndex = (int)((storageIndex + length) / SIZE_PER_BUCKET);
-        int endIndexMax = (int)((storageIndex + length) % SIZE_PER_BUCKET);
+        int endIndex = (int)((storageIndex + bytes.length) / SIZE_PER_BUCKET);
+        int endIndexMax = (int)((storageIndex + bytes.length) % SIZE_PER_BUCKET);
 
-        ByteArrayDataOutput output = ByteStreams.newDataOutput(length);
+        ByteArrayDataOutput output = ByteStreams.newDataOutput(bytes.length);
 
         // getting the blob at the first cluster
         byte[] firstCluster = getBlobOrBuild(Long.toString(startIndex));
-        output.write(firstCluster, startIndexOffset, SIZE_PER_BUCKET - startIndexOffset < length
-            ? SIZE_PER_BUCKET - startIndexOffset : length);
+        output.write(firstCluster, startIndexOffset, SIZE_PER_BUCKET - startIndexOffset < bytes.length
+            ? SIZE_PER_BUCKET - startIndexOffset : bytes.length);
 
         // getting all clusters in between
         for (long i = startIndex + 1; i < endIndex; i++) {
@@ -157,7 +153,7 @@ public class JCloudsStorageModule implements IStorageModule {
 
         }
 
-        System.arraycopy(output.toByteArray(), 0, bytes, bytesOffset, length);
+        System.arraycopy(output.toByteArray(), 0, bytes, 0, bytes.length);
 
         // for (Collision collision : collisions) {
         // if (collision.getStart() != storageIndex) {
@@ -174,9 +170,9 @@ public class JCloudsStorageModule implements IStorageModule {
      * {@inheritDoc}
      */
     @Override
-    public void write(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
+    public void write(byte[] bytes, long storageIndex) throws IOException {
         // try {
-        mWorker.performTask(new BufferedWriteTask(bytes, bytesOffset, length, storageIndex));
+        mWorker.performTask(new BufferedWriteTask(bytes, storageIndex));
         // } catch (InterruptedException e) {
         // throw new IOException(e);
         // }
@@ -201,8 +197,8 @@ public class JCloudsStorageModule implements IStorageModule {
 
         Blob blob;
         byte[] val;
-        if (mStore.blobExists(mContainerName, pKey)) {
-            blob = mStore.getBlob(mContainerName, pKey);
+        blob = mStore.getBlob(mContainerName, pKey);
+        if (blob != null) {
             val = ByteStreams.toByteArray(blob.getPayload().getInput());
         } else {
             blob = mStore.blobBuilder(pKey).build();

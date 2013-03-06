@@ -12,15 +12,13 @@ public class SynchronizedRandomAccessStorageModule extends RandomAccessStorageMo
     }
 
     @Override
-    public synchronized void read(byte[] bytes, int bytesOffset, int length, long storageIndex)
-        throws IOException {
-        super.read(bytes, bytesOffset, length, storageIndex);
+    public synchronized void read(byte[] bytes, long storageIndex) throws IOException {
+        super.read(bytes, storageIndex);
     }
 
     @Override
-    public synchronized void write(byte[] bytes, int bytesOffset, int length, long storageIndex)
-        throws IOException {
-        super.write(bytes, bytesOffset, length, storageIndex);
+    public synchronized void write(byte[] bytes, long storageIndex) throws IOException {
+        super.write(bytes, storageIndex);
     }
 
 }

@@ -1,7 +1,5 @@
 package org.jscsi.target.storage.buffering;
 
-
-
 /**
  * BufferedWriteTasks are used to
  * keep the information of a write request
@@ -18,16 +16,6 @@ public class BufferedWriteTask {
     private final byte[] mBytes;
 
     /**
-     * The offset of the bytes.
-     */
-    private final int mOffset;
-
-    /**
-     * How many bytes to write.
-     */
-    private final int mLength;
-
-    /**
      * Where to start writing in the storage.
      */
     private final long mStorageIndex;
@@ -37,15 +25,11 @@ public class BufferedWriteTask {
      * and are being buffered using this class and its constructor.
      * 
      * @param pBytes
-     * @param pOffset
-     * @param pLength
      * @param pStorageIndex
      */
-    public BufferedWriteTask(byte[] pBytes, int pOffset, int pLength, long pStorageIndex) {
+    public BufferedWriteTask(byte[] pBytes, long pStorageIndex) {
         super();
         this.mBytes = pBytes;
-        this.mOffset = pOffset;
-        this.mLength = pLength;
         this.mStorageIndex = pStorageIndex;
     }
 
@@ -59,27 +43,12 @@ public class BufferedWriteTask {
 
     /**
      * 
-     * @return int - the offset
-     */
-    public int getOffset() {
-        return mOffset;
-    }
-
-    /**
-     * 
-     * @return int - the length
-     */
-    public int getLength() {
-        return mLength;
-    }
-
-    /**
-     * 
      * @return long - the storageindex
      */
     public long getStorageIndex() {
         return mStorageIndex;
     }
+
     public static class PoisonTask extends BufferedWriteTask {
 
         /**
@@ -91,7 +60,7 @@ public class BufferedWriteTask {
          * @param pStorageIndex
          */
         public PoisonTask() {
-            super(new byte[0], -1, -1, -1);
+            super(new byte[0], -1);
         }
 
     }

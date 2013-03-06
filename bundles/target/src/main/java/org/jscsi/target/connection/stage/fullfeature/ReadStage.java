@@ -43,11 +43,10 @@ public class ReadStage extends ReadOrWriteStage {
         // get relevant variables ...
         // ... from settings
         final boolean immediateData = settings.getImmediateData();
-        final int maxRecvDataSegmentLength = settings.getMaxRecvDataSegmentLength();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("immediateData = " + immediateData);
-            LOGGER.debug("maxRecvDataSegmentLength = " + maxRecvDataSegmentLength);
+            LOGGER.debug("maxRecvDataSegmentLength = " + settings.getMaxRecvDataSegmentLength());
         }
 
         // ... and from the PDU
@@ -105,7 +104,7 @@ public class ReadStage extends ReadOrWriteStage {
         // *** send up to last but one Data-In PDU ***
         // (with DataSegmentSize == MaxRecvDataSegmentLength)
 
-        if (bytesSent < totalTransferLength - maxRecvDataSegmentLength) {
+        if (bytesSent < totalTransferLength - settings.getMaxRecvDataSegmentLength()) {
             /*
              * Initialize dataSegmentArray and dataSegment with
              * MaxRecvDataSegmentLength bytes.
@@ -114,11 +113,10 @@ public class ReadStage extends ReadOrWriteStage {
             dataSegment = ByteBuffer.wrap(dataSegmentArray);
         }
 
-        while (bytesSent < totalTransferLength - maxRecvDataSegmentLength) {
+        while (bytesSent < totalTransferLength - settings.getMaxRecvDataSegmentLength()) {
 
             // get data and prepare data segment
-            session.getStorageModule().read(dataSegmentArray, 0, maxRecvDataSegmentLength,
-                storageOffset + bytesSent);
+            session.getStorageModule().read(dataSegmentArray, storageOffset + bytesSent);
 
             // create and send PDU
             responsePdu = TargetPduFactory.createDataInPdu(false,// finalFlag,
@@ -144,7 +142,7 @@ public class ReadStage extends ReadOrWriteStage {
 
             // increment counters
             ++dataSequenceNumber;
-            bytesSent += maxRecvDataSegmentLength;
+            bytesSent += settings.getMaxRecvDataSegmentLength();
         }
 
         /*
@@ -158,8 +156,7 @@ public class ReadStage extends ReadOrWriteStage {
         // get data and prepare data segment
         final int bytesRemaining = totalTransferLength - bytesSent;
         dataSegmentArray = connection.getDataInArray(bytesRemaining);
-        session.getStorageModule().read(dataSegmentArray, 0, dataSegmentArray.length,
-            storageOffset + bytesSent);
+        session.getStorageModule().read(dataSegmentArray, storageOffset + bytesSent);
         dataSegment = ByteBuffer.wrap(dataSegmentArray);
 
         // create and send PDU (with or without status)

@@ -299,6 +299,7 @@ public class Configuration {
             storageLength =
                 Math.round(((Double.valueOf(sizeAttribute.getTextContent())) * Math.pow(1024, 3)));
         } else {
+            storageLength = new File(storageFilePath).length();
             create = false;
             // assert nextNode.getLocalName().equals(ELEMENT_DONTCREATE);
         }

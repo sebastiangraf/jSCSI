@@ -6,7 +6,6 @@ import static org.testng.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -47,14 +46,10 @@ public class RandomAccessStorageModuleTest {
 
         // write
         module.write(writeArray,// bytes (source)
-            0,// bytesOffset
-            TEST_FILE_SIZE,// length
             0);// storage index
 
         // read
         module.read(readArray,// bytes (destination)
-            0,// bytesOffset
-            TEST_FILE_SIZE,// length
             0);// storageIndex
 
         // check for errors

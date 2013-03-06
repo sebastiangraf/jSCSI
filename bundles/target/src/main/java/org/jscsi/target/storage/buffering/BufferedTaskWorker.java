@@ -4,7 +4,6 @@ import static org.jscsi.target.storage.JCloudsStorageModule.SIZE_PER_BUCKET;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -13,8 +12,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.domain.Blob;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.io.ByteStreams;
 
@@ -27,7 +24,7 @@ import com.google.common.io.ByteStreams;
  */
 public class BufferedTaskWorker implements Callable<Void> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BufferedTaskWorker.class);
+    // private static final Logger LOGGER = LoggerFactory.getLogger(BufferedTaskWorker.class);
 
     /**
      * The tasks that have to be performed.
@@ -77,8 +74,7 @@ public class BufferedTaskWorker implements Callable<Void> {
 
         while (true) {
             BufferedWriteTask task = mTasks.take();
-            if (task.getBytes().length == 0 && task.getLength() == -1 && task.getOffset() == -1
-                && task.getStorageIndex() == -1) {
+            if (task.getBytes().length == 0 && task.getStorageIndex() == -1) {
                 break;
             } else {
                 performTask(task);
@@ -95,28 +91,22 @@ public class BufferedTaskWorker implements Callable<Void> {
      */
     public void performTask(BufferedWriteTask currentTask) throws IOException {
         byte[] bytes = currentTask.getBytes();
-        int bytesOffset = currentTask.getOffset();
-        int length = currentTask.getLength();
         long storageIndex = currentTask.getStorageIndex();
 
-        LOGGER.info("Starting to write with param: \nbytes = " + Arrays.toString(bytes).substring(0, 100)
-            + "\nbytesOffset = " + bytesOffset + "\nlength = " + length + "\nstorageIndex = " + storageIndex);
-        // Using the most recent revision
-        if (bytesOffset + length > bytes.length) {
-            throw new IOException();
-        }
+        // LOGGER.info("Starting to write with param: \nbytes = " + Arrays.toString(bytes).substring(0, 100)
+        // + "\nbytesOffset = " + bytesOffset + "\nlength = " + length + "\nstorageIndex = " + storageIndex);
         int startIndex = (int)(storageIndex / SIZE_PER_BUCKET);
         int startIndexOffset = (int)(storageIndex % SIZE_PER_BUCKET);
 
-        int endIndex = (int)((storageIndex + length) / SIZE_PER_BUCKET);
-        int endIndexMax = (int)((storageIndex + length) % SIZE_PER_BUCKET);
+        int endIndex = (int)((storageIndex + bytes.length) / SIZE_PER_BUCKET);
+        int endIndexMax = (int)((storageIndex + bytes.length) % SIZE_PER_BUCKET);
 
         // caring about first bucket
         Blob firstBucket = getBlob(Long.toString(startIndex));
         byte[] firstBytes = ByteStreams.toByteArray(firstBucket.getPayload().getInput());
         int bytesWritten =
-            SIZE_PER_BUCKET - startIndexOffset < length ? SIZE_PER_BUCKET - startIndexOffset : length;
-        System.arraycopy(bytes, bytesOffset, firstBytes, startIndexOffset, bytesWritten);
+            SIZE_PER_BUCKET - startIndexOffset < bytes.length ? SIZE_PER_BUCKET - startIndexOffset : bytes.length;
+        System.arraycopy(bytes, 0, firstBytes, startIndexOffset, bytesWritten);
         firstBucket.setPayload(firstBytes);
         mBlobStore.putBlob(mContainerName, firstBucket);
 
@@ -156,7 +146,7 @@ public class BufferedTaskWorker implements Callable<Void> {
         List<Collision> collisions = new ArrayList<Collision>();
 
         for (BufferedWriteTask task : mElements.values()) {
-            if (overlappingIndizes(pLength, pStorageIndex, task.getLength(), task.getStorageIndex())) {
+            if (overlappingIndizes(pLength, pStorageIndex, task.getBytes().length, task.getStorageIndex())) {
                 // Determining where the two tasks collide
                 int start = 0;
                 int end = 0;
@@ -170,24 +160,24 @@ public class BufferedTaskWorker implements Callable<Void> {
                 }
 
                 // Determining the end point
-                if (task.getStorageIndex() + task.getLength() > pStorageIndex + pLength) {
+                if (task.getStorageIndex() + task.getBytes().length > pStorageIndex + pLength) {
                     end = (int)(pStorageIndex + pLength);
                 } else {
-                    end = (int)(task.getStorageIndex() + task.getLength());
+                    end = (int)(task.getStorageIndex() + task.getBytes().length);
                 }
 
                 bytes = new byte[end - start];
 
                 if (start == pStorageIndex) {
-                    System.arraycopy(task.getBytes(), (int)(task.getOffset() + (pStorageIndex - task
-                        .getStorageIndex())), bytes, 0, end - start);
+                    System.arraycopy(task.getBytes(), (int)(pStorageIndex - task.getStorageIndex()), bytes,
+                        0, end - start);
                 } else {
-                    System.arraycopy(task.getBytes(), task.getOffset(), bytes, 0, end - start);
+                    System.arraycopy(task.getBytes(), 0, bytes, 0, end - start);
                 }
 
                 collisions.add(new Collision(start, end, bytes));
 
-                LOGGER.info("Found collision from " + start + " to " + end);
+                // LOGGER.info("Found collision from " + start + " to " + end);
             }
         }
 
@@ -197,12 +187,11 @@ public class BufferedTaskWorker implements Callable<Void> {
     private Blob getBlob(String pKey) throws IOException {
 
         Blob blob;
-        if (!mBlobStore.blobExists(mContainerName, pKey)) {
+        blob = mBlobStore.getBlob(mContainerName, pKey);
+        if (blob == null) {
             blob = mBlobStore.blobBuilder(pKey).build();
             byte[] val = new byte[SIZE_PER_BUCKET];
             blob.setPayload(val);
-        } else {
-            blob = mBlobStore.getBlob(mContainerName, pKey);
         }
         return blob;
     }

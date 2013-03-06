@@ -70,18 +70,18 @@ public class RandomAccessStorageModule implements IStorageModule {
      * {@inheritDoc}
      */
     @Override
-    public void read(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
+    public void read(byte[] bytes, long storageIndex) throws IOException {
         randomAccessFile.seek(storageIndex);
-        randomAccessFile.read(bytes, bytesOffset, length);
+        randomAccessFile.read(bytes, 0, bytes.length);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void write(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException {
+    public void write(byte[] bytes, long storageIndex) throws IOException {
         randomAccessFile.seek(storageIndex);
-        randomAccessFile.write(bytes, bytesOffset, length);
+        randomAccessFile.write(bytes, 0, bytes.length);
     }
 
     /**

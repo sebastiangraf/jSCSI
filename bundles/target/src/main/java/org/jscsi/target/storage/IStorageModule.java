@@ -80,31 +80,23 @@ public interface IStorageModule {
      * 
      * @param bytes
      *            the array into which the data will be copied
-     * @param bytesOffset
-     *            the position of the first byte in <code>bytes</code>, which
      *            will be filled with data from storage
-     * @param length
-     *            the number of bytes to copy
      * @param storageIndex
      *            the position of the first byte to be copied
      * @throws IOException
      */
-    void read(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException;
+    void read(byte[] bytes, long storageIndex) throws IOException;
 
     /**
      * Saves part of the passed byte array's content.
      * 
      * @param bytes
      *            the source of the data to be stored
-     * @param bytesOffset
-     *            offset of the first byte to be stored
-     * @param length
-     *            the number of bytes to be copied
      * @param storageIndex
      *            byte offset in the storage area
      * @throws IOException
      */
-    void write(byte[] bytes, int bytesOffset, int length, long storageIndex) throws IOException;
+    void write(byte[] bytes, long storageIndex) throws IOException;
 
     /**
      * Closing the storage.
