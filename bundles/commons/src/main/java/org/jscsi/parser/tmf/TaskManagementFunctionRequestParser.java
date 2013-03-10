@@ -155,7 +155,7 @@ public final class TaskManagementFunctionRequestParser extends InitiatorMessageP
 
         final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
 
-        Utils.printField(sb, "Function", functionCode.value(), 1);
+//        Utils.printField(sb, "Function", functionCode.value(), 1);
         Utils.printField(sb, "LUN", logicalUnitNumber, 1);
         Utils.printField(sb, "Referenced Task Tag", referencedTaskTag, 1);
         sb.append(super.toString());

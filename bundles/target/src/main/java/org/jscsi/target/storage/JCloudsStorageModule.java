@@ -6,6 +6,7 @@ package org.jscsi.target.storage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.Callable;
@@ -29,6 +30,22 @@ import com.google.common.io.ByteStreams;
  */
 public class JCloudsStorageModule implements IStorageModule {
 
+    // /START DEBUG CODE
+    // private final static File writeFile = new File("/Users/sebi/Desktop/writeaccess.txt");
+    // private final static File readFile = new File("/Users/sebi/Desktop/readaccess.txt");
+    // static final FileWriter writer;
+    // static final FileWriter reader;
+    // static {
+    // try {
+    // writeFile.delete();
+    // readFile.delete();
+    // writer = new FileWriter(writeFile);
+    // reader = new FileWriter(readFile);
+    // } catch (IOException e) {
+    // throw new RuntimeException(e);
+    // }
+    // }
+
     /** Number of Blocks in one Cluster. */
     public static final int BLOCK_IN_CLUSTER = 512;
 
@@ -43,12 +60,11 @@ public class JCloudsStorageModule implements IStorageModule {
 
     private final BlobStoreContext mContext;
 
-    private final Cache<Integer, Blob> mCache;
+    private int lastBucketID = -1;
 
-    /**
-     * The service that holds the BufferedTaskWorker
-     */
-    private final ExecutorService mWriterService;
+    private Blob lastBlobAccess;
+
+    // private final Cache<Integer, Blob> mCache;
 
     /**
      * Creates a new {@link JCloudsStorageModules} backed by the specified
@@ -82,8 +98,6 @@ public class JCloudsStorageModule implements IStorageModule {
         if (!mStore.containerExists(mContainerName)) {
             mStore.createContainerInLocation(null, mContainerName);
         }
-        mWriterService = Executors.newSingleThreadExecutor();
-        mCache = CacheBuilder.newBuilder().maximumSize(10000).build();
     }
 
     /**
@@ -118,9 +132,14 @@ public class JCloudsStorageModule implements IStorageModule {
     public void read(byte[] bytes, long storageIndex) throws IOException {
 
         // Overwriting segments in the byte array using the writer tasks that are still in progress.
-        final int startIndex = (int)(storageIndex / SIZE_PER_BUCKET);
-        final int startIndexOffset = (int)(storageIndex % SIZE_PER_BUCKET);
-        Blob blob = getData(startIndex);
+        final int bucketIndex = (int)(storageIndex / SIZE_PER_BUCKET);
+        final int bucketOffset = (int)(storageIndex % SIZE_PER_BUCKET);
+        //
+        // // DEBUG CODE
+        // reader.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length + "\n");
+        // reader.flush();
+
+        Blob blob = getData(bucketIndex);
         final ByteArrayDataOutput output = ByteStreams.newDataOutput(bytes.length);
         byte[] data;
         if (blob == null) {
@@ -128,19 +147,35 @@ public class JCloudsStorageModule implements IStorageModule {
         } else {
             data = ByteStreams.toByteArray(blob.getPayload().getInput());
         }
-        output.write(data, startIndexOffset, SIZE_PER_BUCKET - startIndexOffset < bytes.length
-            ? SIZE_PER_BUCKET - startIndexOffset : bytes.length);
+        output.write(data, bucketOffset, bucketOffset + bytes.length > SIZE_PER_BUCKET ? SIZE_PER_BUCKET
+            - bucketOffset : bytes.length);
+
+        if (bucketOffset + bytes.length > SIZE_PER_BUCKET) {
+            blob = getData(bucketIndex + 1);
+            if (blob == null) {
+                data = new byte[SIZE_PER_BUCKET];
+            } else {
+                data = ByteStreams.toByteArray(blob.getPayload().getInput());
+            }
+            output.write(data, 0, bytes.length - (SIZE_PER_BUCKET - bucketOffset));
+        }
+
         System.arraycopy(output.toByteArray(), 0, bytes, 0, bytes.length);
+
     }
 
     private final Blob getData(int startIndex) throws IOException {
-        Blob blob = mCache.getIfPresent(startIndex);
+        // Blob blob = mCache.getIfPresent(startIndex);
+        // if (blob == null) {
+//        if (lastBucketID != -1) {
+//            mStore.putBlob(Integer.toString(lastBucketID), lastBlobAccess);
+//            lastBucketID = -1;
+//        }
+        Blob blob = mStore.getBlob(mContainerName, Integer.toString(startIndex));
         if (blob == null) {
-            blob = mStore.getBlob(mContainerName, Integer.toString(startIndex));
-            if (blob == null) {
-                return null;
-            }
+            return null;
         }
+        // }
         return blob;
     }
 
@@ -149,20 +184,46 @@ public class JCloudsStorageModule implements IStorageModule {
      */
     @Override
     public void write(byte[] bytes, long storageIndex) throws IOException {
-        final int startIndex = (int)(storageIndex / SIZE_PER_BUCKET);
-        final int startIndexOffset = (int)(storageIndex % SIZE_PER_BUCKET);
-        Blob blob = getData(startIndex);
+        final int bucketIndex = (int)(storageIndex / SIZE_PER_BUCKET);
+        final int bucketOffset = (int)(storageIndex % SIZE_PER_BUCKET);
+        //
+        // // DEBUG CODE
+        // writer.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length + "\n");
+        // writer.flush();
+
+        Blob blob = getData(bucketIndex);
         byte[] bucketData;
         if (blob == null) {
             bucketData = new byte[SIZE_PER_BUCKET];
-            blob = mStore.blobBuilder(Integer.toString(startIndex)).build();
+            blob = mStore.blobBuilder(Integer.toString(bucketIndex)).build();
         } else {
             bucketData = ByteStreams.toByteArray(blob.getPayload().getInput());
         }
-        System.arraycopy(bytes, 0, bucketData, startIndexOffset, bytes.length);
+        System.arraycopy(bytes, 0, bucketData, bucketOffset, bytes.length + bucketOffset > SIZE_PER_BUCKET
+            ? SIZE_PER_BUCKET - bucketOffset : bytes.length);
         blob.setPayload(bucketData);
-        mCache.put(startIndex, blob);
-        mWriterService.submit(new WriteTask(blob, mStore, mContainerName));
+        // mCache.put(startIndex, blob);
+         mStore.putBlob(mContainerName, blob);
+//        lastBucketID = bucketIndex;
+//        lastBlobAccess = blob;
+
+        if (bucketOffset + bytes.length > SIZE_PER_BUCKET) {
+            blob = getData(bucketIndex);
+            if (blob == null) {
+                bucketData = new byte[SIZE_PER_BUCKET];
+                blob = mStore.blobBuilder(Integer.toString(bucketIndex + 1)).build();
+            } else {
+                bucketData = ByteStreams.toByteArray(blob.getPayload().getInput());
+            }
+
+            System.arraycopy(bytes, SIZE_PER_BUCKET - bucketOffset, bucketData, 0, bytes.length
+                - (SIZE_PER_BUCKET - bucketOffset));
+            blob.setPayload(bucketData);
+             mStore.putBlob(mContainerName, blob);
+//            lastBucketID = bucketIndex + 1;
+//            lastBlobAccess = blob;
+        }
+
     }
 
     /**
@@ -170,58 +231,28 @@ public class JCloudsStorageModule implements IStorageModule {
      */
     @Override
     public void close() throws IOException {
-        mWriterService.shutdown();
         mContext.close();
     }
 
     private static String[] getCredentials() {
+        return new String[0];
+        // File userStore =
+        // new File(System.getProperty("user.home"), new StringBuilder(".credentials")
+        // .append(File.separator).append("aws.properties").toString());
+        // if (!userStore.exists()) {
         // return new String[0];
-        File userStore =
-            new File(System.getProperty("user.home"), new StringBuilder(".credentials")
-                .append(File.separator).append("aws.properties").toString());
-        if (!userStore.exists()) {
-            return new String[0];
-        } else {
-            Properties props = new Properties();
-            try {
-                props.load(new FileReader(userStore));
-                return new String[] {
-                    props.getProperty("access"), props.getProperty("secret")
-                };
-
-            } catch (IOException exc) {
-                throw new RuntimeException(exc);
-            }
-        }
-    }
-
-    class WriteTask implements Callable<Void> {
-        /**
-         * The bytes to buffer.
-         */
-        final Blob mBlob;
-
-        /**
-         * BlobStore to store to.
-         */
-        final BlobStore mBlobStore;
-
-        /**
-         * Container name to write to.
-         */
-        final String mContainer;
-
-        WriteTask(Blob pBlob, final BlobStore pBlobStore, final String pContainer) {
-            this.mBlob = pBlob;
-            this.mBlobStore = pBlobStore;
-            this.mContainer = pContainer;
-        }
-
-        @Override
-        public Void call() throws Exception {
-            mStore.putBlob(mContainer, mBlob);
-            return null;
-        }
+        // } else {
+        // Properties props = new Properties();
+        // try {
+        // props.load(new FileReader(userStore));
+        // return new String[] {
+        // props.getProperty("access"), props.getProperty("secret")
+        // };
+        //
+        // } catch (IOException exc) {
+        // throw new RuntimeException(exc);
+        // }
+        // }
     }
 
 }
