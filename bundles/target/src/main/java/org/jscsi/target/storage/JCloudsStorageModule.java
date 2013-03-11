@@ -30,21 +30,28 @@ import com.google.common.io.ByteStreams;
  */
 public class JCloudsStorageModule implements IStorageModule {
 
-    // /START DEBUG CODE
-    // private final static File writeFile = new File("/Users/sebi/Desktop/writeaccess.txt");
-    // private final static File readFile = new File("/Users/sebi/Desktop/readaccess.txt");
-    // static final FileWriter writer;
-    // static final FileWriter reader;
-    // static {
-    // try {
-    // writeFile.delete();
-    // readFile.delete();
-    // writer = new FileWriter(writeFile);
-    // reader = new FileWriter(readFile);
-    // } catch (IOException e) {
-    // throw new RuntimeException(e);
-    // }
-    // }
+    // START DEBUG CODE
+    private final static File writeFile = new File("/Users/sebi/Desktop/writeaccess.txt");
+    private final static File readFile = new File("/Users/sebi/Desktop/readaccess.txt");
+    private final static File uploadFile = new File("/Users/sebi/Desktop/uploadaccess.txt");
+    private final static File downloadFile = new File("/Users/sebi/Desktop/downloadaccess.txt");
+    static final FileWriter writer;
+    static final FileWriter reader;
+    static final FileWriter upload;
+    static final FileWriter download;
+    static {
+        try {
+            writeFile.delete();
+            readFile.delete();
+            uploadFile.delete();
+            writer = new FileWriter(writeFile);
+            reader = new FileWriter(readFile);
+            upload = new FileWriter(uploadFile);
+            download = new FileWriter(downloadFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /** Number of Blocks in one Cluster. */
     public static final int BLOCK_IN_CLUSTER = 512;
@@ -60,11 +67,11 @@ public class JCloudsStorageModule implements IStorageModule {
 
     private final BlobStoreContext mContext;
 
-    private int lastBucketID = -1;
+    private final Cache<Integer, Blob> mCache;
 
-    private Blob lastBlobAccess;
-
-    // private final Cache<Integer, Blob> mCache;
+    private int lastIndexWritten;
+    private Blob lastBlobWritten;
+    private final ExecutorService mWriterService;
 
     /**
      * Creates a new {@link JCloudsStorageModules} backed by the specified
@@ -98,6 +105,9 @@ public class JCloudsStorageModule implements IStorageModule {
         if (!mStore.containerExists(mContainerName)) {
             mStore.createContainerInLocation(null, mContainerName);
         }
+        mWriterService = Executors.newFixedThreadPool(10);
+        mCache = CacheBuilder.newBuilder().maximumSize(10).build();
+        lastIndexWritten = -1;
     }
 
     /**
@@ -131,13 +141,15 @@ public class JCloudsStorageModule implements IStorageModule {
     @Override
     public void read(byte[] bytes, long storageIndex) throws IOException {
 
+        storeBucket(-1, null);
+
         // Overwriting segments in the byte array using the writer tasks that are still in progress.
         final int bucketIndex = (int)(storageIndex / SIZE_PER_BUCKET);
         final int bucketOffset = (int)(storageIndex % SIZE_PER_BUCKET);
-        //
-        // // DEBUG CODE
-        // reader.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length + "\n");
-        // reader.flush();
+
+        // DEBUG CODE
+        reader.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length + "\n");
+        reader.flush();
 
         Blob blob = getData(bucketIndex);
         final ByteArrayDataOutput output = ByteStreams.newDataOutput(bytes.length);
@@ -149,7 +161,6 @@ public class JCloudsStorageModule implements IStorageModule {
         }
         output.write(data, bucketOffset, bucketOffset + bytes.length > SIZE_PER_BUCKET ? SIZE_PER_BUCKET
             - bucketOffset : bytes.length);
-
         if (bucketOffset + bytes.length > SIZE_PER_BUCKET) {
             blob = getData(bucketIndex + 1);
             if (blob == null) {
@@ -164,18 +175,29 @@ public class JCloudsStorageModule implements IStorageModule {
 
     }
 
-    private final Blob getData(int startIndex) throws IOException {
-        // Blob blob = mCache.getIfPresent(startIndex);
-        // if (blob == null) {
-//        if (lastBucketID != -1) {
-//            mStore.putBlob(Integer.toString(lastBucketID), lastBlobAccess);
-//            lastBucketID = -1;
-//        }
-        Blob blob = mStore.getBlob(mContainerName, Integer.toString(startIndex));
-        if (blob == null) {
-            return null;
+    private final void storeBucket(int pBucketId, Blob pBlob) throws IOException {
+        if (lastIndexWritten != pBucketId && lastBlobWritten != null) {
+            mWriterService.submit(new WriteTask(lastBlobWritten, mStore, mContainerName, lastIndexWritten));
+            mCache.put(lastIndexWritten, lastBlobWritten);
         }
-        // }
+        lastIndexWritten = pBucketId;
+        lastBlobWritten = pBlob;
+
+    }
+
+    private final Blob getData(int startIndex) throws IOException {
+        Blob blob = mCache.getIfPresent(startIndex);
+        if (blob == null) {
+            // DEBUG CODE
+            blob = mStore.getBlob(mContainerName, Integer.toString(startIndex));
+            download.write(Integer.toString(startIndex) + "\n");
+            download.flush();
+            if (blob == null) {
+                return null;
+            } else {
+                mCache.put(startIndex, blob);
+            }
+        }
         return blob;
     }
 
@@ -186,10 +208,10 @@ public class JCloudsStorageModule implements IStorageModule {
     public void write(byte[] bytes, long storageIndex) throws IOException {
         final int bucketIndex = (int)(storageIndex / SIZE_PER_BUCKET);
         final int bucketOffset = (int)(storageIndex % SIZE_PER_BUCKET);
-        //
-        // // DEBUG CODE
-        // writer.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length + "\n");
-        // writer.flush();
+
+        // DEBUG CODE
+        writer.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length + "\n");
+        writer.flush();
 
         Blob blob = getData(bucketIndex);
         byte[] bucketData;
@@ -202,10 +224,8 @@ public class JCloudsStorageModule implements IStorageModule {
         System.arraycopy(bytes, 0, bucketData, bucketOffset, bytes.length + bucketOffset > SIZE_PER_BUCKET
             ? SIZE_PER_BUCKET - bucketOffset : bytes.length);
         blob.setPayload(bucketData);
-        // mCache.put(startIndex, blob);
-         mStore.putBlob(mContainerName, blob);
-//        lastBucketID = bucketIndex;
-//        lastBlobAccess = blob;
+        storeBucket(bucketIndex, blob);
+        // mStore.putBlob(mContainerName, blob);
 
         if (bucketOffset + bytes.length > SIZE_PER_BUCKET) {
             blob = getData(bucketIndex);
@@ -219,9 +239,9 @@ public class JCloudsStorageModule implements IStorageModule {
             System.arraycopy(bytes, SIZE_PER_BUCKET - bucketOffset, bucketData, 0, bytes.length
                 - (SIZE_PER_BUCKET - bucketOffset));
             blob.setPayload(bucketData);
-             mStore.putBlob(mContainerName, blob);
-//            lastBucketID = bucketIndex + 1;
-//            lastBlobAccess = blob;
+            storeBucket(bucketIndex, blob);
+            // mStore.putBlob(mContainerName, blob);
+
         }
 
     }
@@ -231,6 +251,7 @@ public class JCloudsStorageModule implements IStorageModule {
      */
     @Override
     public void close() throws IOException {
+        mWriterService.shutdown();
         mContext.close();
     }
 
@@ -255,4 +276,38 @@ public class JCloudsStorageModule implements IStorageModule {
         // }
     }
 
+    class WriteTask implements Callable<Void> {
+        /**
+         * The bytes to buffer.
+         */
+        final Blob mBlob;
+
+        /**
+         * BlobStore to store to.
+         */
+        final BlobStore mBlobStore;
+
+        /**
+         * Container name to write to.
+         */
+        final String mContainer;
+
+        final int mIndex;
+
+        WriteTask(Blob pBlob, final BlobStore pBlobStore, final String pContainer, final int index) {
+            this.mBlob = pBlob;
+            this.mBlobStore = pBlobStore;
+            this.mContainer = pContainer;
+            this.mIndex = index;
+        }
+
+        @Override
+        public Void call() throws Exception {
+            mStore.putBlob(mContainer, mBlob);
+            // DEBUG CODE
+            upload.write(Integer.toString(mIndex) + "\n");
+            upload.flush();
+            return null;
+        }
+    }
 }

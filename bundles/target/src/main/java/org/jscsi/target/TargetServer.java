@@ -146,7 +146,7 @@ public final class TargetServer implements Callable<Void> {
 
     public Void call() throws Exception {
 
-        // ExecutorService threadPool = Executors.newFixedThreadPool(4);
+        ExecutorService threadPool = Executors.newFixedThreadPool(4);
         // Create a blocking server socket and check for connections
         try {
             // Create a blocking server socket channel on the specified/default
@@ -188,8 +188,7 @@ public final class TargetServer implements Callable<Void> {
                             parser.getExpectedStatusSequenceNumber());
 
                     sessions.add(session);
-                    connection.call();
-                    // threadPool.submit(connection);// ignore returned Future
+                    threadPool.submit(connection);// ignore returned Future
                 } catch (DigestException | InternetSCSIException | SettingsException e) {
                     LOGGER.info("Throws Exception", e);
                     continue;
