@@ -155,19 +155,7 @@ public class JCloudsStorageModule implements IStorageModule {
 
             byte[] data = mCache.getIfPresent(bucketIndex);
             if (data == null) {
-                Blob blob = getData(bucketIndex);
-                if (blob == null) {
-                    data = new byte[SIZE_PER_BUCKET];
-                } else {
-                    data = ByteStreams.toByteArray(blob.getPayload().getInput());
-                    while (data.length == 0) {
-                        blob = mStore.getBlob(mContainerName, Integer.toString(bucketIndex));
-                        data = ByteStreams.toByteArray(blob.getPayload().getInput());
-                        System.out.println("StorageIndex: " + storageIndex);
-                        System.out.println("BucketIndex: " + bucketIndex);
-                        System.out.println("BucketOffset: " + bucketOffset);
-                    }
-                }
+                data = getData(bucketIndex);
                 mCache.put(bucketIndex, data);
             }
 
@@ -181,19 +169,7 @@ public class JCloudsStorageModule implements IStorageModule {
             output.write(data, bucketOffset, length);
 
             if (bucketOffset + bytes.length > SIZE_PER_BUCKET) {
-                Blob blob = getData(bucketIndex + 1);
-                if (blob == null) {
-                    data = new byte[SIZE_PER_BUCKET];
-                } else {
-                    data = ByteStreams.toByteArray(blob.getPayload().getInput());
-                    while (data.length == 0) {
-                        blob = mStore.getBlob(mContainerName, Integer.toString(bucketIndex));
-                        data = ByteStreams.toByteArray(blob.getPayload().getInput());
-                        System.out.println("StorageIndex: " + storageIndex);
-                        System.out.println("BucketIndex: " + bucketIndex);
-                        System.out.println("BucketOffset: " + bucketOffset);
-                    }
-                }
+                data = getData(bucketIndex);
                 mCache.put(bucketIndex + 1, data);
                 output.write(data, 0, bytes.length - (SIZE_PER_BUCKET - bucketOffset));
             }
@@ -216,7 +192,22 @@ public class JCloudsStorageModule implements IStorageModule {
         lastBlobWritten = pBlob;
     }
 
-    private final Blob getData(int pBucketId) throws IOException, InterruptedException, ExecutionException {
+    private final byte[] getData(int pBucketId) throws IOException, InterruptedException, ExecutionException {
+        byte[] data;
+        Blob blob = getBlob(pBucketId);
+        if (blob == null) {
+            data = new byte[SIZE_PER_BUCKET];
+        } else {
+            data = ByteStreams.toByteArray(blob.getPayload().getInput());
+            while (data.length == 0) {
+                blob = mStore.getBlob(mContainerName, Integer.toString(pBucketId));
+                data = ByteStreams.toByteArray(blob.getPayload().getInput());
+            }
+        }
+        return data;
+    }
+
+    private final Blob getBlob(int pBucketId) throws IOException, InterruptedException, ExecutionException {
         Blob blob = null;
         if (mRunningTasks.containsKey(pBucketId)) {
             mRunningTasks.remove(pBucketId).get();
@@ -242,10 +233,10 @@ public class JCloudsStorageModule implements IStorageModule {
             writer.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length + "\n");
             writer.flush();
 
-            byte[] data;
+            byte[] data = mCache.getIfPresent(bucketIndex);
             Blob blob;
             if (bucketIndex != lastIndexWritten) {
-                blob = getData(bucketIndex);
+                blob = getBlob(bucketIndex);
             } else {
                 blob = lastBlobWritten;
             }
@@ -265,11 +256,11 @@ public class JCloudsStorageModule implements IStorageModule {
 
             if (bucketOffset + bytes.length > SIZE_PER_BUCKET) {
                 if (bucketIndex + 1 != lastIndexWritten) {
-                    blob = getData(bucketIndex + 1);
+                    blob = getBlob(bucketIndex + 1);
                 } else {
                     blob = lastBlobWritten;
                 }
-                blob = getData(bucketIndex + 1);
+                blob = getBlob(bucketIndex + 1);
                 if (blob == null) {
                     data = new byte[SIZE_PER_BUCKET];
                     blob = mStore.blobBuilder(Integer.toString(bucketIndex + 1)).build();
@@ -278,9 +269,6 @@ public class JCloudsStorageModule implements IStorageModule {
                     while (data.length == 0) {
                         blob = mStore.getBlob(mContainerName, Integer.toString(bucketIndex));
                         data = ByteStreams.toByteArray(blob.getPayload().getInput());
-                        System.out.println("StorageIndex: " + storageIndex);
-                        System.out.println("BucketIndex: " + bucketIndex);
-                        System.out.println("BucketOffset: " + bucketOffset);
                     }
                 }
 
