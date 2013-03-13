@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,13 +20,10 @@ import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
-import org.jclouds.blobstore.domain.MutableBlobMetadata;
 import org.jclouds.filesystem.reference.FilesystemConstants;
-import org.jclouds.io.Payload;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.Multimap;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
@@ -160,7 +156,7 @@ public class JCloudsStorageModule implements IStorageModule {
             byte[] data = mCache.getIfPresent(bucketIndex);
             if (data == null) {
                 Blob blob = getData(bucketIndex);
-                if (blob instanceof NullBlob) {
+                if (blob == null) {
                     data = new byte[SIZE_PER_BUCKET];
                 } else {
                     data = ByteStreams.toByteArray(blob.getPayload().getInput());
@@ -229,9 +225,6 @@ public class JCloudsStorageModule implements IStorageModule {
         // DEBUG CODE
         download.write(Integer.toString(pBucketId) + "\n");
         download.flush();
-        if (blob == null) {
-            blob = new NullBlob();
-        }
         return blob;
     }
 
@@ -257,7 +250,7 @@ public class JCloudsStorageModule implements IStorageModule {
                 blob = lastBlobWritten;
             }
 
-            if (blob instanceof NullBlob) {
+            if (blob == null) {
                 data = new byte[SIZE_PER_BUCKET];
                 blob = mStore.blobBuilder(Integer.toString(bucketIndex)).build();
             } else {
@@ -277,7 +270,7 @@ public class JCloudsStorageModule implements IStorageModule {
                     blob = lastBlobWritten;
                 }
                 blob = getData(bucketIndex + 1);
-                if (blob instanceof NullBlob) {
+                if (blob == null) {
                     data = new byte[SIZE_PER_BUCKET];
                     blob = mStore.blobBuilder(Integer.toString(bucketIndex + 1)).build();
                 } else {
@@ -374,89 +367,5 @@ public class JCloudsStorageModule implements IStorageModule {
 
             return null;
         }
-    }
-
-    class NullBlob implements Blob {
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setPayload(Payload data) {
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setPayload(File data) {
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setPayload(byte[] data) {
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setPayload(InputStream data) {
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setPayload(String data) {
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Payload getPayload() {
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int compareTo(Blob o) {
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public MutableBlobMetadata getMetadata() {
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Multimap<String, String> getAllHeaders() {
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setAllHeaders(Multimap<String, String> allHeaders) {
-            throw new UnsupportedOperationException();
-        }
-
     }
 }
