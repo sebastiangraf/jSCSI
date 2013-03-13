@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jscsi</groupId>
         <artifactId>pom</artifactId>
-        <version>2.5-SNAPSHOT</version>
+        <version>2.5.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <groupId>org.jscsi.testing</groupId>
@@ -93,34 +93,34 @@ testing both together.</description>
         <dependency>
             <groupId>org.jscsi</groupId>
             <artifactId>commons</artifactId>
-            <version>2.5-SNAPSHOT</version>
+            <version>2.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jscsi</groupId>
             <artifactId>commons</artifactId>
-            <version>2.5-SNAPSHOT</version>
+            <version>2.5.1-SNAPSHOT</version>
             <type>test-jar</type>
         </dependency>
         <dependency>
             <groupId>org.jscsi</groupId>
             <artifactId>initiator</artifactId>
-            <version>2.5-SNAPSHOT</version>
+            <version>2.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jscsi</groupId>
             <artifactId>initiator</artifactId>
-            <version>2.5-SNAPSHOT</version>
+            <version>2.5.1-SNAPSHOT</version>
             <type>test-jar</type>
         </dependency>
         <dependency>
             <groupId>org.jscsi</groupId>
             <artifactId>target</artifactId>
-            <version>2.5-SNAPSHOT</version>
+            <version>2.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jscsi</groupId>
             <artifactId>target</artifactId>
-            <version>2.5-SNAPSHOT</version>
+            <version>2.5.1-SNAPSHOT</version>
             <type>test-jar</type>
         </dependency>
 
