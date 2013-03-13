@@ -1,3 +1,4 @@
+org.jscsi.target.bench
 org.jscsi.target.connection
 org.jscsi.target.scsi
 org.jscsi.target.settings

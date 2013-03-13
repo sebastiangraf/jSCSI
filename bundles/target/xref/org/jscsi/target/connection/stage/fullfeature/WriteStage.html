@@ -140,7 +140,7 @@
 <a class="jxr_linenumber" name="130" href="#130">130</a>         <strong class="jxr_keyword">if</strong> (immediateData &amp;&amp; bhs.getDataSegmentLength() &gt; 0) {
 <a class="jxr_linenumber" name="131" href="#131">131</a>             <strong class="jxr_keyword">final</strong> byte[] immediateDataArray = pdu.getDataSegment().array();
 <a class="jxr_linenumber" name="132" href="#132">132</a> 
-<a class="jxr_linenumber" name="133" href="#133">133</a>             session.getStorageModule().write(immediateDataArray, 0, immediateDataArray.length, storageIndex);
+<a class="jxr_linenumber" name="133" href="#133">133</a>             session.getStorageModule().write(immediateDataArray, storageIndex);
 <a class="jxr_linenumber" name="134" href="#134">134</a>             bytesReceived = immediateDataArray.length;
 <a class="jxr_linenumber" name="135" href="#135">135</a> 
 <a class="jxr_linenumber" name="136" href="#136">136</a>             <strong class="jxr_keyword">if</strong> (LOGGER.isDebugEnabled())
@@ -164,8 +164,8 @@
 <a class="jxr_linenumber" name="154" href="#154">154</a> 
 <a class="jxr_linenumber" name="155" href="#155">155</a>                 <strong class="jxr_keyword">final</strong> DataOutParser dataOutParser = (DataOutParser)bhs.getParser();
 <a class="jxr_linenumber" name="156" href="#156">156</a> 
-<a class="jxr_linenumber" name="157" href="#157">157</a>                 session.getStorageModule().write(pdu.getDataSegment().array(), 0,
-<a class="jxr_linenumber" name="158" href="#158">158</a>                     pdu.getDataSegment().array().length, storageIndex + dataOutParser.getBufferOffset());
+<a class="jxr_linenumber" name="157" href="#157">157</a>                 session.getStorageModule().write(pdu.getDataSegment().array(),
+<a class="jxr_linenumber" name="158" href="#158">158</a>                     storageIndex + dataOutParser.getBufferOffset());
 <a class="jxr_linenumber" name="159" href="#159">159</a>                 ;
 <a class="jxr_linenumber" name="160" href="#160">160</a>                 bytesReceived += bhs.getDataSegmentLength();
 <a class="jxr_linenumber" name="161" href="#161">161</a> 
@@ -208,8 +208,8 @@
 <a class="jxr_linenumber" name="198" href="#198">198</a> 
 <a class="jxr_linenumber" name="199" href="#199">199</a>                     <strong class="jxr_keyword">final</strong> DataOutParser dataOutParser = (DataOutParser)bhs.getParser();
 <a class="jxr_linenumber" name="200" href="#200">200</a> 
-<a class="jxr_linenumber" name="201" href="#201">201</a>                     session.getStorageModule().write(pdu.getDataSegment().array(), 0,
-<a class="jxr_linenumber" name="202" href="#202">202</a>                         pdu.getDataSegment().array().length, storageIndex + dataOutParser.getBufferOffset());
+<a class="jxr_linenumber" name="201" href="#201">201</a>                     session.getStorageModule().write(pdu.getDataSegment().array(),
+<a class="jxr_linenumber" name="202" href="#202">202</a>                         storageIndex + dataOutParser.getBufferOffset());
 <a class="jxr_linenumber" name="203" href="#203">203</a> 
 <a class="jxr_linenumber" name="204" href="#204">204</a>                     bytesReceivedThisCycle += bhs.getDataSegmentLength();
 <a class="jxr_linenumber" name="205" href="#205">205</a> 

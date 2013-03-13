@@ -6,10 +6,10 @@
     <link>http://disy.github.com/jSCSI/</link>
     <description>Builder - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2012 University of Konstanz, Distributed Systems Group</copyright>
+    <copyright>&#169;2013 University of Konstanz, Distributed Systems Group</copyright>
     <item>
-      <title>File: 205,
-             Errors: 7780,
+      <title>File: 206,
+             Errors: 7844,
              Warnings: 0,
              Infos: 0
       </title>
@@ -192,7 +192,7 @@
                   0
                 </td>
                 <td>
-                  18
+                  14
                 </td>
               </tr>
                           <tr>
@@ -1107,6 +1107,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="http://disy.github.com/jSCSI//checkstyle.html#org.jscsi.target.storage.JCloudsStorageModule.java">org/jscsi/target/storage/JCloudsStorageModule.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  73
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://disy.github.com/jSCSI//checkstyle.html#org.jscsi.target.scsi.ISerializable.java">org/jscsi/target/scsi/ISerializable.java</a>
                 </td>
                 <td>
@@ -1494,7 +1508,7 @@
                   0
                 </td>
                 <td>
-                  19
+                  20
                 </td>
               </tr>
                           <tr>
@@ -1522,7 +1536,7 @@
                   0
                 </td>
                 <td>
-                  24
+                  20
                 </td>
               </tr>
                           <tr>
@@ -1550,7 +1564,7 @@
                   0
                 </td>
                 <td>
-                  53
+                  52
                 </td>
               </tr>
                           <tr>
@@ -1676,7 +1690,7 @@
                   0
                 </td>
                 <td>
-                  81
+                  90
                 </td>
               </tr>
                           <tr>
@@ -1872,7 +1886,7 @@
                   0
                 </td>
                 <td>
-                  62
+                  58
                 </td>
               </tr>
                           <tr>
@@ -2180,7 +2194,7 @@
                   0
                 </td>
                 <td>
-                  61
+                  62
                 </td>
               </tr>
                           <tr>
@@ -2530,7 +2544,7 @@
                   0
                 </td>
                 <td>
-                  55
+                  47
                 </td>
               </tr>
                           <tr>
@@ -2810,7 +2824,7 @@
                   0
                 </td>
                 <td>
-                  130
+                  131
                 </td>
               </tr>
                           <tr>
