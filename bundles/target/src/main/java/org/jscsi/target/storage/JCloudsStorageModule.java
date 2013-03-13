@@ -5,8 +5,6 @@ package org.jscsi.target.storage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.Callable;
@@ -37,26 +35,6 @@ import com.google.common.io.ByteStreams;
  */
 @Beta
 public class JCloudsStorageModule implements IStorageModule {
-
-    // START DEBUG CODE
-    private final static File writeFile = new File("/Users/sebi/Desktop/writeaccess.txt");
-    private final static File readFile = new File("/Users/sebi/Desktop/readaccess.txt");
-    private final static File uploadFile = new File("/Users/sebi/Desktop/uploadaccess.txt");
-    private final static File downloadFile = new File("/Users/sebi/Desktop/downloadaccess.txt");
-    static final FileWriter writer;
-    static final FileWriter reader;
-    static final FileWriter upload;
-    static final FileWriter download;
-    static {
-        try {
-            writer = new FileWriter(writeFile);
-            reader = new FileWriter(readFile);
-            upload = new FileWriter(uploadFile);
-            download = new FileWriter(downloadFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /** Number of Blocks in one Cluster. */
     public static final int BLOCK_IN_CLUSTER = 512;
@@ -154,10 +132,6 @@ public class JCloudsStorageModule implements IStorageModule {
         try {
             storeBucket(-1, null);
 
-            // DEBUG CODE
-            reader.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length + "\n");
-            reader.flush();
-
             byte[] data = mCache.getIfPresent(bucketIndex);
             if (data == null) {
                 data = getData(bucketIndex);
@@ -191,7 +165,7 @@ public class JCloudsStorageModule implements IStorageModule {
                 mRunningTasks.remove(lastIndexWritten).get();
             }
             mRunningTasks.put(lastIndexWritten, mWriterService.submit(new WriteTask(lastBlobWritten, mStore,
-                mContainerName, lastIndexWritten)));
+                mContainerName)));
         }
         lastIndexWritten = pBucketId;
         lastBlobWritten = pBlob;
@@ -203,9 +177,6 @@ public class JCloudsStorageModule implements IStorageModule {
         }
         byte[] data;
         Blob blob = mStore.getBlob(mContainerName, Integer.toString(pBucketId));
-        // DEBUG CODE
-        download.write(Integer.toString(pBucketId) + "\n");
-        download.flush();
 
         if (blob == null) {
             data = new byte[SIZE_PER_BUCKET];
@@ -229,10 +200,6 @@ public class JCloudsStorageModule implements IStorageModule {
         final int bucketIndex = (int)(storageIndex / SIZE_PER_BUCKET);
         final int bucketOffset = (int)(storageIndex % SIZE_PER_BUCKET);
         try {
-            // DEBUG CODE
-            writer.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length + "\n");
-            writer.flush();
-
             byte[] data = mCache.getIfPresent(bucketIndex);
             if (data == null) {
                 data = getData(bucketIndex);
@@ -278,24 +245,24 @@ public class JCloudsStorageModule implements IStorageModule {
      * @return a two-dimensional String[] with login and password
      */
     private static String[] getCredentials() {
-         return new String[0];
-//        File userStore =
-//            new File(System.getProperty("user.home"), new StringBuilder(".credentials")
-//                .append(File.separator).append("aws.properties").toString());
-//        if (!userStore.exists()) {
-//            return new String[0];
-//        } else {
-//            Properties props = new Properties();
-//            try {
-//                props.load(new FileReader(userStore));
-//                return new String[] {
-//                    props.getProperty("access"), props.getProperty("secret")
-//                };
-//
-//            } catch (IOException exc) {
-//                throw new RuntimeException(exc);
-//            }
-//        }
+        return new String[0];
+        // File userStore =
+        // new File(System.getProperty("user.home"), new StringBuilder(".credentials")
+        // .append(File.separator).append("aws.properties").toString());
+        // if (!userStore.exists()) {
+        // return new String[0];
+        // } else {
+        // Properties props = new Properties();
+        // try {
+        // props.load(new FileReader(userStore));
+        // return new String[] {
+        // props.getProperty("access"), props.getProperty("secret")
+        // };
+        //
+        // } catch (IOException exc) {
+        // throw new RuntimeException(exc);
+        // }
+        // }
     }
 
     /**
@@ -320,16 +287,10 @@ public class JCloudsStorageModule implements IStorageModule {
          */
         final String mContainer;
 
-        /**
-         * Index to write to
-         */
-        final int mIndex;
-
-        WriteTask(Blob pBlob, final BlobStore pBlobStore, final String pContainer, final int index) {
+        WriteTask(Blob pBlob, final BlobStore pBlobStore, final String pContainer) {
             this.mBlob = pBlob;
             this.mBlobStore = pBlobStore;
             this.mContainer = pContainer;
-            this.mIndex = index;
         }
 
         @Override
@@ -337,11 +298,9 @@ public class JCloudsStorageModule implements IStorageModule {
             boolean finished = false;
 
             while (!finished) {
-                try { // DEBUG CODE
-                    upload.write(Integer.toString(mIndex) + "\n");
-                    upload.flush();
+                try {
                     mStore.putBlob(mContainer, mBlob);
-                } catch (IOException exc) {
+                } catch (Exception exc) {
 
                 }
                 finished = true;
