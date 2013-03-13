@@ -22,15 +22,20 @@ import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
 import org.jclouds.filesystem.reference.FilesystemConstants;
 
+import com.google.common.annotations.Beta;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
 /**
+ * JClouds-Binding to store blocks as buckets in clouds-backends.
+ * This class utilizes caching as well as multithreaded writing to improve performance.
+ * 
  * @author Sebastian Graf, University of Konstanz
  * 
  */
+@Beta
 public class JCloudsStorageModule implements IStorageModule {
 
     // START DEBUG CODE
@@ -193,8 +198,15 @@ public class JCloudsStorageModule implements IStorageModule {
     }
 
     private final byte[] getData(int pBucketId) throws IOException, InterruptedException, ExecutionException {
+        if (mRunningTasks.containsKey(pBucketId)) {
+            mRunningTasks.remove(pBucketId).get();
+        }
         byte[] data;
-        Blob blob = getBlob(pBucketId);
+        Blob blob = mStore.getBlob(mContainerName, Integer.toString(pBucketId));
+        // DEBUG CODE
+        download.write(Integer.toString(pBucketId) + "\n");
+        download.flush();
+
         if (blob == null) {
             data = new byte[SIZE_PER_BUCKET];
         } else {
@@ -205,18 +217,6 @@ public class JCloudsStorageModule implements IStorageModule {
             }
         }
         return data;
-    }
-
-    private final Blob getBlob(int pBucketId) throws IOException, InterruptedException, ExecutionException {
-        Blob blob = null;
-        if (mRunningTasks.containsKey(pBucketId)) {
-            mRunningTasks.remove(pBucketId).get();
-        }
-        blob = mStore.getBlob(mContainerName, Integer.toString(pBucketId));
-        // DEBUG CODE
-        download.write(Integer.toString(pBucketId) + "\n");
-        download.flush();
-        return blob;
     }
 
     /**
@@ -234,49 +234,29 @@ public class JCloudsStorageModule implements IStorageModule {
             writer.flush();
 
             byte[] data = mCache.getIfPresent(bucketIndex);
-            Blob blob;
-            if (bucketIndex != lastIndexWritten) {
-                blob = getBlob(bucketIndex);
-            } else {
-                blob = lastBlobWritten;
+            if (data == null) {
+                data = getData(bucketIndex);
             }
 
-            if (blob == null) {
-                data = new byte[SIZE_PER_BUCKET];
-                blob = mStore.blobBuilder(Integer.toString(bucketIndex)).build();
-            } else {
-                data = ByteStreams.toByteArray(blob.getPayload().getInput());
-            }
-
+            Blob blob = mStore.blobBuilder(Integer.toString(bucketIndex)).build();
             System.arraycopy(bytes, 0, data, bucketOffset, bytes.length + bucketOffset > SIZE_PER_BUCKET
                 ? SIZE_PER_BUCKET - bucketOffset : bytes.length);
             blob.setPayload(data);
             storeBucket(bucketIndex, blob);
-            mCache.invalidate(bucketIndex);
+            mCache.put(bucketIndex, data);
 
             if (bucketOffset + bytes.length > SIZE_PER_BUCKET) {
-                if (bucketIndex + 1 != lastIndexWritten) {
-                    blob = getBlob(bucketIndex + 1);
-                } else {
-                    blob = lastBlobWritten;
+                data = mCache.getIfPresent(bucketIndex + 1);
+                if (data == null) {
+                    data = getData(bucketIndex + 1);
                 }
-                blob = getBlob(bucketIndex + 1);
-                if (blob == null) {
-                    data = new byte[SIZE_PER_BUCKET];
-                    blob = mStore.blobBuilder(Integer.toString(bucketIndex + 1)).build();
-                } else {
-                    data = ByteStreams.toByteArray(blob.getPayload().getInput());
-                    while (data.length == 0) {
-                        blob = mStore.getBlob(mContainerName, Integer.toString(bucketIndex));
-                        data = ByteStreams.toByteArray(blob.getPayload().getInput());
-                    }
-                }
+                blob = mStore.blobBuilder(Integer.toString(bucketIndex + 1)).build();
 
                 System.arraycopy(bytes, SIZE_PER_BUCKET - bucketOffset, data, 0, bytes.length
                     - (SIZE_PER_BUCKET - bucketOffset));
                 blob.setPayload(data);
                 storeBucket(bucketIndex + 1, blob);
-                mCache.invalidate(bucketIndex + 1);
+                mCache.put(bucketIndex + 1, data);
             }
         } catch (IOException | InterruptedException | ExecutionException exc) {
             throw new IOException(exc);
@@ -292,6 +272,11 @@ public class JCloudsStorageModule implements IStorageModule {
         mContext.close();
     }
 
+    /**
+     * Getting credentials for aws from homedir/.credentials
+     * 
+     * @return a two-dimensional String[] with login and password
+     */
     private static String[] getCredentials() {
         // return new String[0];
         File userStore =
@@ -313,6 +298,12 @@ public class JCloudsStorageModule implements IStorageModule {
         }
     }
 
+    /**
+     * Single task to write data to the cloud.
+     * 
+     * @author Sebastian Graf, University of Konstanz
+     * 
+     */
     class WriteTask implements Callable<Void> {
         /**
          * The bytes to buffer.
@@ -329,6 +320,9 @@ public class JCloudsStorageModule implements IStorageModule {
          */
         final String mContainer;
 
+        /**
+         * Index to write to
+         */
         final int mIndex;
 
         WriteTask(Blob pBlob, final BlobStore pBlobStore, final String pContainer, final int index) {
