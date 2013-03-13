@@ -1,0 +1,1200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd version="4.3" timestamp="2013-03-13T13:30:24.424">
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/AdditionalHeaderSegment.java">
+<violation beginline="233" endline="249" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="AdditionalHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="262" endline="278" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="AdditionalHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="289" endline="292" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="AdditionalHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="299" endline="302" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="AdditionalHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="310" endline="313" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="AdditionalHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="323" endline="355" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="AdditionalHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="360" endline="365" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="AdditionalHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="372" endline="372" begincolumn="26" endcolumn="41" rule="OverrideBothEqualsAndHashcode" ruleset="Basic Rules" package="org.jscsi.parser" class="AdditionalHeaderSegment" method="equals" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OverrideBothEqualsAndHashcode" priority="3">
+Ensure you override both equals() and hashCode()
+</violation>
+<violation beginline="372" endline="383" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="AdditionalHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="392" endline="421" begincolumn="19" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="AdditionalHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/BasicHeaderSegment.java">
+<violation beginline="154" endline="181" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="197" endline="224" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="234" endline="237" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="245" endline="248" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="256" endline="259" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="272" endline="275" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="282" endline="285" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="292" endline="295" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="302" endline="305" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="316" endline="319" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="327" endline="330" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="338" endline="341" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="349" endline="353" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="362" endline="365" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="376" endline="381" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="391" endline="410" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="414" endline="414" begincolumn="26" endcolumn="41" rule="OverrideBothEqualsAndHashcode" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" method="equals" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OverrideBothEqualsAndHashcode" priority="3">
+Ensure you override both equals() and hashCode()
+</violation>
+<violation beginline="414" endline="429" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="434" endline="445" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="BasicHeaderSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/MessageParserFactory.java">
+<violation beginline="89" endline="93" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="MessageParserFactory" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="106" endline="150" begincolumn="26" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="MessageParserFactory" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/ProtocolDataUnit.java">
+<violation beginline="31" endline="31" begincolumn="1" endcolumn="48" rule="UnusedImports" ruleset="Import Statement Rules" package="org.jscsi.parser" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.nio.channels.ClosedChannelException'
+</violation>
+<violation beginline="139" endline="170" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="186" endline="198" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="211" endline="228" begincolumn="19" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="240" endline="243" begincolumn="19" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="257" endline="274" begincolumn="19" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="288" endline="297" begincolumn="19" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="311" endline="319" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="337" endline="359" begincolumn="19" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="375" endline="390" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="407" endline="462" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="467" endline="479" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="491" endline="494" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="502" endline="505" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="512" endline="515" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="517" endline="521" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="529" endline="538" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="545" endline="548" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="556" endline="559" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="566" endline="569" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="577" endline="580" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="587" endline="598" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="603" endline="603" begincolumn="26" endcolumn="41" rule="OverrideBothEqualsAndHashcode" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" method="equals" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OverrideBothEqualsAndHashcode" priority="3">
+Ensure you override both equals() and hashCode()
+</violation>
+<violation beginline="603" endline="626" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="638" endline="650" begincolumn="19" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="652" endline="664" begincolumn="19" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="666" endline="675" begincolumn="19" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnit" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/ProtocolDataUnitFactory.java">
+<violation beginline="71" endline="74" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnitFactory" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="94" endline="105" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser" class="ProtocolDataUnitFactory" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/asynchronous/AsynchronousMessageParser.java">
+<violation beginline="217" endline="230" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="234" endline="237" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="241" endline="251" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="265" endline="268" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="275" endline="278" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="285" endline="288" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="295" endline="298" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="305" endline="308" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="315" endline="320" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="324" endline="328" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="335" endline="357" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="364" endline="371" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="375" endline="381" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.asynchronous" class="AsynchronousMessageParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/data/DataOutParser.java">
+<violation beginline="81" endline="84" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="99" endline="102" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="118" endline="121" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="140" endline="143" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="152" endline="155" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="164" endline="167" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="176" endline="179" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="193" endline="205" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="209" endline="212" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="216" endline="223" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="240" endline="243" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="247" endline="250" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="254" endline="257" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="261" endline="264" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="271" endline="274" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="281" endline="284" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="288" endline="291" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="295" endline="298" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="302" endline="305" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.data" class="DataOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/datasegment/AbstractDataSegment.java">
+<violation beginline="231" endline="234" begincolumn="12" endcolumn="5" rule="UselessOverridingMethod" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="AbstractDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOverridingMethod" priority="3">
+Overriding method merely calls super
+</violation>
+<violation beginline="334" endline="337" begincolumn="22" endcolumn="9" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="AbstractDataSegment$DataSegmentIterator" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="340" endline="371" begincolumn="22" endcolumn="9" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="AbstractDataSegment$DataSegmentIterator" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/datasegment/BinaryDataSegment.java">
+<violation beginline="60" endline="68" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="BinaryDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="71" endline="83" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="BinaryDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="88" endline="101" begincolumn="19" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="BinaryDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/datasegment/DataSegmentFactory.java">
+<violation beginline="80" endline="84" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="DataSegmentFactory" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="103" endline="110" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="DataSegmentFactory" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="123" endline="144" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="DataSegmentFactory" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/datasegment/ResultFunctionFactory.java">
+<violation beginline="96" endline="113" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="ResultFunctionFactory" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/datasegment/SettingEntry.java">
+<violation beginline="60" endline="63" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingEntry" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/datasegment/SettingsMap.java">
+<violation beginline="86" endline="93" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingsMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="102" endline="109" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingsMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="118" endline="129" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingsMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="146" endline="163" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingsMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="178" endline="190" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingsMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="202" endline="249" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingsMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="260" endline="263" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingsMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="267" endline="267" begincolumn="22" endcolumn="31" rule="OverrideBothEqualsAndHashcode" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingsMap" method="hashCode" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OverrideBothEqualsAndHashcode" priority="3">
+Ensure you override both equals() and hashCode()
+</violation>
+<violation beginline="267" endline="270" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingsMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="274" endline="285" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingsMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="290" endline="293" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingsMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="301" endline="312" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="SettingsMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/datasegment/TextParameterDataSegment.java">
+<violation beginline="114" endline="121" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="TextParameterDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="130" endline="137" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="TextParameterDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="143" endline="155" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="TextParameterDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="158" endline="168" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="TextParameterDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="170" endline="201" begincolumn="19" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="TextParameterDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="213" endline="220" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="TextParameterDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="228" endline="233" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="TextParameterDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="243" endline="257" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="TextParameterDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="261" endline="264" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.datasegment" class="TextParameterDataSegment" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/digest/CRC32CDigest.java">
+<violation beginline="299" endline="306" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="CRC32CDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="309" endline="313" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="CRC32CDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="316" endline="326" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="CRC32CDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="329" endline="332" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="CRC32CDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="335" endline="341" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="CRC32CDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="344" endline="349" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="CRC32CDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="355" endline="358" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="CRC32CDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="365" endline="365" begincolumn="20" endcolumn="35" rule="OverrideBothEqualsAndHashcode" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="CRC32CDigest" method="equals" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OverrideBothEqualsAndHashcode" priority="3">
+Ensure you override both equals() and hashCode()
+</violation>
+<violation beginline="386" endline="396" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="CRC32CDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="404" endline="412" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="CRC32CDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/digest/CRCTables.java">
+<violation beginline="95" endline="106" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="CRCTables" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="126" endline="159" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="CRCTables" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/digest/DigestFactory.java">
+<violation beginline="58" endline="70" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="DigestFactory" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/digest/NullDigest.java">
+<violation beginline="81" endline="84" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="NullDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="87" endline="90" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="NullDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="96" endline="99" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="NullDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="105" endline="108" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="NullDigest" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="115" endline="115" begincolumn="20" endcolumn="35" rule="OverrideBothEqualsAndHashcode" ruleset="Basic Rules" package="org.jscsi.parser.digest" class="NullDigest" method="equals" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OverrideBothEqualsAndHashcode" priority="3">
+Ensure you override both equals() and hashCode()
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/login/ISID.java">
+<violation beginline="288" endline="298" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="310" endline="325" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="335" endline="348" begincolumn="11" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="358" endline="370" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="381" endline="408" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="412" endline="412" begincolumn="22" endcolumn="31" rule="OverrideBothEqualsAndHashcode" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" method="hashCode" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OverrideBothEqualsAndHashcode" priority="3">
+Ensure you override both equals() and hashCode()
+</violation>
+<violation beginline="412" endline="415" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="420" endline="427" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="437" endline="440" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="447" endline="450" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="457" endline="460" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="467" endline="470" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="477" endline="480" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="492" endline="523" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="520" endline="522" begincolumn="16" endcolumn="9" rule="EmptyIfStmt" ruleset="Basic Rules" package="org.jscsi.parser.login" class="ISID" method="checkIntegrity" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="3">
+Avoid empty if statements
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/login/LoginRequestParser.java">
+<violation beginline="147" endline="162" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="166" endline="169" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="173" endline="176" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="180" endline="196" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="214" endline="217" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="229" endline="232" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="255" endline="258" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="268" endline="271" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="282" endline="285" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="294" endline="297" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="320" endline="323" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="341" endline="344" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="356" endline="359" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="368" endline="371" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="380" endline="383" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="391" endline="394" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="403" endline="406" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="415" endline="418" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="427" endline="430" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="438" endline="441" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="448" endline="462" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="466" endline="475" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="490" endline="543" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="550" endline="563" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="567" endline="571" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="575" endline="581" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="585" endline="588" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/login/LoginResponseParser.java">
+<violation beginline="143" endline="158" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="162" endline="177" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="181" endline="184" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="188" endline="191" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="213" endline="216" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="228" endline="231" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="239" endline="242" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="252" endline="255" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="266" endline="269" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="283" endline="286" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="294" endline="297" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="310" endline="313" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="344" endline="358" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="362" endline="369" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="373" endline="379" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="386" endline="401" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="408" endline="419" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="423" endline="429" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.login" class="LoginResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/logout/LogoutRequestParser.java">
+<violation beginline="246" endline="255" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="259" endline="262" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="266" endline="272" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="284" endline="287" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="295" endline="298" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="306" endline="309" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="317" endline="320" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="327" endline="333" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="337" endline="341" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="348" endline="375" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="382" endline="385" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="389" endline="392" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/logout/LogoutResponseParser.java">
+<violation beginline="88" endline="98" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="102" endline="105" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="109" endline="116" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="127" endline="130" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="155" endline="158" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="177" endline="180" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="182" endline="184" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="186" endline="188" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="190" endline="192" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="199" endline="204" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="208" endline="212" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="219" endline="239" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="228" endline="231" begincolumn="17" endcolumn="17" rule="CollapsibleIfStatements" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" method="checkIntegrity" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements" priority="3">
+These nested if statements could be combined
+</violation>
+<violation beginline="246" endline="249" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="253" endline="259" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.logout" class="LogoutResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/nop/NOPInParser.java">
+<violation beginline="104" endline="107" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPInParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="115" endline="117" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPInParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="124" endline="132" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPInParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="136" endline="139" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPInParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="143" endline="148" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPInParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="155" endline="158" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPInParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="162" endline="165" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPInParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="172" endline="175" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPInParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="182" endline="185" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPInParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/nop/NOPOutParser.java">
+<violation beginline="110" endline="113" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="120" endline="128" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="132" endline="135" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="139" endline="144" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="151" endline="154" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="158" endline="161" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="168" endline="171" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="178" endline="181" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.nop" class="NOPOutParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/r2t/Ready2TransferParser.java">
+<violation beginline="82" endline="94" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="98" endline="101" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="105" endline="113" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="120" endline="123" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="138" endline="141" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="150" endline="153" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="163" endline="166" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="179" endline="182" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="184" endline="186" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="188" endline="190" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="192" endline="194" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="196" endline="198" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="205" endline="208" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="212" endline="215" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="219" endline="222" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="226" endline="229" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="233" endline="236" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="243" endline="266" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="273" endline="276" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="280" endline="283" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="287" endline="290" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="294" endline="297" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.r2t" class="Ready2TransferParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/reject/RejectParser.java">
+<violation beginline="241" endline="244" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.reject" class="RejectParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="251" endline="254" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.reject" class="RejectParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="261" endline="270" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.reject" class="RejectParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="274" endline="277" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.reject" class="RejectParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="281" endline="287" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.reject" class="RejectParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="294" endline="301" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.reject" class="RejectParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="305" endline="308" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.reject" class="RejectParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="315" endline="331" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.reject" class="RejectParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="338" endline="341" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.reject" class="RejectParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="345" endline="348" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.reject" class="RejectParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/scsi/SCSICommandDescriptorBlockParser.java">
+<violation beginline="327" endline="331" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.scsi" class="SCSICommandDescriptorBlockParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="346" endline="350" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.scsi" class="SCSICommandDescriptorBlockParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="367" endline="385" begincolumn="26" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.scsi" class="SCSICommandDescriptorBlockParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="392" endline="401" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.scsi" class="SCSICommandDescriptorBlockParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/snack/SNACKRequestParser.java">
+<violation beginline="247" endline="250" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="262" endline="265" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="282" endline="285" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="293" endline="296" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="307" endline="310" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="318" endline="321" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="329" endline="332" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="340" endline="343" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="350" endline="362" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="366" endline="369" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="373" endline="381" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="388" endline="392" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="396" endline="399" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="403" endline="406" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="410" endline="413" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="420" endline="424" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="431" endline="434" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="438" endline="441" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="445" endline="448" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="452" endline="455" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="459" endline="462" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.snack" class="SNACKRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/text/TextRequestParser.java">
+<violation beginline="74" endline="84" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="88" endline="91" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="95" endline="101" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="113" endline="116" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="130" endline="133" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="163" endline="166" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="173" endline="177" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="181" endline="184" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="191" endline="206" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="213" endline="221" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="225" endline="228" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/text/TextResponseParser.java">
+<violation beginline="74" endline="84" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="88" endline="91" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="95" endline="102" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="117" endline="120" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="139" endline="142" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="144" endline="146" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="148" endline="150" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="156" endline="162" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="166" endline="169" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="176" endline="191" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="198" endline="207" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="211" endline="214" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.text" class="TextResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/tmf/TaskManagementFunctionRequestParser.java">
+<violation beginline="154" endline="166" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="170" endline="173" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="177" endline="185" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="217" endline="220" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="347" endline="350" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="367" endline="370" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="379" endline="382" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="389" endline="393" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="397" endline="400" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="404" endline="407" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="411" endline="414" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="421" endline="447" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="454" endline="457" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="461" endline="464" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="468" endline="471" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="475" endline="478" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionRequestParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/parser/tmf/TaskManagementFunctionResponseParser.java">
+<violation beginline="172" endline="180" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="184" endline="187" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="191" endline="196" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="286" endline="289" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="296" endline="301" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="305" endline="308" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="315" endline="338" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="345" endline="348" begincolumn="21" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.parser.tmf" class="TaskManagementFunctionResponseParser" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/utils/SerialArithmeticNumber.java">
+<violation beginline="94" endline="97" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="SerialArithmeticNumber" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="100" endline="109" begincolumn="31" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="SerialArithmeticNumber" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="119" endline="122" begincolumn="31" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="SerialArithmeticNumber" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="127" endline="134" begincolumn="31" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="SerialArithmeticNumber" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="143" endline="150" begincolumn="31" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="SerialArithmeticNumber" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/utils/SoftHashMap.java">
+<violation beginline="104" endline="127" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="SoftHashMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="133" endline="138" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="SoftHashMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="144" endline="149" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="SoftHashMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="156" endline="161" begincolumn="31" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="SoftHashMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="167" endline="171" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="SoftHashMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="177" endline="180" begincolumn="18" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="SoftHashMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="189" endline="195" begincolumn="19" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="SoftHashMap" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+<file name="/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/main/java/org/jscsi/utils/Utils.java">
+<violation beginline="81" endline="86" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="98" endline="103" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="112" endline="115" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="133" endline="141" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="156" endline="164" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="179" endline="187" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="202" endline="206" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="221" endline="229" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="244" endline="253" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="269" endline="274" begincolumn="26" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="284" endline="287" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="297" endline="300" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+<violation beginline="310" endline="313" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.utils" class="Utils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
+Unnecessary final modifier in final class
+</violation>
+</file>
+</pmd>

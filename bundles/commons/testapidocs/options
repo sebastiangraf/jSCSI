@@ -1,0 +1,24 @@
+-classpath
+'/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/target/classes:/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/target/test-classes:/Users/sebi/.m2/repository/org/objenesis/objenesis/1.0/objenesis-1.0.jar:/Users/sebi/.m2/repository/org/mockito/mockito-core/1.9.5/mockito-core-1.9.5.jar:/Users/sebi/.m2/repository/commons-primitives/commons-primitives/20041207.202534/commons-primitives-20041207.202534.jar:/Users/sebi/.m2/repository/org/beanshell/bsh/2.0b4/bsh-2.0b4.jar:/Users/sebi/.m2/repository/org/aspectj/aspectjrt/1.7.2/aspectjrt-1.7.2.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-simple/1.7.2/slf4j-simple-1.7.2.jar:/Users/sebi/.m2/repository/junit/junit/4.10/junit-4.10.jar:/Users/sebi/.m2/repository/com/google/guava/guava/14.0/guava-14.0.jar:/Users/sebi/.m2/repository/org/yaml/snakeyaml/1.6/snakeyaml-1.6.jar:/Users/sebi/.m2/repository/com/beust/jcommander/1.27/jcommander-1.27.jar:/Users/sebi/.m2/repository/commons-math/commons-math/1.2/commons-math-1.2.jar:/Users/sebi/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar:/Users/sebi/.m2/repository/org/perfidix/perfidix/3.6.6/perfidix-3.6.6.jar:/Users/sebi/.m2/repository/org/testng/testng/6.8/testng-6.8.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/src/test/java'
+-author
+-bottom
+'Copyright &#169; 2013 <a href="http://www.disy.uni-konstanz.de">University of Konstanz, Distributed Systems Group</a>. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/sebi/Dropbox/github/jSCSI/target/checkout/bundles/commons/target/site/testapidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Libraries 2.5 Test API'
+-link
+'http://java.sun.com/javase/6/docs/api'
+-use
+-version
+-windowtitle
+'Libraries 2.5 Test API'

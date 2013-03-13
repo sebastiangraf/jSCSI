@@ -1,5 +1,5 @@
 -classpath
-'/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/target/classes:/Users/sebi/.m2/repository/com/google/guava/guava/14.0/guava-14.0.jar:/Users/sebi/.m2/repository/org/jscsi/commons/2.5-SNAPSHOT/commons-2.5-SNAPSHOT.jar:/Users/sebi/.m2/repository/org/aspectj/aspectjrt/1.7.2/aspectjrt-1.7.2.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-simple/1.7.2/slf4j-simple-1.7.2.jar'
+'/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/target/classes:/Users/sebi/.m2/repository/com/google/guava/guava/14.0/guava-14.0.jar:/Users/sebi/.m2/repository/org/jscsi/commons/2.5.1-SNAPSHOT/commons-2.5.1-SNAPSHOT.jar:/Users/sebi/.m2/repository/org/aspectj/aspectjrt/1.7.2/aspectjrt-1.7.2.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-simple/1.7.2/slf4j-simple-1.7.2.jar'
 -encoding
 'UTF-8'
 -protected
@@ -15,12 +15,10 @@
 -docencoding
 'UTF-8'
 -doctitle
-'Initiator 2.5-SNAPSHOT API'
+'Initiator 2.5.1-SNAPSHOT API'
 -link
 'http://java.sun.com/javase/6/docs/api'
--linkoffline
-'http://disy.github.com/jSCSI/apidocs' '/Users/sebi/Dropbox/github/jSCSI/bundles/target/target/site/apidocs'
 -use
 -version
 -windowtitle
-'Initiator 2.5-SNAPSHOT API'
+'Initiator 2.5.1-SNAPSHOT API'
