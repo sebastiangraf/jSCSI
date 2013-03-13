@@ -59,15 +59,15 @@ public class JCloudsStorageModule implements IStorageModule {
     private final ConcurrentHashMap<Integer, Future<Void>> mRunningTasks;
 
     /**
-     * Creates a new {@link JCloudsStorageModules} backed by the specified
+     * Creates a new {@link JCloudsStorageModule} backed by the specified
      * file. If no such file exists, a {@link FileNotFoundException} will be
      * thrown.
      * 
      * @param pSizeInBlocks
      *            blocksize for this module
+     * @param pFile
+     *            local storage, not used over here
      * 
-     * @throws FileNotFoundException
-     *             if the specified file does not exist
      */
     public JCloudsStorageModule(final long pSizeInBlocks, final File pFile) {
         mNumberOfCluster = 2097152 / BLOCK_IN_CLUSTER;

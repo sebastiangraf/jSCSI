@@ -2,6 +2,11 @@
 
 #Changelog:
 
+##2.5
+
+* Easier interface to different Storages within target
+* Beta-integration of jclouds as backend for jSCSI
+
 ##2.3
 
 * Blackbox-Tests for Initiator and Target

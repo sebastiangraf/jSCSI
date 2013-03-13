@@ -38,12 +38,12 @@ jSCSI contains a server (target), a client (initiator) and common classes to wor
 <dependency>
 	<groupId>org.jscsi</groupId>
 	<artifactId>target</artifactId>
-	<version>2.3</version>
+	<version>2.5</version>
 </dependency>
 <dependency>
 	<groupId>org.jscsi</groupId>
 	<artifactId>initiator</artifactId>
-	<version>2.3</version>
+	<version>2.5</version>
 </dependency>
 ```
 

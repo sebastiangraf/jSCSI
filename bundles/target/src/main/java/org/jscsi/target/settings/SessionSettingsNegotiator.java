@@ -60,8 +60,6 @@ public final class SessionSettingsNegotiator extends SettingsNegotiator {
      * <code>try ...  catch ... finally ...</code> blocks to make sure the lock is always released.
      * 
      * @return <code>true</code>if and only if the lock has been acquired
-     * @see #unlock()
-     * @see {@link Thread}
      */
     boolean lock() {
         return lock.lock();

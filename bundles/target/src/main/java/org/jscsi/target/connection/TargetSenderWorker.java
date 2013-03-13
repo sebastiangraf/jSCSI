@@ -22,10 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Instances of this class are used by {@link TargetConnection} objects for
+ * Instances of this class are used by {@link Connection} objects for
  * sending and receiving {@link ProtocolDataUnit} objects.
  * 
- * @author Andreas Ergenzinger
+ * @author Andreas Ergenzinger, University of Konstanz
  */
 public class TargetSenderWorker {
 
@@ -85,7 +85,7 @@ public class TargetSenderWorker {
     /**
      * Sets the {@link #session} variable.
      * <p>
-     * During the time this object is initialized, the {@link TargetConnection#getSession()} method will
+     * During the time this object is initialized, the {@link Connection#getSession()} method will
      * return <code>null</code>. Therefore {@link #session} must be set manually once the
      * {@link TargetSession} object has been created.
      * 

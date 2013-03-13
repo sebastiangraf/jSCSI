@@ -25,12 +25,12 @@ Both, intiator and target, are freely available over maven central-repo:
 <dependency>
 	<groupId>org.jscsi</groupId>
 	<artifactId>target</artifactId>
-	<version>2.3</version>
+	<version>2.5</version>
 </dependency>
 <dependency>
 	<groupId>org.jscsi</groupId>
 	<artifactId>initiator</artifactId>
-	<version>2.3</version>
+	<version>2.5</version>
 </dependency>
 ```
 
@@ -42,7 +42,7 @@ Based on its simple appliance as plain Java-library, our initiator is suited to 
 
 ###jSCSI target
 
-The target at the moment enables users either to start it as a demon process storing all blocks in a simple RandomAccessFile. Abstraction for using other storages as well as a library-based handling instead of a utilization as demon are supported. For more information, please refer to the target-bundle.
+The target at the moment enables users either to start it as a demon process storing all blocks in differend backends such as a simple RandomAccessFile or a JClouds-Backend. Abstraction for using other storages as well as a library-based handling instead of a utilization as demon are supported. For more information, please refer to the target-bundle.
 
 Our target is suited to act as a base for further target-allocated applications like the SCSI-layer implementation from Cleversafe. For more information, please refer to the targetExtensions-bundle.
 

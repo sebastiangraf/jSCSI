@@ -182,7 +182,7 @@ public final class ReadWrite {
     }
 
     /**
-     * Appends the content of a {@link ProtocolDataUnit}'s (text) data segment
+     * Appends the content of a <code>ProtocolDataUnit</code> (text) data segment
      * to a {@link StringBuilder};
      * 
      * @param byteBuffer

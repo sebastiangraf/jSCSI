@@ -127,15 +127,6 @@ public final class SingleNumericalValue extends NumericalValue {
         return result;
     }
 
-    /**
-     * See RFC 2045.
-     * 
-     * @param c
-     * @return
-     */
-    void bla() {
-
-    }
 
     /**
      * Returns a character's value in Base64

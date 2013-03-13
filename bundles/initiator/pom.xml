@@ -24,12 +24,5 @@
             <artifactId>commons</artifactId>
             <version>2.5-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.7.0</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 </project>

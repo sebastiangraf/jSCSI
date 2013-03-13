@@ -12,10 +12,10 @@ import org.jscsi.target.util.SerialArithmeticNumber;
  * A class for objects representing an iSCSI session with all necessary
  * variables.
  * <p>
- * Currently, a {@link TargetSession} can only have <b>one</b> {@link TargetConnection}, i.e.
+ * Currently, a {@link TargetSession} can only have <b>one</b> {@link Connection}, i.e.
  * <code>MaxConnections=1</code>.
  * 
- * @author Andreas Ergenzinger
+ * @author Andreas Ergenzinger, University of Konstanz
  */
 public class TargetSession {
 
@@ -103,7 +103,7 @@ public class TargetSession {
      * Constructs a new {@link TargetSession}
      * 
      * @param connection
-     *            the session's (first) {@link TargetConnection}
+     *            the session's (first) {@link Connection}
      * @param initiatorSessionID
      *            the {@link ISID} specified by the initiator
      * @param expectedCommandSequenceNumber
@@ -141,9 +141,9 @@ public class TargetSession {
     }
 
     /**
-     * Returns the session's {@link TargetConnection}.
+     * Returns the session's {@link Connection}.
      * 
-     * @return the session's {@link TargetConnection}
+     * @return the session's {@link Connection}
      */
     public Connection getConnection() {
         return connection;

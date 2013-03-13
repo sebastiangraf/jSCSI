@@ -20,7 +20,7 @@ import org.jscsi.target.util.ReadWrite;
 
 /**
  * This class is an abstract super-class for stages of the {@link TargetLoginPhase} (see
- * {@link TargetConnection} for a description of
+ * <code>Connection</code> for a description of
  * the relationship between sessions, connections, phases and sessions), namely
  * the {@link LoginOperationalParameterNegotiationStage} and the {@link SecurityNegotiationStage}.
  * <p>

@@ -4,6 +4,10 @@
 
 jSCSI greatly assisted the research by allowing for easy access to any iSCSI targets starting with the development of an initiator and acted as base for an own jSCSI-target as well. jSCSI thereby represents a platform for multiple thesis within our working group and is maintained continuously since 2007.
 
+##2013
+
+* jSCSI acts as frontend for treetank.org as well as for jclouds.org for allowing the integration of cloud-storage in a secure and scalable way even for the iSCSI-protocol in a cloud-provide independeent way. 
+
 ##2012
 
 * jSCSI retrieves the first pull-requests from users utilizing jSCSI. Entirely

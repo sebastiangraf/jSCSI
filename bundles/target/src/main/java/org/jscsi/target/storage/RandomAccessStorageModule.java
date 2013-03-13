@@ -55,7 +55,7 @@ public class RandomAccessStorageModule implements IStorageModule {
      * 
      * @param sizeInBlocks
      *            blocksize for this module
-     * @param randomAccessFile
+     * @param file
      *            the path to the file serving as storage medium
      * 
      * @throws FileNotFoundException

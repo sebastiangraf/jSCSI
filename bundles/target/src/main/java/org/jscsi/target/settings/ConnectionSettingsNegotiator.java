@@ -20,7 +20,7 @@ import org.jscsi.target.settings.entry.Use;
  * methods necessary for text parameter negotiation and for creating {@link Settings} objects, which allow
  * access to the current parameters.
  * <p>
- * Each instance of this class belongs to one {@link TargetConnection}, for which it manages all
+ * Each instance of this class belongs to one <code>Connection</code>, for which it manages all
  * connection-specific parameters. A similar association exists between the connection's enclosing
  * {@link TargetSession} and the {@link #sessionSettingsNegotiator} member variable.
  * <p>

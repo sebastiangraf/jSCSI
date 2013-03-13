@@ -11,13 +11,13 @@ import org.jscsi.target.connection.Connection;
 import org.jscsi.target.settings.SettingsException;
 
 /**
- * Instances of this class represent a connection's phase (see {@link TargetConnection} for a description of
+ * Instances of this class represent a connection's phase (see {@link Connection} for a description of
  * the relationship between
  * stages, phases, connections, and sessions).
  * <p>
  * To start a phase, one of the <i>execute</i> methods must be called, which one is sub-class-specific.
  * 
- * @author Andreas Ergenzinger
+ * @author Andreas Ergenzinger, University of Konstanz
  */
 public abstract class TargetPhase {
 
@@ -86,6 +86,11 @@ public abstract class TargetPhase {
         throw new OperationNotSupportedException();
     }
 
+    /**
+     * Getting the related connection
+     * 
+     * @return the connection
+     */
     public Connection getTargetConnection() {
         return connection;
     }
