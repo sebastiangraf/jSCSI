@@ -20,6 +20,7 @@ import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
 import org.jclouds.blobstore.domain.Blob;
+import org.jclouds.domain.Location;
 import org.jclouds.filesystem.reference.FilesystemConstants;
 
 import com.google.common.annotations.Beta;
@@ -75,7 +76,6 @@ public class JCloudsStorageModule implements IStorageModule {
     private final BlobStoreContext mContext;
 
     private final Cache<Integer, byte[]> mByteCache;
-    
 
     private int lastIndexWritten;
     private Blob lastBlobWritten;
@@ -98,7 +98,7 @@ public class JCloudsStorageModule implements IStorageModule {
      */
     public JCloudsStorageModule(final long pSizeInBlocks, final File pFile) {
         mNumberOfCluster = 2097152 / BLOCK_IN_CLUSTER;
-        mContainerName = "grave9283746";
+        mContainerName = "grave9283747";
         String[] credentials = getCredentials();
         if (credentials.length == 0) {
             Properties properties = new Properties();
@@ -115,7 +115,15 @@ public class JCloudsStorageModule implements IStorageModule {
         // Create Container
         mStore = mContext.getBlobStore();
         if (!mStore.containerExists(mContainerName)) {
-            mStore.createContainerInLocation(null, mContainerName);
+            Location locToSet = null;
+            for (Location loc : mStore.listAssignableLocations()) {
+                if (loc.getId().equals("eu-west-1")) {
+                    locToSet = loc;
+                    break;
+                }
+            }
+            System.out.println(locToSet);
+            mStore.createContainerInLocation(locToSet, mContainerName);
         }
         mWriterService = Executors.newCachedThreadPool();
         mReaderService = Executors.newFixedThreadPool(21);
@@ -278,24 +286,24 @@ public class JCloudsStorageModule implements IStorageModule {
      * @return a two-dimensional String[] with login and password
      */
     private static String[] getCredentials() {
+        return new String[0];
+        // File userStore =
+        // new File(System.getProperty("user.home"), new StringBuilder(".credentials")
+        // .append(File.separator).append("aws.properties").toString());
+        // if (!userStore.exists()) {
         // return new String[0];
-        File userStore =
-            new File(System.getProperty("user.home"), new StringBuilder(".credentials")
-                .append(File.separator).append("aws.properties").toString());
-        if (!userStore.exists()) {
-            return new String[0];
-        } else {
-            Properties props = new Properties();
-            try {
-                props.load(new FileReader(userStore));
-                return new String[] {
-                    props.getProperty("access"), props.getProperty("secret")
-                };
-
-            } catch (IOException exc) {
-                throw new RuntimeException(exc);
-            }
-        }
+        // } else {
+        // Properties props = new Properties();
+        // try {
+        // props.load(new FileReader(userStore));
+        // return new String[] {
+        // props.getProperty("access"), props.getProperty("secret")
+        // };
+        //
+        // } catch (IOException exc) {
+        // throw new RuntimeException(exc);
+        // }
+        // }
     }
 
     /**
