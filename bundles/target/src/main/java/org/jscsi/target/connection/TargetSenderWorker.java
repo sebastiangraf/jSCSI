@@ -85,9 +85,9 @@ public class TargetSenderWorker {
     /**
      * Sets the {@link #session} variable.
      * <p>
-     * During the time this object is initialized, the {@link Connection#getSession()} method will
-     * return <code>null</code>. Therefore {@link #session} must be set manually once the
-     * {@link TargetSession} object has been created.
+     * During the time this object is initialized, the {@link Connection#getSession()} method will return
+     * <code>null</code>. Therefore {@link #session} must be set manually once the {@link TargetSession}
+     * object has been created.
      * 
      * @param session
      *            the session of the {@link #connection}
@@ -153,8 +153,8 @@ public class TargetSenderWorker {
         // parse sequence counters
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
         final InitiatorMessageParser parser = (InitiatorMessageParser)bhs.getParser();
-        final int commandSequenceNumber = parser.getCommandSequenceNumber();
-        final int expectedStatusSequenceNumber = parser.getExpectedStatusSequenceNumber();
+        // final int commandSequenceNumber = parser.getCommandSequenceNumber();
+        // final int expectedStatusSequenceNumber = parser.getExpectedStatusSequenceNumber();
 
         if (LOGGER.isDebugEnabled()) {
             // sharrajesh
@@ -165,7 +165,7 @@ public class TargetSenderWorker {
                 LOGGER.debug("scsiOpCode = " + scsiOpCode);
                 LOGGER.debug("CDB bytes: \n" + Debug.byteBufferToString(scsiParser.getCDB()));
             }
-            LOGGER.debug("parser.expectedStatusSequenceNumber: " + expectedStatusSequenceNumber);
+            // LOGGER.debug("parser.expectedStatusSequenceNumber: " + expectedStatusSequenceNumber);
             if (connection == null)
                 LOGGER.debug("connection: null");
             else if (connection.getStatusSequenceNumber() == null)
@@ -186,8 +186,8 @@ public class TargetSenderWorker {
             // Target.main()
         } else {
             // check sequence counters
-            if (session.getMaximumCommandSequenceNumber().lessThan(commandSequenceNumber))
-                throw new InternetSCSIException("received CmdSN > local MaxCmdSN");
+            // if (session.getMaximumCommandSequenceNumber().lessThan(commandSequenceNumber))
+            // throw new InternetSCSIException("received CmdSN > local MaxCmdSN");
 
             // verified, is working with Windows 8 initiator
             // if (!connection.getStatusSequenceNumber().equals(expectedStatusSequenceNumber)
@@ -198,8 +198,12 @@ public class TargetSenderWorker {
         }
 
         // increment CmdSN if not immediate PDU (or Data-Out PDU)
-        if (parser.incrementSequenceNumber())
-            session.getExpectedCommandSequenceNumber().increment();
+        try {
+            if (parser.incrementSequenceNumber())
+                session.getExpectedCommandSequenceNumber().increment();
+        } catch (NullPointerException exc) {
+
+        }
 
         return pdu;
     }

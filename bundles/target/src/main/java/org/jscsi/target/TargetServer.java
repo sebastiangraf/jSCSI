@@ -188,8 +188,8 @@ public final class TargetServer implements Callable<Void> {
                             parser.getExpectedStatusSequenceNumber());
 
                     sessions.add(session);
-                    threadPool.submit(connection);// ignore returned Future
-                    // connection.call();
+                    // threadPool.submit(connection);// ignore returned Future
+                    connection.call();
                 } catch (DigestException | InternetSCSIException | SettingsException e) {
                     LOGGER.info("Throws Exception", e);
                     continue;

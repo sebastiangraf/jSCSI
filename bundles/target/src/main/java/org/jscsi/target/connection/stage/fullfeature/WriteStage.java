@@ -10,6 +10,7 @@ import org.jscsi.parser.AbstractMessageParser;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.data.DataOutParser;
+import org.jscsi.parser.nop.NOPOutParser;
 import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIStatus;
@@ -57,10 +58,17 @@ public final class WriteStage extends ReadOrWriteStage {
     private void checkDataOutParser(final AbstractMessageParser parser) throws InternetSCSIException {
         if (parser instanceof DataOutParser) {
             final DataOutParser p = (DataOutParser)parser;
-            if (p.getDataSequenceNumber() == expectedDataSequenceNumber++)
-                return;
+            if (p.getDataSequenceNumber() != expectedDataSequenceNumber++) {
+                throw new InternetSCSIException("received erroneous PDU in data-out sequence, expected "
+                    + (expectedDataSequenceNumber - 1));
+            }
+        } else if (parser instanceof NOPOutParser) {
+
+        } else {
+            throw new InternetSCSIException("received erroneous PDU in data-out sequence, "
+                + parser.getClass().getName());
         }
-        throw new InternetSCSIException("received erroneous PDU in data-out sequence");
+
     }
 
     @Override
@@ -196,6 +204,24 @@ public final class WriteStage extends ReadOrWriteStage {
                     bhs = pdu.getBasicHeaderSegment();
                     checkDataOutParser(bhs.getParser());
 
+                    if (bhs.getParser() instanceof NOPOutParser) {
+
+                        /* send SCSI Response PDU */
+                        pdu = TargetPduFactory.createSCSIResponsePdu(false,// bidirectionalReadResidualOverflow
+                            false,// bidirectionalReadResidualUnderflow
+                            false,// residualOverflow
+                            false,// residualUnderflow
+                            SCSIResponseParser.ServiceResponse.COMMAND_COMPLETED_AT_TARGET,// response
+                            SCSIStatus.GOOD,// status
+                            initiatorTaskTag, 0,// snackTag
+                            0,// (ExpDataSN or) Reserved
+                            0,// bidirectionalReadResidualCount
+                            0,// residualCount
+                            ScsiResponseDataSegment.EMPTY_DATA_SEGMENT);// dataSegment
+
+                        connection.sendPdu(pdu);
+                        return;
+                    }
                     final DataOutParser dataOutParser = (DataOutParser)bhs.getParser();
 
                     session.getStorageModule().write(pdu.getDataSegment().array(),
