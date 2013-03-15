@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,10 +63,12 @@ public class JCloudsStorageModule implements IStorageModule {
     /** Number of Blocks in one Cluster. */
     public static final int BLOCK_IN_CLUSTER = 512;
 
-    private static final int BUCKETS_TO_PREFETCH = 10;
+    private static final int BUCKETS_TO_PREFETCH = 3;
 
     /** Number of Bytes in Bucket. */
     public final static int SIZE_PER_BUCKET = BLOCK_IN_CLUSTER * VIRTUAL_BLOCK_SIZE;
+
+    private static final int HASH_FOR_NULL_BUCKET = Arrays.hashCode(new byte[SIZE_PER_BUCKET]);
 
     private final long mNumberOfCluster;
 
@@ -83,7 +86,7 @@ public class JCloudsStorageModule implements IStorageModule {
     private final ExecutorService mWriterService;
     private final ExecutorService mReaderService;
     private final ConcurrentHashMap<Integer, Future<Void>> mRunningWriteTasks;
-    private final ConcurrentHashMap<Integer, Future<byte[]>> mRunningReadTasks;
+    private final ConcurrentHashMap<Integer, Future<Void>> mRunningReadTasks;
 
     /**
      * Creates a new {@link JCloudsStorageModule} backed by the specified
@@ -97,7 +100,7 @@ public class JCloudsStorageModule implements IStorageModule {
      * 
      */
     public JCloudsStorageModule(final long pSizeInBlocks, final File pFile) {
-        mNumberOfCluster = 2097152 / BLOCK_IN_CLUSTER;
+        mNumberOfCluster = 8388608 / BLOCK_IN_CLUSTER;
         mContainerName = "grave9283747";
         String[] credentials = getCredentials();
         if (credentials.length == 0) {
@@ -126,9 +129,9 @@ public class JCloudsStorageModule implements IStorageModule {
             mStore.createContainerInLocation(locToSet, mContainerName);
         }
         mWriterService = Executors.newCachedThreadPool();
-        mReaderService = Executors.newFixedThreadPool(21);
+        mReaderService = Executors.newCachedThreadPool();
         mRunningWriteTasks = new ConcurrentHashMap<Integer, Future<Void>>();
-        mRunningReadTasks = new ConcurrentHashMap<Integer, Future<byte[]>>();
+        mRunningReadTasks = new ConcurrentHashMap<Integer, Future<Void>>();
         mByteCache = CacheBuilder.newBuilder().maximumSize(100).build();
         lastIndexWritten = -1;
     }
@@ -176,7 +179,8 @@ public class JCloudsStorageModule implements IStorageModule {
             prefetchBuckets(bucketIndex);
             byte[] data = mByteCache.getIfPresent(bucketIndex);
             if (data == null) {
-                data = mRunningReadTasks.remove(bucketIndex).get();
+                mRunningReadTasks.remove(bucketIndex).get();
+                data = mByteCache.getIfPresent(bucketIndex);
             }
 
             final ByteArrayDataOutput output = ByteStreams.newDataOutput(bytes.length);
@@ -191,7 +195,8 @@ public class JCloudsStorageModule implements IStorageModule {
             if (bucketOffset + bytes.length > SIZE_PER_BUCKET) {
                 data = mByteCache.getIfPresent(bucketIndex + 1);
                 if (data == null) {
-                    data = mRunningReadTasks.remove(bucketIndex + 1).get();
+                    mRunningReadTasks.remove(bucketIndex + 1).get();
+                    data = mByteCache.getIfPresent(bucketIndex + 1);
                 }
                 output.write(data, 0, bytes.length - (SIZE_PER_BUCKET - bucketOffset));
             }
@@ -243,27 +248,33 @@ public class JCloudsStorageModule implements IStorageModule {
             prefetchBuckets(bucketIndex);
             byte[] data = mByteCache.getIfPresent(bucketIndex);
             if (data == null) {
-                data = mRunningReadTasks.remove(bucketIndex).get();
+                mRunningReadTasks.remove(bucketIndex).get();
+                data = mByteCache.getIfPresent(bucketIndex);
             }
 
             Blob blob = mStore.blobBuilder(Integer.toString(bucketIndex)).build();
             System.arraycopy(bytes, 0, data, bucketOffset, bytes.length + bucketOffset > SIZE_PER_BUCKET
                 ? SIZE_PER_BUCKET - bucketOffset : bytes.length);
+            // if (Arrays.hashCode(data) == HASH_FOR_NULL_BUCKET) {
             blob.setPayload(data);
             storeBucket(bucketIndex, blob);
+            // }
             mByteCache.put(bucketIndex, data);
 
             if (bucketOffset + bytes.length > SIZE_PER_BUCKET) {
                 data = mByteCache.getIfPresent(bucketIndex + 1);
                 if (data == null) {
-                    data = mRunningReadTasks.remove(bucketIndex + 1).get();
+                    mRunningReadTasks.remove(bucketIndex + 1).get();
+                    data = mByteCache.getIfPresent(bucketIndex + 1);
                 }
                 blob = mStore.blobBuilder(Integer.toString(bucketIndex + 1)).build();
 
                 System.arraycopy(bytes, SIZE_PER_BUCKET - bucketOffset, data, 0, bytes.length
                     - (SIZE_PER_BUCKET - bucketOffset));
+                // if (Arrays.hashCode(data) == HASH_FOR_NULL_BUCKET) {
                 blob.setPayload(data);
                 storeBucket(bucketIndex + 1, blob);
+                // }
                 mByteCache.put(bucketIndex + 1, data);
             }
         } catch (Exception exc) {
@@ -312,7 +323,7 @@ public class JCloudsStorageModule implements IStorageModule {
      * @author Sebastian Graf, University of Konstanz
      * 
      */
-    class ReadTask implements Callable<byte[]> {
+    class ReadTask implements Callable<Void> {
 
         /**
          * Bucket ID to be read.
@@ -324,7 +335,7 @@ public class JCloudsStorageModule implements IStorageModule {
         }
 
         @Override
-        public byte[] call() throws Exception {
+        public Void call() throws Exception {
             byte[] data = mByteCache.getIfPresent(mBucketId);
             if (data == null) {
                 long time = System.currentTimeMillis();
@@ -352,7 +363,7 @@ public class JCloudsStorageModule implements IStorageModule {
                 }
                 mByteCache.put(mBucketId, data);
             }
-            return data;
+            return null;
         }
     }
 

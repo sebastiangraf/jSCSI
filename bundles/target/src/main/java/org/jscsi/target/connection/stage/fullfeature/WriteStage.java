@@ -62,7 +62,7 @@ public final class WriteStage extends ReadOrWriteStage {
                 throw new InternetSCSIException("received erroneous PDU in data-out sequence, expected "
                     + (expectedDataSequenceNumber - 1));
             }
-        } else if (parser instanceof NOPOutParser) {
+        } else if (parser instanceof NOPOutParser || parser instanceof SCSICommandParser) {
 
         } else {
             throw new InternetSCSIException("received erroneous PDU in data-out sequence, "
