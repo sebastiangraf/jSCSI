@@ -6,9 +6,7 @@ package org.jscsi.target.storage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,25 +38,25 @@ import com.google.common.io.ByteStreams;
 @Beta
 public class JCloudsStorageModule implements IStorageModule {
 
-    // START DEBUG CODE
-    private final static File writeFile = new File("/Users/sebi/Desktop/writeaccess.txt");
-    private final static File readFile = new File("/Users/sebi/Desktop/readaccess.txt");
-    private final static File uploadFile = new File("/Users/sebi/Desktop/uploadaccess.txt");
-    private final static File downloadFile = new File("/Users/sebi/Desktop/downloadaccess.txt");
-    static final FileWriter writer;
-    static final FileWriter reader;
-    static final FileWriter upload;
-    static final FileWriter download;
-    static {
-        try {
-            writer = new FileWriter(writeFile);
-            reader = new FileWriter(readFile);
-            upload = new FileWriter(uploadFile);
-            download = new FileWriter(downloadFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    // // START DEBUG CODE
+    // private final static File writeFile = new File("/Users/sebi/Desktop/writeaccess.txt");
+    // private final static File readFile = new File("/Users/sebi/Desktop/readaccess.txt");
+    // private final static File uploadFile = new File("/Users/sebi/Desktop/uploadaccess.txt");
+    // private final static File downloadFile = new File("/Users/sebi/Desktop/downloadaccess.txt");
+    // static final FileWriter writer;
+    // static final FileWriter reader;
+    // static final FileWriter upload;
+    // static final FileWriter download;
+    // static {
+    // try {
+    // writer = new FileWriter(writeFile);
+    // reader = new FileWriter(readFile);
+    // upload = new FileWriter(uploadFile);
+    // download = new FileWriter(downloadFile);
+    // } catch (IOException e) {
+    // throw new RuntimeException(e);
+    // }
+    // }
 
     /** Number of Blocks in one Cluster. */
     public static final int BLOCK_IN_CLUSTER = 512;
@@ -67,8 +65,6 @@ public class JCloudsStorageModule implements IStorageModule {
 
     /** Number of Bytes in Bucket. */
     public final static int SIZE_PER_BUCKET = BLOCK_IN_CLUSTER * VIRTUAL_BLOCK_SIZE;
-
-    private static final int HASH_FOR_NULL_BUCKET = Arrays.hashCode(new byte[SIZE_PER_BUCKET]);
 
     private final long mNumberOfCluster;
 
@@ -101,7 +97,7 @@ public class JCloudsStorageModule implements IStorageModule {
      */
     public JCloudsStorageModule(final long pSizeInBlocks, final File pFile) {
         mNumberOfCluster = 8388608 / BLOCK_IN_CLUSTER;
-        mContainerName = "grave9283747";
+        mContainerName = "grave9283746";
         String[] credentials = getCredentials();
         if (credentials.length == 0) {
             Properties properties = new Properties();
@@ -128,7 +124,7 @@ public class JCloudsStorageModule implements IStorageModule {
             System.out.println(locToSet);
             mStore.createContainerInLocation(locToSet, mContainerName);
         }
-        mWriterService = Executors.newCachedThreadPool();
+        mWriterService = Executors.newFixedThreadPool(20);
         mReaderService = Executors.newCachedThreadPool();
         mRunningWriteTasks = new ConcurrentHashMap<Integer, Future<Void>>();
         mRunningReadTasks = new ConcurrentHashMap<Integer, Future<Void>>();
@@ -172,9 +168,10 @@ public class JCloudsStorageModule implements IStorageModule {
         try {
             storeBucket(-1, null);
 
-            // DEBUG CODE
-            reader.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length + "\n");
-            reader.flush();
+            // // DEBUG CODE
+            // reader.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length +
+            // "\n");
+            // reader.flush();
 
             prefetchBuckets(bucketIndex);
             byte[] data = mByteCache.getIfPresent(bucketIndex);
@@ -241,9 +238,10 @@ public class JCloudsStorageModule implements IStorageModule {
         final int bucketOffset = (int)(storageIndex % SIZE_PER_BUCKET);
         try {
 
-            // DEBUG CODE
-            writer.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length + "\n");
-            writer.flush();
+            // // DEBUG CODE
+            // writer.write(bucketIndex + "," + storageIndex + "," + bucketOffset + "," + bytes.length +
+            // "\n");
+            // writer.flush();
 
             prefetchBuckets(bucketIndex);
             byte[] data = mByteCache.getIfPresent(bucketIndex);
@@ -255,10 +253,8 @@ public class JCloudsStorageModule implements IStorageModule {
             Blob blob = mStore.blobBuilder(Integer.toString(bucketIndex)).build();
             System.arraycopy(bytes, 0, data, bucketOffset, bytes.length + bucketOffset > SIZE_PER_BUCKET
                 ? SIZE_PER_BUCKET - bucketOffset : bytes.length);
-            // if (Arrays.hashCode(data) == HASH_FOR_NULL_BUCKET) {
             blob.setPayload(data);
             storeBucket(bucketIndex, blob);
-            // }
             mByteCache.put(bucketIndex, data);
 
             if (bucketOffset + bytes.length > SIZE_PER_BUCKET) {
@@ -271,10 +267,8 @@ public class JCloudsStorageModule implements IStorageModule {
 
                 System.arraycopy(bytes, SIZE_PER_BUCKET - bucketOffset, data, 0, bytes.length
                     - (SIZE_PER_BUCKET - bucketOffset));
-                // if (Arrays.hashCode(data) == HASH_FOR_NULL_BUCKET) {
                 blob.setPayload(data);
                 storeBucket(bucketIndex + 1, blob);
-                // }
                 mByteCache.put(bucketIndex + 1, data);
             }
         } catch (Exception exc) {
@@ -342,22 +336,22 @@ public class JCloudsStorageModule implements IStorageModule {
                 Blob blob = mStore.getBlob(mContainerName, Integer.toString(mBucketId));
                 if (blob == null) {
                     data = new byte[SIZE_PER_BUCKET];
-                    // DEBUG CODE
-                    download.write(Integer.toString(mBucketId) + ", empty, "
-                        + (System.currentTimeMillis() - time) + "\n");
-                    download.flush();
+                    // // DEBUG CODE
+                    // download.write(Integer.toString(mBucketId) + ", empty, "
+                    // + (System.currentTimeMillis() - time) + "\n");
+                    // download.flush();
                 } else {
                     data = ByteStreams.toByteArray(blob.getPayload().getInput());
-                    download.write(Integer.toString(mBucketId) + "," + data.length + " , "
-                        + (System.currentTimeMillis() - time) + "\n");
-                    download.flush();
+                    // download.write(Integer.toString(mBucketId) + "," + data.length + " , "
+                    // + (System.currentTimeMillis() - time) + "\n");
+                    // download.flush();
                     while (data.length == 0) {
                         blob = mStore.getBlob(mContainerName, Integer.toString(mBucketId));
                         data = ByteStreams.toByteArray(blob.getPayload().getInput());
-                        // DEBUG CODE
-                        download.write(Integer.toString(mBucketId) + "," + data.length + " , "
-                            + (System.currentTimeMillis() - time) + "\n");
-                        download.flush();
+                        // // DEBUG CODE
+                        // download.write(Integer.toString(mBucketId) + "," + data.length + " , "
+                        // + (System.currentTimeMillis() - time) + "\n");
+                        // download.flush();
 
                     }
                 }
@@ -393,10 +387,11 @@ public class JCloudsStorageModule implements IStorageModule {
                 try {
                     long time = System.currentTimeMillis();
                     mStore.putBlob(mContainerName, mBlob);
-                    // DEBUG CODE
-                    upload.write(Integer.toString(mBucketIndex) + ", " + (System.currentTimeMillis() - time)
-                        + "\n");
-                    upload.flush();
+                    // // DEBUG CODE
+                    // upload.write(Integer.toString(mBucketIndex) + ", " + (System.currentTimeMillis() -
+                    // time)
+                    // + "\n");
+                    // upload.flush();
                 } catch (Exception exc) {
 
                 }
