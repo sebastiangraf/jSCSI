@@ -5,8 +5,10 @@ package org.jscsi.target.storage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,6 +16,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.BlobStore;
@@ -63,6 +69,13 @@ public class JCloudsStorageModule implements IStorageModule {
 
     private static final int BUCKETS_TO_PREFETCH = 3;
 
+    private static final boolean ENCRYPT = false;
+    private static final String ALGO = "AES";
+    private static byte[] keyValue = new byte[] {
+        'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k'
+    };
+    private static final Key KEY = new SecretKeySpec(keyValue, "AES");
+
     /** Number of Bytes in Bucket. */
     public final static int SIZE_PER_BUCKET = BLOCK_IN_CLUSTER * VIRTUAL_BLOCK_SIZE;
 
@@ -77,7 +90,7 @@ public class JCloudsStorageModule implements IStorageModule {
     private final Cache<Integer, byte[]> mByteCache;
 
     private int lastIndexWritten;
-    private Blob lastBlobWritten;
+    private byte[] lastBlobWritten;
 
     private final ExecutorService mWriterService;
     private final ExecutorService mReaderService;
@@ -121,9 +134,10 @@ public class JCloudsStorageModule implements IStorageModule {
                     break;
                 }
             }
-            System.out.println(locToSet);
+            // System.out.println(locToSet);
             mStore.createContainerInLocation(locToSet, mContainerName);
         }
+
         mWriterService = Executors.newFixedThreadPool(20);
         mReaderService = Executors.newCachedThreadPool();
         mRunningWriteTasks = new ConcurrentHashMap<Integer, Future<Void>>();
@@ -215,7 +229,8 @@ public class JCloudsStorageModule implements IStorageModule {
 
     }
 
-    private final void storeBucket(int pBucketId, Blob pBlob) throws InterruptedException, ExecutionException {
+    private final void storeBucket(int pBucketId, byte[] pData) throws InterruptedException,
+        ExecutionException {
         if (lastIndexWritten != pBucketId && lastBlobWritten != null) {
             if (mRunningWriteTasks.containsKey(lastIndexWritten)) {
                 mRunningWriteTasks.remove(lastIndexWritten).cancel(false);
@@ -224,7 +239,7 @@ public class JCloudsStorageModule implements IStorageModule {
                 lastIndexWritten)));
         }
         lastIndexWritten = pBucketId;
-        lastBlobWritten = pBlob;
+        lastBlobWritten = pData;
     }
 
     /**
@@ -250,11 +265,9 @@ public class JCloudsStorageModule implements IStorageModule {
                 data = mByteCache.getIfPresent(bucketIndex);
             }
 
-            Blob blob = mStore.blobBuilder(Integer.toString(bucketIndex)).build();
             System.arraycopy(bytes, 0, data, bucketOffset, bytes.length + bucketOffset > SIZE_PER_BUCKET
                 ? SIZE_PER_BUCKET - bucketOffset : bytes.length);
-            blob.setPayload(data);
-            storeBucket(bucketIndex, blob);
+            storeBucket(bucketIndex, data);
             mByteCache.put(bucketIndex, data);
 
             if (bucketOffset + bytes.length > SIZE_PER_BUCKET) {
@@ -263,12 +276,10 @@ public class JCloudsStorageModule implements IStorageModule {
                     mRunningReadTasks.remove(bucketIndex + 1).get();
                     data = mByteCache.getIfPresent(bucketIndex + 1);
                 }
-                blob = mStore.blobBuilder(Integer.toString(bucketIndex + 1)).build();
 
                 System.arraycopy(bytes, SIZE_PER_BUCKET - bucketOffset, data, 0, bytes.length
                     - (SIZE_PER_BUCKET - bucketOffset));
-                blob.setPayload(data);
-                storeBucket(bucketIndex + 1, blob);
+                storeBucket(bucketIndex + 1, data);
                 mByteCache.put(bucketIndex + 1, data);
             }
         } catch (Exception exc) {
@@ -319,12 +330,24 @@ public class JCloudsStorageModule implements IStorageModule {
      */
     class ReadTask implements Callable<Void> {
 
+        final Cipher mCipher;
+
         /**
          * Bucket ID to be read.
          */
         final int mBucketId;
 
         ReadTask(final int pBucketId) {
+            if (ENCRYPT) {
+                try {
+                    mCipher = Cipher.getInstance(ALGO);
+                    mCipher.init(Cipher.DECRYPT_MODE, KEY);
+                } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                mCipher = null;
+            }
             this.mBucketId = pBucketId;
         }
 
@@ -332,7 +355,7 @@ public class JCloudsStorageModule implements IStorageModule {
         public Void call() throws Exception {
             byte[] data = mByteCache.getIfPresent(mBucketId);
             if (data == null) {
-                long time = System.currentTimeMillis();
+                // long time = System.currentTimeMillis();
                 Blob blob = mStore.getBlob(mContainerName, Integer.toString(mBucketId));
                 if (blob == null) {
                     data = new byte[SIZE_PER_BUCKET];
@@ -352,7 +375,9 @@ public class JCloudsStorageModule implements IStorageModule {
                         // download.write(Integer.toString(mBucketId) + "," + data.length + " , "
                         // + (System.currentTimeMillis() - time) + "\n");
                         // download.flush();
-
+                    }
+                    if (ENCRYPT) {
+                        data = mCipher.doFinal(data);
                     }
                 }
                 mByteCache.put(mBucketId, data);
@@ -371,11 +396,22 @@ public class JCloudsStorageModule implements IStorageModule {
         /**
          * The bytes to buffer.
          */
-        final Blob mBlob;
+        final byte[] mData;
         final int mBucketIndex;
+        final Cipher mCipher;
 
-        WriteTask(Blob pBlob, int pBucketIndex) {
-            this.mBlob = pBlob;
+        WriteTask(byte[] pData, int pBucketIndex) {
+            if (ENCRYPT) {
+                try {
+                    mCipher = Cipher.getInstance(ALGO);
+                    mCipher.init(Cipher.ENCRYPT_MODE, KEY);
+                } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                mCipher = null;
+            }
+            this.mData = pData;
             this.mBucketIndex = pBucketIndex;
         }
 
@@ -385,8 +421,14 @@ public class JCloudsStorageModule implements IStorageModule {
 
             while (!finished) {
                 try {
-                    long time = System.currentTimeMillis();
-                    mStore.putBlob(mContainerName, mBlob);
+                    // long time = System.currentTimeMillis();
+                    byte[] data = mData;
+                    if (ENCRYPT) {
+                        data = mCipher.doFinal(mData);
+                    }
+                    Blob blob = mStore.blobBuilder(Integer.toString(mBucketIndex)).build();
+                    blob.setPayload(data);
+                    mStore.putBlob(mContainerName, blob);
                     // // DEBUG CODE
                     // upload.write(Integer.toString(mBucketIndex) + ", " + (System.currentTimeMillis() -
                     // time)

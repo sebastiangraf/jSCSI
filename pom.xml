@@ -1,343 +1,349 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
-    license agreements. See the NOTICE file distributed with this work for additional 
-    information regarding copyright ownership. The ASF licenses this file to 
-    you under the Apache License, Version 2.0 (the "License"); you may not use 
-    this file except in compliance with the License. You may obtain a copy of 
-    the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
-    by applicable law or agreed to in writing, software distributed under the 
-    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
-    OF ANY KIND, either express or implied. See the License for the specific 
-    language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	you under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.jscsi</groupId>
-    <artifactId>pom</artifactId>
-    <packaging>pom</packaging>
-    <version>2.5.1-SNAPSHOT</version>
-    <name>Builder</name>
+	<groupId>org.jscsi</groupId>
+	<artifactId>pom</artifactId>
+	<packaging>pom</packaging>
+	<version>2.5.1-SNAPSHOT</version>
+	<name>Builder</name>
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
-    <description>jSCSI is a feature-complete iSCSI implementation in Java only. Platform-independent and fast, jSCSI represents a premium example how low-level protocols can be pushed to higher levels. jSCSI contains a server (target), a client (initiator) and common classes to work with the protocol.</description>
+	<description>jSCSI is a feature-complete iSCSI implementation in Java only. Platform-independent and fast, jSCSI represents a premium example how low-level protocols can be pushed to higher levels. jSCSI contains a server (target), a client (initiator) and common classes to work with the protocol.</description>
 
-    <url>http://disy.github.com/jSCSI/</url>
-    <scm>
-        <url>git@github.com:disy/jSCSI.git</url>
-        <connection>scm:git:git@github.com:disy/jSCSI.git</connection>
-        <developerConnection>scm:git:git@github.com:disy/jSCSI.git</developerConnection>
-    </scm>
-    <issueManagement>
-        <url>https://github.com/disy/jSCSI/issues</url>
-        <system>GitHub Issues</system>
-    </issueManagement>
-    <licenses>
-        <license>
-            <name>New BSD</name>
-            <url>http://www.opensource.org/licenses/BSD-3-Clause</url>
-            <comments>3-clause BSD License</comments>
-        </license>
-    </licenses>
-    <ciManagement>
-        <system>Travis CI</system>
-        <url>http://travis-ci.org/#!/disy/jSCSI</url>
-    </ciManagement>
-    <developers>
-        <developer>
-            <name>Sebastian Graf</name>
-            <email>Sebastian.Graf@uni-konstanz.de</email>
-            <url>http://www.disy.uni-konstanz.de/en/members/sebastian-graf/</url>
-            <organization>University of Konstanz, Distributed Systems Group
+	<url>http://disy.github.com/jSCSI/</url>
+	<scm>
+		<url>git@github.com:disy/jSCSI.git</url>
+		<connection>scm:git:git@github.com:disy/jSCSI.git</connection>
+		<developerConnection>scm:git:git@github.com:disy/jSCSI.git</developerConnection>
+	</scm>
+	<issueManagement>
+		<url>https://github.com/disy/jSCSI/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+	<licenses>
+		<license>
+			<name>New BSD</name>
+			<url>http://www.opensource.org/licenses/BSD-3-Clause</url>
+			<comments>3-clause BSD License</comments>
+		</license>
+	</licenses>
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>http://travis-ci.org/#!/disy/jSCSI</url>
+	</ciManagement>
+	<developers>
+		<developer>
+			<name>Sebastian Graf</name>
+			<email>Sebastian.Graf@uni-konstanz.de</email>
+			<url>http://www.disy.uni-konstanz.de/en/members/sebastian-graf/</url>
+			<organization>University of Konstanz, Distributed Systems Group
 			</organization>
-            <organizationUrl>http://www.disy.uni-konstanz.de/</organizationUrl>
-            <timezone>+1</timezone>
-        </developer>
-    </developers>
-    <organization>
-        <name>University of Konstanz, Distributed Systems Group</name>
-        <url>http://www.disy.uni-konstanz.de</url>
-    </organization>
-    <mailingLists>
-        <mailingList>
-            <name>jSCSI Mailing List</name>
-            <subscribe>jscsi-subscribe@mailman.uni-konstanz.de</subscribe>
-            <unsubscribe>jscsi-unsibscribe@mailman.uni-konstanz.de</unsubscribe>
-            <post>jscsi@mailman.uni-konstanz.de</post>
-        </mailingList>
-    </mailingLists>
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- To invoke with "mvn clean verify ghDownloads:upload" -->
-            <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>downloads-maven-plugin</artifactId>
-                <version>0.6</version>
-                <configuration>
-                    <description>Official ${project.name} build of the
-                        ${project.version} release</description>
-                    <override>true</override>
-                    <includeAttached>true</includeAttached>
-                </configuration>
-            </plugin>
-            <!-- To invoke with "mvn site:site site:stage site:deploy" + 
-                "mvn antrun:run -N" + "mvn ghSite:site -N" -->
-            <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.7</version>
-                <configuration>
-                    <message>Building site for ${project.version}</message>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-                    <descriptors>
-                        <descriptor>src/main/assembly/jarAssembly.xml</descriptor>
-                    </descriptors>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.2</version>
-                <configuration>
-                    <reportPlugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                            <version>2.4</version>
-                            <configuration>
-                                <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-                                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                            </configuration>
-                            <reports>
-                                <report>index</report>
-                                <report>project-team</report>
-                                <report>modules</report>
-                                <report>dependency-convergence</report>
-                                <report>cim</report>
-                                <report>issue-tracking</report>
-                                <report>license</report>
-                                <report>scm</report>
-                                <report>summary</report>
-                            </reports>
-                        </plugin>
-                        <plugin>
-                            <artifactId>maven-javadoc-plugin</artifactId>
-                            <version>2.7</version>
-                        </plugin>
-                        <plugin>
-                            <artifactId>maven-checkstyle-plugin</artifactId>
-                            <version>2.9.1</version>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>cobertura-maven-plugin</artifactId>
-                            <version>2.4</version>
-                        </plugin>
-                        <plugin>
-                            <artifactId>maven-jxr-plugin</artifactId>
-                            <version>2.2</version>
-                        </plugin>
-                        <plugin>
-                            <artifactId>maven-pmd-plugin</artifactId>
-                            <version>2.7.1</version>
-                            <configuration>
-                                <targetJdk>${maven.compiler.target}</targetJdk>
-                            </configuration>
-                        </plugin>
-                    </reportPlugins>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.doxia</groupId>
-                        <artifactId>doxia-module-markdown</artifactId>
-                        <version>1.3</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <configuration>
-                    <target>
-                        <delete dir="${project.build.directory}/site" />
-                        <copy todir="${project.build.directory}/site">
-                            <fileset dir="${site.deploy.dir}" />
-                        </copy>
-                    </target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <dependencies>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.2</version>
-        </dependency>
-        <dependency><!-- A binding to the logger is necessary. -->
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.8</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.perfidix</groupId>
-            <artifactId>perfidix</artifactId>
-            <version>3.6.6</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>14.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>1.9.5</version>
-            <scope>test</scope>
-        </dependency>
-                <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.7.2</version>
-        </dependency>
-    </dependencies>
-    <repositories>
-        <repository>
-            <id>sonatype-nexus-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
-    <distributionManagement>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-            <uniqueVersion>false</uniqueVersion>
-        </repository>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-        <site>
-            <id>file</id>
-            <url>file:${site.deploy.dir}</url>
-        </site>
-    </distributionManagement>
+			<organizationUrl>http://www.disy.uni-konstanz.de/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+	<organization>
+		<name>University of Konstanz, Distributed Systems Group</name>
+		<url>http://www.disy.uni-konstanz.de</url>
+	</organization>
+	<mailingLists>
+		<mailingList>
+			<name>jSCSI Mailing List</name>
+			<subscribe>jscsi-subscribe@mailman.uni-konstanz.de</subscribe>
+			<unsubscribe>jscsi-unsibscribe@mailman.uni-konstanz.de</unsubscribe>
+			<post>jscsi@mailman.uni-konstanz.de</post>
+		</mailingList>
+	</mailingLists>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- To invoke with "mvn clean verify ghDownloads:upload" -->
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>downloads-maven-plugin</artifactId>
+				<version>0.6</version>
+				<configuration>
+					<description>Official ${project.name} build of the
+						${project.version} release</description>
+					<override>true</override>
+					<includeAttached>true</includeAttached>
+				</configuration>
+			</plugin>
+			<!-- To invoke with "mvn site:site site:stage site:deploy" + "mvn antrun:run 
+				-N" + "mvn ghSite:site -N" -->
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.7</version>
+				<configuration>
+					<message>Building site for ${project.version}</message>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+					<descriptors>
+						<descriptor>src/main/assembly/jarAssembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<reportPlugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-project-info-reports-plugin</artifactId>
+							<version>2.4</version>
+							<configuration>
+								<dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+								<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+							</configuration>
+							<reports>
+								<report>index</report>
+								<report>project-team</report>
+								<report>modules</report>
+								<report>dependency-convergence</report>
+								<report>cim</report>
+								<report>issue-tracking</report>
+								<report>license</report>
+								<report>scm</report>
+								<report>summary</report>
+							</reports>
+						</plugin>
+						<plugin>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<version>2.7</version>
+						</plugin>
+						<plugin>
+							<artifactId>maven-checkstyle-plugin</artifactId>
+							<version>2.9.1</version>
+						</plugin>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>cobertura-maven-plugin</artifactId>
+							<version>2.4</version>
+						</plugin>
+						<plugin>
+							<artifactId>maven-jxr-plugin</artifactId>
+							<version>2.2</version>
+						</plugin>
+						<plugin>
+							<artifactId>maven-pmd-plugin</artifactId>
+							<version>2.7.1</version>
+							<configuration>
+								<targetJdk>${maven.compiler.target}</targetJdk>
+							</configuration>
+						</plugin>
+					</reportPlugins>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-markdown</artifactId>
+						<version>1.3</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<configuration>
+					<target>
+						<delete dir="${project.build.directory}/site" />
+						<copy todir="${project.build.directory}/site">
+							<fileset dir="${site.deploy.dir}" />
+						</copy>
+					</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.8</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.perfidix</groupId>
+			<artifactId>perfidix</artifactId>
+			<version>3.6.6</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+	</dependencies>
+	<repositories>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<uniqueVersion>false</uniqueVersion>
+		</repository>
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+		<site>
+			<id>file</id>
+			<url>file:${site.deploy.dir}</url>
+		</site>
+	</distributionManagement>
 
-    <modules>
-        <module>bundles/initiator</module>
-        <module>bundles/target</module>
-    </modules>
+	<modules>
+		<module>bundles/initiator</module>
+		<module>bundles/target</module>
+	</modules>
 
-    <profiles>
-        <profile>
-            <id>all</id>
-            <modules>
-                <module>bundles/commons</module>
-                <module>bundles/initiator</module>
-                <module>bundles/target</module>
-                <module>bundles/testing</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>release</id>
-            <modules>
-                <module>bundles/commons</module>
-                <module>bundles/initiator</module>
-                <module>bundles/target</module>
-            </modules>
-        </profile>
-    </profiles>
+	<profiles>
+		<profile>
+			<id>all</id>
+			<modules>
+				<module>bundles/commons</module>
+				<module>bundles/initiator</module>
+				<module>bundles/target</module>
+				<module>bundles/testing</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>release</id>
+			<modules>
+				<module>bundles/commons</module>
+				<module>bundles/initiator</module>
+				<module>bundles/target</module>
+			</modules>
+		</profile>
+	</profiles>
 
-    <prerequisites>
-        <maven>2.2.1</maven>
-    </prerequisites>
+	<prerequisites>
+		<maven>2.2.1</maven>
+	</prerequisites>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <site.deploy.dir>/tmp/deploy</site.deploy.dir>
-    </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<site.deploy.dir>/tmp/deploy</site.deploy.dir>
+	</properties>
 
 </project>
