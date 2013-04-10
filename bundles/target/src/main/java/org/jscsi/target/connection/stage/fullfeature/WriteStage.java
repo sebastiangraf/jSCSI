@@ -221,24 +221,25 @@ public final class WriteStage extends ReadOrWriteStage {
 
                         connection.sendPdu(pdu);
                         return;
+                    } else if (bhs.getParser() instanceof DataOutParser) {
+                        final DataOutParser dataOutParser = (DataOutParser)bhs.getParser();
+
+                        session.getStorageModule().write(pdu.getDataSegment().array(),
+                            storageIndex + dataOutParser.getBufferOffset());
+
+                        bytesReceivedThisCycle += bhs.getDataSegmentLength();
+
+                        /*
+                         * Checking the final flag should be enough, but is not,
+                         * when dealing with the jSCSI Initiator. This is also one
+                         * of the reasons, why the contents of this while loop,
+                         * though very similar to what is happening during the
+                         * receiving of the unsolicited data PDU sequence, has not
+                         * been put into a dedicated method.
+                         */
+                        if (bhs.isFinalFlag() || bytesReceivedThisCycle >= desiredDataTransferLength)
+                            solicitedDataCycleOver = true;
                     }
-                    final DataOutParser dataOutParser = (DataOutParser)bhs.getParser();
-
-                    session.getStorageModule().write(pdu.getDataSegment().array(),
-                        storageIndex + dataOutParser.getBufferOffset());
-
-                    bytesReceivedThisCycle += bhs.getDataSegmentLength();
-
-                    /*
-                     * Checking the final flag should be enough, but is not,
-                     * when dealing with the jSCSI Initiator. This is also one
-                     * of the reasons, why the contents of this while loop,
-                     * though very similar to what is happening during the
-                     * receiving of the unsolicited data PDU sequence, has not
-                     * been put into a dedicated method.
-                     */
-                    if (bhs.isFinalFlag() || bytesReceivedThisCycle >= desiredDataTransferLength)
-                        solicitedDataCycleOver = true;
                 }
                 bytesReceived += bytesReceivedThisCycle;
             }
