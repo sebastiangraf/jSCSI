@@ -18,7 +18,7 @@ public class CallableStart {
         final File configFile = Configuration.CONFIGURATION_CONFIG_FILE;
         // Creating the Configuration
         final Configuration config =
-            Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE, configFile);
+            Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE, configFile, "");
         // Starting the Target
         final TargetServer target = new TargetServer(config);
 

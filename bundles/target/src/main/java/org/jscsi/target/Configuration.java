@@ -1,9 +1,13 @@
 package org.jscsi.target;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.xml.XMLConstants;
@@ -147,9 +151,17 @@ public class Configuration {
      */
     private final int maxRecvTextPduSequenceLength = 4;
 
-    public Configuration() throws IOException {
+    public Configuration(final String pTargetAddress) throws IOException {
         port = 3260;
-        targetAddress = InetAddress.getLocalHost().getHostAddress();
+        
+        if(pTargetAddress.equals("")){
+            targetAddress = InetAddress.getLocalHost().getHostAddress();
+        	
+        }
+        else{
+            targetAddress = pTargetAddress;
+        }
+        
         targets = new ArrayList<Target>();
     }
 
@@ -185,8 +197,8 @@ public class Configuration {
         return targets;
     }
 
-    public static Configuration create() throws SAXException, ParserConfigurationException, IOException {
-        return create(CONFIGURATION_SCHEMA_FILE, CONFIGURATION_CONFIG_FILE);
+    public static Configuration create(final String pTargetAddress) throws SAXException, ParserConfigurationException, IOException {
+        return create(CONFIGURATION_SCHEMA_FILE, CONFIGURATION_CONFIG_FILE, pTargetAddress);
     }
 
     /**
@@ -201,7 +213,7 @@ public class Configuration {
      * @throws IOException
      *             If any IO errors occur.
      */
-    public static Configuration create(final File schemaLocation, final File configFile) throws SAXException,
+    public static Configuration create(final File schemaLocation, final File configFile, final String pTargetAddress) throws SAXException,
         ParserConfigurationException, IOException {
         final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         final Schema schema = schemaFactory.newSchema(schemaLocation);
@@ -221,7 +233,7 @@ public class Configuration {
         Document root = (Document)result.getNode();
 
         // TargetName
-        Configuration returnConfiguration = new Configuration();
+        Configuration returnConfiguration = new Configuration(pTargetAddress);
         Element targetListNode = (Element)root.getElementsByTagName(ELEMENT_TARGET_LIST).item(0);
         NodeList targetList = targetListNode.getElementsByTagName(ELEMENT_TARGET);
         for (int curTargetNum = 0; curTargetNum < targetList.getLength(); curTargetNum++) {

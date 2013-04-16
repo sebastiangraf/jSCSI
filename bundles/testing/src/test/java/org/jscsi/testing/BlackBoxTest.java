@@ -30,6 +30,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
@@ -137,7 +138,7 @@ public class BlackBoxTest {
 
             org.jscsi.target.Configuration targetConfiguration =
                 org.jscsi.target.Configuration.create(new File(CONFIG_DIR, "jscsi-target.xsd"),
-                    targetConfigurationFile);
+                    targetConfigurationFile, "127.0.0.1");
 
             target = new TargetServer(targetConfiguration);
 

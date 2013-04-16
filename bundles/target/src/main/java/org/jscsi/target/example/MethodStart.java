@@ -14,7 +14,7 @@ public class MethodStart {
         final File configFile = CONFIGPATH;
         // Creating the Configuration
         final Configuration config =
-            Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE, configFile);
+            Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE, configFile, "");
         // Starting the Target
         final TargetServer target = new TargetServer(config);
         target.call();
