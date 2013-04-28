@@ -193,7 +193,7 @@ public class JCloudsStorageModule implements IStorageModule {
      */
     @Override
     public long getSizeInBlocks() {
-        return mNumberOfCluster * VIRTUAL_BLOCK_SIZE;
+        return mNumberOfCluster * BLOCK_IN_CLUSTER;
     }
 
     /**
