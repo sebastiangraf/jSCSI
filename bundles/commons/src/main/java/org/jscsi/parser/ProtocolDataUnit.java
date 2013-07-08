@@ -28,7 +28,6 @@ package org.jscsi.parser;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SocketChannel;
 import java.security.DigestException;
 import java.util.AbstractList;

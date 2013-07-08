@@ -131,50 +131,47 @@ public final class TargetServer implements Callable<Void> {
      */
     public static void main(String[] args) throws Exception {
         TargetServer target;
-        
 
-    	System.out.println("This system provides more than one IP Address to advertise.\n");
-    	
-    	Enumeration<NetworkInterface> interfaceEnum = NetworkInterface.getNetworkInterfaces();
-    	NetworkInterface i;
-    	int addressCounter = 0;
-    	List<InetAddress> addresses = new ArrayList<InetAddress>();
-    	while(interfaceEnum.hasMoreElements()){
-    		i = interfaceEnum.nextElement();
-    		Enumeration<InetAddress> addressEnum = i.getInetAddresses();
-    		InetAddress address;
-        	
-    		while(addressEnum.hasMoreElements()){
-    			address = addressEnum.nextElement();
-        		System.out.println("[" + addressCounter + "] " + address.getHostAddress());
-        		addresses.add(address);
-        		addressCounter++;
-    		}
-    	}
-        
-    	
-    	/*
-    	 * Getting the desired address from the command line.
-    	 * You can't automatically make sure to always use the correct
-    	 * host address.
-    	 */
-        System.out.print("\nWhich one should be used?\nType in the number: ");
-        Integer chosenIndex = null;
-        
-        while(chosenIndex == null){
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            String line = br.readLine();
-            try{
-            	chosenIndex = Integer.parseInt(line);
-            }
-            catch(NumberFormatException nfe){
-            	chosenIndex = null;
+        System.out.println("This system provides more than one IP Address to advertise.\n");
+
+        Enumeration<NetworkInterface> interfaceEnum = NetworkInterface.getNetworkInterfaces();
+        NetworkInterface i;
+        int addressCounter = 0;
+        List<InetAddress> addresses = new ArrayList<InetAddress>();
+        while (interfaceEnum.hasMoreElements()) {
+            i = interfaceEnum.nextElement();
+            Enumeration<InetAddress> addressEnum = i.getInetAddresses();
+            InetAddress address;
+
+            while (addressEnum.hasMoreElements()) {
+                address = addressEnum.nextElement();
+                System.out.println("[" + addressCounter + "] " + address.getHostAddress());
+                addresses.add(address);
+                addressCounter++;
             }
         }
-        
+
+        /*
+         * Getting the desired address from the command line.
+         * You can't automatically make sure to always use the correct
+         * host address.
+         */
+        System.out.print("\nWhich one should be used?\nType in the number: ");
+        Integer chosenIndex = null;
+
+        while (chosenIndex == null) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String line = br.readLine();
+            try {
+                chosenIndex = Integer.parseInt(line);
+            } catch (NumberFormatException nfe) {
+                chosenIndex = null;
+            }
+        }
+
         String targetAddress = addresses.get(chosenIndex).getHostAddress();
         System.out.println("Using ip address " + addresses.get(chosenIndex).getHostAddress());
-        
+
         switch (args.length) {
         case 0:
             target = new TargetServer(Configuration.create(targetAddress));
@@ -185,13 +182,14 @@ public final class TargetServer implements Callable<Void> {
                     args[0]), targetAddress));
             break;
         case 2:
-            target = new TargetServer(Configuration.create(new File(args[0]), new File(args[1]), targetAddress));
+            target =
+                new TargetServer(Configuration.create(new File(args[0]), new File(args[1]), targetAddress));
             break;
         default:
             throw new IllegalArgumentException(
                 "Only zero or one Parameter (Path to Configuration-File) allowed!");
         }
-        
+
         target.call();
     }
 
@@ -204,9 +202,10 @@ public final class TargetServer implements Callable<Void> {
             // port
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.configureBlocking(true);
-            
+
             // Making sure the socket is bound to the address used in the config.
-            serverSocketChannel.socket().bind(new InetSocketAddress(getConfig().getTargetAddress(), getConfig().getPort()));
+            serverSocketChannel.socket().bind(
+                new InetSocketAddress(getConfig().getTargetAddress(), getConfig().getPort()));
 
             while (true) {
                 // Accept the connection request.
@@ -241,8 +240,8 @@ public final class TargetServer implements Callable<Void> {
                             parser.getExpectedStatusSequenceNumber());
 
                     sessions.add(session);
-//                    threadPool.submit(connection);// ignore returned Future
-                     connection.call();
+                    // threadPool.submit(connection);// ignore returned Future
+                    connection.call();
                 } catch (DigestException | InternetSCSIException | SettingsException e) {
                     LOGGER.info("Throws Exception", e);
                     continue;

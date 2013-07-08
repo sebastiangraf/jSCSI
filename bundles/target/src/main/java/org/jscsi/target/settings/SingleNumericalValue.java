@@ -127,7 +127,6 @@ public final class SingleNumericalValue extends NumericalValue {
         return result;
     }
 
-
     /**
      * Returns a character's value in Base64
      * 
