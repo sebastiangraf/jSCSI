@@ -168,6 +168,8 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                 stage = new LogoutStage(this);
                 running = false;
                 break;
+            case SCSI_TM_REQUEST:
+                stage = new UnsupportedOpCodeStage(this);
             default:
                 throw new InternetSCSIException(bhs.getOpCode().name() + " not recognized.");
             }
