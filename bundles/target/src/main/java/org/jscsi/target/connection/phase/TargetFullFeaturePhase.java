@@ -169,7 +169,7 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                 running = false;
                 break;
             default:
-                throw new InternetSCSIException();
+                throw new InternetSCSIException(bhs.getOpCode().name() + " not recognized.");
             }
 
             // process the PDU
