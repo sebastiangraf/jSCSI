@@ -9,6 +9,7 @@ import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.scsi.SCSICommandParser;
+import org.jscsi.parser.tmf.TaskManagementFunctionRequestParser;
 import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.stage.fullfeature.FormatUnitStage;
 import org.jscsi.target.connection.stage.fullfeature.InquiryStage;
@@ -169,11 +170,17 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                 running = false;
                 break;
             case SCSI_TM_REQUEST:
+                // /DEBUG CODE!!!
+                System.out.println(((TaskManagementFunctionRequestParser)bhs.getParser()).getFunction()
+                    .name());
                 stage = new UnsupportedOpCodeStage(this);
-                // running = false;
                 break;
             default:
-                throw new RuntimeException(bhs.getOpCode().name() + " not recognized.");
+                System.out.println("*************");
+                System.out.println(bhs.getOpCode().name());
+                System.out.println(bhs.getParser().getClass().toString());
+                System.out.println("*************");
+                throw new InternetSCSIException(bhs.getOpCode().name() + " not recognized.");
             }
 
             // process the PDU
