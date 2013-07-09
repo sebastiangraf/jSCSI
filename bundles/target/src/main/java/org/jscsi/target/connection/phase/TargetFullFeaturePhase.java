@@ -176,10 +176,10 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                 stage = new UnsupportedOpCodeStage(this);
                 break;
             default:
-                System.out.println("*************");
+                System.out.println("====================");
                 System.out.println(bhs.getOpCode().name());
-                System.out.println(bhs.getParser().getClass().toString());
-                System.out.println("*************");
+//                System.out.println(bhs.getParser().getClass().toString());
+                System.out.println("====================");
                 throw new InternetSCSIException(bhs.getOpCode().name() + " not recognized.");
             }
 
