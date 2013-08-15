@@ -195,7 +195,6 @@ public final class TargetServer implements Callable<Void> {
 
     public Void call() throws Exception {
 
-        ExecutorService threadPool = Executors.newFixedThreadPool(4);
         // Create a blocking server socket and check for connections
         try {
             // Create a blocking server socket channel on the specified/default

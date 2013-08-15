@@ -174,11 +174,12 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                 System.out.println(((TaskManagementFunctionRequestParser)bhs.getParser()).getFunction()
                     .name());
                 stage = new UnsupportedOpCodeStage(this);
+                running = false;
                 break;
             default:
                 System.out.println("====================");
                 System.out.println(bhs.getOpCode().name());
-//                System.out.println(bhs.getParser().getClass().toString());
+                // System.out.println(bhs.getParser().getClass().toString());
                 System.out.println("====================");
                 throw new InternetSCSIException(bhs.getOpCode().name() + " not recognized.");
             }
