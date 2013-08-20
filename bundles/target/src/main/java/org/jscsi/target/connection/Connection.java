@@ -3,20 +3,16 @@ package org.jscsi.target.connection;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.security.DigestException;
-import java.security.Timestamp;
 import java.util.concurrent.Callable;
 
 import javax.naming.OperationNotSupportedException;
 
-import org.jscsi.exception.InitiatorLoginRequestException;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.connection.phase.TargetLoginPhase;
 import org.jscsi.target.connection.phase.TargetPhase;
-import org.jscsi.target.connection.stage.TargetStage;
-import org.jscsi.target.connection.stage.fullfeature.LogoutStage;
 import org.jscsi.target.connection.stage.fullfeature.PingStage;
 import org.jscsi.target.connection.stage.fullfeature.ReadStage;
 import org.jscsi.target.settings.ConnectionSettingsNegotiator;
