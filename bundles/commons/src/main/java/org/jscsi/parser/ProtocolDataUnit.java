@@ -212,7 +212,7 @@ public final class ProtocolDataUnit {
         DigestException {
 
         int len = basicHeaderSegment.deserialize(this, bhs);
-
+        
         // read header digest and validate
         if (basicHeaderSegment.getParser().canHaveDigests()) {
             len +=
@@ -429,6 +429,7 @@ public final class ProtocolDataUnit {
         bhs.flip();
 
         deserializeBasicHeaderSegment(bhs);
+        
         // check for further reading
         if (getBasicHeaderSegment().getTotalAHSLength() > 0) {
             final ByteBuffer ahs = ByteBuffer.allocate(basicHeaderSegment.getTotalAHSLength());

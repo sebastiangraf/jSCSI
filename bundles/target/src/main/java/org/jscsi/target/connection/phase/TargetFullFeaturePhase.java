@@ -1,15 +1,28 @@
 package org.jscsi.target.connection.phase;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.security.DigestException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.jscsi.exception.InitiatorLoginRequestException;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
+import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
+import org.jscsi.parser.login.LoginRequestParser;
+import org.jscsi.parser.login.LoginStage;
+import org.jscsi.parser.login.LoginStatus;
 import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.target.connection.Connection;
+import org.jscsi.target.connection.TargetPduFactory;
+import org.jscsi.target.connection.stage.TMStage;
 import org.jscsi.target.connection.stage.fullfeature.FormatUnitStage;
 import org.jscsi.target.connection.stage.fullfeature.InquiryStage;
 import org.jscsi.target.connection.stage.fullfeature.LogoutStage;
@@ -25,6 +38,8 @@ import org.jscsi.target.connection.stage.fullfeature.TestUnitReadyStage;
 import org.jscsi.target.connection.stage.fullfeature.TextNegotiationStage;
 import org.jscsi.target.connection.stage.fullfeature.UnsupportedOpCodeStage;
 import org.jscsi.target.connection.stage.fullfeature.WriteStage;
+import org.jscsi.target.connection.stage.login.TargetLoginStage;
+import org.jscsi.target.example.CallableStart;
 import org.jscsi.target.scsi.cdb.ScsiOperationCode;
 import org.jscsi.target.settings.SettingsException;
 import org.slf4j.Logger;
@@ -40,7 +55,7 @@ import org.slf4j.LoggerFactory;
 public final class TargetFullFeaturePhase extends TargetPhase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TargetFullFeaturePhase.class);
-
+    
     /**
      * The current stage of this phase.
      */
@@ -60,8 +75,9 @@ public final class TargetFullFeaturePhase extends TargetPhase {
      */
     public TargetFullFeaturePhase(Connection connection) {
         super(connection);
+        
     }
-
+    
     /**
      * Starts the full feature phase.
      * 
@@ -84,7 +100,6 @@ public final class TargetFullFeaturePhase extends TargetPhase {
 
         running = true;
         while (running) {
-
             ProtocolDataUnit pdu = connection.receivePdu();
             BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
 
@@ -158,6 +173,9 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                 }
                 break; // SCSI_COMMAND
 
+            case SCSI_TM_REQUEST:
+                stage = new TMStage(this);
+                break;
             case NOP_OUT:
                 stage = new PingStage(this);
                 break;
@@ -169,12 +187,14 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                 running = false;
                 break;
             default:
-                throw new InternetSCSIException();
+                LOGGER.error("Recieved unsupported opcode for " + pdu.getBasicHeaderSegment().getOpCode());
+                stage = new UnsupportedOpCodeStage(this);
             }
 
             // process the PDU
             stage.execute(pdu);
         }
+        
         return false;
     }
 }

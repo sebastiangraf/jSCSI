@@ -18,6 +18,7 @@ import org.jscsi.parser.r2t.Ready2TransferParser;
 import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIStatus;
 import org.jscsi.parser.text.TextResponseParser;
+import org.jscsi.parser.tmf.TaskManagementFunctionResponseParser;
 import org.jscsi.target.scsi.ScsiResponseDataSegment;
 
 /**
@@ -90,6 +91,17 @@ public class TargetPduFactory {
         return (pdu);
     }
 
+    public static final ProtocolDataUnit createTMResponsePdu(TaskManagementFunctionResponseParser.ResponseCode response,
+        int initiatorTaskTag) {
+        final ProtocolDataUnit pdu =
+            factory.create(false, true, OperationCode.SCSI_TM_RESPONSE, "None", "None");
+        final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
+        final TaskManagementFunctionResponseParser parser = (TaskManagementFunctionResponseParser)bhs.getParser();
+        parser.setResponse(response);
+        bhs.setInitiatorTaskTag(initiatorTaskTag);
+        return (pdu);
+    }
+
     public static final ProtocolDataUnit createReadyToTransferPdu(long logicalUnitNumber,
         int initiatorTaskTag, int targetTransferTag, int readyToTransferSequenceNumber, int bufferOffset,
         int desiredDataTransferLength) {
@@ -145,13 +157,14 @@ public class TargetPduFactory {
     }
 
     public static final ProtocolDataUnit createNopInPDU(final long logicalUnitNumber,
-        final int initiatorTaskTag, final int targetTransferTag, final ByteBuffer dataSegment) {
+        final int initiatorTaskTag, final int targetTransferTag, final ByteBuffer dataSegment, final int statusSequenceNumber) {
         final ProtocolDataUnit pdu = factory.create(false, true, OperationCode.NOP_IN, "None", "None");
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
         final NOPInParser parser = (NOPInParser)bhs.getParser();
         parser.setLogicalUnitNumber(logicalUnitNumber);
         bhs.setInitiatorTaskTag(initiatorTaskTag);
         parser.setTargetTransferTag(targetTransferTag);
+        parser.setStatusSequenceNumber(statusSequenceNumber);
         pdu.setDataSegment(dataSegment);
         return pdu;
     }

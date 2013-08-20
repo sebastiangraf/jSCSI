@@ -73,7 +73,17 @@ public final class TaskManagementFunctionRequestParser extends InitiatorMessageP
         ABORT_TASK_SET((byte)2),
 
         /** Clears the Auto Contingent Allegiance condition. */
-        CLEAR_ACA((byte)3);
+        CLEAR_ACA((byte)3),
+        
+        CLEAR_TASK_SET((byte)4),
+        
+        LUN_RESET((byte)5),
+        
+        TARGET_WARM_RESET((byte)6),
+        
+        TARGET_COLD_RESET((byte)7),
+        
+        TASK_REASSIGN((byte)8);
 
         private byte value;
 

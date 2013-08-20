@@ -206,6 +206,7 @@ public final class BasicHeaderSegment {
         immediateFlag = Utils.isBitSet(firstLine & IMMEDIATE_FLAG_MASK);
         final int code = (firstLine & OPERATION_CODE_MASK) >> Constants.THREE_BYTES_SHIFT;
         operationCode = OperationCode.valueOf((byte)code);
+
         finalFlag = Utils.isBitSet(firstLine & FINAL_FLAG_MASK);
 
         totalAHSLength = src.get();
@@ -215,9 +216,10 @@ public final class BasicHeaderSegment {
 
         initiatorTaskTag = src.getInt(BYTES_16_19);
 
+        parser = MessageParserFactory.getParser(protocolDataUnit, operationCode);
+
         src.rewind();
 
-        parser = MessageParserFactory.getParser(protocolDataUnit, operationCode);
         parser.deserializeBasicHeaderSegment(src);
 
         return BHS_FIXED_SIZE;
@@ -390,8 +392,16 @@ public final class BasicHeaderSegment {
      */
     public final String toString() {
 
-        if (parser == null)
-            return "Empty parser";
+        if (parser == null) {
+            final StringBuilder sb = new StringBuilder();
+            Utils.printField(sb, "ParserClass", "null", 1);
+            Utils.printField(sb, "OpCode", this.getOpCode().toString(), 1);
+            Utils.printField(sb, "FinalFlag", finalFlag, 1);
+            Utils.printField(sb, "TotalAHSLength", totalAHSLength, 1);
+            Utils.printField(sb, "DataSegmentLength", dataSegmentLength, 1);
+            Utils.printField(sb, "InitiatorTaskTag", initiatorTaskTag, 1);
+            return sb.toString();
+        }
 
         final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
 

@@ -73,7 +73,7 @@ public class PingStage extends TargetFullFeatureStage {
                                                                                // reserved
             bhs.getInitiatorTaskTag(),// initiatorTaskTag
             RESERVED_TAG_VALUE,// targetTransferTag
-            responseDataSegment);
+            responseDataSegment, parser.getExpectedStatusSequenceNumber());
         connection.sendPdu(responsePdu);
     }
 

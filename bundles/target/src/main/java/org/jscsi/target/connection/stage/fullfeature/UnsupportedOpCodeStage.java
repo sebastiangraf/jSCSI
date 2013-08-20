@@ -48,9 +48,16 @@ public class UnsupportedOpCodeStage extends TargetFullFeatureStage {
             fp
         };
 
+        // If the parser is null..
+        int essn = -1;
+        
+        if(parser != null){
+            essn = parser.getExpectedStatusSequenceNumber();
+        }
+        
         final ProtocolDataUnit responsePdu = createFixedFormatErrorPdu(fpArray,// senseKeySpecificData
             bhs.getInitiatorTaskTag(),// initiatorTaskTag
-            parser.getExpectedStatusSequenceNumber());// expectedDataTransferLength
+            essn);// expectedDataTransferLength
 
         // send response
         connection.sendPdu(responsePdu);

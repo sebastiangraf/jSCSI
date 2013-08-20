@@ -3,15 +3,21 @@ package org.jscsi.target.connection;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.security.DigestException;
+import java.security.Timestamp;
 import java.util.concurrent.Callable;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.jscsi.exception.InitiatorLoginRequestException;
 import org.jscsi.exception.InternetSCSIException;
+import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.connection.phase.TargetLoginPhase;
 import org.jscsi.target.connection.phase.TargetPhase;
+import org.jscsi.target.connection.stage.TargetStage;
+import org.jscsi.target.connection.stage.fullfeature.LogoutStage;
+import org.jscsi.target.connection.stage.fullfeature.PingStage;
 import org.jscsi.target.connection.stage.fullfeature.ReadStage;
 import org.jscsi.target.settings.ConnectionSettingsNegotiator;
 import org.jscsi.target.settings.SessionSettingsNegotiator;
@@ -178,6 +184,18 @@ public interface Connection extends Callable<Void> {
         public ProtocolDataUnit receivePdu() throws DigestException, InternetSCSIException, IOException,
             SettingsException {
             lastReceivedPDU = senderWorker.receiveFromWire();
+            
+            if(lastReceivedPDU.getBasicHeaderSegment().getOpCode().equals(OperationCode.NOP_OUT)){
+                try {
+//                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Handling ping immediately..");
+//                    System.out.println("******************************\nRecieving\nSystem Time: " + new java.sql.Timestamp(System.currentTimeMillis()).toString() + "\n" + lastReceivedPDU + "\n******************************");
+                    new PingStage(new TargetFullFeaturePhase(this)).execute(lastReceivedPDU);
+                } catch (InterruptedException e) {
+                }
+                lastReceivedPDU = senderWorker.receiveFromWire();
+            }
+            
+//            System.out.println("******************************\nRecieving\nSystem Time: " + new java.sql.Timestamp(System.currentTimeMillis()).toString() + "\n" + lastReceivedPDU + "\n******************************");
             return lastReceivedPDU;
         }
 
@@ -192,6 +210,7 @@ public interface Connection extends Callable<Void> {
          */
         public void sendPdu(ProtocolDataUnit pdu) throws InterruptedException, IOException,
             InternetSCSIException {
+//            System.out.println("******************************\nSending\nSystem Time: " + new java.sql.Timestamp(System.currentTimeMillis()).toString() + "\n" + pdu + "\n******************************");
             senderWorker.sendOverWire(pdu);
         }
 
@@ -200,6 +219,7 @@ public interface Connection extends Callable<Void> {
          * <p>
          * For this method to work properly, the leading PDU send by the initiator over this connection must
          * have been received via {@link #receivePdu()}.
+         * 
          */
         public Void call() {
 
@@ -216,6 +236,7 @@ public interface Connection extends Callable<Void> {
                     targetSession.setTargetName(settings.getTargetName());
                     // *** full feature phase ***
                     phase = new TargetFullFeaturePhase(this);
+
                     phase.execute();
                 }
                 senderWorker.close();

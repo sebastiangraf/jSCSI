@@ -35,6 +35,7 @@ import org.jscsi.parser.Constants;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
+import org.jscsi.parser.logout.LogoutResponse;
 import org.jscsi.utils.Utils;
 
 /**
@@ -286,6 +287,10 @@ public final class TaskManagementFunctionResponseParser extends TargetMessagePar
     public final ResponseCode getResponse() {
 
         return response;
+    }
+    
+    public final void setResponse(ResponseCode response) {
+        this.response = response;
     }
 
     // --------------------------------------------------------------------------

@@ -105,7 +105,7 @@ public final class MessageParserFactory {
      */
     private static final AbstractMessageParser createParser(final ProtocolDataUnit protocolDataUnit,
         final OperationCode operationCode) {
-
+        
         switch (operationCode) {
         case LOGIN_REQUEST:
             return new LoginRequestParser(protocolDataUnit);

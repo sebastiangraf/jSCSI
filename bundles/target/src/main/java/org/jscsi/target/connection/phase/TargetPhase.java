@@ -5,6 +5,7 @@ import java.security.DigestException;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.jscsi.exception.InitiatorLoginRequestException;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.target.connection.Connection;
@@ -80,6 +81,7 @@ public abstract class TargetPhase {
      * @throws SettingsException
      *             if the target tries to access a parameter that has not been
      *             declared or negotiated and that has no default value
+     * @throws InitiatorLoginRequestException 
      */
     public boolean execute() throws OperationNotSupportedException, InternetSCSIException, DigestException,
         IOException, InterruptedException, SettingsException {
