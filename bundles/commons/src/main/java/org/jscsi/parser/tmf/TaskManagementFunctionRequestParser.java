@@ -62,7 +62,7 @@ public final class TaskManagementFunctionRequestParser extends InitiatorMessageP
      */
     public static enum FunctionCode {
         /**
-         * This is an artificial funcition code, which only used to indicate a
+         * This is an artificial function code, which is only used to indicate a
          * not set function code.
          */
         UNSET((byte)0),

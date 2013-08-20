@@ -65,8 +65,12 @@ public final class WriteStage extends ReadOrWriteStage {
         } else if (parser instanceof NOPOutParser || parser instanceof SCSICommandParser) {
 
         } else {
-            throw new InternetSCSIException("received erroneous PDU in data-out sequence, "
-                + parser.getClass().getName());
+            if (parser != null) {
+                throw new InternetSCSIException("received erroneous PDU in data-out sequence, "
+                    + parser.getClass().getName());
+            } else {
+                throw new InternetSCSIException("received erroneous PDU in data-out sequence, parser is null");
+            }
         }
 
     }

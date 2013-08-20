@@ -153,15 +153,14 @@ public class Configuration {
 
     public Configuration(final String pTargetAddress) throws IOException {
         port = 3260;
-        
-        if(pTargetAddress.equals("")){
+
+        if (pTargetAddress.equals("")) {
             targetAddress = InetAddress.getLocalHost().getHostAddress();
-        	
-        }
-        else{
+
+        } else {
             targetAddress = pTargetAddress;
         }
-        
+
         targets = new ArrayList<Target>();
     }
 
@@ -197,7 +196,8 @@ public class Configuration {
         return targets;
     }
 
-    public static Configuration create(final String pTargetAddress) throws SAXException, ParserConfigurationException, IOException {
+    public static Configuration create(final String pTargetAddress) throws SAXException,
+        ParserConfigurationException, IOException {
         return create(CONFIGURATION_SCHEMA_FILE, CONFIGURATION_CONFIG_FILE, pTargetAddress);
     }
 
@@ -213,8 +213,8 @@ public class Configuration {
      * @throws IOException
      *             If any IO errors occur.
      */
-    public static Configuration create(final File schemaLocation, final File configFile, final String pTargetAddress) throws SAXException,
-        ParserConfigurationException, IOException {
+    public static Configuration create(final File schemaLocation, final File configFile,
+        final String pTargetAddress) throws SAXException, ParserConfigurationException, IOException {
         final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         final Schema schema = schemaFactory.newSchema(schemaLocation);
 

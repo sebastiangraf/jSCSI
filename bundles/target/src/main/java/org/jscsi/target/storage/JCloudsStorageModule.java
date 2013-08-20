@@ -333,24 +333,24 @@ public class JCloudsStorageModule implements IStorageModule {
      * @return a two-dimensional String[] with login and password
      */
     private static String[] getCredentials() {
-         return new String[0];
-//        File userStore =
-//            new File(System.getProperty("user.home"), new StringBuilder(".credentials")
-//                .append(File.separator).append("aws.properties").toString());
-//        if (!userStore.exists()) {
-//            return new String[0];
-//        } else {
-//            Properties props = new Properties();
-//            try {
-//                props.load(new FileReader(userStore));
-//                return new String[] {
-//                    props.getProperty("access"), props.getProperty("secret")
-//                };
-//
-//            } catch (IOException exc) {
-//                throw new RuntimeException(exc);
-//            }
-//        }
+        return new String[0];
+        // File userStore =
+        // new File(System.getProperty("user.home"), new StringBuilder(".credentials")
+        // .append(File.separator).append("aws.properties").toString());
+        // if (!userStore.exists()) {
+        // return new String[0];
+        // } else {
+        // Properties props = new Properties();
+        // try {
+        // props.load(new FileReader(userStore));
+        // return new String[] {
+        // props.getProperty("access"), props.getProperty("secret")
+        // };
+        //
+        // } catch (IOException exc) {
+        // throw new RuntimeException(exc);
+        // }
+        // }
     }
 
     /**
