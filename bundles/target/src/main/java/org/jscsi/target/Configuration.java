@@ -1,13 +1,9 @@
 package org.jscsi.target;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.xml.XMLConstants;
@@ -22,6 +18,7 @@ import javax.xml.validation.Validator;
 
 import org.jscsi.target.scsi.lun.LogicalUnitNumber;
 import org.jscsi.target.settings.TextKeyword;
+import org.jscsi.target.storage.FileStorageModule;
 import org.jscsi.target.storage.IStorageModule;
 import org.jscsi.target.storage.JCloudsStorageModule;
 import org.jscsi.target.storage.RandomAccessStorageModule;
@@ -57,6 +54,7 @@ public class Configuration {
     public static final String ELEMENT_SYNCFILESTORAGE = "SyncFileStorage";
     public static final String ELEMENT_ASYNCFILESTORAGE = "AsyncFileStorage";
     public static final String ELEMENT_JCLOUDSSTORAGE = "JCloudsStorage";
+    public static final String ELEMENT_FILESTORAGE = "FileStorage";
     public static final String ELEMENT_CREATE = "Create";
     public static final String ATTRIBUTE_SIZE = "size";
 
@@ -293,6 +291,9 @@ public class Configuration {
             break;
         case ELEMENT_JCLOUDSSTORAGE:
             kind = JCloudsStorageModule.class;
+            break;
+        case ELEMENT_FILESTORAGE:
+            kind = FileStorageModule.class;
             break;
         }
 
