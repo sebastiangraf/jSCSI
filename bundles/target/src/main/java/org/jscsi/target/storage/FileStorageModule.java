@@ -14,6 +14,7 @@ import com.google.common.cache.CacheBuilder;
  * @author Andreas Rain
  * 
  */
+@Deprecated
 public class FileStorageModule implements IStorageModule{
 
     /** The base directory for the storage. */
