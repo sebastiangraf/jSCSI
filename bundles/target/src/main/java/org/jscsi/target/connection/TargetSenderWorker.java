@@ -149,7 +149,7 @@ public class TargetSenderWorker {
 
         if (LOGGER.isDebugEnabled())
             LOGGER.debug("Receiving this PDU:\n" + pdu);
-        
+
         // parse sequence counters
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
         final InitiatorMessageParser parser = (InitiatorMessageParser)bhs.getParser();

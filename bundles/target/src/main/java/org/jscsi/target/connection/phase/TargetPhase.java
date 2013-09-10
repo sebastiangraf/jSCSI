@@ -80,7 +80,7 @@ public abstract class TargetPhase {
      * @throws SettingsException
      *             if the target tries to access a parameter that has not been
      *             declared or negotiated and that has no default value
-     * @throws InitiatorLoginRequestException 
+     * @throws InitiatorLoginRequestException
      */
     public boolean execute() throws OperationNotSupportedException, InternetSCSIException, DigestException,
         IOException, InterruptedException, SettingsException {

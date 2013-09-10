@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public final class TargetFullFeaturePhase extends TargetPhase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TargetFullFeaturePhase.class);
-    
+
     /**
      * The current stage of this phase.
      */
@@ -61,9 +61,9 @@ public final class TargetFullFeaturePhase extends TargetPhase {
      */
     public TargetFullFeaturePhase(Connection connection) {
         super(connection);
-        
+
     }
-    
+
     /**
      * Starts the full feature phase.
      * 
@@ -180,7 +180,7 @@ public final class TargetFullFeaturePhase extends TargetPhase {
             // process the PDU
             stage.execute(pdu);
         }
-        
+
         return false;
     }
 }

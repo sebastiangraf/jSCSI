@@ -91,12 +91,13 @@ public class TargetPduFactory {
         return (pdu);
     }
 
-    public static final ProtocolDataUnit createTMResponsePdu(TaskManagementFunctionResponseParser.ResponseCode response,
-        int initiatorTaskTag) {
+    public static final ProtocolDataUnit createTMResponsePdu(
+        TaskManagementFunctionResponseParser.ResponseCode response, int initiatorTaskTag) {
         final ProtocolDataUnit pdu =
             factory.create(false, true, OperationCode.SCSI_TM_RESPONSE, "None", "None");
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-        final TaskManagementFunctionResponseParser parser = (TaskManagementFunctionResponseParser)bhs.getParser();
+        final TaskManagementFunctionResponseParser parser =
+            (TaskManagementFunctionResponseParser)bhs.getParser();
         parser.setResponse(response);
         bhs.setInitiatorTaskTag(initiatorTaskTag);
         return (pdu);
@@ -157,7 +158,8 @@ public class TargetPduFactory {
     }
 
     public static final ProtocolDataUnit createNopInPDU(final long logicalUnitNumber,
-        final int initiatorTaskTag, final int targetTransferTag, final ByteBuffer dataSegment, final int statusSequenceNumber) {
+        final int initiatorTaskTag, final int targetTransferTag, final ByteBuffer dataSegment,
+        final int statusSequenceNumber) {
         final ProtocolDataUnit pdu = factory.create(false, true, OperationCode.NOP_IN, "None", "None");
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
         final NOPInParser parser = (NOPInParser)bhs.getParser();

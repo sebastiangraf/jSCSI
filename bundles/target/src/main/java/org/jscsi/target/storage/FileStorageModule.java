@@ -15,17 +15,17 @@ import com.google.common.cache.CacheBuilder;
  * 
  */
 @Deprecated
-public class FileStorageModule implements IStorageModule{
+public class FileStorageModule implements IStorageModule {
 
     /** The base directory for the storage. */
     private final String mBaseDir;
 
     /** Size of the storage in bytes */
     private final long mStorageSize;
-    
+
     /** Filesize for each file (can be used to reflect nodes) */
     private final int mFileSize;
-    
+
     /** File cache */
     private Cache<Integer, byte[]> mCache;
 
@@ -35,7 +35,7 @@ public class FileStorageModule implements IStorageModule{
     /**
      * @param pBaseDir
      *            - The root directory for the filestorage (will be created if not exists)
-     * @param pStorageSize 
+     * @param pStorageSize
      *            - The size of the storage
      * @param pFileSize
      *            - The size of each file
@@ -46,7 +46,7 @@ public class FileStorageModule implements IStorageModule{
         mBaseDir = pBaseDir;
         mFileSize = pFileSize;
         mStorageSize = pStorageSize;
-        
+
         // 256MB cache since 256MB / pFileSize byte is the amount of files cached.
         CACHE_SIZE = 1024 * 1024 * 256 / pFileSize;
 
@@ -62,6 +62,7 @@ public class FileStorageModule implements IStorageModule{
 
     /**
      * Reading bytes from file
+     * 
      * @param bytes
      * @param storageIndex
      * @throws IOException
@@ -72,13 +73,12 @@ public class FileStorageModule implements IStorageModule{
         int storageOffset = (int)(storageIndex % mFileSize);
         byte[] cachedBytes = mCache.getIfPresent(filePos);
 
-        File fileAtPos = new File(mBaseDir+File.separator+filePos);
-        if(!fileAtPos.exists()){
+        File fileAtPos = new File(mBaseDir + File.separator + filePos);
+        if (!fileAtPos.exists()) {
             fileAtPos.createNewFile();
             cachedBytes = new byte[mFileSize];
             Files.write(fileAtPos.toPath(), cachedBytes);
-        }
-        else if (cachedBytes == null) {
+        } else if (cachedBytes == null) {
             cachedBytes = Files.readAllBytes(fileAtPos.toPath());
             mCache.put((int)filePos, cachedBytes);
         }
@@ -93,9 +93,10 @@ public class FileStorageModule implements IStorageModule{
         }
 
     }
-    
+
     /**
      * Writing into a file.
+     * 
      * @param bytes
      * @param storageIndex
      * @throws IOException
@@ -107,21 +108,20 @@ public class FileStorageModule implements IStorageModule{
         int storageOffset = (int)(storageIndex % mFileSize);
         byte[] cachedBytes = mCache.getIfPresent(filePos);
 
-        File fileAtPos = new File(mBaseDir+File.separator+filePos);
-        if(!fileAtPos.exists()){
+        File fileAtPos = new File(mBaseDir + File.separator + filePos);
+        if (!fileAtPos.exists()) {
             fileAtPos.createNewFile();
             cachedBytes = new byte[mFileSize];
-        }
-        else if (cachedBytes == null) {
+        } else if (cachedBytes == null) {
             cachedBytes = Files.readAllBytes(fileAtPos.toPath());
             cached = false;
         }
 
         if ((storageOffset + bytes.length) > mFileSize) {
             System.arraycopy(bytes, 0, cachedBytes, storageOffset, mFileSize - storageOffset);
-            
-            Files.write(new File(mBaseDir+File.separator+filePos).toPath(), cachedBytes);
-            
+
+            Files.write(new File(mBaseDir + File.separator + filePos).toPath(), cachedBytes);
+
             byte[] nextStep = new byte[bytes.length - (mFileSize - storageOffset)];
             System.arraycopy(bytes, (mFileSize - storageOffset), nextStep, 0, bytes.length
                 - (mFileSize - storageOffset));
@@ -130,11 +130,11 @@ public class FileStorageModule implements IStorageModule{
             System.arraycopy(bytes, 0, cachedBytes, storageOffset, bytes.length);
             Files.write(fileAtPos.toPath(), cachedBytes);
         }
-        
-        if(!cached){
+
+        if (!cached) {
             mCache.put((int)filePos, cachedBytes);
         }
-        
+
     }
 
     /**
@@ -169,7 +169,7 @@ public class FileStorageModule implements IStorageModule{
      */
     @Override
     public void close() throws IOException {
-        //Nothing to close, each bucket is opened individually.
+        // Nothing to close, each bucket is opened individually.
     }
 
 }

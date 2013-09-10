@@ -180,18 +180,22 @@ public interface Connection extends Callable<Void> {
         public ProtocolDataUnit receivePdu() throws DigestException, InternetSCSIException, IOException,
             SettingsException {
             lastReceivedPDU = senderWorker.receiveFromWire();
-            
-            if(lastReceivedPDU.getBasicHeaderSegment().getOpCode().equals(OperationCode.NOP_OUT)){
+
+            if (lastReceivedPDU.getBasicHeaderSegment().getOpCode().equals(OperationCode.NOP_OUT)) {
                 try {
-//                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Handling ping immediately..");
-//                    System.out.println("******************************\nRecieving\nSystem Time: " + new java.sql.Timestamp(System.currentTimeMillis()).toString() + "\n" + lastReceivedPDU + "\n******************************");
+                    // System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Handling ping immediately..");
+                    // System.out.println("******************************\nRecieving\nSystem Time: " + new
+                    // java.sql.Timestamp(System.currentTimeMillis()).toString() + "\n" + lastReceivedPDU +
+                    // "\n******************************");
                     new PingStage(new TargetFullFeaturePhase(this)).execute(lastReceivedPDU);
                 } catch (InterruptedException e) {
                 }
                 lastReceivedPDU = senderWorker.receiveFromWire();
             }
-            
-//            System.out.println("******************************\nRecieving\nSystem Time: " + new java.sql.Timestamp(System.currentTimeMillis()).toString() + "\n" + lastReceivedPDU + "\n******************************");
+
+            // System.out.println("******************************\nRecieving\nSystem Time: " + new
+            // java.sql.Timestamp(System.currentTimeMillis()).toString() + "\n" + lastReceivedPDU +
+            // "\n******************************");
             return lastReceivedPDU;
         }
 
@@ -206,7 +210,9 @@ public interface Connection extends Callable<Void> {
          */
         public void sendPdu(ProtocolDataUnit pdu) throws InterruptedException, IOException,
             InternetSCSIException {
-//            System.out.println("******************************\nSending\nSystem Time: " + new java.sql.Timestamp(System.currentTimeMillis()).toString() + "\n" + pdu + "\n******************************");
+            // System.out.println("******************************\nSending\nSystem Time: " + new
+            // java.sql.Timestamp(System.currentTimeMillis()).toString() + "\n" + pdu +
+            // "\n******************************");
             senderWorker.sendOverWire(pdu);
         }
 
