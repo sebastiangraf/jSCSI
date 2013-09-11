@@ -1,17 +1,19 @@
 package org.jscsi.target.settings;
 
+
 import java.util.Collection;
 
 import javax.naming.OperationNotSupportedException;
 
 import org.jscsi.target.settings.entry.Entry;
 
+
 /**
- * Instances of {@link SessionSettingsBuilderComponent} are used jointly with
- * instances of {@link ConnectionSettingsBuilderComponent} for creating {@link Settings} objects.
+ * Instances of {@link SessionSettingsBuilderComponent} are used jointly with instances of
+ * {@link ConnectionSettingsBuilderComponent} for creating {@link Settings} objects.
  * <p>
- * {@link SessionSettingsBuilderComponent} objects provide all session-wide parameters managed by the
- * session's {@link SessionSettingsNegotiator}.
+ * {@link SessionSettingsBuilderComponent} objects provide all session-wide parameters managed by the session's
+ * {@link SessionSettingsNegotiator}.
  * 
  * @see Settings#Settings(ConnectionSettingsBuilderComponent, SessionSettingsBuilderComponent)
  * @author Andreas Ergenzinger
@@ -19,8 +21,7 @@ import org.jscsi.target.settings.entry.Entry;
 final class SessionSettingsBuilderComponent {
 
     /**
-     * A serial number that allows to order {@link Settings} objects based on
-     * creation order.
+     * A serial number that allows to order {@link Settings} objects based on creation order.
      */
     long settingsId;
 
@@ -96,40 +97,27 @@ final class SessionSettingsBuilderComponent {
 
     /**
      * The {@link SessionSettingsBuilderComponent} constructor. The passed {@link Collection} must contain all
-     * session-wide {@link Entry} objects,
-     * since the constructor will try to locate a specific {@link Entry} for
-     * each member variable and copy its current value.
+     * session-wide {@link Entry} objects, since the constructor will try to locate a specific {@link Entry} for each
+     * member variable and copy its current value.
      * 
-     * @param entries
-     *            a {@link Collection} containing all session-wide {@link Entry} objects
+     * @param entries a {@link Collection} containing all session-wide {@link Entry} objects
      */
-    SessionSettingsBuilderComponent(final long settingsId, final Collection<Entry> entries) {
+    SessionSettingsBuilderComponent (final long settingsId, final Collection<Entry> entries) {
         this.settingsId = settingsId;
         try {
-            dataPduInOrder =
-                SettingsNegotiator.getEntry(TextKeyword.DATA_PDU_IN_ORDER, entries).getBooleanValue();
-            dataSequenceInOrder =
-                SettingsNegotiator.getEntry(TextKeyword.DATA_SEQUENCE_IN_ORDER, entries).getBooleanValue();
-            defaultTime2Retain =
-                SettingsNegotiator.getEntry(TextKeyword.DEFAULT_TIME_2_RETAIN, entries).getIntegerValue();
-            defaultTime2Wait =
-                SettingsNegotiator.getEntry(TextKeyword.DEFAULT_TIME_2_WAIT, entries).getIntegerValue();
-            errorRecoveryLevel =
-                SettingsNegotiator.getEntry(TextKeyword.ERROR_RECOVERY_LEVEL, entries).getIntegerValue();
-            firstBurstLength =
-                SettingsNegotiator.getEntry(TextKeyword.FIRST_BURST_LENGTH, entries).getIntegerValue();
-            immediateData =
-                SettingsNegotiator.getEntry(TextKeyword.IMMEDIATE_DATA, entries).getBooleanValue();
+            dataPduInOrder = SettingsNegotiator.getEntry(TextKeyword.DATA_PDU_IN_ORDER, entries).getBooleanValue();
+            dataSequenceInOrder = SettingsNegotiator.getEntry(TextKeyword.DATA_SEQUENCE_IN_ORDER, entries).getBooleanValue();
+            defaultTime2Retain = SettingsNegotiator.getEntry(TextKeyword.DEFAULT_TIME_2_RETAIN, entries).getIntegerValue();
+            defaultTime2Wait = SettingsNegotiator.getEntry(TextKeyword.DEFAULT_TIME_2_WAIT, entries).getIntegerValue();
+            errorRecoveryLevel = SettingsNegotiator.getEntry(TextKeyword.ERROR_RECOVERY_LEVEL, entries).getIntegerValue();
+            firstBurstLength = SettingsNegotiator.getEntry(TextKeyword.FIRST_BURST_LENGTH, entries).getIntegerValue();
+            immediateData = SettingsNegotiator.getEntry(TextKeyword.IMMEDIATE_DATA, entries).getBooleanValue();
             initialR2T = SettingsNegotiator.getEntry(TextKeyword.INITIAL_R_2_T, entries).getBooleanValue();
-            initiatorAlias =
-                SettingsNegotiator.getEntry(TextKeyword.INITIATOR_ALIAS, entries).getStringValue();
+            initiatorAlias = SettingsNegotiator.getEntry(TextKeyword.INITIATOR_ALIAS, entries).getStringValue();
             initiatorName = SettingsNegotiator.getEntry(TextKeyword.INITIATOR_NAME, entries).getStringValue();
-            maxBurstLength =
-                SettingsNegotiator.getEntry(TextKeyword.MAX_BURST_LENGTH, entries).getIntegerValue();
-            maxConnections =
-                SettingsNegotiator.getEntry(TextKeyword.MAX_CONNECTIONS, entries).getIntegerValue();
-            maxOutstandingR2T =
-                SettingsNegotiator.getEntry(TextKeyword.MAX_OUTSTANDING_R_2_T, entries).getIntegerValue();
+            maxBurstLength = SettingsNegotiator.getEntry(TextKeyword.MAX_BURST_LENGTH, entries).getIntegerValue();
+            maxConnections = SettingsNegotiator.getEntry(TextKeyword.MAX_CONNECTIONS, entries).getIntegerValue();
+            maxOutstandingR2T = SettingsNegotiator.getEntry(TextKeyword.MAX_OUTSTANDING_R_2_T, entries).getIntegerValue();
             sessionType = SettingsNegotiator.getEntry(TextKeyword.SESSION_TYPE, entries).getStringValue();
         } catch (OperationNotSupportedException e) {
             e.printStackTrace();

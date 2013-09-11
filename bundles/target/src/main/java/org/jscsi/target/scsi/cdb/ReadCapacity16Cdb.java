@@ -1,8 +1,10 @@
 package org.jscsi.target.scsi.cdb;
 
+
 import java.nio.ByteBuffer;
 
 import org.jscsi.target.util.BitManip;
+
 
 /**
  * This class represents Command Descriptor Blocks for the <code>READ CAPACITY (16)</code> SCSI command.
@@ -23,26 +25,25 @@ public class ReadCapacity16Cdb extends ReadCapacityCdb {
      */
     private final byte serviceAction;
 
-    public ReadCapacity16Cdb(ByteBuffer buffer) {
+    public ReadCapacity16Cdb (ByteBuffer buffer) {
         super(buffer);
         // deserialize SERVICE ACTION field
-        serviceAction = (byte)(buffer.get(1) & 31);
-        if (serviceAction != SERVICE_ACTION)
-            addIllegalFieldPointer(1, 4);
+        serviceAction = (byte) (buffer.get(1) & 31);
+        if (serviceAction != SERVICE_ACTION) addIllegalFieldPointer(1, 4);
     }
 
     @Override
-    protected long deserializeLogicalBlockAddress(ByteBuffer buffer) {
+    protected long deserializeLogicalBlockAddress (ByteBuffer buffer) {
         return buffer.getLong(2);
     }
 
     @Override
-    protected boolean deserializePartialMediumIndicator(ByteBuffer buffer) {
+    protected boolean deserializePartialMediumIndicator (ByteBuffer buffer) {
         return BitManip.getBit(buffer.get(14),// byte
-            0);// bitNumber
+                0);// bitNumber
     }
 
-    public byte getServiceAction() {
+    public byte getServiceAction () {
         return serviceAction;
     }
 }

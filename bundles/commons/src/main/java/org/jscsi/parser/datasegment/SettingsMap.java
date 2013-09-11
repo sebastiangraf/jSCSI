@@ -1,30 +1,23 @@
 /**
- * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
- * All rights reserved.
+ * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
  * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * * Neither the name of the University of Konstanz nor the
- * names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+ * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
+ * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
+ * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
+ * endorse or promote products derived from this software without specific prior written permission.
  * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.jscsi.parser.datasegment;
+
 
 import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
@@ -33,6 +26,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * <h1>SettingsMap</h1>
@@ -59,7 +53,7 @@ public final class SettingsMap {
     // --------------------------------------------------------------------------
 
     /** This map contains all settings. */
-    private final Map<OperationalTextKey, String> settingsMap;
+    private final Map<OperationalTextKey , String> settingsMap;
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -67,9 +61,9 @@ public final class SettingsMap {
     /**
      * Default constructor to create a new, empty <code>SettingsMap</code> object.
      */
-    public SettingsMap() {
+    public SettingsMap () {
 
-        settingsMap = new LinkedHashMap<OperationalTextKey, String>();
+        settingsMap = new LinkedHashMap<OperationalTextKey , String>();
     }
 
     // --------------------------------------------------------------------------
@@ -78,16 +72,12 @@ public final class SettingsMap {
     /**
      * Adds a parameter to this <code>SettingsMap</code>.
      * 
-     * @param textKey
-     *            The name of the parameter to add.
-     * @param textValue
-     *            The value of the parameter to add.
+     * @param textKey The name of the parameter to add.
+     * @param textValue The value of the parameter to add.
      */
-    public final void add(final OperationalTextKey textKey, final String textValue) {
+    public final void add (final OperationalTextKey textKey, final String textValue) {
 
-        if (textKey == null || textValue == null) {
-            throw new IllegalArgumentException("This is not a valid operation text key.");
-        }
+        if (textKey == null || textValue == null) { throw new IllegalArgumentException("This is not a valid operation text key."); }
 
         settingsMap.put(textKey, textValue);
     }
@@ -95,15 +85,12 @@ public final class SettingsMap {
     /**
      * Returns the value of the given parameter, which is not parsed.
      * 
-     * @param textKey
-     *            The name of the parameter.
+     * @param textKey The name of the parameter.
      * @return The value of this parameter.
      */
-    public final String get(final OperationalTextKey textKey) {
+    public final String get (final OperationalTextKey textKey) {
 
-        if (textKey == null) {
-            throw new NullPointerException();
-        }
+        if (textKey == null) { throw new NullPointerException(); }
 
         return settingsMap.get(textKey);
     }
@@ -111,19 +98,14 @@ public final class SettingsMap {
     /**
      * Removes the given parameter from this <code>SettingsMap</code>.
      * 
-     * @param textKey
-     *            The name of the parameter.
+     * @param textKey The name of the parameter.
      * @return The value of the removed parameter.
      */
-    public final String remove(final OperationalTextKey textKey) {
+    public final String remove (final OperationalTextKey textKey) {
 
-        if (textKey == null) {
-            throw new NullPointerException();
-        }
+        if (textKey == null) { throw new NullPointerException(); }
 
-        if (!settingsMap.containsKey(textKey)) {
-            throw new IllegalArgumentException("This entry does not exists.");
-        }
+        if (!settingsMap.containsKey(textKey)) { throw new IllegalArgumentException("This entry does not exists."); }
 
         return settingsMap.remove(textKey);
     }
@@ -132,19 +114,13 @@ public final class SettingsMap {
     // --------------------------------------------------------------------------
 
     /**
-     * Update the stored value with the given one. The result is dependant on
-     * the <code>IResultFunction</code> instance.
+     * Update the stored value with the given one. The result is dependant on the <code>IResultFunction</code> instance.
      * 
-     * @param textKey
-     *            The <code>OperationalTextKey</code> to update.
-     * @param newTextValue
-     *            The new value, which is interpreted as response.
-     * @param resultFunction
-     *            The <code>IResultFunction</code> to use to obtaining the
-     *            result.
+     * @param textKey The <code>OperationalTextKey</code> to update.
+     * @param newTextValue The new value, which is interpreted as response.
+     * @param resultFunction The <code>IResultFunction</code> to use to obtaining the result.
      */
-    public final void update(final OperationalTextKey textKey, final String newTextValue,
-        final IResultFunction resultFunction) {
+    public final void update (final OperationalTextKey textKey, final String newTextValue, final IResultFunction resultFunction) {
 
         final String oldValue = settingsMap.get(textKey);
 
@@ -166,45 +142,35 @@ public final class SettingsMap {
     // --------------------------------------------------------------------------
 
     /**
-     * This method compares the text parameters of <code>this</code> object with
-     * the ones given by a <code>Map</code> object.
+     * This method compares the text parameters of <code>this</code> object with the ones given by a <code>Map</code>
+     * object.
      * 
-     * @param aSettingsMap
-     *            A <code>SettingsMap</code> object, which should be used for
-     *            the comparsion.
-     * @return <code>true</code>, if the all keys are equal with the ones of the <code>aSettingsMap</code>
-     *         object. Else <code>false</code>.
+     * @param aSettingsMap A <code>SettingsMap</code> object, which should be used for the comparsion.
+     * @return <code>true</code>, if the all keys are equal with the ones of the <code>aSettingsMap</code> object. Else
+     *         <code>false</code>.
      */
-    public final boolean equals(final SettingsMap aSettingsMap) {
+    public final boolean equals (final SettingsMap aSettingsMap) {
 
         // alias check
-        if (this == aSettingsMap) {
-            return true;
-        }
+        if (this == aSettingsMap) { return true; }
 
-        if (aSettingsMap != null) {
-            return equals(aSettingsMap.settingsMap);
-        }
+        if (aSettingsMap != null) { return equals(aSettingsMap.settingsMap); }
 
         return false;
     }
 
     /**
-     * This method compares the text parameters of <code>this</code> object with
-     * the ones given by a <code>Map</code> object.
+     * This method compares the text parameters of <code>this</code> object with the ones given by a <code>Map</code>
+     * object.
      * 
-     * @param aMap
-     *            A <code>Map&lt;String, String&gt;</code> object, which should
-     *            be used for the comparsion.
-     * @return <code>true</code>, if the all keys are equal with the ones of the <code>aMap</code> object.
-     *         Else <code>false</code>.
+     * @param aMap A <code>Map&lt;String, String&gt;</code> object, which should be used for the comparsion.
+     * @return <code>true</code>, if the all keys are equal with the ones of the <code>aMap</code> object. Else
+     *         <code>false</code>.
      */
-    public final boolean equals(final Map<OperationalTextKey, String> aMap) {
+    public final boolean equals (final Map<OperationalTextKey , String> aMap) {
 
         // alias check
-        if (this.settingsMap == aMap) {
-            return true;
-        }
+        if (this.settingsMap == aMap) { return true; }
 
         do {
             if (aMap == null) {
@@ -218,7 +184,7 @@ public final class SettingsMap {
 
             OperationalTextKey key;
             String value;
-            for (Map.Entry<OperationalTextKey, String> e : aMap.entrySet()) {
+            for (Map.Entry<OperationalTextKey , String> e : aMap.entrySet()) {
 
                 key = e.getKey();
                 value = e.getValue();
@@ -254,27 +220,26 @@ public final class SettingsMap {
     /**
      * Returns a set of an key-value pair of this <code>OperationTextKeys</code> object.
      * 
-     * @return a set view of the mappings (key-value-pair) contained in this
-     *         map.
+     * @return a set view of the mappings (key-value-pair) contained in this map.
      */
-    public final Set<Map.Entry<OperationalTextKey, String>> entrySet() {
+    public final Set<Map.Entry<OperationalTextKey , String>> entrySet () {
 
         return settingsMap.entrySet();
     }
 
     /** {@inheritDoc} */
     @Override
-    public final int hashCode() {
+    public final int hashCode () {
 
         return settingsMap.hashCode();
     }
 
     /** {@inheritDoc} */
     @Override
-    public final String toString() {
+    public final String toString () {
 
         final StringBuilder sb = new StringBuilder();
-        for (Map.Entry<OperationalTextKey, String> e : settingsMap.entrySet()) {
+        for (Map.Entry<OperationalTextKey , String> e : settingsMap.entrySet()) {
             sb.append(e.getKey().value());
             sb.append(KEY_VALUE_DELIMITER);
             sb.append(e.getValue());
@@ -287,21 +252,20 @@ public final class SettingsMap {
     /**
      * Removes all stored settings from this <code>SettingsMap</code>.
      */
-    public final void clear() {
+    public final void clear () {
 
         settingsMap.clear();
     }
 
     /**
-     * Returns a buffer of the serialized key-value pairs, which are contained
-     * in this instance.
+     * Returns a buffer of the serialized key-value pairs, which are contained in this instance.
      * 
      * @return The serialized key-value pairs.
      */
-    public final ByteBuffer asByteBuffer() {
+    public final ByteBuffer asByteBuffer () {
 
         final StringBuilder sb = new StringBuilder();
-        for (Map.Entry<OperationalTextKey, String> e : settingsMap.entrySet()) {
+        for (Map.Entry<OperationalTextKey , String> e : settingsMap.entrySet()) {
             sb.append(e.getKey().value());
             sb.append(KEY_VALUE_DELIMITER);
             sb.append(e.getValue());
@@ -311,7 +275,7 @@ public final class SettingsMap {
         return ByteBuffer.wrap(sb.toString().getBytes());
     }
 
-    public int size() {
+    public int size () {
         return settingsMap.size();
     }
 

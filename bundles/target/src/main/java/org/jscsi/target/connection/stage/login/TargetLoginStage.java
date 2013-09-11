@@ -1,5 +1,6 @@
 package org.jscsi.target.connection.stage.login;
 
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.DigestException;
@@ -18,17 +19,17 @@ import org.jscsi.target.settings.ConnectionSettingsNegotiator;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.util.ReadWrite;
 
+
 /**
- * This class is an abstract super-class for stages of the {@link TargetLoginPhase} (see
- * <code>Connection</code> for a description of
- * the relationship between sessions, connections, phases and sessions), namely
- * the {@link LoginOperationalParameterNegotiationStage} and the {@link SecurityNegotiationStage}.
+ * This class is an abstract super-class for stages of the {@link TargetLoginPhase} (see <code>Connection</code> for a
+ * description of the relationship between sessions, connections, phases and sessions), namely the
+ * {@link LoginOperationalParameterNegotiationStage} and the {@link SecurityNegotiationStage}.
  * <p>
- * The stage is started by calling the {@link #execute(ProtocolDataUnit)} method with the first
- * {@link ProtocolDataUnit} to be processed as part of the stage.
+ * The stage is started by calling the {@link #execute(ProtocolDataUnit)} method with the first {@link ProtocolDataUnit}
+ * to be processed as part of the stage.
  * <p>
- * Of equal importance is the {@link #getNextStageNumber()} method, which must be used to find out which stage
- * or phase will follow this one.
+ * Of equal importance is the {@link #getNextStageNumber()} method, which must be used to find out which stage or phase
+ * will follow this one.
  * 
  * @author Andreas Ergenzinger
  */
@@ -48,14 +49,13 @@ public abstract class TargetLoginStage extends TargetStage {
     protected final LoginStage stageNumber;
 
     /**
-     * An identifier used by the initiator to identify the login task. Sent with
-     * the first Login Request PDU.
+     * An identifier used by the initiator to identify the login task. Sent with the first Login Request PDU.
      */
     protected int initiatorTaskTag;
 
     /**
-     * A stage number describing which stage the initiator wants to transition
-     * to. This value will be updated with every received PDU.
+     * A stage number describing which stage the initiator wants to transition to. This value will be updated with every
+     * received PDU.
      * 
      * @see #stageNumber
      */
@@ -64,8 +64,8 @@ public abstract class TargetLoginStage extends TargetStage {
     /**
      * A stage number describing which stage must follow this stage.
      * <p>
-     * This value is initialized with <code>null</code>, and will be changed in
-     * {@link #execute(ProtocolDataUnit)}, if the stage was finished successfully.
+     * This value is initialized with <code>null</code>, and will be changed in {@link #execute(ProtocolDataUnit)}, if
+     * the stage was finished successfully.
      * 
      * @see #stageNumber
      */
@@ -74,39 +74,32 @@ public abstract class TargetLoginStage extends TargetStage {
     /**
      * The abstract constructor.
      * 
-     * @param targetLoginPhase
-     *            the phase this stage is a part of
-     * @param stageNumber
-     *            the stage number used for describing this stage in Login
-     *            Request PDUs
+     * @param targetLoginPhase the phase this stage is a part of
+     * @param stageNumber the stage number used for describing this stage in Login Request PDUs
      */
-    public TargetLoginStage(final TargetLoginPhase targetLoginPhase, final LoginStage stageNumber) {
+    public TargetLoginStage (final TargetLoginPhase targetLoginPhase, final LoginStage stageNumber) {
         super(targetLoginPhase);
         this.stageNumber = stageNumber;
         negotiator = connection.getConnectionSettingsNegotiator();
     }
 
     /**
-     * Returns <code>true</code>, if and only if the specified PDU is a Login
-     * Request PDU and the CSN and InitiatorTaskTag fields check out.
+     * Returns <code>true</code>, if and only if the specified PDU is a Login Request PDU and the CSN and
+     * InitiatorTaskTag fields check out.
      * 
-     * @param pdu
-     *            the PDU to check
+     * @param pdu the PDU to check
      * @return <code>true</code> if the PDU checks out
      */
-    protected boolean checkPdu(ProtocolDataUnit pdu) {
+    protected boolean checkPdu (ProtocolDataUnit pdu) {
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-        final LoginRequestParser parser = (LoginRequestParser)bhs.getParser();
-        if (bhs.getOpCode() == OperationCode.LOGIN_REQUEST && parser.getCurrentStageNumber() == stageNumber
-            && bhs.getInitiatorTaskTag() == initiatorTaskTag)
-            return true;
+        final LoginRequestParser parser = (LoginRequestParser) bhs.getParser();
+        if (bhs.getOpCode() == OperationCode.LOGIN_REQUEST && parser.getCurrentStageNumber() == stageNumber && bhs.getInitiatorTaskTag() == initiatorTaskTag) return true;
         return false;
     }
 
     /**
-     * Receives a sequence of Login Request PDUs (as indicated by the
-     * {@link LoginRequestParser#isContinueFlag()} and returns the concatenated
-     * content of the text data segments.
+     * Receives a sequence of Login Request PDUs (as indicated by the {@link LoginRequestParser#isContinueFlag()} and
+     * returns the concatenated content of the text data segments.
      * 
      * @return the concatenated content of the text data segments
      * @throws DigestException
@@ -115,19 +108,16 @@ public abstract class TargetLoginStage extends TargetStage {
      * @throws SettingsException
      * @throws InterruptedException
      */
-    protected final String receivePduSequence() throws DigestException, InternetSCSIException, IOException,
-        SettingsException, InterruptedException {
+    protected final String receivePduSequence () throws DigestException , InternetSCSIException , IOException , SettingsException , InterruptedException {
         final ProtocolDataUnit pdu = connection.receivePdu();
         return receivePduSequence(pdu);
     }
 
     /**
-     * Receives a sequence of Login Request PDUs (as indicated by the
-     * {@link LoginRequestParser#isContinueFlag()} and returns the concatenated
-     * content of the text data segments.
+     * Receives a sequence of Login Request PDUs (as indicated by the {@link LoginRequestParser#isContinueFlag()} and
+     * returns the concatenated content of the text data segments.
      * 
-     * @param pdu
-     *            the first PDU of the sequence
+     * @param pdu the first PDU of the sequence
      * @return the concatenated content of the text data segments
      * @throws InternetSCSIException
      * @throws InterruptedException
@@ -135,8 +125,7 @@ public abstract class TargetLoginStage extends TargetStage {
      * @throws DigestException
      * @throws SettingsException
      */
-    protected final String receivePduSequence(ProtocolDataUnit pdu) throws InternetSCSIException,
-        InterruptedException, IOException, DigestException, SettingsException {
+    protected final String receivePduSequence (ProtocolDataUnit pdu) throws InternetSCSIException , InterruptedException , IOException , DigestException , SettingsException {
 
         // StringBuilder for the key-value pairs received during this sequence
         final StringBuilder stringBuilder = new StringBuilder();
@@ -149,7 +138,7 @@ public abstract class TargetLoginStage extends TargetStage {
         int sequenceLength = 1;
         while (sequenceLength <= session.getTargetServer().getConfig().getInMaxRecvTextPduSequenceLength()) {
             bhs = pdu.getBasicHeaderSegment();
-            parser = (LoginRequestParser)bhs.getParser();
+            parser = (LoginRequestParser) bhs.getParser();
 
             // check PDU
             if (!checkPdu(pdu)) {
@@ -168,13 +157,13 @@ public abstract class TargetLoginStage extends TargetStage {
             if (parser.isContinueFlag()) {
                 // send reception confirmation
                 pdu = TargetPduFactory.createLoginResponsePdu(false,// transitFlag
-                    false,// continueFlag
-                    stageNumber,// currentStage
-                    stageNumber,// nextStage
-                    session.getInitiatorSessionID(),// initiatorSessionID
-                    session.getTargetSessionIdentifyingHandle(),// targetSessionIdentifyingHandle
-                    initiatorTaskTag, LoginStatus.SUCCESS,// status
-                    ByteBuffer.allocate(0));// dataSegment
+                        false,// continueFlag
+                        stageNumber,// currentStage
+                        stageNumber,// nextStage
+                        session.getInitiatorSessionID(),// initiatorSessionID
+                        session.getTargetSessionIdentifyingHandle(),// targetSessionIdentifyingHandle
+                        initiatorTaskTag, LoginStatus.SUCCESS,// status
+                        ByteBuffer.allocate(0));// dataSegment
                 connection.sendPdu(pdu);
 
                 // receive the next pdu
@@ -191,22 +180,17 @@ public abstract class TargetLoginStage extends TargetStage {
     }
 
     /**
-     * Sends a Login Response PDU sequence containing the specified
-     * <i>key-value</i> pairs.
+     * Sends a Login Response PDU sequence containing the specified <i>key-value</i> pairs.
      * 
-     * @param keyValuePairs
-     *            contains <i>key-value</i> pairs to send
-     * @param nextStage
-     *            indicates if the target is willing to transition to a
-     *            different stage
+     * @param keyValuePairs contains <i>key-value</i> pairs to send
+     * @param nextStage indicates if the target is willing to transition to a different stage
      * @throws SettingsException
      * @throws InterruptedException
      * @throws IOException
      * @throws InternetSCSIException
      * @throws DigestException
      */
-    protected final void sendPduSequence(final String keyValuePairs, final LoginStage nextStage)
-        throws SettingsException, InterruptedException, IOException, InternetSCSIException, DigestException {
+    protected final void sendPduSequence (final String keyValuePairs, final LoginStage nextStage) throws SettingsException , InterruptedException , IOException , InternetSCSIException , DigestException {
 
         // some variables
         ProtocolDataUnit pdu;
@@ -217,7 +201,7 @@ public abstract class TargetLoginStage extends TargetStage {
 
         // split input string into text data segments
         final ByteBuffer[] dataSegments = ReadWrite.stringToTextDataSegments(keyValuePairs,// string
-            settings.getMaxRecvDataSegmentLength());// bufferSize
+                settings.getMaxRecvDataSegmentLength());// bufferSize
 
         // send all data segments (and receive confirmations)
         for (int i = 0; i < dataSegments.length; ++i) {
@@ -225,19 +209,18 @@ public abstract class TargetLoginStage extends TargetStage {
             // adjust flags
             if (i == dataSegments.length - 1) {
                 continueFlag = false;
-                if (stageNumber != nextStage)
-                    transitFlag = true;
+                if (stageNumber != nextStage) transitFlag = true;
             }
 
             // create and send PDU
             pdu = TargetPduFactory.createLoginResponsePdu(transitFlag,// transitFlag
-                continueFlag,// continueFlag
-                stageNumber,// currentStage
-                nextStage,// nextStage
-                session.getInitiatorSessionID(),// initiatorSessionID
-                session.getTargetSessionIdentifyingHandle(),// targetSessionIdentifyingHandle
-                initiatorTaskTag, LoginStatus.SUCCESS,// status
-                dataSegments[i]);// dataSegment
+                    continueFlag,// continueFlag
+                    stageNumber,// currentStage
+                    nextStage,// nextStage
+                    session.getInitiatorSessionID(),// initiatorSessionID
+                    session.getTargetSessionIdentifyingHandle(),// targetSessionIdentifyingHandle
+                    initiatorTaskTag, LoginStatus.SUCCESS,// status
+                    dataSegments[i]);// dataSegment
             connection.sendPdu(pdu);
 
             // receive confirmation
@@ -245,7 +228,7 @@ public abstract class TargetLoginStage extends TargetStage {
                 // receive and check
                 pdu = connection.receivePdu();
                 bhs = pdu.getBasicHeaderSegment();
-                parser = (LoginRequestParser)bhs.getParser();
+                parser = (LoginRequestParser) bhs.getParser();
                 if (!checkPdu(pdu) || parser.isContinueFlag()) {
                     // send login reject and leave stage
                     sendRejectPdu(LoginStatus.INITIATOR_ERROR);
@@ -256,37 +239,34 @@ public abstract class TargetLoginStage extends TargetStage {
     }
 
     /**
-     * Sends a Login Response PDU informing the initiator that an error has
-     * occurred and that the connection must be closed.
+     * Sends a Login Response PDU informing the initiator that an error has occurred and that the connection must be
+     * closed.
      * 
-     * @param errorStatus
-     *            hints to the cause of the error
+     * @param errorStatus hints to the cause of the error
      * @throws InterruptedException
      * @throws IOException
      * @throws InternetSCSIException
      */
-    protected final void sendRejectPdu(final LoginStatus errorStatus) throws InterruptedException,
-        IOException, InternetSCSIException {
+    protected final void sendRejectPdu (final LoginStatus errorStatus) throws InterruptedException , IOException , InternetSCSIException {
         final ProtocolDataUnit rejectPDU = TargetPduFactory.createLoginResponsePdu(false,// transit flag
-            false,// continueFlag
-            stageNumber,// currentStage
-            stageNumber,// nextStage
-            session.getInitiatorSessionID(),// initiatorSessionID
-            session.getTargetSessionIdentifyingHandle(),// targetSessionIdentifyingHandle
-            initiatorTaskTag,// initiatorTaskTag
-            errorStatus,// status
-            ByteBuffer.allocate(0));// dataSegment
+                false,// continueFlag
+                stageNumber,// currentStage
+                stageNumber,// nextStage
+                session.getInitiatorSessionID(),// initiatorSessionID
+                session.getTargetSessionIdentifyingHandle(),// targetSessionIdentifyingHandle
+                initiatorTaskTag,// initiatorTaskTag
+                errorStatus,// status
+                ByteBuffer.allocate(0));// dataSegment
         connection.sendPdu(rejectPDU);
     }
 
     /**
-     * Returns a stage number describing which stage of phase must follow this
-     * stage, or <code>null</code> if the initiator is not allowed to transition
-     * any further.
+     * Returns a stage number describing which stage of phase must follow this stage, or <code>null</code> if the
+     * initiator is not allowed to transition any further.
      * 
      * @return an identifier of the next stage/phase or <code>null</code>
      */
-    public final LoginStage getNextStageNumber() {
+    public final LoginStage getNextStageNumber () {
         return nextStageNumber;
     }
 }

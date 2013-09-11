@@ -1,10 +1,12 @@
 package org.jscsi.target.scsi.cdb;
 
+
 import org.jscsi.target.scsi.lun.AddressMethod;
 
+
 /**
- * The SELECT REPORT field is a member of the {@link ReportLunsCDB} and
- * specifies the types of logical unit addresses that shall be reported.
+ * The SELECT REPORT field is a member of the {@link ReportLunsCDB} and specifies the types of logical unit addresses
+ * that shall be reported.
  * <p>
  * The field is two bits long.
  * 
@@ -13,8 +15,8 @@ import org.jscsi.target.scsi.lun.AddressMethod;
 public enum SelectReport {
 
     /**
-     * The list shall contain the logical units accessible to the I_T nexus with
-     * the following addressing methods (see SAM):
+     * The list shall contain the logical units accessible to the I_T nexus with the following addressing methods (see
+     * SAM):
      * <ol>
      * <li>{@link AddressMethod#LOGICAL_UNIT_ADDRESSING_METHOD},</li>
      * <li>{@link AddressMethod#PERIPHERAL_DEVICE_ADDRESSING_METHOD}, and</li>
@@ -22,16 +24,16 @@ public enum SelectReport {
      * </ol>
      * If there are no logical units, the LUN LIST LENGTH field shall be zero.
      */
-    SELECTED_ADDRESSING_METHODS((byte)0),
+    SELECTED_ADDRESSING_METHODS((byte) 0),
     /**
-     * The list shall contain only well known logical units, if any. If there
-     * are no well known logical units, the LUN LIST LENGTH field shall be zero.
+     * The list shall contain only well known logical units, if any. If there are no well known logical units, the LUN
+     * LIST LENGTH field shall be zero.
      */
-    WELL_KNOWN_LUNS_ONLY((byte)1),
+    WELL_KNOWN_LUNS_ONLY((byte) 1),
     /**
      * The list shall contain all logical units accessible to the I_T nexus.
      */
-    ALL((byte)2);
+    ALL((byte) 2);
     // all other values are reserved
 
     /**
@@ -39,7 +41,7 @@ public enum SelectReport {
      */
     private final byte value;
 
-    private SelectReport(final byte value) {
+    private SelectReport (final byte value) {
         this.value = value;
     }
 
@@ -48,20 +50,18 @@ public enum SelectReport {
      * 
      * @return the serialized value of this {@link SelectReport} object
      */
-    public byte getValue() {
+    public byte getValue () {
         return value;
     }
 
     /**
      * Returns the {@link SelectReport} corresponding to the passed value.
      * 
-     * @param value
-     *            the value of a SELECT REPORT field
+     * @param value the value of a SELECT REPORT field
      * @return the {@link SelectReport} corresponding to the passed value or <code>null</code> if none exists
      */
-    public final static SelectReport getValue(byte value) {
-        if (0 <= value && value <= 2)
-            return values()[value];
+    public final static SelectReport getValue (byte value) {
+        if (0 <= value && value <= 2) return values()[value];
         return null;
     }
 }

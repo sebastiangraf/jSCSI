@@ -1,30 +1,23 @@
 /**
- * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
- * All rights reserved.
+ * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
  * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * * Neither the name of the University of Konstanz nor the
- * names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+ * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
+ * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
+ * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
+ * endorse or promote products derived from this software without specific prior written permission.
  * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.jscsi.parser.datasegment;
+
 
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
@@ -33,6 +26,7 @@ import org.testng.annotations.Test;
 import java.nio.ByteBuffer;
 
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
+
 
 /**
  * Testing the correctness of the BinaryDataSegment.
@@ -47,19 +41,15 @@ public final class BinaryDataSegmentTest {
     private static final int CHUNK_SIZE = 4;
 
     /** Test case arrays. */
-    private static final byte[] TEST_CASE_1_ARRAY = {
-        0x34, 0x54, 0x77, 0x32, (byte)0xAF
-    };
+    private static final byte[] TEST_CASE_1_ARRAY = { 0x34, 0x54, 0x77, 0x32, (byte) 0xAF };
 
-    private static final byte[] TEST_CASE_1_ARRAY_LONG = {
-        0x34, 0x54, 0x77, 0x32, (byte)0xAF, 0x00, 0x00, 0x00
-    };
+    private static final byte[] TEST_CASE_1_ARRAY_LONG = { 0x34, 0x54, 0x77, 0x32, (byte) 0xAF, 0x00, 0x00, 0x00 };
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
 
     @Test
-    public final void testDeserializeBuffer() {
+    public final void testDeserializeBuffer () {
 
         final BinaryDataSegment dataSegment = new BinaryDataSegment(CHUNK_SIZE);
         assertNotNull(dataSegment);
@@ -75,7 +65,7 @@ public final class BinaryDataSegmentTest {
     }
 
     @Test
-    public final void testAppendBuffer() {
+    public final void testAppendBuffer () {
 
         final ByteBuffer testBuffer = ByteBuffer.wrap(TEST_CASE_1_ARRAY);
         assertNotNull(testBuffer);
@@ -92,7 +82,7 @@ public final class BinaryDataSegmentTest {
     }
 
     @Test
-    public final void testSerializeBuffer() {
+    public final void testSerializeBuffer () {
 
         final BinaryDataSegment dataSegment = new BinaryDataSegment(CHUNK_SIZE);
         assertNotNull(dataSegment);
@@ -105,8 +95,7 @@ public final class BinaryDataSegmentTest {
         final ByteBuffer expectedResult = ByteBuffer.wrap(TEST_CASE_1_ARRAY_LONG);
         dataSegment.dataBuffer.rewind();
 
-        final ByteBuffer exportedDataSegment =
-            ByteBuffer.allocate(AbstractDataSegment.getTotalLength(dataSegment.getLength()));
+        final ByteBuffer exportedDataSegment = ByteBuffer.allocate(AbstractDataSegment.getTotalLength(dataSegment.getLength()));
         dataSegment.serialize(exportedDataSegment, 0);
         exportedDataSegment.rewind();
 
@@ -117,7 +106,7 @@ public final class BinaryDataSegmentTest {
      * Tests the clear method. The result has to be an empty object.
      */
     @Test
-    public final void testClear() {
+    public final void testClear () {
 
         final BinaryDataSegment dataSegment = new BinaryDataSegment(CHUNK_SIZE);
 
@@ -138,7 +127,7 @@ public final class BinaryDataSegmentTest {
      * Tests the equals method. The result has to be <code>true</code>.
      */
     @Test
-    public final void testEquals() {
+    public final void testEquals () {
 
         final ByteBuffer testBuffer = ByteBuffer.allocate(TEST_CASE_1_ARRAY.length);
         assertNotNull(testBuffer);
@@ -160,12 +149,11 @@ public final class BinaryDataSegmentTest {
     }
 
     /**
-     * Tests the correct functionality of the serialize method. The given
-     * destination buffer has size, which is not a multiple of
-     * Constants.BYTES_PER_INT.
+     * Tests the correct functionality of the serialize method. The given destination buffer has size, which is not a
+     * multiple of Constants.BYTES_PER_INT.
      */
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public final void testSerialize2() {
+    @Test (expectedExceptions = IllegalArgumentException.class)
+    public final void testSerialize2 () {
 
         final BinaryDataSegment dataSegment = new BinaryDataSegment(CHUNK_SIZE);
         final ByteBuffer serialized = ByteBuffer.allocate(TEST_CASE_1_ARRAY.length);
@@ -173,11 +161,10 @@ public final class BinaryDataSegmentTest {
     }
 
     /**
-     * Tests the correct functionality of the serialize and the deserialize
-     * method.
+     * Tests the correct functionality of the serialize and the deserialize method.
      */
     @Test
-    public final void testSerializeAndDeserialize() {
+    public final void testSerializeAndDeserialize () {
 
         final ByteBuffer testBuffer = ByteBuffer.wrap(TEST_CASE_1_ARRAY);
         final BinaryDataSegment dataSegment = new BinaryDataSegment(CHUNK_SIZE);
@@ -206,11 +193,10 @@ public final class BinaryDataSegmentTest {
      * <code>DataSegmentIterator</code>.
      */
     @Test
-    public final void testDataSegmentIterator() {
+    public final void testDataSegmentIterator () {
 
         final ByteBuffer testBuffer = ByteBuffer.allocate(10 * 16 * 1024);
-        final IDataSegment dataSegment =
-            DataSegmentFactory.create(testBuffer, 10000, 57344, DataSegmentFormat.BINARY, 8192);
+        final IDataSegment dataSegment = DataSegmentFactory.create(testBuffer, 10000, 57344, DataSegmentFormat.BINARY, 8192);
         final IDataSegmentIterator iterator = dataSegment.iterator();
 
         int counter = 0;
@@ -227,11 +213,10 @@ public final class BinaryDataSegmentTest {
      * <code>DataSegmentIterator</code>.
      */
     @Test
-    public final void testDataSegmentIterator2() {
+    public final void testDataSegmentIterator2 () {
 
         final ByteBuffer testBuffer = ByteBuffer.allocate(10 * 16 * 1024);
-        final IDataSegment dataSegment =
-            DataSegmentFactory.create(testBuffer, 10000, 56344, DataSegmentFormat.BINARY, 8192);
+        final IDataSegment dataSegment = DataSegmentFactory.create(testBuffer, 10000, 56344, DataSegmentFormat.BINARY, 8192);
         final IDataSegmentIterator iterator = dataSegment.iterator();
 
         int counter = 0;

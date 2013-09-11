@@ -1,5 +1,6 @@
 package org.jscsi.target.connection.stage.login;
 
+
 import java.io.IOException;
 import java.security.DigestException;
 import java.util.List;
@@ -17,9 +18,9 @@ import org.jscsi.target.settings.TextParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
- * A {@link TargetLoginStage} sub-class representing Security Negotiation
- * Stages.
+ * A {@link TargetLoginStage} sub-class representing Security Negotiation Stages.
  * 
  * @author Andreas Ergenzinger
  */
@@ -30,16 +31,14 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
     /**
      * The constructor.
      * 
-     * @param targetLoginPhase
-     *            the login phase this stage is a part of
+     * @param targetLoginPhase the login phase this stage is a part of
      */
-    public SecurityNegotiationStage(TargetLoginPhase targetLoginPhase) {
+    public SecurityNegotiationStage (TargetLoginPhase targetLoginPhase) {
         super(targetLoginPhase, LoginStage.SECURITY_NEGOTIATION);
     }
 
     @Override
-    public void execute(ProtocolDataUnit initialPdu) throws IOException, InterruptedException,
-        InternetSCSIException, DigestException, SettingsException {
+    public void execute (ProtocolDataUnit initialPdu) throws IOException , InterruptedException , InternetSCSIException , DigestException , SettingsException {
 
         // "receive" initial PDU
         BasicHeaderSegment bhs = initialPdu.getBasicHeaderSegment();
@@ -54,8 +53,7 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
             final String requestTextParameters = receivePduSequence(initialPdu);
 
             // split key-value pairs
-            final List<String> requestKeyValuePairs =
-                TextParameter.tokenizeKeyValuePairs(requestTextParameters);
+            final List<String> requestKeyValuePairs = TextParameter.tokenizeKeyValuePairs(requestTextParameters);
 
             // Vector for AuthMethod keys
             final List<String> authMethodKeyValuePairs = new Vector<String>();
@@ -78,8 +76,7 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
                     final String[] split = TextParameter.splitKeyValuePair(requestKeyValuePairs.get(i));
                     if (split == null) {
                         sendRejectPdu(LoginStatus.INITIATOR_ERROR);
-                        throw new InternetSCSIException("key=value format error: "
-                            + requestKeyValuePairs.get(i));
+                        throw new InternetSCSIException("key=value format error: " + requestKeyValuePairs.get(i));
                     }
                     if (TextKeyword.AUTH_METHOD.equals(split[0])) {
                         authMethodValues = split[1];
@@ -112,9 +109,7 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
                                                                               // be
                                                                               // sent
                                                                               // back
-            if (!negotiator.negotiate(session.getTargetServer(), stageNumber, connection
-                .isLeadingConnection(), ((TargetLoginPhase)targetPhase).getFirstPduAndSetToFalse(),
-                requestKeyValuePairs, responseKeyValuePairs)) {
+            if (!negotiator.negotiate(session.getTargetServer(), stageNumber, connection.isLeadingConnection(), ((TargetLoginPhase) targetPhase).getFirstPduAndSetToFalse(), requestKeyValuePairs, responseKeyValuePairs)) {
                 // negotiation error
                 sendRejectPdu(LoginStatus.INITIATOR_ERROR);
                 throw new InternetSCSIException("negotiation failure");
@@ -126,21 +121,18 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
 
                     authenticated = true;
                     responseKeyValuePairs.add(TextParameter.toKeyValuePair(TextKeyword.AUTH_METHOD,// key
-                        TextKeyword.NONE));// value
+                            TextKeyword.NONE));// value
 
                     // concatenate key value pairs to single string
-                    final String responseString =
-                        TextParameter.concatenateKeyValuePairs(responseKeyValuePairs);
+                    final String responseString = TextParameter.concatenateKeyValuePairs(responseKeyValuePairs);
 
-                    if (LOGGER.isDebugEnabled())
-                        LOGGER.debug("response: " + responseString);
+                    if (LOGGER.isDebugEnabled()) LOGGER.debug("response: " + responseString);
 
                     // send reply (sequence), set transit bit of last PDU
                     sendPduSequence(responseString, requestedNextStageNumber);
 
                     // leave this (and proceed to next) stage
-                    if (requestedNextStageNumber == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION
-                        || requestedNextStageNumber == LoginStage.FULL_FEATURE_PHASE) {
+                    if (requestedNextStageNumber == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION || requestedNextStageNumber == LoginStage.FULL_FEATURE_PHASE) {
                         nextStageNumber = requestedNextStageNumber;
                         return;
                     }
@@ -158,9 +150,8 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
     }
 
     /**
-     * Checks if a the parameter is the key of an AuthMethod Key, which means
-     * one of the following (where &#60;key&#62; depends on the AuthMethod
-     * prefix):
+     * Checks if a the parameter is the key of an AuthMethod Key, which means one of the following (where &#60;key&#62;
+     * depends on the AuthMethod prefix):
      * <ul>
      * <li>CHAP_&#60;key&#62;/il>
      * <li>KRB_&#60;key&#62;/il>
@@ -171,15 +162,11 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
      * @param <i>key</i> part of a <i>key-value</i> pair
      * @return <code>true</code> if the String is an AuthMethod key, <code>false</code> if it is not.
      */
-    private final boolean isAuthenticationKey(final String key) {
-        if (key == null || key.length() < 5)
-            return false;
+    private final boolean isAuthenticationKey (final String key) {
+        if (key == null || key.length() < 5) return false;
         final String fourChars = key.substring(0, 4);
         final String fiveChars = key.substring(0, 5);
-        if ("CHAP_".matches(fiveChars) || "KRB_".matches(fourChars) || "SPKM_".matches(fiveChars)
-            || "SRP_".matches(fourChars)
-            || (key.length() >= 10 && "TargetAuth".matches(key.substring(0, 10))))
-            return true;
+        if ("CHAP_".matches(fiveChars) || "KRB_".matches(fourChars) || "SPKM_".matches(fiveChars) || "SRP_".matches(fourChars) || (key.length() >= 10 && "TargetAuth".matches(key.substring(0, 10)))) return true;
         return false;
     }
 }

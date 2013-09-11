@@ -1,36 +1,30 @@
 /**
- * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
- * All rights reserved.
+ * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
  * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * * Neither the name of the University of Konstanz nor the
- * names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+ * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
+ * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
+ * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
+ * endorse or promote products derived from this software without specific prior written permission.
  * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.jscsi.parser.datasegment;
+
 
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
+
 
 /**
  * <h1>SettingsMapTest</h1>
@@ -49,7 +43,7 @@ public final class SettingsMapTest {
     // --------------------------------------------------------------------------
 
     @BeforeMethod
-    public final void setUp() {
+    public final void setUp () {
 
         settingsMap = new SettingsMap();
     }
@@ -58,21 +52,21 @@ public final class SettingsMapTest {
     // --------------------------------------------------------------------------
 
     @Test
-    public final void testAdd() {
+    public final void testAdd () {
 
         settingsMap.add(OperationalTextKey.AUTH_METHOD, "None,CRC32CDigest");
 
     }
 
     @Test
-    public final void testGet() {
+    public final void testGet () {
 
         settingsMap.add(OperationalTextKey.MAX_CONNECTIONS, "512");
         assertEquals("512", settingsMap.get(OperationalTextKey.MAX_CONNECTIONS));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public final void testRemove1() {
+    @Test (expectedExceptions = IllegalArgumentException.class)
+    public final void testRemove1 () {
 
         settingsMap.add(OperationalTextKey.AUTH_METHOD, "None");
 
@@ -80,7 +74,7 @@ public final class SettingsMapTest {
     }
 
     @Test
-    public final void testRemove2() {
+    public final void testRemove2 () {
 
         settingsMap.add(OperationalTextKey.DATA_PDU_IN_ORDER, "No");
         settingsMap.add(OperationalTextKey.ERROR_RECOVERY_LEVEL, "1");
@@ -92,7 +86,7 @@ public final class SettingsMapTest {
     }
 
     @Test
-    public final void testEquals() {
+    public final void testEquals () {
 
         settingsMap.add(OperationalTextKey.DATA_DIGEST, "Yes");
 
@@ -103,7 +97,7 @@ public final class SettingsMapTest {
     }
 
     @Test
-    public final void testUnequals() {
+    public final void testUnequals () {
 
         settingsMap.add(OperationalTextKey.DATA_DIGEST, "Yes");
 
@@ -114,7 +108,7 @@ public final class SettingsMapTest {
     }
 
     @Test
-    public final void testClear() {
+    public final void testClear () {
 
         settingsMap.add(OperationalTextKey.DEFAULT_TIME_2_WAIT, "2");
         assertEquals("2", settingsMap.get(OperationalTextKey.DEFAULT_TIME_2_WAIT));
@@ -127,7 +121,7 @@ public final class SettingsMapTest {
     // --------------------------------------------------------------------------
 
     @Test
-    public final void testAndMerge() {
+    public final void testAndMerge () {
 
         settingsMap.add(OperationalTextKey.IF_MARKER, "Yes");
         settingsMap.add(OperationalTextKey.OF_MARKER, "No");
@@ -146,7 +140,7 @@ public final class SettingsMapTest {
     }
 
     @Test
-    public final void testOrMerge() {
+    public final void testOrMerge () {
 
         settingsMap.add(OperationalTextKey.DATA_PDU_IN_ORDER, "Yes");
         settingsMap.add(OperationalTextKey.IMMEDIATE_DATA, "No");
@@ -163,7 +157,7 @@ public final class SettingsMapTest {
     // --------------------------------------------------------------------------
 
     @Test
-    public final void testMaxMerge() {
+    public final void testMaxMerge () {
 
         settingsMap.add(OperationalTextKey.IF_MARKER, "Yes");
         settingsMap.add(OperationalTextKey.DEFAULT_TIME_2_WAIT, "4");
@@ -177,15 +171,14 @@ public final class SettingsMapTest {
     }
 
     @Test
-    public final void testMinMerge() {
+    public final void testMinMerge () {
 
         settingsMap.add(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH, "16384");
         settingsMap.add(OperationalTextKey.FIRST_BURST_LENGTH, "4096");
         assertEquals(2, settingsMap.entrySet().size());
 
         final ResultFunctionFactory resultFactory = new ResultFunctionFactory();
-        settingsMap.update(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH, "4096", resultFactory
-            .create("Min"));
+        settingsMap.update(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH, "4096", resultFactory.create("Min"));
 
         assertEquals(2, settingsMap.entrySet().size());
         assertEquals("4096", settingsMap.get(OperationalTextKey.MAX_RECV_DATA_SEGMENT_LENGTH));

@@ -1,16 +1,17 @@
 package org.jscsi.target.scsi.inquiry;
 
+
 import java.nio.ByteBuffer;
 
 import org.jscsi.target.TargetServer;
 import org.jscsi.target.scsi.IResponseData;
 import org.jscsi.target.util.ReadWrite;
 
+
 /**
- * The Device Identification VPD page provides the means to retrieve
- * identification descriptors applying to the logical unit. Logical units may
- * have more than one identification descriptor (e.g., if several types or
- * associations of identifier are supported).
+ * The Device Identification VPD page provides the means to retrieve identification descriptors applying to the logical
+ * unit. Logical units may have more than one identification descriptor (e.g., if several types or associations of
+ * identifier are supported).
  * <p>
  * Device identifiers consist of one or more of the following:
  * <ul>
@@ -22,13 +23,12 @@ import org.jscsi.target.util.ReadWrite;
  * <li>SCSI target port group number or</li>
  * <li>Logical unit group number.</li>
  * </ul>
- * Identification descriptors shall be assigned to the peripheral device (e.g., a disk drive) and not to the
- * currently mounted media, in the case of removable media devices. Operating systems are expected to use the
- * identification descriptors during system configuration activities to determine whether alternate paths
- * exist for the same peripheral device.
+ * Identification descriptors shall be assigned to the peripheral device (e.g., a disk drive) and not to the currently
+ * mounted media, in the case of removable media devices. Operating systems are expected to use the identification
+ * descriptors during system configuration activities to determine whether alternate paths exist for the same peripheral
+ * device.
  * <p>
- * This class uses the singleton pattern since the content of the DEVICE IDENTIFICATION VPD PAGE will never
- * change.
+ * This class uses the singleton pattern since the content of the DEVICE IDENTIFICATION VPD PAGE will never change.
  * 
  * @author Andreas Ergenzinger
  */
@@ -45,15 +45,15 @@ public class DeviceIdentificationVpdPage implements IResponseData {
     private static final int PAGE_LENGTH_FIELD_INDEX = 2;
 
     /**
-     * The joint content of the PERIPHERAL QUALIFIER and the PERIPHERAL DEVICE
-     * TYPE fields with a total length of one byte.
+     * The joint content of the PERIPHERAL QUALIFIER and the PERIPHERAL DEVICE TYPE fields with a total length of one
+     * byte.
      * <p>
      * These values have the following meaning:
      * <p>
-     * A peripheral device having the specified peripheral device type is connected to this logical unit. If
-     * the device server is unable to determine whether or not a peripheral device is connected, it also shall
-     * use this peripheral qualifier. This peripheral qualifier does not mean that the peripheral device
-     * connected to the logical unit is ready for access.
+     * A peripheral device having the specified peripheral device type is connected to this logical unit. If the device
+     * server is unable to determine whether or not a peripheral device is connected, it also shall use this peripheral
+     * qualifier. This peripheral qualifier does not mean that the peripheral device connected to the logical unit is
+     * ready for access.
      * <p>
      * The Logical Unit is a direct access block device (e.g., magnetic disk).
      */
@@ -62,17 +62,15 @@ public class DeviceIdentificationVpdPage implements IResponseData {
     /**
      * Identifies this PAGE as a DEVICE IDENTIFICATION VPD PAGE.
      */
-    private final byte pageCode = (byte)0x83;
+    private final byte pageCode = (byte) 0x83;
 
     private IdentificationDescriptor[] identificationDescriptors = new IdentificationDescriptor[0];
 
-    public DeviceIdentificationVpdPage(TargetServer target) {
+    public DeviceIdentificationVpdPage (TargetServer target) {
 
         /*
-         * For each logical unit that is not a well known logical unit, the
-         * Device Identification VPD page shall include at least one
-         * identification descriptor in which a logical unit name (see SAM-3) is
-         * indicated.
+         * For each logical unit that is not a well known logical unit, the Device Identification VPD page shall include
+         * at least one identification descriptor in which a logical unit name (see SAM-3) is indicated.
          */
         final ProtocolIdentifier protocolIdentifier = ProtocolIdentifier.INTERNET_SCSI;
         final CodeSet codeSet = CodeSet.UTF8_CODES;
@@ -83,9 +81,7 @@ public class DeviceIdentificationVpdPage implements IResponseData {
         String[] targetNames = target.getTargetNames();
         identificationDescriptors = new IdentificationDescriptor[targetNames.length];
         for (int curTargetNum = 0; curTargetNum < targetNames.length; curTargetNum++) {
-            final IdentificationDescriptor identDescriptor =
-                new IdentificationDescriptor(protocolIdentifier, codeSet, protocolIdentifierValid,
-                    association, identifierType, new ScsiNameStringIdentifier(targetNames[curTargetNum]));
+            final IdentificationDescriptor identDescriptor = new IdentificationDescriptor(protocolIdentifier, codeSet, protocolIdentifierValid, association, identifierType, new ScsiNameStringIdentifier(targetNames[curTargetNum]));
 
             identificationDescriptors[curTargetNum] = identDescriptor;
         }
@@ -97,7 +93,7 @@ public class DeviceIdentificationVpdPage implements IResponseData {
      * 
      * @return the combined length of all contained IDENTIFICATION DESCRIPTORs
      */
-    private short getPageLength() {
+    private short getPageLength () {
         short pageLength = 0;
         for (int i = 0; i < identificationDescriptors.length; ++i) {
             pageLength += (identificationDescriptors[i].size());
@@ -105,17 +101,17 @@ public class DeviceIdentificationVpdPage implements IResponseData {
         return pageLength;
     }
 
-    public void serialize(ByteBuffer byteBuffer, int index) {
+    public void serialize (ByteBuffer byteBuffer, int index) {
         // serialize header
         byteBuffer.position(index);
         byteBuffer.put(peripheralQualifierAndPeripheralDeviceType);
         byteBuffer.put(pageCode);
 
         ReadWrite.writeTwoByteInt(byteBuffer,// buffer
-            getPageLength(), index + PAGE_LENGTH_FIELD_INDEX);// index
+                getPageLength(), index + PAGE_LENGTH_FIELD_INDEX);// index
     }
 
-    public int size() {
+    public int size () {
         return getPageLength() + HEADER_LENGTH;
     }
 }

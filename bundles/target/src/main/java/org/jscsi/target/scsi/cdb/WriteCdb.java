@@ -1,6 +1,8 @@
 package org.jscsi.target.scsi.cdb;
 
+
 import java.nio.ByteBuffer;
+
 
 /**
  * This abstract class represents Command Descriptor Blocks for <code>WRITE</code> SCSI commands.
@@ -11,7 +13,7 @@ import java.nio.ByteBuffer;
  */
 public abstract class WriteCdb extends ReadOrWriteCdb {
 
-    public WriteCdb(ByteBuffer buffer) {
+    public WriteCdb (ByteBuffer buffer) {
         super(buffer);
     }
 

@@ -1,5 +1,6 @@
 package org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific;
 
+
 import java.nio.ByteBuffer;
 
 import org.jscsi.target.scsi.ISerializable;
@@ -7,9 +8,9 @@ import org.jscsi.target.scsi.sense.SenseData;
 import org.jscsi.target.scsi.sense.SenseKey;
 import org.jscsi.target.util.BitManip;
 
+
 /**
- * SENSE-KEY-SPECIFIC DATA further defines the reason for a CHECK CONDITION SCSI
- * response status.
+ * SENSE-KEY-SPECIFIC DATA further defines the reason for a CHECK CONDITION SCSI response status.
  * <p>
  * The definition of the SENSE KEY SPECIFIC field is determined by the value of the enclosing sense data's
  * {@link SenseData#senseKey} field.
@@ -57,57 +58,48 @@ public abstract class SenseKeySpecificData implements ISerializable {
     public static final int SIZE = 3;
 
     /**
-     * <code>true</code> if and only if the information fields of this data
-     * object are valid.
+     * <code>true</code> if and only if the information fields of this data object are valid.
      */
     protected final boolean senseKeySpecificDataValid;
 
     /**
      * The absctract constructor.
      * 
-     * @param senseKeySpecificDataValid
-     *            <code>true</code> if and only if the information fields of
-     *            this data object are valid
+     * @param senseKeySpecificDataValid <code>true</code> if and only if the information fields of this data object are
+     *            valid
      */
-    public SenseKeySpecificData(final boolean senseKeySpecificDataValid) {
+    public SenseKeySpecificData (final boolean senseKeySpecificDataValid) {
         this.senseKeySpecificDataValid = senseKeySpecificDataValid;
     }
 
     /**
      * Serializes the fields common to all sense-key-specific data.
      * 
-     * @param byteBuffer
-     *            where the serialized fields will be stored
-     * @param index
-     *            the position of the first byte of the sense data descriptor in
-     *            the {@link ByteBuffer}
+     * @param byteBuffer where the serialized fields will be stored
+     * @param index the position of the first byte of the sense data descriptor in the {@link ByteBuffer}
      */
-    private final void serializeCommonFields(final ByteBuffer byteBuffer, final int index) {
+    private final void serializeCommonFields (final ByteBuffer byteBuffer, final int index) {
         byteBuffer.position(index);
         byte b = 0;
-        if (senseKeySpecificDataValid)
-            b = BitManip.getByteWithBitSet(b, 7, true);// set MSB to 1
+        if (senseKeySpecificDataValid) b = BitManip.getByteWithBitSet(b, 7, true);// set MSB to 1
         byteBuffer.put(b);
     }
 
     /**
-     * Serializes all fields which are not common to all sense-key-specific
-     * data, which means those that are sub-type-specific.
+     * Serializes all fields which are not common to all sense-key-specific data, which means those that are
+     * sub-type-specific.
      * 
-     * @param byteBuffer
-     *            where the serialized fields will be stored
-     * @param index
-     *            the position of the first byte of the sense data descriptor in
-     *            the {@link ByteBuffer}
+     * @param byteBuffer where the serialized fields will be stored
+     * @param index the position of the first byte of the sense data descriptor in the {@link ByteBuffer}
      */
-    protected abstract void serializeSpecificFields(ByteBuffer byteBuffer, final int index);
+    protected abstract void serializeSpecificFields (ByteBuffer byteBuffer, final int index);
 
-    public void serialize(ByteBuffer byteBuffer, int index) {
+    public void serialize (ByteBuffer byteBuffer, int index) {
         serializeCommonFields(byteBuffer, index);
         serializeSpecificFields(byteBuffer, index);
     }
 
-    public int size() {
+    public int size () {
         return SIZE;
     }
 }

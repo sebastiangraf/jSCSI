@@ -1,8 +1,8 @@
 package org.jscsi.target.settings;
 
 /**
- * This class contains all keys and some common variables and other static,
- * final {@link String} objects used during text parameter negotiation.
+ * This class contains all keys and some common variables and other static, final {@link String} objects used during
+ * text parameter negotiation.
  * 
  * @author Andreas Ergenzinger
  */
@@ -58,7 +58,7 @@ public final class TextKeyword {
     // last but not least
     public static final String EQUALS = "=";
     public static final String COMMA = ",";
-    public static final String NULL_CHAR = Character.valueOf((char)0).toString();
+    public static final String NULL_CHAR = Character.valueOf((char) 0).toString();
     public static final String COLON = ":";
 
 }

@@ -1,45 +1,39 @@
 /**
- * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
- * All rights reserved.
+ * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
  * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * * Neither the name of the University of Konstanz nor the
- * names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+ * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
+ * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
+ * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
+ * endorse or promote products derived from this software without specific prior written permission.
  * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.jscsi.parser;
+
 
 import java.nio.ByteBuffer;
 
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.utils.Utils;
 
+
 /**
  * <h1>BasicHeaderSegment</h1>
  * <p>
- * This class encapsulate a Basic Header Segment (BHS), which is defined in the iSCSI Protocol (RFC3720). It
- * provides methods for serializing or deserializing such an object. The contained data can be accessed
- * seperately by the getter methods.
+ * This class encapsulate a Basic Header Segment (BHS), which is defined in the iSCSI Protocol (RFC3720). It provides
+ * methods for serializing or deserializing such an object. The contained data can be accessed seperately by the getter
+ * methods.
  * <p>
- * The BHS has a fixed size, which is stored in the variable <code>BHS_FIXED_SIZE</code>. And these must the
- * first bytes in a valid iSCSI Protocol Data Unit (PDU). org.jscsi.utils
+ * The BHS has a fixed size, which is stored in the variable <code>BHS_FIXED_SIZE</code>. And these must the first bytes
+ * in a valid iSCSI Protocol Data Unit (PDU). org.jscsi.utils
  * 
  * @author Volker Wildi
  */
@@ -76,52 +70,44 @@ public final class BasicHeaderSegment {
     // --------------------------------------------------------------------------
 
     /**
-     * For request PDUs, the <code>I</code> bit set to <code>1</code> is an
-     * immediate delivery marker.
+     * For request PDUs, the <code>I</code> bit set to <code>1</code> is an immediate delivery marker.
      */
     private boolean immediateFlag;
 
     /**
-     * The operation code indicates the type of iSCSI PDU the header
-     * encapsulates. The operation codes are divided into two categories: <em>initiator</em> opcodes and
-     * <em>target</em> opcodes. Initiator opcodes
-     * are in PDUs sent by the initiator (request PDUs). Target opcodes are in
-     * PDUs sent by the target (response PDUs).
+     * The operation code indicates the type of iSCSI PDU the header encapsulates. The operation codes are divided into
+     * two categories: <em>initiator</em> opcodes and <em>target</em> opcodes. Initiator opcodes are in PDUs sent by the
+     * initiator (request PDUs). Target opcodes are in PDUs sent by the target (response PDUs).
      * <p>
      * Initiators MUST NOT use target opcodes and targets MUST NOT use initiator opcodes.
      */
     private OperationCode operationCode;
 
     /**
-     * When set to <code>1</code> it indicates the final (or only) PDU of a
-     * sequence.
+     * When set to <code>1</code> it indicates the final (or only) PDU of a sequence.
      */
     private boolean finalFlag;
 
     /**
-     * Total length of all AHS header segments in units of <code>four</code> byte words including padding, if
-     * any.
+     * Total length of all AHS header segments in units of <code>four</code> byte words including padding, if any.
      * <p>
-     * The <code>TotalAHSLength</code> is only used in PDUs that have an AHS and MUST be <code>0</code> in all
-     * other PDUs.
+     * The <code>TotalAHSLength</code> is only used in PDUs that have an AHS and MUST be <code>0</code> in all other
+     * PDUs.
      */
     private byte totalAHSLength;
 
     /**
-     * This is the data segment payload length in bytes (excluding padding). The
-     * DataSegmentLength MUST be <code>0</code> whenever the PDU has no data
-     * segment.
+     * This is the data segment payload length in bytes (excluding padding). The DataSegmentLength MUST be
+     * <code>0</code> whenever the PDU has no data segment.
      */
     private int dataSegmentLength;
 
     /**
-     * The initiator assigns a Task Tag to each iSCSI task it issues. While a
-     * task exists, this tag MUST uniquely identify the task session-wide. SCSI
-     * may also use the initiator task tag as part of the SCSI task identifier
-     * when the timespan during which an iSCSI initiator task tag must be unique
-     * extends over the timespan during which a SCSI task tag must be unique.
-     * However, the iSCSI Initiator Task Tag must exist and be unique even for
-     * untagged SCSI commands.
+     * The initiator assigns a Task Tag to each iSCSI task it issues. While a task exists, this tag MUST uniquely
+     * identify the task session-wide. SCSI may also use the initiator task tag as part of the SCSI task identifier when
+     * the timespan during which an iSCSI initiator task tag must be unique extends over the timespan during which a
+     * SCSI task tag must be unique. However, the iSCSI Initiator Task Tag must exist and be unique even for untagged
+     * SCSI commands.
      */
     private int initiatorTaskTag;
 
@@ -132,7 +118,7 @@ public final class BasicHeaderSegment {
     // --------------------------------------------------------------------------
 
     /** Default constructor, creates new, empty BasicHeaderSegment object. */
-    BasicHeaderSegment() {
+    BasicHeaderSegment () {
 
     }
 
@@ -140,25 +126,20 @@ public final class BasicHeaderSegment {
     // --------------------------------------------------------------------------
 
     /**
-     * This method serializes the informations of this BHS object to the byte
-     * representation defined by the iSCSI Standard.
+     * This method serializes the informations of this BHS object to the byte representation defined by the iSCSI
+     * Standard.
      * 
-     * @param dst
-     *            The destination array to write in.
-     * @param offset
-     *            The start offset in <code>dst</code>.
+     * @param dst The destination array to write in.
+     * @param offset The start offset in <code>dst</code>.
      * @return The length (in bytes) of the serialized form of this BHS object.
-     * @throws InternetSCSIException
-     *             If any violation of the iSCSI-Standard emerge.
+     * @throws InternetSCSIException If any violation of the iSCSI-Standard emerge.
      */
-    final int serialize(final ByteBuffer dst, final int offset) throws InternetSCSIException {
+    final int serialize (final ByteBuffer dst, final int offset) throws InternetSCSIException {
 
         // has the destination array enough space to store this basic header
         // segment
         dst.position(offset);
-        if (dst.remaining() < BHS_FIXED_SIZE) {
-            throw new IllegalArgumentException("Destination array is too small.");
-        }
+        if (dst.remaining() < BHS_FIXED_SIZE) { throw new IllegalArgumentException("Destination array is too small."); }
 
         int line = 0;
         if (immediateFlag) {
@@ -181,31 +162,23 @@ public final class BasicHeaderSegment {
     }
 
     /**
-     * Extract from the given Protocol Data Unit the BHS. After an successful
-     * extraction this methods and setreturns the right message parser object
-     * for this kind of message.
+     * Extract from the given Protocol Data Unit the BHS. After an successful extraction this methods and setreturns the
+     * right message parser object for this kind of message.
      * 
-     * @param protocolDataUnit
-     *            The reference <code>ProtocolDataUnit</code> instance, which
-     *            contains this <code>BasicHeaderSegment</code> object.
-     * @param src
-     *            The bytes representation of a Protocol Data Unit.
+     * @param protocolDataUnit The reference <code>ProtocolDataUnit</code> instance, which contains this
+     *            <code>BasicHeaderSegment</code> object.
+     * @param src The bytes representation of a Protocol Data Unit.
      * @return The length (in bytes), which are read from <code>pdu</code>.
-     * @throws InternetSCSIException
-     *             If any violation of the iSCSI-Standard emerge.
+     * @throws InternetSCSIException If any violation of the iSCSI-Standard emerge.
      */
-    final int deserialize(final ProtocolDataUnit protocolDataUnit, final ByteBuffer src)
-        throws InternetSCSIException {
+    final int deserialize (final ProtocolDataUnit protocolDataUnit, final ByteBuffer src) throws InternetSCSIException {
 
-        if (src.remaining() < BHS_FIXED_SIZE) {
-            throw new InternetSCSIException("This Protocol Data Unit does not contain"
-                + " an valid Basic Header Segment.");
-        }
+        if (src.remaining() < BHS_FIXED_SIZE) { throw new InternetSCSIException("This Protocol Data Unit does not contain" + " an valid Basic Header Segment."); }
 
         final int firstLine = src.getInt();
         immediateFlag = Utils.isBitSet(firstLine & IMMEDIATE_FLAG_MASK);
         final int code = (firstLine & OPERATION_CODE_MASK) >> Constants.THREE_BYTES_SHIFT;
-        operationCode = OperationCode.valueOf((byte)code);
+        operationCode = OperationCode.valueOf((byte) code);
 
         finalFlag = Utils.isBitSet(firstLine & FINAL_FLAG_MASK);
 
@@ -233,45 +206,42 @@ public final class BasicHeaderSegment {
      * 
      * @return length of the data segment
      */
-    public final int getDataSegmentLength() {
+    public final int getDataSegmentLength () {
 
         return dataSegmentLength;
     }
 
     /**
-     * When this flag is set it indicates the final (or only) PDU of a sequence.
-     * In some kinds of messages (PDU) this methods has the meaning of the <code>TransitFlag</code>.
+     * When this flag is set it indicates the final (or only) PDU of a sequence. In some kinds of messages (PDU) this
+     * methods has the meaning of the <code>TransitFlag</code>.
      * 
      * @return The state of the final flag.
      */
-    public final boolean isFinalFlag() {
+    public final boolean isFinalFlag () {
 
         return finalFlag;
     }
 
     /**
-     * For request PDUs, the immediate flag can be set as an immediate delivery
-     * marker.
+     * For request PDUs, the immediate flag can be set as an immediate delivery marker.
      * 
      * @return The state of the immediate flag.
      */
-    public final boolean isImmediateFlag() {
+    public final boolean isImmediateFlag () {
 
         return immediateFlag;
     }
 
     /**
-     * The initiator assigns a Task Tag to each iSCSI task it issues. While a
-     * task exists, this tag MUST uniquely identify the task session-wide. SCSI
-     * may also use the initiator task tag as part of the SCSI task identifier
-     * when the timespan during which an iSCSI initiator task tag must be unique
-     * extends over the timespan during which a SCSI task tag must be unique.
-     * However, the iSCSI Initiator Task Tag must exist and be unique even for
-     * untagged SCSI commands.
+     * The initiator assigns a Task Tag to each iSCSI task it issues. While a task exists, this tag MUST uniquely
+     * identify the task session-wide. SCSI may also use the initiator task tag as part of the SCSI task identifier when
+     * the timespan during which an iSCSI initiator task tag must be unique extends over the timespan during which a
+     * SCSI task tag must be unique. However, the iSCSI Initiator Task Tag must exist and be unique even for untagged
+     * SCSI commands.
      * 
      * @return the initiator task tag.
      */
-    public final int getInitiatorTaskTag() {
+    public final int getInitiatorTaskTag () {
 
         return initiatorTaskTag;
     }
@@ -281,7 +251,7 @@ public final class BasicHeaderSegment {
      * 
      * @return The length of the contained AHSs
      */
-    public final byte getTotalAHSLength() {
+    public final byte getTotalAHSLength () {
 
         return totalAHSLength;
     }
@@ -291,7 +261,7 @@ public final class BasicHeaderSegment {
      * 
      * @return The operation code of this BHS.
      */
-    public final OperationCode getOpCode() {
+    public final OperationCode getOpCode () {
 
         return operationCode;
     }
@@ -301,7 +271,7 @@ public final class BasicHeaderSegment {
      * 
      * @return The parser object to use for this PDU.
      */
-    public final AbstractMessageParser getParser() {
+    public final AbstractMessageParser getParser () {
 
         return parser;
     }
@@ -312,10 +282,9 @@ public final class BasicHeaderSegment {
     /**
      * Set a new length for the data segment.
      * 
-     * @param initDataSegmentLength
-     *            The new length of this BasicHeaderSegment object.
+     * @param initDataSegmentLength The new length of this BasicHeaderSegment object.
      */
-    final void setDataSegmentLength(final int initDataSegmentLength) {
+    final void setDataSegmentLength (final int initDataSegmentLength) {
 
         dataSegmentLength = initDataSegmentLength;
     }
@@ -323,10 +292,9 @@ public final class BasicHeaderSegment {
     /**
      * Changes the state of the final flag.
      * 
-     * @param initFinalFlag
-     *            The new state of the final flag.
+     * @param initFinalFlag The new state of the final flag.
      */
-    final void setFinal(final boolean initFinalFlag) {
+    final void setFinal (final boolean initFinalFlag) {
 
         finalFlag = initFinalFlag;
     }
@@ -334,10 +302,9 @@ public final class BasicHeaderSegment {
     /**
      * Changes the state of the immediate flag.
      * 
-     * @param initImmediateFlag
-     *            The new state of the immediate flag.
+     * @param initImmediateFlag The new state of the immediate flag.
      */
-    final void setImmediate(final boolean initImmediateFlag) {
+    final void setImmediate (final boolean initImmediateFlag) {
 
         immediateFlag = initImmediateFlag;
     }
@@ -345,23 +312,20 @@ public final class BasicHeaderSegment {
     /**
      * Changes the value of the initiator task tag.
      * 
-     * @param initInitiatorTaskTag
-     *            The new value of the initiator task tag.
+     * @param initInitiatorTaskTag The new value of the initiator task tag.
      */
-    public final void setInitiatorTaskTag(final int initInitiatorTaskTag) {
+    public final void setInitiatorTaskTag (final int initInitiatorTaskTag) {
 
         // FIXME: Change to allow fixed values
         initiatorTaskTag = initInitiatorTaskTag;
     }
 
     /**
-     * This sets the length (in units of four bytes) of the total length of the
-     * given AHS.
+     * This sets the length (in units of four bytes) of the total length of the given AHS.
      * 
-     * @param initTotalAHSLength
-     *            The new length.
+     * @param initTotalAHSLength The new length.
      */
-    final void setTotalAHSLength(final byte initTotalAHSLength) {
+    final void setTotalAHSLength (final byte initTotalAHSLength) {
 
         totalAHSLength = initTotalAHSLength;
     }
@@ -369,14 +333,11 @@ public final class BasicHeaderSegment {
     /**
      * Set a new operation code for this BHS object.
      * 
-     * @param protocolDataUnit
-     *            The reference <code>ProtocolDataUnit</code> instance, which
-     *            contains this <code>BasicHeaderSegment</code> object.
-     * @param initOperationCode
-     *            The new operation code.
+     * @param protocolDataUnit The reference <code>ProtocolDataUnit</code> instance, which contains this
+     *            <code>BasicHeaderSegment</code> object.
+     * @param initOperationCode The new operation code.
      */
-    final void
-        setOperationCode(final ProtocolDataUnit protocolDataUnit, final OperationCode initOperationCode) {
+    final void setOperationCode (final ProtocolDataUnit protocolDataUnit, final OperationCode initOperationCode) {
 
         operationCode = initOperationCode;
         parser = MessageParserFactory.getParser(protocolDataUnit, initOperationCode);
@@ -390,7 +351,7 @@ public final class BasicHeaderSegment {
      * 
      * @return The string with all informations of this BHS.
      */
-    public final String toString() {
+    public final String toString () {
 
         if (parser == null) {
             final StringBuilder sb = new StringBuilder();
@@ -421,19 +382,12 @@ public final class BasicHeaderSegment {
 
     /** {@inheritDoc} */
     @Override
-    final public boolean equals(Object o) {
-        if (o instanceof BasicHeaderSegment == false)
-            return false;
+    final public boolean equals (Object o) {
+        if (o instanceof BasicHeaderSegment == false) return false;
 
-        BasicHeaderSegment oBhs = (BasicHeaderSegment)o;
+        BasicHeaderSegment oBhs = (BasicHeaderSegment) o;
 
-        if (oBhs.isFinalFlag() == this.isFinalFlag() && oBhs.isImmediateFlag() == this.isImmediateFlag()
-            && oBhs.getParser().getClass() == this.getParser().getClass()
-            && oBhs.getDataSegmentLength() == this.getDataSegmentLength()
-            && oBhs.getInitiatorTaskTag() == this.getInitiatorTaskTag()
-            && oBhs.getOpCode().compareTo(this.getOpCode()) == 0
-            && oBhs.getTotalAHSLength() == this.getTotalAHSLength())
-            return true;
+        if (oBhs.isFinalFlag() == this.isFinalFlag() && oBhs.isImmediateFlag() == this.isImmediateFlag() && oBhs.getParser().getClass() == this.getParser().getClass() && oBhs.getDataSegmentLength() == this.getDataSegmentLength() && oBhs.getInitiatorTaskTag() == this.getInitiatorTaskTag() && oBhs.getOpCode().compareTo(this.getOpCode()) == 0 && oBhs.getTotalAHSLength() == this.getTotalAHSLength()) return true;
 
         return false;
     }
@@ -441,7 +395,7 @@ public final class BasicHeaderSegment {
     /**
      * Clears all the stored content of this BasicHeaderSegment object.
      */
-    final void clear() {
+    final void clear () {
 
         immediateFlag = false;
         operationCode = OperationCode.LOGIN_REQUEST;

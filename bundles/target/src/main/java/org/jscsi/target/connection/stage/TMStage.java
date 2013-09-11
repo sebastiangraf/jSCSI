@@ -1,5 +1,6 @@
 package org.jscsi.target.connection.stage;
 
+
 import java.io.IOException;
 import java.security.DigestException;
 
@@ -19,6 +20,7 @@ import org.jscsi.target.settings.SettingsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * A stage for processing Task Management Function Request defined in RFC(7320).
  * 
@@ -33,34 +35,49 @@ public class TMStage extends TargetFullFeatureStage {
     /**
      * @param targetFullFeaturePhase
      */
-    public TMStage(TargetFullFeaturePhase targetFullFeaturePhase) {
+    public TMStage (TargetFullFeaturePhase targetFullFeaturePhase) {
         super(targetFullFeaturePhase);
     }
 
     @Override
-    public void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
-        InternetSCSIException, DigestException, SettingsException {
-        
+    public void execute (ProtocolDataUnit pdu) throws IOException , InterruptedException , InternetSCSIException , DigestException , SettingsException {
+
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-        final TaskManagementFunctionRequestParser parser = (TaskManagementFunctionRequestParser)bhs.getParser();
+        final TaskManagementFunctionRequestParser parser = (TaskManagementFunctionRequestParser) bhs.getParser();
         final int initiatorTaskTag = bhs.getInitiatorTaskTag();
-        
+
         TaskManagementFunctionResponseParser.ResponseCode responseCode = ResponseCode.TASK_DOES_NOT_EXIST;
-        
-        switch(parser.getFunction()){
-            case ABORT_TASK: LOGGER.error("ABORT_TASK"); break;
-            case ABORT_TASK_SET: LOGGER.error("ABORT_TASK_SET"); break;
-            case CLEAR_ACA: responseCode = ResponseCode.FUNCTION_COMPLETE; break;
-            case CLEAR_TASK_SET: responseCode = ResponseCode.FUNCTION_COMPLETE; break;
-            case LUN_RESET: LOGGER.error("LUN_RESET"); break;
-            case TARGET_WARM_RESET: LOGGER.error("TARGET_WARM_RESET"); break;
-            case TARGET_COLD_RESET: LOGGER.error("TARGET_COLD_RESET"); break;
-            case TASK_REASSIGN: LOGGER.error("TASK_REASSIGN"); break;
-            default: break;
+
+        switch (parser.getFunction()) {
+            case ABORT_TASK :
+                LOGGER.error("ABORT_TASK");
+                break;
+            case ABORT_TASK_SET :
+                LOGGER.error("ABORT_TASK_SET");
+                break;
+            case CLEAR_ACA :
+                responseCode = ResponseCode.FUNCTION_COMPLETE;
+                break;
+            case CLEAR_TASK_SET :
+                responseCode = ResponseCode.FUNCTION_COMPLETE;
+                break;
+            case LUN_RESET :
+                LOGGER.error("LUN_RESET");
+                break;
+            case TARGET_WARM_RESET :
+                LOGGER.error("TARGET_WARM_RESET");
+                break;
+            case TARGET_COLD_RESET :
+                LOGGER.error("TARGET_COLD_RESET");
+                break;
+            case TASK_REASSIGN :
+                LOGGER.error("TASK_REASSIGN");
+                break;
+            default :
+                break;
         }
-        
-        final ProtocolDataUnit responsePDU =
-            TargetPduFactory.createTMResponsePdu(responseCode, initiatorTaskTag);
+
+        final ProtocolDataUnit responsePDU = TargetPduFactory.createTMResponsePdu(responseCode, initiatorTaskTag);
         connection.sendPdu(responsePDU);
 
     }

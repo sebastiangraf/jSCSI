@@ -1,21 +1,19 @@
 package org.jscsi.target.settings;
 
 /**
- * Instances of this class contain all session-wide and connection-specific
- * parameters that are either declared by the initiator or negotiated in the
- * text parameter negotiation stages.
+ * Instances of this class contain all session-wide and connection-specific parameters that are either declared by the
+ * initiator or negotiated in the text parameter negotiation stages.
  * 
  * @author Andreas Ergenzinger
  */
 public final class Settings {
 
     /**
-     * The {@link #settingsId} variable allows to compare the age of different {@link Settings} objects -
-     * newer instances have a higher {@link #settingsId}.
+     * The {@link #settingsId} variable allows to compare the age of different {@link Settings} objects - newer
+     * instances have a higher {@link #settingsId}.
      * <p>
-     * What it is really used for, however, is for determining if the buffered {@link Settings} object, which
-     * can be accessed via {@link ConnectionSettingsNegotiator#getSettings()} is up to date or if it has to be
-     * replaced.
+     * What it is really used for, however, is for determining if the buffered {@link Settings} object, which can be
+     * accessed via {@link ConnectionSettingsNegotiator#getSettings()} is up to date or if it has to be replaced.
      * 
      * @see ConnectionSettingsNegotiator#getSettings()
      * @see SessionSettingsNegotiator#getCurrentSettingsId()
@@ -138,27 +136,20 @@ public final class Settings {
     /**
      * Throws a {@link SettingsException} if the parameter is <code>null</code>.
      * 
-     * @param member
-     *            the member variable to check
-     * @throws SettingsException
-     *             if the parameter is <code>null</code>
+     * @param member the member variable to check
+     * @throws SettingsException if the parameter is <code>null</code>
      */
-    private static void checkIfNull(Object member) throws SettingsException {
-        if (member == null)
-            throw new SettingsException();
+    private static void checkIfNull (Object member) throws SettingsException {
+        if (member == null) throw new SettingsException();
     }
 
     /**
      * The constructor based on the builder pattern.
      * 
-     * @param c
-     *            {@link ConnectionSettingsBuilderComponent} with the current
-     *            connection-specific parameters
-     * @param s
-     *            {@link SessionSettingsBuilderComponent} with the current
-     *            session-wide parameters
+     * @param c {@link ConnectionSettingsBuilderComponent} with the current connection-specific parameters
+     * @param s {@link SessionSettingsBuilderComponent} with the current session-wide parameters
      */
-    Settings(final ConnectionSettingsBuilderComponent c, final SessionSettingsBuilderComponent s) {
+    Settings (final ConnectionSettingsBuilderComponent c, final SessionSettingsBuilderComponent s) {
         settingsId = s.settingsId;
         // connection parameters
         dataDigest = c.dataDigest;
@@ -192,7 +183,7 @@ public final class Settings {
      * 
      * @return the {@link #settingsId}
      */
-    long getSettingsId() {
+    long getSettingsId () {
         return settingsId;
     }
 
@@ -200,11 +191,9 @@ public final class Settings {
      * Returns the value of the <code>DataDigest</code> parameter.
      * 
      * @return the value of the <code>DataDigest</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public String getDataDigest() throws SettingsException {
+    public String getDataDigest () throws SettingsException {
         checkIfNull(dataDigest);
         return dataDigest;
     }
@@ -213,11 +202,9 @@ public final class Settings {
      * Returns the value of the <code>HeaderDigest</code> parameter.
      * 
      * @return the value of the <code>HeaderDigest</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public String getHeaderDigest() throws SettingsException {
+    public String getHeaderDigest () throws SettingsException {
         checkIfNull(headerDigest);
         return headerDigest;
     }
@@ -226,11 +213,9 @@ public final class Settings {
      * Returns the value of the <code>IFMarker</code> parameter.
      * 
      * @return the value of the <code>IFMarker</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public boolean getIfMarker() throws SettingsException {
+    public boolean getIfMarker () throws SettingsException {
         checkIfNull(ifMarker);
         return ifMarker;
     }
@@ -239,11 +224,9 @@ public final class Settings {
      * Returns the value of the <code>IFMarkInt</code> parameter.
      * 
      * @return the value of the <code>IFMarkInt</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public int getIfMarkInt() throws SettingsException {
+    public int getIfMarkInt () throws SettingsException {
         checkIfNull(ifMarkInt);
         return ifMarkInt;
     }
@@ -252,11 +235,9 @@ public final class Settings {
      * Returns the value of the <code>MaxRecvDataSegmentLenght</code> parameter.
      * 
      * @return the value of the <code>MaxRecvDataSegmentLenght</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public int getMaxRecvDataSegmentLength() throws SettingsException {
+    public int getMaxRecvDataSegmentLength () throws SettingsException {
         checkIfNull(maxRecvDataSegmentLength);
         return maxRecvDataSegmentLength;
     }
@@ -265,11 +246,9 @@ public final class Settings {
      * Returns the value of the <code>OFMarker</code> parameter.
      * 
      * @return the value of the <code>OFMarker</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public boolean getOfMarker() throws SettingsException {
+    public boolean getOfMarker () throws SettingsException {
         checkIfNull(ofMarker);
         return ofMarker;
     }
@@ -278,11 +257,9 @@ public final class Settings {
      * Returns the value of the <code>OFMarkInt</code> parameter.
      * 
      * @return the value of the <code>OFMarkInt</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public int getOfMarkInt() throws SettingsException {
+    public int getOfMarkInt () throws SettingsException {
         checkIfNull(ofMarkInt);
         return ofMarkInt;
     }
@@ -291,11 +268,9 @@ public final class Settings {
      * Returns the value of the <code>DataPDUInOrder</code> parameter.
      * 
      * @return the value of the <code>DataPDUInOrder</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public boolean getDataPduInOrder() throws SettingsException {
+    public boolean getDataPduInOrder () throws SettingsException {
         checkIfNull(dataPduInOrder);
         return dataPduInOrder;
     }
@@ -304,11 +279,9 @@ public final class Settings {
      * Returns the value of the <code>DataSequenceInOrder</code> parameter.
      * 
      * @return the value of the <code>DataSequenceInOrder</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public boolean getDataSequenceInOrder() throws SettingsException {
+    public boolean getDataSequenceInOrder () throws SettingsException {
         checkIfNull(dataSequenceInOrder);
         return dataSequenceInOrder;
     }
@@ -317,11 +290,9 @@ public final class Settings {
      * Returns the value of the <code>ErrorRecoveryLevel</code> parameter.
      * 
      * @return the value of the <code>ErrorRecoveryLevel</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public int getErrorRecoveryLevel() throws SettingsException {
+    public int getErrorRecoveryLevel () throws SettingsException {
         checkIfNull(errorRecoveryLevel);
         return errorRecoveryLevel;
     }
@@ -330,11 +301,9 @@ public final class Settings {
      * Returns the value of the <code>DefaultTime2Retain</code> parameter.
      * 
      * @return the value of the <code>DefaultTime2Retain</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public int getDefaultTime2Retain() throws SettingsException {
+    public int getDefaultTime2Retain () throws SettingsException {
         checkIfNull(defaultTime2Retain);
         return defaultTime2Retain;
     }
@@ -343,11 +312,9 @@ public final class Settings {
      * Returns the value of the <code>DefaultTime2Wait</code> parameter.
      * 
      * @return the value of the <code>DefaultTime2Wait</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public int getDefaultTime2Wait() throws SettingsException {
+    public int getDefaultTime2Wait () throws SettingsException {
         checkIfNull(defaultTime2Wait);
         return defaultTime2Wait;
     }
@@ -356,11 +323,9 @@ public final class Settings {
      * Returns the value of the <code>FirstBurstLength</code> parameter.
      * 
      * @return the value of the <code>FirstBurstLength</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public int getFirstBurstLength() throws SettingsException {
+    public int getFirstBurstLength () throws SettingsException {
         checkIfNull(firstBurstLength);
         return firstBurstLength;
     }
@@ -369,11 +334,9 @@ public final class Settings {
      * Returns the value of the <code>ImmediateData</code> parameter.
      * 
      * @return the value of the <code>ImmediateData</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public boolean getImmediateData() throws SettingsException {
+    public boolean getImmediateData () throws SettingsException {
         checkIfNull(immediateData);
         return immediateData;
     }
@@ -382,11 +345,9 @@ public final class Settings {
      * Returns the value of the <code>InitialR2T</code> parameter.
      * 
      * @return the value of the <code>InitialR2T</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public boolean getInitialR2T() throws SettingsException {
+    public boolean getInitialR2T () throws SettingsException {
         checkIfNull(initialR2T);
         return initialR2T;
     }
@@ -395,11 +356,9 @@ public final class Settings {
      * Returns the value of the <code>InitiatorAlias</code> parameter.
      * 
      * @return the value of the <code>InitiatorAlias</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public String getInitiatorAlias() throws SettingsException {
+    public String getInitiatorAlias () throws SettingsException {
         checkIfNull(initiatorAlias);
         return initiatorAlias;
     }
@@ -408,11 +367,9 @@ public final class Settings {
      * Returns the value of the <code>InitiatorName</code> parameter.
      * 
      * @return the value of the <code>InitiatorName</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public String getInitiatorName() throws SettingsException {
+    public String getInitiatorName () throws SettingsException {
         checkIfNull(initiatorName);
         return initiatorName;
     }
@@ -421,11 +378,9 @@ public final class Settings {
      * Returns the value of the <code>MaxBurstLength</code> parameter.
      * 
      * @return the value of the <code>MaxBurstLength</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public int getMaxBurstLength() throws SettingsException {
+    public int getMaxBurstLength () throws SettingsException {
         checkIfNull(maxBurstLength);
         return maxBurstLength;
     }
@@ -434,11 +389,9 @@ public final class Settings {
      * Returns the value of the <code>MaxConnections</code> parameter.
      * 
      * @return the value of the <code>MaxConnections</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public int getMaxConnections() throws SettingsException {
+    public int getMaxConnections () throws SettingsException {
         checkIfNull(maxConnections);
         return maxConnections;
     }
@@ -447,11 +400,9 @@ public final class Settings {
      * Returns the value of the <code>MaxOutstandingR2T</code> parameter.
      * 
      * @return the value of the <code>MaxOutstandingR2T</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public int getMaxOutstandingR2T() throws SettingsException {
+    public int getMaxOutstandingR2T () throws SettingsException {
         checkIfNull(maxOutstandingR2T);
         return maxOutstandingR2T;
     }
@@ -460,16 +411,14 @@ public final class Settings {
      * Returns the value of the <code>SessionType</code> parameter.
      * 
      * @return the value of the <code>SessionType</code> parameter
-     * @throws SettingsException
-     *             if the parameter has not been declared or negotiated and
-     *             there is no default value
+     * @throws SettingsException if the parameter has not been declared or negotiated and there is no default value
      */
-    public String getSessionType() throws SettingsException {
+    public String getSessionType () throws SettingsException {
         checkIfNull(maxOutstandingR2T);
         return sessionType;
     }
 
-    public String getTargetName() throws SettingsException {
+    public String getTargetName () throws SettingsException {
         return targetName;
     }
 }

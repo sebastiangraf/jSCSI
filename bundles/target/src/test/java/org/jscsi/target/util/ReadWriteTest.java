@@ -1,20 +1,21 @@
 package org.jscsi.target.util;
 
+
 import java.nio.ByteBuffer;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+
 public class ReadWriteTest {
 
     @Test
-    public void testReadOneByteIntByteArrayInt() {
+    public void testReadOneByteIntByteArrayInt () {
         byte[] bytes = new byte[1];
         for (int i = 0; i < 256; i++) {
             int twoByte = ReadWrite.readOneByteInt(bytes, 0);
             if (i != twoByte) {
-                System.out.println(i + " " + java.util.Arrays.toString(bytes)
-                    + ReadWrite.readOneByteInt(bytes, 0));
+                System.out.println(i + " " + java.util.Arrays.toString(bytes) + ReadWrite.readOneByteInt(bytes, 0));
                 Assert.fail("wrong number read");
             } else
                 increment(bytes);
@@ -22,13 +23,12 @@ public class ReadWriteTest {
     }
 
     @Test
-    public void testReadTwoByteIntByteArrayInt() {
+    public void testReadTwoByteIntByteArrayInt () {
         byte[] bytes = new byte[2];
         for (int i = 0; i < 65536; i++) {
             int twoByte = ReadWrite.readTwoByteInt(bytes, 0);
             if (i != twoByte) {
-                System.out.println(i + " " + java.util.Arrays.toString(bytes)
-                    + ReadWrite.readTwoByteInt(bytes, 0));
+                System.out.println(i + " " + java.util.Arrays.toString(bytes) + ReadWrite.readTwoByteInt(bytes, 0));
                 Assert.fail("wrong number read");
             } else
                 increment(bytes);
@@ -36,13 +36,12 @@ public class ReadWriteTest {
     }
 
     @Test
-    public void testReadThreeByteIntByteArrayInt() {
+    public void testReadThreeByteIntByteArrayInt () {
         byte[] bytes = new byte[3];
         for (int i = 0; i < 16777216; i++) {
             int threeByte = ReadWrite.readThreeByteInt(bytes, 0);
             if (i != threeByte) {
-                System.out.println(i + " " + java.util.Arrays.toString(bytes)
-                    + ReadWrite.readThreeByteInt(bytes, 0));
+                System.out.println(i + " " + java.util.Arrays.toString(bytes) + ReadWrite.readThreeByteInt(bytes, 0));
                 Assert.fail("wrong number read");
             } else
                 increment(bytes);
@@ -51,11 +50,10 @@ public class ReadWriteTest {
 
     // works, testing would take really long (~60s)
     @Test
-    public void testReadFourByteIntByteArrayInt() {
+    public void testReadFourByteIntByteArrayInt () {
         byte[] bytes = new byte[4];
         // test number 0
-        if (ReadWrite.readFourByteInt(bytes, 0) != 0)
-            Assert.fail("wrong number read");
+        if (ReadWrite.readFourByteInt(bytes, 0) != 0) Assert.fail("wrong number read");
         // test remaining numbers
         bytes[3] = 1;
         int i = 1;
@@ -63,8 +61,7 @@ public class ReadWriteTest {
         while (i != 0) {
             fourByte = ReadWrite.readFourByteInt(bytes, 0);
             if (i != fourByte) {
-                System.out.println(i + " " + java.util.Arrays.toString(bytes)
-                    + ReadWrite.readFourByteInt(bytes, 0));
+                System.out.println(i + " " + java.util.Arrays.toString(bytes) + ReadWrite.readFourByteInt(bytes, 0));
                 Assert.fail("wrong number read");
             } else
                 increment(bytes);
@@ -73,7 +70,7 @@ public class ReadWriteTest {
     }
 
     @Test
-    public void testWriteInt() {
+    public void testWriteInt () {
         ByteBuffer intBuffer = ByteBuffer.allocate(4);
 
         ReadWrite.writeInt(42, intBuffer, 0);
@@ -81,7 +78,7 @@ public class ReadWriteTest {
     }
 
     @Test
-    public void testWriteTwoByteIntByteArrayInt() {
+    public void testWriteTwoByteIntByteArrayInt () {
         ByteBuffer intBuffer = ByteBuffer.allocate(4);
 
         ReadWrite.writeTwoByteInt(intBuffer, 42, 0);
@@ -89,7 +86,7 @@ public class ReadWriteTest {
     }
 
     @Test
-    public void testWriteThreeByteIntByteArrayInt() {
+    public void testWriteThreeByteIntByteArrayInt () {
         ByteBuffer intBuffer = ByteBuffer.allocate(4);
 
         ReadWrite.writeThreeByteInt(intBuffer, 42, 0);
@@ -97,13 +94,13 @@ public class ReadWriteTest {
     }
 
     @Test
-    public void testWriteLong() {
+    public void testWriteLong () {
         ByteBuffer longBuffer = ByteBuffer.allocate(8);
         ReadWrite.writeLong(longBuffer, 42, 0);
     }
 
     @Test
-    public void testAppendTextDataSegmentToStringBuffer() {
+    public void testAppendTextDataSegmentToStringBuffer () {
         ByteBuffer stringBuffer = ByteBuffer.allocate(32);
         String hello = "hello world";
 
@@ -115,12 +112,11 @@ public class ReadWriteTest {
         stringBuffer.clear();
         stringBuffer.put(hello.getBytes());
 
-        Assert.assertEquals(builder.toString(), new StringBuilder("...").append(
-            new String(stringBuffer.array())).toString());
+        Assert.assertEquals(builder.toString(), new StringBuilder("...").append(new String(stringBuffer.array())).toString());
     }
 
     @Test
-    public void testByteBufferToString() {
+    public void testByteBufferToString () {
         ByteBuffer stringBuffer = ByteBuffer.allocate(32);
         String hello = "hello world";
 
@@ -130,11 +126,10 @@ public class ReadWriteTest {
         Assert.assertEquals(hello, s.trim());
     }
 
-    private void increment(byte[] bytes) {
+    private void increment (byte[] bytes) {
         for (int i = bytes.length - 1; i >= 0; --i) {
             ++bytes[i];
-            if (bytes[i] != 0)
-                return;
+            if (bytes[i] != 0) return;
         }
     }
 }

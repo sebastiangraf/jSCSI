@@ -1,5 +1,6 @@
 package org.jscsi.target.connection.stage.login;
 
+
 import java.io.IOException;
 import java.security.DigestException;
 import java.util.List;
@@ -16,30 +17,27 @@ import org.jscsi.target.settings.TextParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
- * A {@link TargetLoginStage} sub-class representing Login Operational
- * (Parameter) Negotiation Stages.
+ * A {@link TargetLoginStage} sub-class representing Login Operational (Parameter) Negotiation Stages.
  * 
  * @author Andreas Ergenzinger
  */
 public final class LoginOperationalParameterNegotiationStage extends TargetLoginStage {
 
-    private static final Logger LOGGER = LoggerFactory
-        .getLogger(LoginOperationalParameterNegotiationStage.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoginOperationalParameterNegotiationStage.class);
 
     /**
      * The constructor.
      * 
-     * @param targetLoginPhase
-     *            the login phase this stage is a part of.
+     * @param targetLoginPhase the login phase this stage is a part of.
      */
-    public LoginOperationalParameterNegotiationStage(TargetLoginPhase targetLoginPhase) {
+    public LoginOperationalParameterNegotiationStage (TargetLoginPhase targetLoginPhase) {
         super(targetLoginPhase, LoginStage.LOGIN_OPERATIONAL_NEGOTIATION);
     }
 
     @Override
-    public void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
-        InternetSCSIException, DigestException, IllegalArgumentException, SettingsException {
+    public void execute (ProtocolDataUnit pdu) throws IOException , InterruptedException , InternetSCSIException , DigestException , IllegalArgumentException , SettingsException {
 
         LOGGER.debug("Entering LOPN Stage");
 
@@ -51,9 +49,7 @@ public final class LoginOperationalParameterNegotiationStage extends TargetLogin
         // negotiate parameters, leave if unsuccessful
         final List<String> requestKeyValuePairs = TextParameter.tokenizeKeyValuePairs(keyValuePairProposal);
         final List<String> responseKeyValuePairs = new Vector<String>();
-        if (!negotiator.negotiate(session.getTargetServer(), stageNumber, connection.isLeadingConnection(),
-            ((TargetLoginPhase)targetPhase).getFirstPduAndSetToFalse(), requestKeyValuePairs,
-            responseKeyValuePairs)) {
+        if (!negotiator.negotiate(session.getTargetServer(), stageNumber, connection.isLeadingConnection(), ((TargetLoginPhase) targetPhase).getFirstPduAndSetToFalse(), requestKeyValuePairs, responseKeyValuePairs)) {
             // negotiation failure, no exception
             sendRejectPdu(LoginStatus.INITIATOR_ERROR);
             // nextStageNumber = null;//no change

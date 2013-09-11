@@ -1,14 +1,15 @@
 package org.jscsi.target.settings;
 
+
 import org.jscsi.target.settings.entry.Entry;
 
+
 /**
- * {@link NegotiationStatus} objects specifies the necessity, progress, and
- * outcome of the parameter negotiation managed by {@link Entry} instances.
+ * {@link NegotiationStatus} objects specifies the necessity, progress, and outcome of the parameter negotiation managed
+ * by {@link Entry} instances.
  * <p>
- * The only legal transitions of an {@link Entry} object's {@link NegotiationStatus} are from
- * {@link #NOT_NEGOTIATED} or {@link #DEFAULT} to {@link #ACCEPTED} or {@link #REJECTED}. A status of
- * {@link #IRRELEVANT} must never change.
+ * The only legal transitions of an {@link Entry} object's {@link NegotiationStatus} are from {@link #NOT_NEGOTIATED} or
+ * {@link #DEFAULT} to {@link #ACCEPTED} or {@link #REJECTED}. A status of {@link #IRRELEVANT} must never change.
  * 
  * @author Andreas Ergenzinger
  */
@@ -18,8 +19,7 @@ public enum NegotiationStatus {
      */
     NOT_NEGOTIATED,
     /**
-     * The parameter has not been negotiated/exchanged, yet. This exchange is
-     * optional.
+     * The parameter has not been negotiated/exchanged, yet. This exchange is optional.
      */
     DEFAULT,
     /**

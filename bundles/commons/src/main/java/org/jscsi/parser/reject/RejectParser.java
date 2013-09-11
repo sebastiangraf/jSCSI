@@ -1,30 +1,23 @@
 /**
- * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
- * All rights reserved.
+ * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
  * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * * Neither the name of the University of Konstanz nor the
- * names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+ * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
+ * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
+ * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
+ * endorse or promote products derived from this software without specific prior written permission.
  * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.jscsi.parser.reject;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +28,7 @@ import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.utils.Utils;
+
 
 /**
  * <h1>RejectParser</h1>
@@ -49,8 +43,7 @@ public final class RejectParser extends TargetMessageParser {
     // --------------------------------------------------------------------------
 
     /**
-     * This enumeration defines all valid reasonCode code, which are defined in
-     * the iSCSI Standard (RFC 3720).
+     * This enumeration defines all valid reasonCode code, which are defined in the iSCSI Standard (RFC 3720).
      * <p>
      * <table border="1">
      * <tr>
@@ -120,60 +113,58 @@ public final class RejectParser extends TargetMessageParser {
      * </tr>
      * </table>
      * <p>
-     * Note 1: For iSCSI, Data-Out PDU retransmission is only done if the target requests retransmission with
-     * a recovery R2T. However, if this is the data digest error on immediate data, the initiator may choose
-     * to retransmit the whole PDU including the immediate data.
+     * Note 1: For iSCSI, Data-Out PDU retransmission is only done if the target requests retransmission with a recovery
+     * R2T. However, if this is the data digest error on immediate data, the initiator may choose to retransmit the
+     * whole PDU including the immediate data.
      * <p>
-     * Note 2: A target should use this reasonCode code for all invalid values of PDU fields that are meant to
-     * describe a task, a response, or a data transfer. Some examples are invalid TTT/ITT, buffer offset, LUN
-     * qualifying a TTT, and an invalid sequence number in a SNACK.
+     * Note 2: A target should use this reasonCode code for all invalid values of PDU fields that are meant to describe
+     * a task, a response, or a data transfer. Some examples are invalid TTT/ITT, buffer offset, LUN qualifying a TTT,
+     * and an invalid sequence number in a SNACK.
      * <p>
      * All other values for Reason are reserved.
      */
     public static enum ReasonCode {
         /** Reserved. */
-        RESERVED((byte)0x01),
+        RESERVED((byte) 0x01),
         /** Data (payload) Digest Error. */
-        DATA_DIGEST_ERROR((byte)0x02),
+        DATA_DIGEST_ERROR((byte) 0x02),
         /** SNACK Reject. */
-        SNACK_REJECT((byte)0x03),
+        SNACK_REJECT((byte) 0x03),
         /**
-         * Protocol Error (e.g., SNACK request for a status that was already
-         * acknowledged).
+         * Protocol Error (e.g., SNACK request for a status that was already acknowledged).
          */
-        PROTOCOL_ERROR((byte)0x04),
+        PROTOCOL_ERROR((byte) 0x04),
         /** Command not supported. */
-        COMMAND_NOT_SUPPORTED((byte)0x05),
+        COMMAND_NOT_SUPPORTED((byte) 0x05),
         /** Immediate Command Reject - too many immediate commands. */
-        IMMEDIATE_COMMAND_REJECT((byte)0x06),
+        IMMEDIATE_COMMAND_REJECT((byte) 0x06),
         /** Task in progress. */
-        TASK_IN_PROGRESS((byte)0x07),
+        TASK_IN_PROGRESS((byte) 0x07),
         /** Invalid Data ACK. */
-        INVALID_DATA_ACK((byte)0x08),
+        INVALID_DATA_ACK((byte) 0x08),
         /** Invalid PDU field. */
-        INVALID_PDU_FIELD((byte)0x09),
+        INVALID_PDU_FIELD((byte) 0x09),
         /**
-         * Long Operation Reject - Can't generate Target Transfer Tag - out of
-         * resources.
+         * Long Operation Reject - Can't generate Target Transfer Tag - out of resources.
          */
-        LONG_OPERATION_REJECT((byte)0x0A),
+        LONG_OPERATION_REJECT((byte) 0x0A),
         /** Negotiation Reset. */
-        NEGOTIATION_RESET((byte)0x0B),
+        NEGOTIATION_RESET((byte) 0x0B),
         /** Waiting for Logout. */
-        WAITING_FOR_LOGOUT((byte)0x0C);
+        WAITING_FOR_LOGOUT((byte) 0x0C);
 
         private final byte value;
 
-        private static Map<Byte, ReasonCode> mapping;
+        private static Map<Byte , ReasonCode> mapping;
 
         static {
-            ReasonCode.mapping = new HashMap<Byte, ReasonCode>();
+            ReasonCode.mapping = new HashMap<Byte , ReasonCode>();
             for (ReasonCode s : values()) {
                 ReasonCode.mapping.put(s.value, s);
             }
         }
 
-        private ReasonCode(final byte newValue) {
+        private ReasonCode (final byte newValue) {
 
             value = newValue;
         }
@@ -183,7 +174,7 @@ public final class RejectParser extends TargetMessageParser {
          * 
          * @return The value of this enumeration.
          */
-        public final byte value() {
+        public final byte value () {
 
             return value;
         }
@@ -191,13 +182,11 @@ public final class RejectParser extends TargetMessageParser {
         /**
          * Returns the constant defined for the given <code>value</code>.
          * 
-         * @param value
-         *            The value to search for.
-         * @return The constant defined for the given <code>value</code>. Or <code>null</code>, if this value
-         *         is not defined by this
-         *         enumeration.
+         * @param value The value to search for.
+         * @return The constant defined for the given <code>value</code>. Or <code>null</code>, if this value is not
+         *         defined by this enumeration.
          */
-        public static final ReasonCode valueOf(final byte value) {
+        public static final ReasonCode valueOf (final byte value) {
 
             return ReasonCode.mapping.get(value);
         }
@@ -218,11 +207,10 @@ public final class RejectParser extends TargetMessageParser {
     /**
      * Default constructor, creates a new, empty <code>RejectParser</code> object.
      * 
-     * @param initProtocolDataUnit
-     *            The reference <code>ProtocolDataUnit</code> instance, which
-     *            contains this <code>RejectParser</code> subclass object.
+     * @param initProtocolDataUnit The reference <code>ProtocolDataUnit</code> instance, which contains this
+     *            <code>RejectParser</code> subclass object.
      */
-    public RejectParser(final ProtocolDataUnit initProtocolDataUnit) {
+    public RejectParser (final ProtocolDataUnit initProtocolDataUnit) {
 
         super(initProtocolDataUnit);
     }
@@ -231,14 +219,13 @@ public final class RejectParser extends TargetMessageParser {
     // --------------------------------------------------------------------------
 
     /**
-     * This field is only valid if the rejected PDU is a Data/R2T SNACK and the
-     * Reject reasonCode code is "Protocol error" (see Section 10.16 SNACK
-     * Request). The DataSN/R2TSN is the next Data/R2T sequence number that the
-     * target would send for the task, if any.
+     * This field is only valid if the rejected PDU is a Data/R2T SNACK and the Reject reasonCode code is
+     * "Protocol error" (see Section 10.16 SNACK Request). The DataSN/R2TSN is the next Data/R2T sequence number that
+     * the target would send for the task, if any.
      * 
      * @return The data sequence number of this <code>RejectParser</code> object.
      */
-    public final int getDataSequenceNumber() {
+    public final int getDataSequenceNumber () {
 
         return dataSequenceNumber;
     }
@@ -248,7 +235,7 @@ public final class RejectParser extends TargetMessageParser {
      * 
      * @return The reasonCode code of this <code>RejectParser</code> object.
      */
-    public final ReasonCode getReasonCode() {
+    public final ReasonCode getReasonCode () {
 
         return reasonCode;
     }
@@ -258,7 +245,7 @@ public final class RejectParser extends TargetMessageParser {
 
     /** {@inheritDoc} */
     @Override
-    public final String toString() {
+    public final String toString () {
 
         final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
 
@@ -271,14 +258,14 @@ public final class RejectParser extends TargetMessageParser {
 
     /** {@inheritDoc} */
     @Override
-    public final DataSegmentFormat getDataSegmentFormat() {
+    public final DataSegmentFormat getDataSegmentFormat () {
 
         return DataSegmentFormat.BINARY;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final void clear() {
+    public final void clear () {
 
         super.clear();
 
@@ -291,18 +278,17 @@ public final class RejectParser extends TargetMessageParser {
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes1to3(final int line) throws InternetSCSIException {
+    protected final void deserializeBytes1to3 (final int line) throws InternetSCSIException {
 
         Utils.isReserved(line & Constants.SECOND_BYTE_MASK);
-        reasonCode =
-            ReasonCode.valueOf((byte)((line & Constants.THIRD_BYTE_MASK) >> Constants.ONE_BYTE_SHIFT));
+        reasonCode = ReasonCode.valueOf((byte) ((line & Constants.THIRD_BYTE_MASK) >> Constants.ONE_BYTE_SHIFT));
         Utils.isReserved(line & Constants.FOURTH_BYTE_MASK);
 
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final void deserializeBytes36to39(final int line) throws InternetSCSIException {
+    protected final void deserializeBytes36to39 (final int line) throws InternetSCSIException {
 
         dataSequenceNumber = line;
     }
@@ -312,14 +298,13 @@ public final class RejectParser extends TargetMessageParser {
 
     /** {@inheritDoc} */
     @Override
-    protected final void checkIntegrity() throws InternetSCSIException {
+    protected final void checkIntegrity () throws InternetSCSIException {
 
         String exceptionMessage;
 
         do {
             if (reasonCode != ReasonCode.PROTOCOL_ERROR && dataSequenceNumber != 0) {
-                exceptionMessage =
-                    "The DataSN/R2TSN is only valid, if the reason code is a 'Protocol Error'.";
+                exceptionMessage = "The DataSN/R2TSN is only valid, if the reason code is a 'Protocol Error'.";
                 break;
             }
 
@@ -335,14 +320,14 @@ public final class RejectParser extends TargetMessageParser {
 
     /** {@inheritDoc} */
     @Override
-    protected final int serializeBytes1to3() {
+    protected final int serializeBytes1to3 () {
 
         return reasonCode.value << Constants.ONE_BYTE_SHIFT;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected final int serializeBytes36to39() {
+    protected final int serializeBytes36to39 () {
 
         return dataSequenceNumber;
     }

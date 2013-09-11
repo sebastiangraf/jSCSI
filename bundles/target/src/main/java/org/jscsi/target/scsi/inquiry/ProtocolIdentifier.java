@@ -1,15 +1,12 @@
 package org.jscsi.target.scsi.inquiry;
 
 /**
- * The PROTOCOL IDENTIFIER field is part of IDENTIFICATION DESCRIPTORS and may
- * indicate the SCSI transport protocol to which the identification descriptor
- * applies. If the ASSOCIATION field contains a value other than 01b (i.e.,
- * target port) or 10b (i.e., SCSI target device) or the PIV bit is set to zero,
- * then the PROTOCOL IDENTIFIER field contents are reserved. If the ASSOCIATION
- * field contains a value of 01b or 10b and the PIV bit is set to one, then the
- * PROTOCOL IDENTIFIER field shall contain one of the values defined in the
- * following table to indicate the SCSI transport protocol to which the
- * identification descriptor applies.
+ * The PROTOCOL IDENTIFIER field is part of IDENTIFICATION DESCRIPTORS and may indicate the SCSI transport protocol to
+ * which the identification descriptor applies. If the ASSOCIATION field contains a value other than 01b (i.e., target
+ * port) or 10b (i.e., SCSI target device) or the PIV bit is set to zero, then the PROTOCOL IDENTIFIER field contents
+ * are reserved. If the ASSOCIATION field contains a value of 01b or 10b and the PIV bit is set to one, then the
+ * PROTOCOL IDENTIFIER field shall contain one of the values defined in the following table to indicate the SCSI
+ * transport protocol to which the identification descriptor applies.
  * 
  * <table border="1">
  * <tr>
@@ -82,20 +79,17 @@ package org.jscsi.target.scsi.inquiry;
  * @author Andreas Ergenzinger
  */
 public enum ProtocolIdentifier {
-    FIBRE_CHANNEL((byte)0x0), PARALLEL_SCSI((byte)0x1), SSA((byte)0x2), IEEE1394((byte)0x3),
-        SCSI_REMOTE_DIRECT_MEMORY_ACCESS_PROTOCOL((byte)0x4), INTERNET_SCSI((byte)0x5),
-        SAS_SERIAL_SCSI_PROTOCOL((byte)0x6), AUTOMATION_DRIVE_INTERFACE_TRANSPORT_PROTOCOL((byte)0x7),
-        AT_ATTACHEMENT_INTERFACE((byte)0x8),
-        // RESERVED not implemented
-        NO_SPECIFIC_PROTOCOL((byte)0xf);
+    FIBRE_CHANNEL((byte) 0x0), PARALLEL_SCSI((byte) 0x1), SSA((byte) 0x2), IEEE1394((byte) 0x3), SCSI_REMOTE_DIRECT_MEMORY_ACCESS_PROTOCOL((byte) 0x4), INTERNET_SCSI((byte) 0x5), SAS_SERIAL_SCSI_PROTOCOL((byte) 0x6), AUTOMATION_DRIVE_INTERFACE_TRANSPORT_PROTOCOL((byte) 0x7), AT_ATTACHEMENT_INTERFACE((byte) 0x8),
+    // RESERVED not implemented
+    NO_SPECIFIC_PROTOCOL((byte) 0xf);
 
-    private ProtocolIdentifier(final byte value) {
+    private ProtocolIdentifier (final byte value) {
         this.value = value;
     }
 
     private final byte value;
 
-    public final byte getValue() {
+    public final byte getValue () {
         return value;
     }
 }

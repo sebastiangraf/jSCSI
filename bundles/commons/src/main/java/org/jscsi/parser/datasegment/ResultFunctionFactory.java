@@ -1,32 +1,26 @@
 /**
- * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
- * All rights reserved.
+ * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
  * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * * Neither the name of the University of Konstanz nor the
- * names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+ * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
+ * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
+ * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
+ * endorse or promote products derived from this software without specific prior written permission.
  * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.jscsi.parser.datasegment;
 
+
 import java.util.NoSuchElementException;
+
 
 /**
  * <h1>ResultFunctionFactory</h1>
@@ -41,8 +35,7 @@ public final class ResultFunctionFactory {
     // --------------------------------------------------------------------------
 
     /**
-     * The value of a result function to choose the and-value of the two
-     * parameters.
+     * The value of a result function to choose the and-value of the two parameters.
      */
     private static final String RESULT_AND = "And";
 
@@ -50,26 +43,22 @@ public final class ResultFunctionFactory {
     private static final String RESULT_CHOOSE = "Choose";
 
     /**
-     * The value of a result function to choose the maximum value of the two
-     * parameter values.
+     * The value of a result function to choose the maximum value of the two parameter values.
      */
     private static final String RESULT_MAX = "Max";
 
     /**
-     * The value of a result function to choose the minimum value of the two
-     * parameter values.
+     * The value of a result function to choose the minimum value of the two parameter values.
      */
     private static final String RESULT_MIN = "Min";
 
     /**
-     * The value of a result function to choose none of the two parameter
-     * values.
+     * The value of a result function to choose none of the two parameter values.
      */
     private static final String RESULT_NONE = "None";
 
     /**
-     * The value of a result function to choose the or-value of the two
-     * parameter values.
+     * The value of a result function to choose the or-value of the two parameter values.
      */
     private static final String RESULT_OR = "Or";
 
@@ -86,14 +75,12 @@ public final class ResultFunctionFactory {
     // --------------------------------------------------------------------------
 
     /**
-     * Creates an <code>IResultFunction</code> instance depending on the given
-     * parameter.
+     * Creates an <code>IResultFunction</code> instance depending on the given parameter.
      * 
-     * @param result
-     *            The type of the <code>IResultFunction</code>.
+     * @param result The type of the <code>IResultFunction</code>.
      * @return The <code>IResultFunction</code> instance.
      */
-    public final IResultFunction create(final String result) {
+    public final IResultFunction create (final String result) {
 
         if (result.compareTo(RESULT_AND) == 0) {
             return new AndResultFunction();
@@ -127,7 +114,7 @@ public final class ResultFunctionFactory {
     class NoneResultFunction implements IResultFunction {
 
         /** {@inheritDoc} */
-        public final String result(final String a, final String b) {
+        public final String result (final String a, final String b) {
 
             return "";
         }
@@ -148,7 +135,7 @@ public final class ResultFunctionFactory {
     class MinResultFunction implements IResultFunction {
 
         /** {@inheritDoc} */
-        public final String result(final String a, final String b) {
+        public final String result (final String a, final String b) {
 
             try {
 
@@ -181,7 +168,7 @@ public final class ResultFunctionFactory {
     class MaxResultFunction implements IResultFunction {
 
         /** {@inheritDoc} */
-        public final String result(final String a, final String b) {
+        public final String result (final String a, final String b) {
 
             if (a.compareTo(b) >= 0) {
                 return a;
@@ -207,7 +194,7 @@ public final class ResultFunctionFactory {
     class OrResultFunction implements IResultFunction {
 
         /** {@inheritDoc} */
-        public final String result(final String a, final String b) {
+        public final String result (final String a, final String b) {
 
             if (a.compareTo(BOOLEAN_YES) == 0) {
                 return BOOLEAN_YES;
@@ -236,7 +223,7 @@ public final class ResultFunctionFactory {
     class AndResultFunction implements IResultFunction {
 
         /** {@inheritDoc} */
-        public final String result(final String a, final String b) {
+        public final String result (final String a, final String b) {
 
             if ((a.compareTo(BOOLEAN_YES) == 0) && (b.compareTo(BOOLEAN_YES) == 0)) {
                 return BOOLEAN_YES;
@@ -256,16 +243,14 @@ public final class ResultFunctionFactory {
     class ChooseResultFunction implements IResultFunction {
 
         /** {@inheritDoc} */
-        public final String result(final String a, final String b) {
+        public final String result (final String a, final String b) {
 
             final String[] aItems = a.split(",");
             final String[] bItems = b.split(",");
 
             for (String aItem : aItems) {
                 for (String bItem : bItems) {
-                    if (aItem.compareTo(bItem) == 0) {
-                        return aItem;
-                    }
+                    if (aItem.compareTo(bItem) == 0) { return aItem; }
                 }
             }
 

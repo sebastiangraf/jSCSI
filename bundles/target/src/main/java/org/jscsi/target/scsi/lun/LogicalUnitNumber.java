@@ -1,9 +1,11 @@
 package org.jscsi.target.scsi.lun;
 
+
 import java.nio.ByteBuffer;
 
 import org.jscsi.target.scsi.ISerializable;
 import org.jscsi.target.util.ReadWrite;
+
 
 /**
  * A 64-bit identifier for a logical unit.
@@ -22,22 +24,22 @@ public class LogicalUnitNumber implements ISerializable {
      */
     private final byte[] bytes;
 
-    public LogicalUnitNumber(final long logicalUnitNumber) {
+    public LogicalUnitNumber (final long logicalUnitNumber) {
         bytes = ReadWrite.longToBytes(logicalUnitNumber);
     }
 
-    public void serialize(ByteBuffer byteBuffer, int index) {
+    public void serialize (ByteBuffer byteBuffer, int index) {
         byteBuffer.position(index);
         for (int i = 0; i < bytes.length; ++i)
             byteBuffer.put(bytes[i]);
     }
 
-    public int size() {
+    public int size () {
         return SIZE;
     }
 
     @Override
-    public String toString() {
+    public String toString () {
         return java.util.Arrays.toString(bytes);
     }
 }

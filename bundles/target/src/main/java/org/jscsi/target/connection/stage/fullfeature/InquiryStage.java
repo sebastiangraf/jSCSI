@@ -1,5 +1,6 @@
 package org.jscsi.target.connection.stage.fullfeature;
 
+
 import java.io.IOException;
 import java.security.DigestException;
 
@@ -19,6 +20,7 @@ import org.jscsi.target.util.Debug;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * A stage for processing <code>INQUIRY</code> SCSI commands.
  * 
@@ -28,16 +30,15 @@ public class InquiryStage extends TargetFullFeatureStage {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(InquiryStage.class);
 
-    public InquiryStage(TargetFullFeaturePhase targetFullFeaturePhase) {
+    public InquiryStage (TargetFullFeaturePhase targetFullFeaturePhase) {
         super(targetFullFeaturePhase);
     }
 
     @Override
-    public void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
-        InternetSCSIException, DigestException, SettingsException {
+    public void execute (ProtocolDataUnit pdu) throws IOException , InterruptedException , InternetSCSIException , DigestException , SettingsException {
 
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-        final SCSICommandParser parser = (SCSICommandParser)bhs.getParser();
+        final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
 
         ProtocolDataUnit responsePdu = null;// the response PDU
 
@@ -54,17 +55,14 @@ public class InquiryStage extends TargetFullFeatureStage {
             LOGGER.debug("cdb.getEnableVitalProductData() = " + cdb.getEnableVitalProductData());
             LOGGER.debug("cdb.isNormalACA() = " + cdb.isNormalACA());
             LOGGER.debug("cdb.getPageCode() = " + cdb.getPageCode());
-            LOGGER.debug("cdb.getPageCode().getVitalProductDataPageName() = "
-                + cdb.getPageCode().getVitalProductDataPageName());
+            LOGGER.debug("cdb.getPageCode().getVitalProductDataPageName() = " + cdb.getPageCode().getVitalProductDataPageName());
         }
 
         if (illegalFieldPointers != null) {
             // an illegal request has been made
             LOGGER.error("illegal INQUIRY request");
 
-            responsePdu =
-                createFixedFormatErrorPdu(illegalFieldPointers, bhs.getInitiatorTaskTag(), parser
-                    .getExpectedDataTransferLength());
+            responsePdu = createFixedFormatErrorPdu(illegalFieldPointers, bhs.getInitiatorTaskTag(), parser.getExpectedDataTransferLength());
 
             // send response
             connection.sendPdu(responsePdu);
@@ -82,23 +80,21 @@ public class InquiryStage extends TargetFullFeatureStage {
                 responseData = StandardInquiryData.getInstance();
             } else {
                 /*
-                 * SCSI initiator is requesting either "device identification"
-                 * or "supported VPD pages" or this else block would not have
-                 * been entered. (see {@link
-                 * InquiryCDB#checkIntegrity(ByteBuffer dataSegment)})
+                 * SCSI initiator is requesting either "device identification" or "supported VPD pages" or this else
+                 * block would not have been entered. (see {@link InquiryCDB#checkIntegrity(ByteBuffer dataSegment)})
                  */
                 final VitalProductDataPageName pageName = cdb.getPageCode().getVitalProductDataPageName();
 
                 switch (pageName) {// is never null
-                case SUPPORTED_VPD_PAGES:
-                    responseData = SupportedVpdPages.getInstance();
-                    break;
-                case DEVICE_IDENTIFICATION:
-                    responseData = session.getTargetServer().getDeviceIdentificationVpdPage();
-                    break;
-                default:
-                    // The initiator must not request unsupported mode pages.
-                    throw new InternetSCSIException();
+                    case SUPPORTED_VPD_PAGES :
+                        responseData = SupportedVpdPages.getInstance();
+                        break;
+                    case DEVICE_IDENTIFICATION :
+                        responseData = session.getTargetServer().getDeviceIdentificationVpdPage();
+                        break;
+                    default :
+                        // The initiator must not request unsupported mode pages.
+                        throw new InternetSCSIException();
                 }
             }
 

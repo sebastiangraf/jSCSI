@@ -1,10 +1,12 @@
 package org.jscsi.target.scsi.sense;
 
+
 import java.nio.ByteBuffer;
 
 import org.jscsi.target.scsi.sense.senseDataDescriptor.SenseDataDescriptor;
 import org.jscsi.target.util.BitManip;
 import org.jscsi.target.util.ReadWrite;
+
 
 /**
  * Instances of this class represent sense data using the descriptor format.
@@ -51,45 +53,38 @@ public final class DescriptorFormatSenseData extends SenseData {
     /**
      * The constructor.
      * 
-     * @param errorType
-     *            the error type
-     * @param senseKey
-     *            a general description of what caused the error
-     * @param additionalSenseCodeAndQualifier
-     *            a more specific description of the error
-     * @param senseDataDescriptors
-     *            more specific error information
+     * @param errorType the error type
+     * @param senseKey a general description of what caused the error
+     * @param additionalSenseCodeAndQualifier a more specific description of the error
+     * @param senseDataDescriptors more specific error information
      */
-    public DescriptorFormatSenseData(final ErrorType errorType, final SenseKey senseKey,
-        AdditionalSenseCodeAndQualifier additionalSenseCodeAndQualifier,
-        SenseDataDescriptor... senseDataDescriptors) {
+    public DescriptorFormatSenseData (final ErrorType errorType, final SenseKey senseKey, AdditionalSenseCodeAndQualifier additionalSenseCodeAndQualifier, SenseDataDescriptor... senseDataDescriptors) {
         super(errorType, SenseDataFormat.DESCRIPTOR, senseKey, additionalSenseCodeAndQualifier);
         this.senseDataDescriptors = senseDataDescriptors;
     }
 
-    public void serialize(ByteBuffer byteBuffer, int index) {
+    public void serialize (ByteBuffer byteBuffer, int index) {
 
         byteBuffer.position(index);
 
         // response code and valid
-        byte b = (byte)getReponseCodeFor(errorType, SenseDataFormat.DESCRIPTOR);
+        byte b = (byte) getReponseCodeFor(errorType, SenseDataFormat.DESCRIPTOR);
         b = BitManip.getByteWithBitSet(b, 7, false);// bit 7 is reserved
         byteBuffer.put(b);// index
 
         // sense key
-        b = (byte)(senseKey.getValue() & 15);
+        b = (byte) (senseKey.getValue() & 15);
         byteBuffer.put(b);// index + 1
 
         // additional sense code and additional sense code qualifier
-        ReadWrite.writeTwoByteInt(byteBuffer, additionalSenseCodeAndQualifier.getValue(), index
-            + ADDITIONAL_SENSE_CODE_INDEX);
+        ReadWrite.writeTwoByteInt(byteBuffer, additionalSenseCodeAndQualifier.getValue(), index + ADDITIONAL_SENSE_CODE_INDEX);
 
         // bytes 4-6 are reserved
         for (int i = index + RESERVED_BYTES_MIN_INDEX; i < index + RESERVED_BYTES_MAX_INDEX; ++i)
-            byteBuffer.put(i, (byte)0);
+            byteBuffer.put(i, (byte) 0);
 
         // additional sense length
-        byteBuffer.put(index + ADDITIONAL_SENSE_LENGTH_INDEX, (byte)getAdditionalSenseLength());
+        byteBuffer.put(index + ADDITIONAL_SENSE_LENGTH_INDEX, (byte) getAdditionalSenseLength());
 
         // sense data descriptors
         int descriptorIndex = HEADER_LENGTH;
@@ -108,19 +103,18 @@ public final class DescriptorFormatSenseData extends SenseData {
      * 
      * @return the value of the ADDITIONAL SENSE LENGTH field
      */
-    private int getAdditionalSenseLength() {
+    private int getAdditionalSenseLength () {
         int additionalSenseLength = 0;
         if (senseDataDescriptors != null) {
             for (int i = 0; i < senseDataDescriptors.length; ++i)
-                if (senseDataDescriptors[i] != null)
-                    additionalSenseLength += senseDataDescriptors[i].size();
+                if (senseDataDescriptors[i] != null) additionalSenseLength += senseDataDescriptors[i].size();
         }
         return additionalSenseLength;
     }
 
-    public int size() {
+    public int size () {
         return getAdditionalSenseLength()// is never negative
-            + HEADER_LENGTH;
+                + HEADER_LENGTH;
     }
 
 }

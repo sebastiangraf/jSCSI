@@ -1,9 +1,8 @@
 package org.jscsi.target.scsi.inquiry;
 
 /**
- * The ASSOCIATION field is part of DEVICE IDENTIFICATION VPD PAGEs and
- * IDENTIFICATION DESCRIPTORs. It indicates the entity with which the IDENTIFIER
- * field is associated, as described in the following table.
+ * The ASSOCIATION field is part of DEVICE IDENTIFICATION VPD PAGEs and IDENTIFICATION DESCRIPTORs. It indicates the
+ * entity with which the IDENTIFIER field is associated, as described in the following table.
  * 
  * <table border="1">
  * <tr>
@@ -38,18 +37,18 @@ package org.jscsi.target.scsi.inquiry;
  */
 public enum Association {
 
-    LOGICAL_UNIT((byte)0), TARGET_PORT((byte)1), SCSI_TARGET_DEVICE((byte)2), RESERVED((byte)3);
+    LOGICAL_UNIT((byte) 0), TARGET_PORT((byte) 1), SCSI_TARGET_DEVICE((byte) 2), RESERVED((byte) 3);
 
     /**
      * The serialized value of this object.
      */
     private final byte value;
 
-    private Association(final byte value) {
+    private Association (final byte value) {
         this.value = value;
     }
 
-    public final byte getValue() {
+    public final byte getValue () {
         return value;
     }
 }

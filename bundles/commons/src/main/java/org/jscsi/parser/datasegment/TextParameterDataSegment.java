@@ -1,30 +1,23 @@
 /**
- * Copyright (c) 2012, University of Konstanz, Distributed Systems Group
- * All rights reserved.
+ * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
  * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * * Neither the name of the University of Konstanz nor the
- * names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+ * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
+ * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
+ * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
+ * endorse or promote products derived from this software without specific prior written permission.
  * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.jscsi.parser.datasegment;
+
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -34,11 +27,12 @@ import org.jscsi.exception.InternetSCSIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * <h1>OperationTextKeys</h1>
  * <p>
- * This class encaspulates all methods needed for the operation text keys, which can emerge in the data
- * segment of an iSCSI message (RFC3720).
+ * This class encaspulates all methods needed for the operation text keys, which can emerge in the data segment of an
+ * iSCSI message (RFC3720).
  * 
  * @author Volker Wildi
  */
@@ -60,8 +54,7 @@ final class TextParameterDataSegment extends AbstractDataSegment {
     private static final String PAIR_DELIMITER = "\0";
 
     /**
-     * Each line consists of this number of tokens and has the following
-     * structure: &lt;key&gt; = &lt;value&gt;.
+     * Each line consists of this number of tokens and has the following structure: &lt;key&gt; = &lt;value&gt;.
      */
     private static final int NUMBER_OF_TOKENS = 2;
 
@@ -84,14 +77,13 @@ final class TextParameterDataSegment extends AbstractDataSegment {
     // --------------------------------------------------------------------------
 
     /**
-     * Default constructor, to create a new, empty <code>TextParameterDataSegment</code> object with a maximum
-     * length of <code>initMaximumLength</code> bytes.
+     * Default constructor, to create a new, empty <code>TextParameterDataSegment</code> object with a maximum length of
+     * <code>initMaximumLength</code> bytes.
      * 
-     * @param initChunkSize
-     *            The size (in bytes) of one chunk, which represents the <code>MaxRecvDataSegmentLength</code>
+     * @param initChunkSize The size (in bytes) of one chunk, which represents the <code>MaxRecvDataSegmentLength</code>
      *            .
      */
-    public TextParameterDataSegment(final int initChunkSize) {
+    public TextParameterDataSegment (final int initChunkSize) {
 
         super(initChunkSize);
 
@@ -102,16 +94,13 @@ final class TextParameterDataSegment extends AbstractDataSegment {
     // --------------------------------------------------------------------------
 
     /**
-     * Add a given operation text keys with the given value to the key value
-     * pairs.
+     * Add a given operation text keys with the given value to the key value pairs.
      * 
-     * @param textKey
-     *            One of the valid operation text keys listed above.
-     * @param value
-     *            The value of this operation text key.
+     * @param textKey One of the valid operation text keys listed above.
+     * @param value The value of this operation text key.
      * @see de.unikn.inf.disy.blockdebix.iscsi.parser.datasegment.OperationalTextKey
      */
-    public final void add(final OperationalTextKey textKey, final String value) {
+    public final void add (final OperationalTextKey textKey, final String value) {
 
         final String s = textKey.value() + KEY_VALUE_DELIMITER + value + PAIR_DELIMITER;
         resizeBuffer(s.length(), true);
@@ -121,15 +110,13 @@ final class TextParameterDataSegment extends AbstractDataSegment {
     }
 
     /**
-     * Add all text parameters of the given <code>textKeys</code> map to this <code>ProtocolDataUnit</code>
-     * object.
+     * Add all text parameters of the given <code>textKeys</code> map to this <code>ProtocolDataUnit</code> object.
      * 
-     * @param textKeys
-     *            Map, which contains all the text parameters to insert.
+     * @param textKeys Map, which contains all the text parameters to insert.
      */
-    public final void addAll(final SettingsMap textKeys) {
+    public final void addAll (final SettingsMap textKeys) {
 
-        for (Map.Entry<OperationalTextKey, String> e : textKeys.entrySet()) {
+        for (Map.Entry<OperationalTextKey , String> e : textKeys.entrySet()) {
             add(e.getKey(), e.getValue());
         }
 
@@ -140,11 +127,9 @@ final class TextParameterDataSegment extends AbstractDataSegment {
     // --------------------------------------------------------------------------
 
     /** {@inheritDoc} */
-    public final int append(final ByteBuffer src, final int len) {
+    public final int append (final ByteBuffer src, final int len) {
 
-        if (len == 0) {
-            return 0;
-        }
+        if (len == 0) { return 0; }
 
         resizeBuffer(len, true);
         dataBuffer.put(src);
@@ -155,11 +140,9 @@ final class TextParameterDataSegment extends AbstractDataSegment {
     }
 
     /** {@inheritDoc} */
-    public final int deserialize(final ByteBuffer src, final int len) {
+    public final int deserialize (final ByteBuffer src, final int len) {
 
-        if (len == 0) {
-            return 0;
-        }
+        if (len == 0) { return 0; }
 
         clear();
         resizeBuffer(len, false);
@@ -167,11 +150,9 @@ final class TextParameterDataSegment extends AbstractDataSegment {
         return length;
     }
 
-    private final void updateSettings() throws InternetSCSIException {
+    private final void updateSettings () throws InternetSCSIException {
 
-        if (length == 0) {
-            return;
-        }
+        if (length == 0) { return; }
 
         dataBuffer.rewind();
 
@@ -183,9 +164,7 @@ final class TextParameterDataSegment extends AbstractDataSegment {
             String[] keyValue;
             for (int i = 0; i < data.length; i++) {
                 keyValue = data[i].split(KEY_VALUE_DELIMITER);
-                if (keyValue.length != NUMBER_OF_TOKENS) {
-                    throw new InternetSCSIException("This PDU does not contain a valid key-value-pair.");
-                }
+                if (keyValue.length != NUMBER_OF_TOKENS) { throw new InternetSCSIException("This PDU does not contain a valid key-value-pair."); }
 
                 settings.add(OperationalTextKey.valueOfEx(keyValue[KEY_INDEX]), keyValue[VALUE_INDEX]);
             }
@@ -207,10 +186,9 @@ final class TextParameterDataSegment extends AbstractDataSegment {
      * Returns the <code>SettingsMap</code> of this <code>TextParameterDataSegment</code> object.
      * 
      * @return The stored settings of this <code>TextParameterDataSegment</code> object.
-     * @throws InternetSCSIException
-     *             if any violation of the iSCSI Standard occurs.
+     * @throws InternetSCSIException if any violation of the iSCSI Standard occurs.
      */
-    public final SettingsMap getSettings() throws InternetSCSIException {
+    public final SettingsMap getSettings () throws InternetSCSIException {
 
         if (isDirty) {
             updateSettings();
@@ -225,7 +203,7 @@ final class TextParameterDataSegment extends AbstractDataSegment {
     /**
      * Clears all stored content of this OperationTextKeys object.
      */
-    public final void clear() {
+    public final void clear () {
 
         super.clear();
 
@@ -240,11 +218,11 @@ final class TextParameterDataSegment extends AbstractDataSegment {
      * 
      * @throws Exception
      */
-    public final boolean equals(final Object anObject) {
+    public final boolean equals (final Object anObject) {
 
         if (anObject instanceof TextParameterDataSegment) {
             try {
-                final TextParameterDataSegment anotherTPDS = (TextParameterDataSegment)anObject;
+                final TextParameterDataSegment anotherTPDS = (TextParameterDataSegment) anObject;
                 return getSettings().equals(anotherTPDS.getSettings());
             } catch (Exception e) {
                 if (LOGGER.isErrorEnabled()) {
@@ -258,7 +236,7 @@ final class TextParameterDataSegment extends AbstractDataSegment {
 
     /** {@inheritDoc} */
     @Override
-    public final int hashCode() {
+    public final int hashCode () {
 
         return super.hashCode();
     }

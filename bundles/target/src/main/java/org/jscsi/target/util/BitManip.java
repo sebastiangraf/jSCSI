@@ -13,9 +13,8 @@ package org.jscsi.target.util;
 public final class BitManip {
 
     /**
-     * Sets a single bit. If the <i>value</i> parameter is <code>true</code>,
-     * the bit will be set to <code>one</code>, and to <code>zero</code> otherwise. All other bits will be
-     * left unchanged.
+     * Sets a single bit. If the <i>value</i> parameter is <code>true</code>, the bit will be set to <code>one</code>,
+     * and to <code>zero</code> otherwise. All other bits will be left unchanged.
      * <p>
      * The bits are numbered in big-endian format, from 0 (LSB) to 7 (MSB).
      * <p>
@@ -25,16 +24,12 @@ public final class BitManip {
      * +---+---+---+---+---+---+---+---+<br>
      * </code>
      * 
-     * @param b
-     *            the original byte value
-     * @param bitNumber
-     *            the big-endian position of the bit to be changed, from 0 to 7
-     * @param value
-     *            <code>true</code> for <i>1</i>, <code>false</code> for
-     *            <i>0</i>
+     * @param b the original byte value
+     * @param bitNumber the big-endian position of the bit to be changed, from 0 to 7
+     * @param value <code>true</code> for <i>1</i>, <code>false</code> for <i>0</i>
      * @return the edited byte value
      */
-    public static final byte getByteWithBitSet(final byte b, final int bitNumber, final boolean value) {
+    public static final byte getByteWithBitSet (final byte b, final int bitNumber, final boolean value) {
 
         int number = b;
 
@@ -50,13 +45,12 @@ public final class BitManip {
             number &= mask;
         }
 
-        return (byte)number;
+        return (byte) number;
     }
 
     /**
-     * Returns <code>true</code>, if the bit at the given position is set to <code>one</code> and
-     * <code>false</code> if it is set to <code>zero</code> . The bits are numbered in big-endian format, from
-     * 0 (LSB) to 7 (MSB).
+     * Returns <code>true</code>, if the bit at the given position is set to <code>one</code> and <code>false</code> if
+     * it is set to <code>zero</code> . The bits are numbered in big-endian format, from 0 (LSB) to 7 (MSB).
      * <p>
      * <code>
      * +---+---+---+---+---+---+---+---+<br>
@@ -64,18 +58,15 @@ public final class BitManip {
      * +---+---+---+---+---+---+---+---+<br>
      * </code>
      * 
-     * @param b
-     *            the byte value in question
-     * @param bitNumber
-     *            the big-endian position of the bit to be changed, from 0 to 7
+     * @param b the byte value in question
+     * @param bitNumber the big-endian position of the bit to be changed, from 0 to 7
      * @return <code>true</code> if bit is set to <code>one</code>, else <code>false</code>
      */
-    public static boolean getBit(final byte b, final int bitNumber) {
+    public static boolean getBit (final byte b, final int bitNumber) {
         int number = b;
         number >>>= bitNumber;
         number &= 1;
-        if (number == 1)
-            return true;
+        if (number == 1) return true;
         return false;
     }
 }

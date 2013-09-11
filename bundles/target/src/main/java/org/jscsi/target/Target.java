@@ -1,6 +1,8 @@
 package org.jscsi.target;
 
+
 import org.jscsi.target.storage.IStorageModule;
+
 
 /**
  * One Target exists per iSCSI named target. Holds onto the name and the {@link IStorageModule}
@@ -16,26 +18,26 @@ public class Target {
     private final String targetAlias;
     private final IStorageModule storageModule;
 
-    public Target(String targetName, String targetAlias, IStorageModule storageModule) {
+    public Target (String targetName, String targetAlias, IStorageModule storageModule) {
         this.targetName = targetName;
         this.targetAlias = targetAlias;
         this.storageModule = storageModule;
     }
 
-    public String getTargetName() {
+    public String getTargetName () {
         return targetName;
     }
 
-    public String getTargetAlias() {
+    public String getTargetAlias () {
         return targetAlias;
     }
 
-    public IStorageModule getStorageModule() {
+    public IStorageModule getStorageModule () {
         return storageModule;
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode () {
         final int prime = 31;
         int result = 1;
         result = prime + ((targetName == null) ? 0 : targetName.hashCode());
@@ -43,19 +45,14 @@ public class Target {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Target other = (Target)obj;
+    public boolean equals (Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        Target other = (Target) obj;
         if (targetName == null) {
-            if (other.targetName != null)
-                return false;
-        } else if (!targetName.equals(other.targetName))
-            return false;
+            if (other.targetName != null) return false;
+        } else if (!targetName.equals(other.targetName)) return false;
         return true;
     }
 

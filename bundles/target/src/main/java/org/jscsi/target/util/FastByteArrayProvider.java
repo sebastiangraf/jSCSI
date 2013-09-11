@@ -1,11 +1,10 @@
 package org.jscsi.target.util;
 
 /**
- * Instances of this class can serve as a source for byte arrays of specified
- * lengths. Up to {@link #capacity} arrays of different lengths can be stored,
- * quickly retrievable with the {@link #getArray(int)} method. Frequently
- * requested arrays will be returned faster, less frequently used arrays might
- * have to be initialized first and are more likely to be removed.
+ * Instances of this class can serve as a source for byte arrays of specified lengths. Up to {@link #capacity} arrays of
+ * different lengths can be stored, quickly retrievable with the {@link #getArray(int)} method. Frequently requested
+ * arrays will be returned faster, less frequently used arrays might have to be initialized first and are more likely to
+ * be removed.
  * 
  * @author Andreas Ergenzinger
  */
@@ -34,10 +33,9 @@ public final class FastByteArrayProvider {
     /**
      * The constructor.
      * 
-     * @param capacity
-     *            the {@link #capacity} of the created object.
+     * @param capacity the {@link #capacity} of the created object.
      */
-    public FastByteArrayProvider(final int capacity) {
+    public FastByteArrayProvider (final int capacity) {
         this.capacity = capacity;
         arrays = new byte[capacity][];
     }
@@ -45,18 +43,17 @@ public final class FastByteArrayProvider {
     /**
      * Returns a byte array of the specified length.
      * <p>
-     * Note that the returned array may have been used before and therefore the array's values are not
-     * guaranteed to be <code>0</code>.
+     * Note that the returned array may have been used before and therefore the array's values are not guaranteed to be
+     * <code>0</code>.
      * <p>
-     * The method consecutively checks {@link #arrays} for an array of the correct length. If such an array
-     * exists, it will be moved to one index position closer to the front of the array (if possible), speeding
-     * up future retrievals of the same array.
+     * The method consecutively checks {@link #arrays} for an array of the correct length. If such an array exists, it
+     * will be moved to one index position closer to the front of the array (if possible), speeding up future retrievals
+     * of the same array.
      * 
-     * @param length
-     *            the length of the returned array
+     * @param length the length of the returned array
      * @return a byte array of the specified length
      */
-    public byte[] getArray(final int length) {
+    public byte[] getArray (final int length) {
         for (int i = 0; i < size; ++i) {
             if (length == arrays[i].length) {
                 // swap (if not already at the front) and return
@@ -73,8 +70,7 @@ public final class FastByteArrayProvider {
         }
         // requested array does not exist, add to tail of queue,
         tmp = new byte[length];
-        if (size == capacity)
-            --size;// replace last element
+        if (size == capacity) --size;// replace last element
         arrays[size] = tmp;
         ++size;
         return tmp;
@@ -87,7 +83,7 @@ public final class FastByteArrayProvider {
      * 
      * @return {@link #arrays}.
      */
-    public byte[][] getAll() {
+    public byte[][] getAll () {
         return arrays;
     }
 }

@@ -1,5 +1,6 @@
 package org.jscsi.target;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -34,10 +35,10 @@ import org.jscsi.target.settings.SettingsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
- * The central class of the jSCSI Target, which keeps track of all active {@link TargetSession}s, stores
- * target-wide parameters and variables, and
- * which contains the {@link #main(String[])} method for starting the program.
+ * The central class of the jSCSI Target, which keeps track of all active {@link TargetSession}s, stores target-wide
+ * parameters and variables, and which contains the {@link #main(String[])} method for starting the program.
  * 
  * @author Andreas Ergenzinger, University of Konstanz
  * @author Sebastian Graf, University of Konstanz
@@ -69,12 +70,11 @@ public final class TargetServer implements Callable<Void> {
     /**
      * The table of targets
      */
-    private HashMap<String, Target> targets = new HashMap<String, Target>();
+    private HashMap<String , Target> targets = new HashMap<String , Target>();
 
     /**
      * A target-wide counter used for providing the value of sent {@link ProtocolDataUnit}s'
-     * <code>Target Transfer Tag</code> field, unless
-     * that field is reserved.
+     * <code>Target Transfer Tag</code> field, unless that field is reserved.
      */
     private static final AtomicInteger nextTargetTransferTag = new AtomicInteger();
 
@@ -83,7 +83,7 @@ public final class TargetServer implements Callable<Void> {
      */
     private Connection connection;
 
-    public TargetServer(final Configuration conf) {
+    public TargetServer (final Configuration conf) {
         this.config = conf;
 
         LOGGER.debug("Starting jSCSI-target: ");
@@ -105,15 +105,14 @@ public final class TargetServer implements Callable<Void> {
     }
 
     /**
-     * Gets and increments the value to use in the next unreserved <code>Target Transfer Tag</code> field of
-     * the next PDU to be sent by the
-     * jSCSI Target.
+     * Gets and increments the value to use in the next unreserved <code>Target Transfer Tag</code> field of the next
+     * PDU to be sent by the jSCSI Target.
      * 
      * @see #nextTargetTransferTag
      * @return the value to use in the next unreserved <code>Target Transfer Tag
      * </code> field
      */
-    public static int getNextTargetTransferTag() {
+    public static int getNextTargetTransferTag () {
         // value 0xffffffff is reserved
         int tag;
         do {
@@ -125,11 +124,10 @@ public final class TargetServer implements Callable<Void> {
     /**
      * Starts the jSCSI target.
      * 
-     * @param args
-     *            all command line arguments are ignored
+     * @param args all command line arguments are ignored
      * @throws IOException
      */
-    public static void main(String[] args) throws Exception {
+    public static void main (String[] args) throws Exception {
         TargetServer target;
 
         System.out.println("This system provides more than one IP Address to advertise.\n");
@@ -152,9 +150,8 @@ public final class TargetServer implements Callable<Void> {
         }
 
         /*
-         * Getting the desired address from the command line.
-         * You can't automatically make sure to always use the correct
-         * host address.
+         * Getting the desired address from the command line. You can't automatically make sure to always use the
+         * correct host address.
          */
         System.out.print("\nWhich one should be used?\nType in the number: ");
         Integer chosenIndex = null;
@@ -173,27 +170,23 @@ public final class TargetServer implements Callable<Void> {
         System.out.println("Using ip address " + addresses.get(chosenIndex).getHostAddress());
 
         switch (args.length) {
-        case 0:
-            target = new TargetServer(Configuration.create(targetAddress));
-            break;
-        case 1:
-            target =
-                new TargetServer(Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE, new File(
-                    args[0]), targetAddress));
-            break;
-        case 2:
-            target =
-                new TargetServer(Configuration.create(new File(args[0]), new File(args[1]), targetAddress));
-            break;
-        default:
-            throw new IllegalArgumentException(
-                "Only zero or one Parameter (Path to Configuration-File) allowed!");
+            case 0 :
+                target = new TargetServer(Configuration.create(targetAddress));
+                break;
+            case 1 :
+                target = new TargetServer(Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE, new File(args[0]), targetAddress));
+                break;
+            case 2 :
+                target = new TargetServer(Configuration.create(new File(args[0]), new File(args[1]), targetAddress));
+                break;
+            default :
+                throw new IllegalArgumentException("Only zero or one Parameter (Path to Configuration-File) allowed!");
         }
 
         target.call();
     }
 
-    public Void call() throws Exception {
+    public Void call () throws Exception {
 
         // Create a blocking server socket and check for connections
         try {
@@ -203,8 +196,7 @@ public final class TargetServer implements Callable<Void> {
             serverSocketChannel.configureBlocking(true);
 
             // Making sure the socket is bound to the address used in the config.
-            serverSocketChannel.socket().bind(
-                new InetSocketAddress(getConfig().getTargetAddress(), getConfig().getPort()));
+            serverSocketChannel.socket().bind(new InetSocketAddress(getConfig().getTargetAddress(), getConfig().getPort()));
 
             while (true) {
                 // Accept the connection request.
@@ -219,24 +211,24 @@ public final class TargetServer implements Callable<Void> {
                 try {
                     final ProtocolDataUnit pdu = connection.receivePdu();
                     // confirm OpCode-
-                    if (pdu.getBasicHeaderSegment().getOpCode() != OperationCode.LOGIN_REQUEST)
-                        throw new InternetSCSIException();
+                    if (pdu.getBasicHeaderSegment().getOpCode() != OperationCode.LOGIN_REQUEST) throw new InternetSCSIException();
                     // get initiatorSessionID
-                    LoginRequestParser parser = (LoginRequestParser)pdu.getBasicHeaderSegment().getParser();
+                    LoginRequestParser parser = (LoginRequestParser) pdu.getBasicHeaderSegment().getParser();
                     ISID initiatorSessionID = parser.getInitiatorSessionID();
 
                     /*
-                     * TODO get (new or existing) session based on TSIH But
-                     * since we don't do session reinstatement and
+                     * TODO get (new or existing) session based on TSIH But since we don't do session reinstatement and
                      * MaxConnections=1, we can just create a new one.
                      */
-                    TargetSession session =
-                        new TargetSession(this, connection, initiatorSessionID, parser
-                            .getCommandSequenceNumber(),// set ExpCmdSN
-                                                        // (PDU is
-                                                        // immediate,
-                                                        // hence no ++)
-                            parser.getExpectedStatusSequenceNumber());
+                    TargetSession session = new TargetSession(this, connection, initiatorSessionID, parser.getCommandSequenceNumber(),// set
+                                                                                                                                      // ExpCmdSN
+                                                                                                                                      // (PDU
+                                                                                                                                      // is
+                                                                                                                                      // immediate,
+                                                                                                                                      // hence
+                                                                                                                                      // no
+                                                                                                                                      // ++)
+                    parser.getExpectedStatusSequenceNumber());
 
                     sessions.add(session);
                     // threadPool.submit(connection);// ignore returned Future
@@ -253,15 +245,15 @@ public final class TargetServer implements Callable<Void> {
         return null;
     }
 
-    public Configuration getConfig() {
+    public Configuration getConfig () {
         return config;
     }
 
-    public DeviceIdentificationVpdPage getDeviceIdentificationVpdPage() {
+    public DeviceIdentificationVpdPage getDeviceIdentificationVpdPage () {
         return deviceIdentificationVpdPage;
     }
 
-    public Target getTarget(String targetName) {
+    public Target getTarget (String targetName) {
         synchronized (targets) {
             return targets.get(targetName);
         }
@@ -270,14 +262,13 @@ public final class TargetServer implements Callable<Void> {
     /**
      * Removes a session from the jSCSI Target's list of active sessions.
      * 
-     * @param session
-     *            the session to remove from the list of active sessions
+     * @param session the session to remove from the list of active sessions
      */
-    public synchronized void removeTargetSession(TargetSession session) {
+    public synchronized void removeTargetSession (TargetSession session) {
         sessions.remove(session);
     }
 
-    public String[] getTargetNames() {
+    public String[] getTargetNames () {
         String[] returnNames = new String[targets.size()];
         returnNames = targets.keySet().toArray(returnNames);
         return returnNames;
@@ -289,7 +280,7 @@ public final class TargetServer implements Callable<Void> {
      * @param checkTargetName
      * @return true if the the target name is configured
      */
-    public boolean isValidTargetName(String checkTargetName) {
+    public boolean isValidTargetName (String checkTargetName) {
         return targets.containsKey(checkTargetName);
     }
 
@@ -298,7 +289,7 @@ public final class TargetServer implements Callable<Void> {
      * 
      * @return the connection the target server established.
      */
-    public Connection getConnection() {
+    public Connection getConnection () {
         return this.connection;
     }
 

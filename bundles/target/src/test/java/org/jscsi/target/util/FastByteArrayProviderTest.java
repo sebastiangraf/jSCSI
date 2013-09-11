@@ -1,7 +1,9 @@
 package org.jscsi.target.util;
 
+
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
+
 
 public class FastByteArrayProviderTest {
 
@@ -10,14 +12,14 @@ public class FastByteArrayProviderTest {
     private static final FastByteArrayProvider PROVIDER = new FastByteArrayProvider(CAPACITY);
 
     @Test
-    public void testFastByteArrayProvider() {
+    public void testFastByteArrayProvider () {
         int capacity = 13;
         FastByteArrayProvider p = new FastByteArrayProvider(capacity);
         assert (p.getAll().length == capacity);
     }
 
     @Test
-    public void testGetArray() {
+    public void testGetArray () {
 
         // fill all four slots ...
         PROVIDER.getArray(1);
@@ -46,7 +48,7 @@ public class FastByteArrayProviderTest {
     }
 
     @Test
-    public void testGetAll() {
+    public void testGetAll () {
         assertEquals(CAPACITY, PROVIDER.getAll().length);
     }
 

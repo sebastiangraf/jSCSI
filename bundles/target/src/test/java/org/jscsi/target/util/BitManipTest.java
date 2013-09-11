@@ -1,24 +1,25 @@
 package org.jscsi.target.util;
 
+
 import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
+
 
 public class BitManipTest {
 
     @Test
-    public void testSetBit() {
+    public void testSetBit () {
         // test by counting
         byte b = 0;
 
         for (int i = 1; i < 256; ++i) {
             b = increment(b);
             int control = b & 255;
-            if (control != i)
-                fail();
+            if (control != i) fail();
         }
     }
 
-    private static byte increment(final byte b) {
+    private static byte increment (final byte b) {
         // return (byte)(b + 1);
         byte returnByte = b;
 

@@ -1,5 +1,6 @@
 package org.jscsi.target.connection.stage;
 
+
 import java.io.IOException;
 import java.security.DigestException;
 
@@ -11,13 +12,13 @@ import org.jscsi.target.connection.phase.TargetPhase;
 import org.jscsi.target.settings.Settings;
 import org.jscsi.target.settings.SettingsException;
 
+
 /**
- * This class is an abstract super-class for stages of the (see {@link Connection} for a description of
- * the relationship between
- * sessions, connections, phases, and sessions).
+ * This class is an abstract super-class for stages of the (see {@link Connection} for a description of the relationship
+ * between sessions, connections, phases, and sessions).
  * <p>
- * The stage is started by calling the {@link #execute(ProtocolDataUnit)} method with the first
- * {@link ProtocolDataUnit} to be processed as part of the stage.
+ * The stage is started by calling the {@link #execute(ProtocolDataUnit)} method with the first {@link ProtocolDataUnit}
+ * to be processed as part of the stage.
  * 
  * @author Andreas Ergenzinger
  */
@@ -46,10 +47,9 @@ public abstract class TargetStage {
     /**
      * The abstract constructor.
      * 
-     * @param targetPhase
-     *            the phase this stage is a part of
+     * @param targetPhase the phase this stage is a part of
      */
-    public TargetStage(TargetPhase targetPhase) {
+    public TargetStage (TargetPhase targetPhase) {
         this.targetPhase = targetPhase;
         this.connection = targetPhase.getTargetConnection();
         this.session = connection.getTargetSession();
@@ -57,34 +57,25 @@ public abstract class TargetStage {
     }
 
     /**
-     * Starts the stage. This method contains the operational logic required for
-     * the receiving, processing and sending of PDUs which is needed to
-     * successfully complete the represented iSCSI stage.
+     * Starts the stage. This method contains the operational logic required for the receiving, processing and sending
+     * of PDUs which is needed to successfully complete the represented iSCSI stage.
      * 
-     * @param pdu
-     *            the first {@link ProtocolDataUnit} to be processed in the
-     *            stage
-     * @throws IOException
-     *             if the connection was closed unexpectedly
+     * @param pdu the first {@link ProtocolDataUnit} to be processed in the stage
+     * @throws IOException if the connection was closed unexpectedly
      * @throws InterruptedException
-     * @throws InternetSCSIException
-     *             if a PDU has violated the iSCSI standard
-     * @throws DigestException
-     *             if a digest error was detected
-     * @throws SettingsException
-     *             if the program has attempted to access a value from settings
-     *             which has not been negotiated and which does not have a
-     *             default value
+     * @throws InternetSCSIException if a PDU has violated the iSCSI standard
+     * @throws DigestException if a digest error was detected
+     * @throws SettingsException if the program has attempted to access a value from settings which has not been
+     *             negotiated and which does not have a default value
      */
-    public abstract void execute(ProtocolDataUnit pdu) throws IOException, InterruptedException,
-        InternetSCSIException, DigestException, SettingsException;
+    public abstract void execute (ProtocolDataUnit pdu) throws IOException , InterruptedException , InternetSCSIException , DigestException , SettingsException;
 
     /**
      * Getting connection of this stage.
      * 
      * @return the related Connection of this stage.
      */
-    public Connection getConnection() {
+    public Connection getConnection () {
         return connection;
     }
 

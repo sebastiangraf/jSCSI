@@ -40,21 +40,21 @@ public enum CodeSet {
     /**
      * This value is reserved.
      */
-    RESERVED((byte)0x0),
+    RESERVED((byte) 0x0),
     /**
      * The IDENTIFIER field shall contain binary values.
      */
-    BINARY_VALUES((byte)0x1),
+    BINARY_VALUES((byte) 0x1),
     /**
      * The IDENTIFIER field shall contain ASCII printable characters.
      */
-    ASCII_PRINTABLE_VALUES((byte)0x2),
+    ASCII_PRINTABLE_VALUES((byte) 0x2),
     /**
      * The IDENTIFIER field shall contain ISO/IEC 10646-1 (UTF-8) codes:
      */
-    UTF8_CODES((byte)0x3);
+    UTF8_CODES((byte) 0x3);
 
-    private CodeSet(final byte value) {
+    private CodeSet (final byte value) {
         this.value = value;
     }
 
@@ -68,7 +68,7 @@ public enum CodeSet {
      * 
      * @return serialized value of this object
      */
-    public final byte getValue() {
+    public final byte getValue () {
         return value;
     }
 }
