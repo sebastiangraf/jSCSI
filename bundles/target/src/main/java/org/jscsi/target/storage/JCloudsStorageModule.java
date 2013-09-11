@@ -89,7 +89,7 @@ public class JCloudsStorageModule implements IStorageModule {
 	public final static int SIZE_PER_BUCKET = BLOCK_IN_CLUSTER
 			* VIRTUAL_BLOCK_SIZE;
 
-	public final static String CONTAINERNAME = "grave9283708";
+	public final static String CONTAINERNAME = "bench53473ResourcegraveISCSI9284";
 
 	private final long mNumberOfCluster;
 
@@ -345,25 +345,23 @@ public class JCloudsStorageModule implements IStorageModule {
 	 * @return a two-dimensional String[] with login and password
 	 */
 	private static String[] getCredentials() {
-		return new String[0];
-		// File userStore =
-		// new File(System.getProperty("user.home"), new
-		// StringBuilder(".credentials")
-		// .append(File.separator).append("aws.properties").toString());
-		// if (!userStore.exists()) {
-		// return new String[0];
-		// } else {
-		// Properties props = new Properties();
-		// try {
-		// props.load(new FileReader(userStore));
-		// return new String[] {
-		// props.getProperty("access"), props.getProperty("secret")
-		// };
-		//
-		// } catch (IOException exc) {
-		// throw new RuntimeException(exc);
-		// }
-		// }
+		 return new String[0];
+//		File userStore = new File(System.getProperty("user.home"),
+//				new StringBuilder(".credentials").append(File.separator)
+//						.append("aws.properties").toString());
+//		if (!userStore.exists()) {
+//			return new String[0];
+//		} else {
+//			Properties props = new Properties();
+//			try {
+//				props.load(new FileReader(userStore));
+//				return new String[] { props.getProperty("access"),
+//						props.getProperty("secret") };
+//
+//			} catch (IOException exc) {
+//				throw new RuntimeException(exc);
+//			}
+//		}
 	}
 
 	/**
@@ -432,9 +430,10 @@ public class JCloudsStorageModule implements IStorageModule {
 					}
 				}
 			}
-			if(data.length<SIZE_PER_BUCKET) {
+			if (data.length < SIZE_PER_BUCKET) {
 				System.out.println(data.length);
-//				throw new IllegalStateEception("Bucket " + mBucketId +" invalid");
+				// throw new IllegalStateEception("Bucket " + mBucketId
+				// +" invalid");
 			}
 			mByteCache.put(mBucketId, data);
 			final byte[] finalizedData = data;
@@ -472,7 +471,7 @@ public class JCloudsStorageModule implements IStorageModule {
 		final Cipher mCipher;
 
 		WriteTask(byte[] pData, int pBucketIndex) {
-			checkState(pData.length==SIZE_PER_BUCKET);
+			checkState(pData.length == SIZE_PER_BUCKET);
 			if (ENCRYPT) {
 				try {
 					mCipher = Cipher.getInstance(ALGO);
