@@ -57,9 +57,25 @@
 		</fileSet>
 		<fileSet>
 			<directory>src/main/java</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>**/*.java</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>target/classes</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>**/*.class</include>
+				<include>**/*.xml</include>
+			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>src/main/test</directory>
+			<includes>
+				<include>**/*.java</include>
+				<include>**/*.xml</include>
+			</includes>
 		</fileSet>
 	</fileSets>
 </assembly>
