@@ -28,18 +28,18 @@
 		<Target>
 			<TargetName>iqn.2010-04.local-test:disk-1</TargetName>
 			<TargetAlias>jSCSI Target</TargetAlias>
-			<JCloudsStorage>
+			<SyncFileStorage>
 				<Path>/tmp/testdevices/storage1.dat</Path>
 				<Create size="0.075" />
-			</JCloudsStorage>
+			</SyncFileStorage>
 		</Target>
 		<Target>
 			<TargetName>iqn.2010-04.local-test:disk-2</TargetName>
 			<TargetAlias>jSCSI Target</TargetAlias>
-			<JCloudsStorage>
+			<AsyncFileStorage>
 				<Path>/tmp/testdevices/storage2.dat</Path>
 				<Create size="0.075" />
-			</JCloudsStorage>
+			</AsyncFileStorage>
 		</Target>
 	</TargetList>
 	<GlobalConfig>
