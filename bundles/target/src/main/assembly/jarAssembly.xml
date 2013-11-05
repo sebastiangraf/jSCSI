@@ -68,6 +68,7 @@
 			<includes>
 				<include>**/*.class</include>
 				<include>**/*.xml</include>
+                <include>**/*.xsd</include>
 			</includes>
 		</fileSet>
 		<fileSet>

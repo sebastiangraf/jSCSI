@@ -168,13 +168,16 @@ public final class TargetServer implements Callable<Void> {
 
         String targetAddress = addresses.get(chosenIndex).getHostAddress();
         System.out.println("Using ip address " + addresses.get(chosenIndex).getHostAddress());
-
+        
+        
         switch (args.length) {
             case 0 :
                 target = new TargetServer(Configuration.create(targetAddress));
                 break;
             case 1 :
-                target = new TargetServer(Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE, new File(args[0]), targetAddress));
+
+                // Checking if the schema file is at the default location
+                target = new TargetServer(Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE.exists() ? Configuration.CONFIGURATION_SCHEMA_FILE : new File("classpath://jscsi-target.xsd"), new File(args[0]), targetAddress));
                 break;
             case 2 :
                 target = new TargetServer(Configuration.create(new File(args[0]), new File(args[1]), targetAddress));

@@ -17,7 +17,7 @@
 	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
 	DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY 
 	OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
-	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF y
 	ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. -->
 
 <configuration xmlns="http://www.jscsi.org/2010-04"
@@ -28,20 +28,20 @@
 		<Target>
 			<TargetName>iqn.2010-04.local-test:disk-1</TargetName>
 			<TargetAlias>jSCSI Target</TargetAlias>
-			<JCloudsStorage>
+			<AsyncFileStorage>
 				<Path>/tmp/storage1.dat</Path>
-				<NoCreate />
-				<!-- <Create size="0.75"/> -->
-			</JCloudsStorage>
+                <NoCreate />
+<!-- 				<Create size="0.75"/> -->
+			</AsyncFileStorage>
 		</Target>
 		<Target>
 			<TargetName>iqn.2010-04.local-test:disk-2</TargetName>
 			<TargetAlias>jSCSI Target</TargetAlias>
-			<JCloudsStorage>
+			<AsyncFileStorage>
 				<Path>/tmp/storage2.dat</Path>
-				<NoCreate />
-				<!-- <Create size="0.75"/> -->
-			</JCloudsStorage>
+                <NoCreate />
+<!--                 <Create size="0.75"/> -->
+			</AsyncFileStorage>
 		</Target>
 	</TargetList>
 	<GlobalConfig>

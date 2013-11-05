@@ -51,12 +51,12 @@
       <dependency>
          <groupId>org.jclouds.provider</groupId>
          <artifactId>aws-s3</artifactId>
-         <version>1.6.0-alpha.2</version>
+         <version>1.6.0</version>
       </dependency>
       <dependency>
          <groupId>org.jclouds.api</groupId>
          <artifactId>filesystem</artifactId>
-         <version>1.6.0-alpha.2</version>
+         <version>1.6.0</version>
       </dependency>
 
    </dependencies>
