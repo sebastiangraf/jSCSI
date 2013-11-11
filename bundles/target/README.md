@@ -1,7 +1,7 @@
 jSCSI - Target implementation
 =========
 
-This bundle represents the target implementation of jSCSI. Before start, it is highly recommend to create a file by hand e.g. with 
+This bundle represents the target implementation of jSCSI. Before start, it is highly recommended to create a file by hand e.g. with 
 
 
 ```
