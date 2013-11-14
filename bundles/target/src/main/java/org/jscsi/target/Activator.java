@@ -61,7 +61,6 @@ public class Activator implements BundleActivator {
     public void stop(BundleContext context) throws Exception {
         // Need to provide a shutdown method within the jscsi target
         runner.shutdown();
-        System.exit(-1);
     }
 
 }
