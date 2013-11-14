@@ -54,10 +54,35 @@
                   <extensions>true</extensions>
                   <configuration>
                      <instructions>
-                        <Export-Package>org.jscsi.target</Export-Package>
-                        <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
                         <Bundle-Activator>org.jscsi.target.Activator</Bundle-Activator>
                         <Bundle-SymbolicName>${project.artifactId}-bundle</Bundle-SymbolicName>
+                        <Export-Package>org.jscsi.target</Export-Package>
+                        <Import-Package>
+                           org.osgi.framework,
+                           javax.crypto,
+                           javax.crypto.spec,
+                           javax.lang.model.type,
+                           javax.management,
+                           javax.naming,
+                           javax.net.ssl,
+                           javax.security.auth.x500,
+                           javax.sql,
+                           javax.sql.rowset.serial,
+                           javax.xml.bind,
+                           javax.xml.namespace,
+                           javax.xml.parsers,
+                           javax.xml.transform,
+                           javax.xml.transform.dom,
+                           javax.xml.transform.stream,
+                           javax.xml.validation,
+                           javax.xml.xpath,
+                           org.osgi.util.tracker,
+                           org.w3c.dom,
+                           org.xml.sax,
+                           org.xml.sax.helpers
+                        </Import-Package>
+                        <Embed-Dependency>*;scope=compile|runtime;inline=false</Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
                      </instructions>
                   </configuration>
                </plugin>
@@ -89,7 +114,7 @@
       <dependency>
          <groupId>org.osgi</groupId>
          <artifactId>org.osgi.core</artifactId>
-         <version>5.0.0</version>
+         <version>4.3.0</version>
       </dependency>
 
    </dependencies>

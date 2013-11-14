@@ -31,7 +31,6 @@
 			<AsyncFileStorage>
 				<Path>/tmp/storage1.dat</Path>
                 <NoCreate />
-<!-- 				<Create size="0.75"/> -->
 			</AsyncFileStorage>
 		</Target>
 		<Target>
@@ -40,7 +39,6 @@
 			<AsyncFileStorage>
 				<Path>/tmp/storage2.dat</Path>
                 <NoCreate />
-<!--                 <Create size="0.75"/> -->
 			</AsyncFileStorage>
 		</Target>
 	</TargetList>
