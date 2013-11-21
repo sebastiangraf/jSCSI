@@ -227,6 +227,15 @@ public class LoginResponseParserTest extends ProtocolDataUnitTest {
         super.setUp(TEST_CASE_1);
 
         ByteBuffer expectedResult = WiresharkMessageParser.parseToByteBuffer(TEST_CASE_1);
+        
+        ByteBuffer pduBuff = protocolDataUnit.serialize();
+        
+        for (int i = 0; i < pduBuff.array().length; i++) {
+           if(pduBuff.array()[i] != expectedResult.array()[i]){
+               System.out.println("pduBuff: " + pduBuff.array()[i] + ", expected: " + expectedResult.array()[i] + ", pos: " + i);
+           }
+        }
+        
         assertTrue(expectedResult.equals(protocolDataUnit.serialize()));
     }
 

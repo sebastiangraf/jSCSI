@@ -38,7 +38,6 @@ public final class LoginOperationalParameterNegotiationStage extends TargetLogin
 
     @Override
     public void execute (ProtocolDataUnit pdu) throws IOException , InterruptedException , InternetSCSIException , DigestException , IllegalArgumentException , SettingsException {
-
         LOGGER.debug("Entering LOPN Stage");
 
         BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();

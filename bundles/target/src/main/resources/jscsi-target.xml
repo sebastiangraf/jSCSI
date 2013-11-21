@@ -25,6 +25,14 @@
 	xsi:schemaLocation="http://www.jscsi.org/2010-04 jscsi-target.xsd">
 
 	<TargetList>
+        <Target>
+            <TargetName>box.vm:disk-1</TargetName>
+            <TargetAlias>jSCSI Target</TargetAlias>
+            <AsyncFileStorage>
+                <Path>/tmp/vbox.dat</Path>
+                <NoCreate />
+            </AsyncFileStorage>
+        </Target>
 		<Target>
 			<TargetName>iqn.2010-04.local-test:disk-1</TargetName>
 			<TargetAlias>jSCSI Target</TargetAlias>

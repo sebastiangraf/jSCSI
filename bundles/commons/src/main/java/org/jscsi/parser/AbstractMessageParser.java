@@ -92,7 +92,6 @@ public abstract class AbstractMessageParser {
         pdu.position(BasicHeaderSegment.BYTES_8_11);
         deserializeBytes8to11(pdu.getInt());
         deserializeBytes12to15(pdu.getInt());
-
         pdu.position(BasicHeaderSegment.BYTES_20_23);
         deserializeBytes20to23(pdu.getInt());
         deserializeBytes24to27(pdu.getInt());

@@ -123,7 +123,7 @@ public final class TargetLoginPhase extends TargetPhase {
 
             // Login Operational Parameter Negotiation Stage (also optional, but
             // either SNS or LOPNS must be passed before proceeding to FFP)
-            if (authenticated && parser.getCurrentStageNumber() == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION) {
+            if (parser != null && authenticated && parser.getCurrentStageNumber() == LoginStage.LOGIN_OPERATIONAL_NEGOTIATION) {
                 stage = new LoginOperationalParameterNegotiationStage(this);
                 stage.execute(pdu);
                 nextStageNumber = stage.getNextStageNumber();

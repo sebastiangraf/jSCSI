@@ -120,9 +120,16 @@ public final class WriteStage extends ReadOrWriteStage {
              * WriteStage is simply left early (without closing the connection), the initiator may send additional
              * unsolicited Data-Out PDUs, which the jSCSI Target is currently unable to ignore or process properly.
              */
-            LOGGER.error("illegal field in Write CDB");
-            LOGGER.error("CDB:\n" + Debug.byteBufferToString(parser.getCDB()));
-            throw new InternetSCSIException();// leads to connection closing
+            LOGGER.debug("illegal field in Write CDB");
+            LOGGER.debug("CDB:\n" + Debug.byteBufferToString(parser.getCDB()));
+            
+            // Not necessarily close the connection
+
+            // create and send error PDU and leave stage
+            final ProtocolDataUnit responsePdu = createFixedFormatErrorPdu(cdb.getIllegalFieldPointers(),// senseKeySpecificData
+                    initiatorTaskTag, parser.getExpectedDataTransferLength());
+            connection.sendPdu(responsePdu);
+            return;
         }
 
         // *** start receiving data (or process what has already been sent) ***

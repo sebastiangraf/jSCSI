@@ -396,6 +396,30 @@ public final class LoginResponseParser extends TargetMessageParser {
 
     /** {@inheritDoc} */
     @Override
+    protected final int serializeBytes8to11() {
+        try {
+            return (int) (initiatorSessionID.serialize() >>> Constants.FOUR_BYTES_SHIFT);
+        } catch (InternetSCSIException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected final int serializeBytes12to15 () {
+        try {
+            return ((int) (initiatorSessionID.serialize()) & 0xffff0000) | this.targetSessionIdentifyingHandle;
+        } catch (InternetSCSIException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     protected final int serializeBytes36to39 () {
 
         int line = 0;

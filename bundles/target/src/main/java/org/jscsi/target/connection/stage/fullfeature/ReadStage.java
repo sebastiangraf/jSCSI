@@ -74,7 +74,7 @@ public class ReadStage extends ReadOrWriteStage {
         if (cdb.getIllegalFieldPointers() != null) {
             // the command must fail
 
-            LOGGER.error("illegal field in Read CDB");
+            LOGGER.debug("illegal field in Read CDB");
 
             // create and send error PDU and leave stage
             final ProtocolDataUnit responsePdu = createFixedFormatErrorPdu(cdb.getIllegalFieldPointers(),// senseKeySpecificData

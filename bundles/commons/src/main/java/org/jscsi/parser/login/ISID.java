@@ -298,8 +298,9 @@ public final class ISID {
 
         firstLine |= b << Constants.ONE_BYTE_SHIFT;
         firstLine |= a << Constants.THREE_BYTES_SHIFT;
+        firstLine &= 0x00ffffff;
         firstLine |= t.value() << T_FIELD_SHIFT;
-
+        
         isid = Utils.getUnsignedLong(firstLine) << Constants.FOUR_BYTES_SHIFT;
         isid |= Utils.getUnsignedLong(d) << Constants.TWO_BYTES_SHIFT;
 
@@ -312,12 +313,11 @@ public final class ISID {
      * @param isid The byte representation of a ISID to parse.
      * @throws InternetSCSIException If any violation of the iSCSI-Standard emerge.
      */
-    final void deserialize (final long isid) throws InternetSCSIException {
-
-        int line = (int) ((isid & FIRST_LINE_FLAG_MASK) >>> Constants.FOUR_BYTES_SHIFT);
-
-        t = Format.valueOf((byte) (line >>> T_FIELD_SHIFT));
-        a = (byte) (line & A_FIELD_FLAG_MASK >>> Constants.THREE_BYTES_SHIFT);
+    final void deserialize ( long isid) throws InternetSCSIException {
+        int line = (int) (isid >>> Constants.FOUR_BYTES_SHIFT);
+        
+        t = Format.valueOf((byte) (line  >>> T_FIELD_SHIFT));
+        a = (byte) ((line & A_FIELD_FLAG_MASK) >>> Constants.THREE_BYTES_SHIFT);
         b = (short) ((line & Constants.MIDDLE_TWO_BYTES_SHIFT) >>> Constants.ONE_BYTE_SHIFT);
         c = (byte) (line & Constants.FOURTH_BYTE_MASK);
 
@@ -475,9 +475,9 @@ public final class ISID {
                 break;
 
             case RANDOM :
-                if (d != 0) {
-                    exceptionMessage = "The D field is reserved in this ISID Format.";
-                }
+//                if (d != 0) {
+//                    exceptionMessage = "The D field is reserved in this ISID Format.";
+//                }
                 break;
 
             case RESERVED :

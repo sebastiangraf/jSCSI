@@ -19,7 +19,6 @@ import javax.xml.validation.Validator;
 
 import org.jscsi.target.scsi.lun.LogicalUnitNumber;
 import org.jscsi.target.settings.TextKeyword;
-import org.jscsi.target.storage.FileStorageModule;
 import org.jscsi.target.storage.IStorageModule;
 import org.jscsi.target.storage.JCloudsStorageModule;
 import org.jscsi.target.storage.RandomAccessStorageModule;
@@ -276,9 +275,6 @@ public class Configuration {
                 break;
             case ELEMENT_JCLOUDSSTORAGE :
                 kind = JCloudsStorageModule.class;
-                break;
-            case ELEMENT_FILESTORAGE :
-                kind = FileStorageModule.class;
                 break;
         }
 

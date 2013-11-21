@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jscsi.exception.InternetSCSIException;
@@ -216,6 +214,7 @@ public final class TargetServer implements Callable<Void> {
                     // confirm OpCode-
                     if (pdu.getBasicHeaderSegment().getOpCode() != OperationCode.LOGIN_REQUEST) throw new InternetSCSIException();
                     // get initiatorSessionID
+                    
                     LoginRequestParser parser = (LoginRequestParser) pdu.getBasicHeaderSegment().getParser();
                     ISID initiatorSessionID = parser.getInitiatorSessionID();
 

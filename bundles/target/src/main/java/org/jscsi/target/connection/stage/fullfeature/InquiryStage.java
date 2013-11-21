@@ -100,7 +100,7 @@ public class InquiryStage extends TargetFullFeatureStage {
 
             // send response
             sendResponse(bhs.getInitiatorTaskTag(), parser.getExpectedDataTransferLength(), responseData);
-
+           
         }
 
     }

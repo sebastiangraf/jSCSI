@@ -134,7 +134,7 @@ public final class ProtocolDataUnit {
         }
 
         offset += serializeAdditionalHeaderSegments(pdu, offset);
-
+        
         // write header digest
         // TODO: Move CRC calculation in BasicHeaderSegment.serialize?
         if (basicHeaderSegment.getParser().canHaveDigests()) {

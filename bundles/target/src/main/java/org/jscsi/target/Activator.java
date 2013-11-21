@@ -1,7 +1,6 @@
 package org.jscsi.target;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.util.concurrent.ExecutorService;

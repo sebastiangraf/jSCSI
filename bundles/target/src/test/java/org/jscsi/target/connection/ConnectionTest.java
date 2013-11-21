@@ -117,7 +117,7 @@ public class ConnectionTest {
              */
         }
 
-        verify(connection, times(9)).sendPdu(captor.capture());
+        verify(connection, times(8)).sendPdu(captor.capture());
 
         // Some output that makes watching the pdus easiert
         /*
@@ -128,7 +128,7 @@ public class ConnectionTest {
          * System.out.println(captor.getAllValues().get(i)); }
          */
 
-        for (int i = 0; i < units.size(); i++) {
+        for (int i = 0; i < units.size() - 1; i++) {
             if (captor.getAllValues().get(0).getBasicHeaderSegment().getParser() instanceof DataInParser == false)
                 assertEquals(units.remove(0), captor.getAllValues().remove(0));
             else

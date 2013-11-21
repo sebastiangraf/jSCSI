@@ -438,7 +438,6 @@ public final class LoginRequestParser extends InitiatorMessageParser {
 
         // use the logicalUnitNumber variable as temporary storage
         final long l = Utils.getUnsignedLong(line);
-
         logicalUnitNumber |= l;
         initiatorSessionID.deserialize(logicalUnitNumber);
 

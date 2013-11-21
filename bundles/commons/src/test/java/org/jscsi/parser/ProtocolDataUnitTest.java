@@ -174,7 +174,6 @@ public abstract class ProtocolDataUnitTest {
     protected void testBasicHeaderSegment (final boolean immediateFlag, final boolean finalFlag, final OperationCode opCode, final int totalAHSLength, final int dataSegmentLength, final int initiatorTaskTag) {
 
         BasicHeaderSegment bhs = protocolDataUnit.getBasicHeaderSegment();
-
         // test BHS fields
         assertEquals(immediateFlag, bhs.isImmediateFlag());
         assertEquals(finalFlag, bhs.isFinalFlag());
