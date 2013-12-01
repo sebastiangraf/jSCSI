@@ -97,19 +97,19 @@
          <version>2.5.1-SNAPSHOT</version>
       </dependency>
       <dependency>
-         <groupId>org.jclouds</groupId>
+         <groupId>org.apache.jclouds</groupId>
          <artifactId>jclouds-blobstore</artifactId>
-         <version>1.6.0-alpha.2</version>
+         <version>1.6.2-incubating</version>
       </dependency>
       <dependency>
-         <groupId>org.jclouds.provider</groupId>
+         <groupId>org.apache.jclouds.provider</groupId>
          <artifactId>aws-s3</artifactId>
-         <version>1.6.0</version>
+         <version>1.6.2-incubating</version>
       </dependency>
       <dependency>
-         <groupId>org.jclouds.api</groupId>
+         <groupId>org.apache.jclouds.api</groupId>
          <artifactId>filesystem</artifactId>
-         <version>1.6.0</version>
+         <version>1.6.2-incubating</version>
       </dependency>
       <dependency>
          <groupId>org.osgi</groupId>
