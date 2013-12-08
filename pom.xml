@@ -137,28 +137,18 @@
 					<includeAttached>true</includeAttached>
 				</configuration>
 			</plugin>
-			<!-- To invoke with "mvn site:site site:stage site:deploy" + "mvn antrun:run 
-				-N" + "mvn ghSite:site -N" -->
-			<plugin>
-				<groupId>com.github.github</groupId>
-				<artifactId>site-maven-plugin</artifactId>
-				<version>0.7</version>
-				<configuration>
-					<message>Building site for ${project.version}</message>
-				</configuration>
-			</plugin>
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-gpg-plugin</artifactId> -->
-<!-- 				<version>1.4</version> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<phase>install</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>sign</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
+ 			<plugin>
+				<artifactId>maven-gpg-plugin</artifactId>
+ 				<version>1.4</version>
+ 				<executions>
+ 					<execution>
+ 						<phase>install</phase>
+ 						<goals>
+ 							<goal>sign</goal>
+ 						</goals>
+ 					</execution>
+ 				</executions>
+ 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
