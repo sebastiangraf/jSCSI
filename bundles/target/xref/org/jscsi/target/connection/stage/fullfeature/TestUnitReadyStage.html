@@ -10,77 +10,78 @@
 
 <a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> org.jscsi.target.connection.stage.fullfeature;
 <a class="jxr_linenumber" name="2" href="#2">2</a>   
-<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> java.io.IOException;
-<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> java.security.DigestException;
-<a class="jxr_linenumber" name="5" href="#5">5</a>   
-<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> org.jscsi.exception.InternetSCSIException;
-<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.BasicHeaderSegment;
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.ProtocolDataUnit;
-<a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.scsi.SCSICommandParser;
-<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> org.jscsi.parser.scsi.SCSIResponseParser;
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> org.jscsi.parser.scsi.SCSIStatus;
-<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.connection.TargetPduFactory;
-<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.connection.phase.TargetFullFeaturePhase;
-<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.ScsiResponseDataSegment;
-<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.cdb.TestUnitReadyCdb;
-<a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
-<a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.settings.SettingsException;
-<a class="jxr_linenumber" name="18" href="#18">18</a>  
-<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="20" href="#20">20</a>  <em class="jxr_javadoccomment"> * A stage for processing &lt;code&gt;TEST UNIT READY&lt;/code&gt; SCSI commands.</em>
-<a class="jxr_linenumber" name="21" href="#21">21</a>  <em class="jxr_javadoccomment"> * </em>
-<a class="jxr_linenumber" name="22" href="#22">22</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="24" href="#24">24</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/jscsi/target/connection/stage/fullfeature/TestUnitReadyStage.html">TestUnitReadyStage</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../../org/jscsi/target/connection/stage/fullfeature/TargetFullFeatureStage.html">TargetFullFeatureStage</a> {
-<a class="jxr_linenumber" name="25" href="#25">25</a>  
-<a class="jxr_linenumber" name="26" href="#26">26</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/jscsi/target/connection/stage/fullfeature/TestUnitReadyStage.html">TestUnitReadyStage</a>(<a href="../../../../../../org/jscsi/target/connection/phase/TargetFullFeaturePhase.html">TargetFullFeaturePhase</a> targetFullFeaturePhase) {
-<a class="jxr_linenumber" name="27" href="#27">27</a>          <strong class="jxr_keyword">super</strong>(targetFullFeaturePhase);
-<a class="jxr_linenumber" name="28" href="#28">28</a>      }
-<a class="jxr_linenumber" name="29" href="#29">29</a>  
-<a class="jxr_linenumber" name="30" href="#30">30</a>      @Override
-<a class="jxr_linenumber" name="31" href="#31">31</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> execute(ProtocolDataUnit pdu) <strong class="jxr_keyword">throws</strong> IOException, InterruptedException,
-<a class="jxr_linenumber" name="32" href="#32">32</a>          InternetSCSIException, DigestException, <a href="../../../../../../org/jscsi/target/settings/SettingsException.html">SettingsException</a> {
-<a class="jxr_linenumber" name="33" href="#33">33</a>  
-<a class="jxr_linenumber" name="34" href="#34">34</a>          <strong class="jxr_keyword">final</strong> BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-<a class="jxr_linenumber" name="35" href="#35">35</a>          <strong class="jxr_keyword">final</strong> SCSICommandParser parser = (SCSICommandParser)bhs.getParser();
-<a class="jxr_linenumber" name="36" href="#36">36</a>  
-<a class="jxr_linenumber" name="37" href="#37">37</a>          ProtocolDataUnit responsePdu;<em class="jxr_comment">// the response PDU</em>
-<a class="jxr_linenumber" name="38" href="#38">38</a>  
-<a class="jxr_linenumber" name="39" href="#39">39</a>          <em class="jxr_comment">// get command details in CDB</em>
-<a class="jxr_linenumber" name="40" href="#40">40</a>          <strong class="jxr_keyword">final</strong> <a href="../../../../../../org/jscsi/target/scsi/cdb/TestUnitReadyCdb.html">TestUnitReadyCdb</a> cdb = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/jscsi/target/scsi/cdb/TestUnitReadyCdb.html">TestUnitReadyCdb</a>(parser.getCDB());
-<a class="jxr_linenumber" name="41" href="#41">41</a>          <strong class="jxr_keyword">final</strong> <a href="../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/FieldPointerSenseKeySpecificData.html">FieldPointerSenseKeySpecificData</a>[] illegalFieldPointers = cdb.getIllegalFieldPointers();
-<a class="jxr_linenumber" name="42" href="#42">42</a>  
-<a class="jxr_linenumber" name="43" href="#43">43</a>          <strong class="jxr_keyword">if</strong> (illegalFieldPointers != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="44" href="#44">44</a>              <em class="jxr_comment">// an illegal request has been made</em>
-<a class="jxr_linenumber" name="45" href="#45">45</a>  
-<a class="jxr_linenumber" name="46" href="#46">46</a>              responsePdu = createFixedFormatErrorPdu(illegalFieldPointers,<em class="jxr_comment">// senseKeySpecificData,</em>
-<a class="jxr_linenumber" name="47" href="#47">47</a>                  bhs.getInitiatorTaskTag(),<em class="jxr_comment">// initiatorTaskTag,</em>
-<a class="jxr_linenumber" name="48" href="#48">48</a>                  parser.getExpectedDataTransferLength());<em class="jxr_comment">// expDataTransferLength</em>
-<a class="jxr_linenumber" name="49" href="#49">49</a>  
-<a class="jxr_linenumber" name="50" href="#50">50</a>          } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="51" href="#51">51</a>              <em class="jxr_comment">// PDU is okay</em>
-<a class="jxr_linenumber" name="52" href="#52">52</a>              <em class="jxr_comment">// carry out command</em>
-<a class="jxr_linenumber" name="53" href="#53">53</a>              <em class="jxr_comment">// the logical unit is always ready</em>
-<a class="jxr_linenumber" name="54" href="#54">54</a>              responsePdu = TargetPduFactory.createSCSIResponsePdu(false,<em class="jxr_comment">// bidirectionalReadResidualOverflow</em>
-<a class="jxr_linenumber" name="55" href="#55">55</a>                  false,<em class="jxr_comment">// bidirectionalReadResidualUnderflow</em>
-<a class="jxr_linenumber" name="56" href="#56">56</a>                  false,<em class="jxr_comment">// residualOverflow</em>
-<a class="jxr_linenumber" name="57" href="#57">57</a>                  false,<em class="jxr_comment">// residualUnderflow,</em>
-<a class="jxr_linenumber" name="58" href="#58">58</a>                  SCSIResponseParser.ServiceResponse.COMMAND_COMPLETED_AT_TARGET,<em class="jxr_comment">// response,</em>
-<a class="jxr_linenumber" name="59" href="#59">59</a>                  SCSIStatus.GOOD,<em class="jxr_comment">// status,</em>
-<a class="jxr_linenumber" name="60" href="#60">60</a>                  bhs.getInitiatorTaskTag(),<em class="jxr_comment">// initiatorTaskTag,</em>
-<a class="jxr_linenumber" name="61" href="#61">61</a>                  0,<em class="jxr_comment">// snackTag</em>
-<a class="jxr_linenumber" name="62" href="#62">62</a>                  0,<em class="jxr_comment">// expectedDataSequenceNumber</em>
-<a class="jxr_linenumber" name="63" href="#63">63</a>                  0,<em class="jxr_comment">// bidirectionalReadResidualCount</em>
-<a class="jxr_linenumber" name="64" href="#64">64</a>                  0,<em class="jxr_comment">// residualCount</em>
-<a class="jxr_linenumber" name="65" href="#65">65</a>                  ScsiResponseDataSegment.EMPTY_DATA_SEGMENT);<em class="jxr_comment">// data</em>
-<a class="jxr_linenumber" name="66" href="#66">66</a>                                                              <em class="jxr_comment">// segment</em>
-<a class="jxr_linenumber" name="67" href="#67">67</a>          }
-<a class="jxr_linenumber" name="68" href="#68">68</a>  
-<a class="jxr_linenumber" name="69" href="#69">69</a>          <em class="jxr_comment">// send response</em>
-<a class="jxr_linenumber" name="70" href="#70">70</a>          connection.sendPdu(responsePdu);
-<a class="jxr_linenumber" name="71" href="#71">71</a>      }
-<a class="jxr_linenumber" name="72" href="#72">72</a>  
-<a class="jxr_linenumber" name="73" href="#73">73</a>  }
+<a class="jxr_linenumber" name="3" href="#3">3</a>   
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> java.security.DigestException;
+<a class="jxr_linenumber" name="6" href="#6">6</a>   
+<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> org.jscsi.exception.InternetSCSIException;
+<a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.BasicHeaderSegment;
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.ProtocolDataUnit;
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> org.jscsi.parser.scsi.SCSICommandParser;
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> org.jscsi.parser.scsi.SCSIResponseParser;
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> org.jscsi.parser.scsi.SCSIStatus;
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.connection.TargetPduFactory;
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.connection.phase.TargetFullFeaturePhase;
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.ScsiResponseDataSegment;
+<a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.cdb.TestUnitReadyCdb;
+<a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.settings.SettingsException;
+<a class="jxr_linenumber" name="19" href="#19">19</a>  
+<a class="jxr_linenumber" name="20" href="#20">20</a>  
+<a class="jxr_linenumber" name="21" href="#21">21</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="22" href="#22">22</a>  <em class="jxr_javadoccomment"> * A stage for processing &lt;code&gt;TEST UNIT READY&lt;/code&gt; SCSI commands.</em>
+<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
+<a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="26" href="#26">26</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/jscsi/target/connection/stage/fullfeature/TestUnitReadyStage.html">TestUnitReadyStage</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../../org/jscsi/target/connection/stage/fullfeature/TargetFullFeatureStage.html">TargetFullFeatureStage</a> {
+<a class="jxr_linenumber" name="27" href="#27">27</a>  
+<a class="jxr_linenumber" name="28" href="#28">28</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/jscsi/target/connection/stage/fullfeature/TestUnitReadyStage.html">TestUnitReadyStage</a> (TargetFullFeaturePhase targetFullFeaturePhase) {
+<a class="jxr_linenumber" name="29" href="#29">29</a>          <strong class="jxr_keyword">super</strong>(targetFullFeaturePhase);
+<a class="jxr_linenumber" name="30" href="#30">30</a>      }
+<a class="jxr_linenumber" name="31" href="#31">31</a>  
+<a class="jxr_linenumber" name="32" href="#32">32</a>      @Override
+<a class="jxr_linenumber" name="33" href="#33">33</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> execute (ProtocolDataUnit pdu) <strong class="jxr_keyword">throws</strong> IOException , InterruptedException , InternetSCSIException , DigestException , SettingsException {
+<a class="jxr_linenumber" name="34" href="#34">34</a>  
+<a class="jxr_linenumber" name="35" href="#35">35</a>          <strong class="jxr_keyword">final</strong> BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
+<a class="jxr_linenumber" name="36" href="#36">36</a>          <strong class="jxr_keyword">final</strong> SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
+<a class="jxr_linenumber" name="37" href="#37">37</a>  
+<a class="jxr_linenumber" name="38" href="#38">38</a>          ProtocolDataUnit responsePdu;<em class="jxr_comment">// the response PDU</em>
+<a class="jxr_linenumber" name="39" href="#39">39</a>  
+<a class="jxr_linenumber" name="40" href="#40">40</a>          <em class="jxr_comment">// get command details in CDB</em>
+<a class="jxr_linenumber" name="41" href="#41">41</a>          <strong class="jxr_keyword">final</strong> <a href="../../../../../../org/jscsi/target/scsi/cdb/TestUnitReadyCdb.html">TestUnitReadyCdb</a> cdb = <strong class="jxr_keyword">new</strong> <a href="../../../../../../org/jscsi/target/scsi/cdb/TestUnitReadyCdb.html">TestUnitReadyCdb</a>(parser.getCDB());
+<a class="jxr_linenumber" name="42" href="#42">42</a>          <strong class="jxr_keyword">final</strong> <a href="../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/FieldPointerSenseKeySpecificData.html">FieldPointerSenseKeySpecificData</a>[] illegalFieldPointers = cdb.getIllegalFieldPointers();
+<a class="jxr_linenumber" name="43" href="#43">43</a>  
+<a class="jxr_linenumber" name="44" href="#44">44</a>          <strong class="jxr_keyword">if</strong> (illegalFieldPointers != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="45" href="#45">45</a>              <em class="jxr_comment">// an illegal request has been made</em>
+<a class="jxr_linenumber" name="46" href="#46">46</a>  
+<a class="jxr_linenumber" name="47" href="#47">47</a>              responsePdu = createFixedFormatErrorPdu(illegalFieldPointers,<em class="jxr_comment">// senseKeySpecificData,</em>
+<a class="jxr_linenumber" name="48" href="#48">48</a>                      bhs.getInitiatorTaskTag(),<em class="jxr_comment">// initiatorTaskTag,</em>
+<a class="jxr_linenumber" name="49" href="#49">49</a>                      parser.getExpectedDataTransferLength());<em class="jxr_comment">// expDataTransferLength</em>
+<a class="jxr_linenumber" name="50" href="#50">50</a>  
+<a class="jxr_linenumber" name="51" href="#51">51</a>          } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="52" href="#52">52</a>              <em class="jxr_comment">// PDU is okay</em>
+<a class="jxr_linenumber" name="53" href="#53">53</a>              <em class="jxr_comment">// carry out command</em>
+<a class="jxr_linenumber" name="54" href="#54">54</a>              <em class="jxr_comment">// the logical unit is always ready</em>
+<a class="jxr_linenumber" name="55" href="#55">55</a>              responsePdu = TargetPduFactory.createSCSIResponsePdu(false,<em class="jxr_comment">// bidirectionalReadResidualOverflow</em>
+<a class="jxr_linenumber" name="56" href="#56">56</a>                      false,<em class="jxr_comment">// bidirectionalReadResidualUnderflow</em>
+<a class="jxr_linenumber" name="57" href="#57">57</a>                      false,<em class="jxr_comment">// residualOverflow</em>
+<a class="jxr_linenumber" name="58" href="#58">58</a>                      false,<em class="jxr_comment">// residualUnderflow,</em>
+<a class="jxr_linenumber" name="59" href="#59">59</a>                      SCSIResponseParser.ServiceResponse.COMMAND_COMPLETED_AT_TARGET,<em class="jxr_comment">// response,</em>
+<a class="jxr_linenumber" name="60" href="#60">60</a>                      SCSIStatus.GOOD,<em class="jxr_comment">// status,</em>
+<a class="jxr_linenumber" name="61" href="#61">61</a>                      bhs.getInitiatorTaskTag(),<em class="jxr_comment">// initiatorTaskTag,</em>
+<a class="jxr_linenumber" name="62" href="#62">62</a>                      0,<em class="jxr_comment">// snackTag</em>
+<a class="jxr_linenumber" name="63" href="#63">63</a>                      0,<em class="jxr_comment">// expectedDataSequenceNumber</em>
+<a class="jxr_linenumber" name="64" href="#64">64</a>                      0,<em class="jxr_comment">// bidirectionalReadResidualCount</em>
+<a class="jxr_linenumber" name="65" href="#65">65</a>                      0,<em class="jxr_comment">// residualCount</em>
+<a class="jxr_linenumber" name="66" href="#66">66</a>                      ScsiResponseDataSegment.EMPTY_DATA_SEGMENT);<em class="jxr_comment">// data</em>
+<a class="jxr_linenumber" name="67" href="#67">67</a>                                                                  <em class="jxr_comment">// segment</em>
+<a class="jxr_linenumber" name="68" href="#68">68</a>          }
+<a class="jxr_linenumber" name="69" href="#69">69</a>  
+<a class="jxr_linenumber" name="70" href="#70">70</a>          <em class="jxr_comment">// send response</em>
+<a class="jxr_linenumber" name="71" href="#71">71</a>          connection.sendPdu(responsePdu);
+<a class="jxr_linenumber" name="72" href="#72">72</a>      }
+<a class="jxr_linenumber" name="73" href="#73">73</a>  
+<a class="jxr_linenumber" name="74" href="#74">74</a>  }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

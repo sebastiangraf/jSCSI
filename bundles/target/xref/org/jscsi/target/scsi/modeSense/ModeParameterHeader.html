@@ -10,39 +10,39 @@
 
 <a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> org.jscsi.target.scsi.modeSense;
 <a class="jxr_linenumber" name="2" href="#2">2</a>   
-<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.ISerializable;
-<a class="jxr_linenumber" name="4" href="#4">4</a>   
-<a class="jxr_linenumber" name="5" href="#5">5</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="6" href="#6">6</a>   <em class="jxr_javadoccomment"> * Instances {@link ModeParameterHeader} are part of {@link ModeParameterList} objects and specify the layout</em>
-<a class="jxr_linenumber" name="7" href="#7">7</a>   <em class="jxr_javadoccomment"> * and length of the following non-header fields.</em>
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <em class="jxr_javadoccomment"> * </em>
-<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
-<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/jscsi/target/scsi/modeSense/ModeParameterHeader.html">ModeParameterHeader</a> <strong class="jxr_keyword">implements</strong> <a href="../../../../../org/jscsi/target/scsi/ISerializable.html">ISerializable</a> {
-<a class="jxr_linenumber" name="12" href="#12">12</a>  
-<a class="jxr_linenumber" name="13" href="#13">13</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="14" href="#14">14</a>  <em class="jxr_javadoccomment">     * When using the MODE SENSE command, the MODE DATA LENGTH field indicates</em>
-<a class="jxr_linenumber" name="15" href="#15">15</a>  <em class="jxr_javadoccomment">     * the length in bytes of the following data that is available to be</em>
-<a class="jxr_linenumber" name="16" href="#16">16</a>  <em class="jxr_javadoccomment">     * transferred. The mode data length does not include the number of bytes in</em>
-<a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment">     * the MODE DATA LENGTH field.</em>
-<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment">     * When using the MODE SELECT command, this field is reserved.</em>
-<a class="jxr_linenumber" name="20" href="#20">20</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="21" href="#21">21</a>  <em class="jxr_javadoccomment">     * Logical units that support more than 256 bytes of block descriptors and mode pages may need to</em>
-<a class="jxr_linenumber" name="22" href="#22">22</a>  <em class="jxr_javadoccomment">     * implement ten-byte mode commands. The mode data length field in the six-byte CDB header limits the</em>
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment">     * returned data to 256 bytes.</em>
+<a class="jxr_linenumber" name="3" href="#3">3</a>   
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.ISerializable;
+<a class="jxr_linenumber" name="5" href="#5">5</a>   
+<a class="jxr_linenumber" name="6" href="#6">6</a>   
+<a class="jxr_linenumber" name="7" href="#7">7</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="8" href="#8">8</a>   <em class="jxr_javadoccomment"> * Instances {@link ModeParameterHeader} are part of {@link ModeParameterList} objects and specify the layout and length</em>
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> * of the following non-header fields.</em>
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/jscsi/target/scsi/modeSense/ModeParameterHeader.html">ModeParameterHeader</a> <strong class="jxr_keyword">implements</strong> <a href="../../../../../org/jscsi/target/scsi/ISerializable.html">ISerializable</a> {
+<a class="jxr_linenumber" name="14" href="#14">14</a>  
+<a class="jxr_linenumber" name="15" href="#15">15</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="16" href="#16">16</a>  <em class="jxr_javadoccomment">     * When using the MODE SENSE command, the MODE DATA LENGTH field indicates the length in bytes of the following data</em>
+<a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment">     * that is available to be transferred. The mode data length does not include the number of bytes in the MODE DATA</em>
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment">     * LENGTH field.</em>
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="20" href="#20">20</a>  <em class="jxr_javadoccomment">     * When using the MODE SELECT command, this field is reserved.</em>
+<a class="jxr_linenumber" name="21" href="#21">21</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="22" href="#22">22</a>  <em class="jxr_javadoccomment">     * Logical units that support more than 256 bytes of block descriptors and mode pages may need to implement ten-byte</em>
+<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment">     * mode commands. The mode data length field in the six-byte CDB header limits the returned data to 256 bytes.</em>
 <a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="25" href="#25">25</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> modeDataLength;
 <a class="jxr_linenumber" name="26" href="#26">26</a>  
 <a class="jxr_linenumber" name="27" href="#27">27</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="28" href="#28">28</a>  <em class="jxr_javadoccomment">     * The contents of the MEDIUM TYPE field are unique for each device type.</em>
-<a class="jxr_linenumber" name="29" href="#29">29</a>  <em class="jxr_javadoccomment">     * For direct-access block devices, the value must be 0x00.</em>
+<a class="jxr_linenumber" name="28" href="#28">28</a>  <em class="jxr_javadoccomment">     * The contents of the MEDIUM TYPE field are unique for each device type. For direct-access block devices, the value</em>
+<a class="jxr_linenumber" name="29" href="#29">29</a>  <em class="jxr_javadoccomment">     * must be 0x00.</em>
 <a class="jxr_linenumber" name="30" href="#30">30</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="31" href="#31">31</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> byte mediumType = (byte)0x00;
+<a class="jxr_linenumber" name="31" href="#31">31</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> byte mediumType = (byte) 0x00;
 <a class="jxr_linenumber" name="32" href="#32">32</a>  
 <a class="jxr_linenumber" name="33" href="#33">33</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="34" href="#34">34</a>  <em class="jxr_javadoccomment">     * The DEVICE-SPECIFIC PARAMETER field is unique for each device type. For</em>
-<a class="jxr_linenumber" name="35" href="#35">35</a>  <em class="jxr_javadoccomment">     * direct-access block devices the byte looks like this:</em>
+<a class="jxr_linenumber" name="34" href="#34">34</a>  <em class="jxr_javadoccomment">     * The DEVICE-SPECIFIC PARAMETER field is unique for each device type. For direct-access block devices the byte</em>
+<a class="jxr_linenumber" name="35" href="#35">35</a>  <em class="jxr_javadoccomment">     * looks like this:</em>
 <a class="jxr_linenumber" name="36" href="#36">36</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="37" href="#37">37</a>  <em class="jxr_javadoccomment">     * &lt;code&gt;</em>
 <a class="jxr_linenumber" name="38" href="#38">38</a>  <em class="jxr_javadoccomment">     * +---+---+---+---+---+---+---+---+---+&lt;br/&gt;</em>
@@ -53,49 +53,43 @@
 <a class="jxr_linenumber" name="43" href="#43">43</a>  <em class="jxr_javadoccomment">     * +---+---+---+---+---+---+---+---+---+</em>
 <a class="jxr_linenumber" name="44" href="#44">44</a>  <em class="jxr_javadoccomment">     * &lt;/code&gt;</em>
 <a class="jxr_linenumber" name="45" href="#45">45</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="46" href="#46">46</a>  <em class="jxr_javadoccomment">     * When used with the MODE SELECT command, the write protect (WP) bit is not defined. When used with the</em>
-<a class="jxr_linenumber" name="47" href="#47">47</a>  <em class="jxr_javadoccomment">     * MODE SENSE command, a WP bit set to one indicates that the medium is write-protected. A WP bit set to</em>
-<a class="jxr_linenumber" name="48" href="#48">48</a>  <em class="jxr_javadoccomment">     * zero indicates that the medium is not write-protected. When the software write protect (SWP) bit in the</em>
-<a class="jxr_linenumber" name="49" href="#49">49</a>  <em class="jxr_javadoccomment">     * Control mode page (see SPC-4) is set to one, the WP bit shall be set to one.</em>
+<a class="jxr_linenumber" name="46" href="#46">46</a>  <em class="jxr_javadoccomment">     * When used with the MODE SELECT command, the write protect (WP) bit is not defined. When used with the MODE SENSE</em>
+<a class="jxr_linenumber" name="47" href="#47">47</a>  <em class="jxr_javadoccomment">     * command, a WP bit set to one indicates that the medium is write-protected. A WP bit set to zero indicates that</em>
+<a class="jxr_linenumber" name="48" href="#48">48</a>  <em class="jxr_javadoccomment">     * the medium is not write-protected. When the software write protect (SWP) bit in the Control mode page (see SPC-4)</em>
+<a class="jxr_linenumber" name="49" href="#49">49</a>  <em class="jxr_javadoccomment">     * is set to one, the WP bit shall be set to one.</em>
 <a class="jxr_linenumber" name="50" href="#50">50</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="51" href="#51">51</a>  <em class="jxr_javadoccomment">     * When the SWP bit in the Control mode page is set to zero, the WP bit shall be set to one if the medium</em>
-<a class="jxr_linenumber" name="52" href="#52">52</a>  <em class="jxr_javadoccomment">     * is write-protected (e.g., due to mechanisms outside the scope of this standard) or zero if the medium</em>
-<a class="jxr_linenumber" name="53" href="#53">53</a>  <em class="jxr_javadoccomment">     * is not write-protected.</em>
+<a class="jxr_linenumber" name="51" href="#51">51</a>  <em class="jxr_javadoccomment">     * When the SWP bit in the Control mode page is set to zero, the WP bit shall be set to one if the medium is</em>
+<a class="jxr_linenumber" name="52" href="#52">52</a>  <em class="jxr_javadoccomment">     * write-protected (e.g., due to mechanisms outside the scope of this standard) or zero if the medium is not</em>
+<a class="jxr_linenumber" name="53" href="#53">53</a>  <em class="jxr_javadoccomment">     * write-protected.</em>
 <a class="jxr_linenumber" name="54" href="#54">54</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="55" href="#55">55</a>  <em class="jxr_javadoccomment">     * When used with the MODE SELECT command, the DPOFUA bit is reserved. When used with the MODE SENSE</em>
-<a class="jxr_linenumber" name="56" href="#56">56</a>  <em class="jxr_javadoccomment">     * command, a DPOFUA bit set to zero indicates that the device server does not support the DPO and FUA</em>
-<a class="jxr_linenumber" name="57" href="#57">57</a>  <em class="jxr_javadoccomment">     * bits. When used with the MODE SENSE command, a DPOFUA bit set to one indicates that the device server</em>
-<a class="jxr_linenumber" name="58" href="#58">58</a>  <em class="jxr_javadoccomment">     * supports the DPO and FUA bits.</em>
-<a class="jxr_linenumber" name="59" href="#59">59</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="60" href="#60">60</a>  <em class="jxr_javadoccomment">     * So, the simulated logical unit of the jSCSI Target must always use a value of 0x00.</em>
-<a class="jxr_linenumber" name="61" href="#61">61</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="62" href="#62">62</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> byte deviceSpecificParameter = (byte)0x00;
-<a class="jxr_linenumber" name="63" href="#63">63</a>  
-<a class="jxr_linenumber" name="64" href="#64">64</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="65" href="#65">65</a>  <em class="jxr_javadoccomment">     * The BLOCK DESCRIPTOR LENGTH field contains the length in bytes of all the</em>
-<a class="jxr_linenumber" name="66" href="#66">66</a>  <em class="jxr_javadoccomment">     * block descriptors. It is equal to the number of block descriptors times</em>
-<a class="jxr_linenumber" name="67" href="#67">67</a>  <em class="jxr_javadoccomment">     * eight if the LONGLBA bit is set to zero or times sixteen if the LONGLBA</em>
-<a class="jxr_linenumber" name="68" href="#68">68</a>  <em class="jxr_javadoccomment">     * bit is set to one, and does not include mode pages or vendor specific</em>
-<a class="jxr_linenumber" name="69" href="#69">69</a>  <em class="jxr_javadoccomment">     * parameters (e.g., page code set to zero), if any, that may follow the</em>
-<a class="jxr_linenumber" name="70" href="#70">70</a>  <em class="jxr_javadoccomment">     * last block descriptor. A block descriptor length of zero indicates that</em>
-<a class="jxr_linenumber" name="71" href="#71">71</a>  <em class="jxr_javadoccomment">     * no block descriptors are included in the mode parameter list. This</em>
-<a class="jxr_linenumber" name="72" href="#72">72</a>  <em class="jxr_javadoccomment">     * condition shall not be considered an error.</em>
-<a class="jxr_linenumber" name="73" href="#73">73</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="74" href="#74">74</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> blockDescriptorLength;
-<a class="jxr_linenumber" name="75" href="#75">75</a>  
-<a class="jxr_linenumber" name="76" href="#76">76</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="77" href="#77">77</a>  <em class="jxr_javadoccomment">     * The abstract constructor.</em>
-<a class="jxr_linenumber" name="78" href="#78">78</a>  <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="79" href="#79">79</a>  <em class="jxr_javadoccomment">     * @param modeDataLength</em>
-<a class="jxr_linenumber" name="80" href="#80">80</a>  <em class="jxr_javadoccomment">     *            the length in bytes of all MODE DATA list elements</em>
-<a class="jxr_linenumber" name="81" href="#81">81</a>  <em class="jxr_javadoccomment">     * @param blockDescriptorLength</em>
-<a class="jxr_linenumber" name="82" href="#82">82</a>  <em class="jxr_javadoccomment">     *            the length in bytes of all BLOCK DESCRIPTOR list elements</em>
-<a class="jxr_linenumber" name="83" href="#83">83</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="84" href="#84">84</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/jscsi/target/scsi/modeSense/ModeParameterHeader.html">ModeParameterHeader</a>(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> modeDataLength, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> blockDescriptorLength) {
-<a class="jxr_linenumber" name="85" href="#85">85</a>          <strong class="jxr_keyword">this</strong>.modeDataLength = modeDataLength;
-<a class="jxr_linenumber" name="86" href="#86">86</a>          <strong class="jxr_keyword">this</strong>.blockDescriptorLength = blockDescriptorLength;
-<a class="jxr_linenumber" name="87" href="#87">87</a>      }
-<a class="jxr_linenumber" name="88" href="#88">88</a>  }
+<a class="jxr_linenumber" name="55" href="#55">55</a>  <em class="jxr_javadoccomment">     * When used with the MODE SELECT command, the DPOFUA bit is reserved. When used with the MODE SENSE command, a</em>
+<a class="jxr_linenumber" name="56" href="#56">56</a>  <em class="jxr_javadoccomment">     * DPOFUA bit set to zero indicates that the device server does not support the DPO and FUA bits. When used with the</em>
+<a class="jxr_linenumber" name="57" href="#57">57</a>  <em class="jxr_javadoccomment">     * MODE SENSE command, a DPOFUA bit set to one indicates that the device server supports the DPO and FUA bits.</em>
+<a class="jxr_linenumber" name="58" href="#58">58</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="59" href="#59">59</a>  <em class="jxr_javadoccomment">     * So, the simulated logical unit of the jSCSI Target must always use a value of 0x00.</em>
+<a class="jxr_linenumber" name="60" href="#60">60</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="61" href="#61">61</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> byte deviceSpecificParameter = (byte) 0x00;
+<a class="jxr_linenumber" name="62" href="#62">62</a>  
+<a class="jxr_linenumber" name="63" href="#63">63</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="64" href="#64">64</a>  <em class="jxr_javadoccomment">     * The BLOCK DESCRIPTOR LENGTH field contains the length in bytes of all the block descriptors. It is equal to the</em>
+<a class="jxr_linenumber" name="65" href="#65">65</a>  <em class="jxr_javadoccomment">     * number of block descriptors times eight if the LONGLBA bit is set to zero or times sixteen if the LONGLBA bit is</em>
+<a class="jxr_linenumber" name="66" href="#66">66</a>  <em class="jxr_javadoccomment">     * set to one, and does not include mode pages or vendor specific parameters (e.g., page code set to zero), if any,</em>
+<a class="jxr_linenumber" name="67" href="#67">67</a>  <em class="jxr_javadoccomment">     * that may follow the last block descriptor. A block descriptor length of zero indicates that no block descriptors</em>
+<a class="jxr_linenumber" name="68" href="#68">68</a>  <em class="jxr_javadoccomment">     * are included in the mode parameter list. This condition shall not be considered an error.</em>
+<a class="jxr_linenumber" name="69" href="#69">69</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="70" href="#70">70</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> blockDescriptorLength;
+<a class="jxr_linenumber" name="71" href="#71">71</a>  
+<a class="jxr_linenumber" name="72" href="#72">72</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="73" href="#73">73</a>  <em class="jxr_javadoccomment">     * The abstract constructor.</em>
+<a class="jxr_linenumber" name="74" href="#74">74</a>  <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="75" href="#75">75</a>  <em class="jxr_javadoccomment">     * @param modeDataLength the length in bytes of all MODE DATA list elements</em>
+<a class="jxr_linenumber" name="76" href="#76">76</a>  <em class="jxr_javadoccomment">     * @param blockDescriptorLength the length in bytes of all BLOCK DESCRIPTOR list elements</em>
+<a class="jxr_linenumber" name="77" href="#77">77</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="78" href="#78">78</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/jscsi/target/scsi/modeSense/ModeParameterHeader.html">ModeParameterHeader</a> (<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> modeDataLength, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> blockDescriptorLength) {
+<a class="jxr_linenumber" name="79" href="#79">79</a>          <strong class="jxr_keyword">this</strong>.modeDataLength = modeDataLength;
+<a class="jxr_linenumber" name="80" href="#80">80</a>          <strong class="jxr_keyword">this</strong>.blockDescriptorLength = blockDescriptorLength;
+<a class="jxr_linenumber" name="81" href="#81">81</a>      }
+<a class="jxr_linenumber" name="82" href="#82">82</a>  }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

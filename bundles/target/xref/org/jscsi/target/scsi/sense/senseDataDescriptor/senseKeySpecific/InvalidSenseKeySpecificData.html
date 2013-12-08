@@ -10,29 +10,30 @@
 
 <a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific;
 <a class="jxr_linenumber" name="2" href="#2">2</a>   
-<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
-<a class="jxr_linenumber" name="4" href="#4">4</a>   
-<a class="jxr_linenumber" name="5" href="#5">5</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="6" href="#6">6</a>   <em class="jxr_javadoccomment"> * This kind of sense-key-specific data can be used instead of all the other {@link SenseKeySpecificData}</em>
-<a class="jxr_linenumber" name="7" href="#7">7</a>   <em class="jxr_javadoccomment"> * subclasses, if no valid sense-key-specific data</em>
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <em class="jxr_javadoccomment"> * is to be transmitted to the SCSI initiator.</em>
-<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> * All serialized objects of this class proclaims to contain no valid data.</em>
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> * </em>
-<a class="jxr_linenumber" name="12" href="#12">12</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
-<a class="jxr_linenumber" name="13" href="#13">13</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/InvalidSenseKeySpecificData.html">InvalidSenseKeySpecificData</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/SenseKeySpecificData.html">SenseKeySpecificData</a> {
-<a class="jxr_linenumber" name="15" href="#15">15</a>  
-<a class="jxr_linenumber" name="16" href="#16">16</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/InvalidSenseKeySpecificData.html">InvalidSenseKeySpecificData</a>() {
-<a class="jxr_linenumber" name="17" href="#17">17</a>          <strong class="jxr_keyword">super</strong>(false);<em class="jxr_comment">// sense key specific data not valid</em>
-<a class="jxr_linenumber" name="18" href="#18">18</a>      }
-<a class="jxr_linenumber" name="19" href="#19">19</a>  
-<a class="jxr_linenumber" name="20" href="#20">20</a>      @Override
-<a class="jxr_linenumber" name="21" href="#21">21</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> serializeSpecificFields(ByteBuffer byteBuffer, <strong class="jxr_keyword">int</strong> index) {
-<a class="jxr_linenumber" name="22" href="#22">22</a>          <em class="jxr_comment">// do nothing</em>
-<a class="jxr_linenumber" name="23" href="#23">23</a>      }
-<a class="jxr_linenumber" name="24" href="#24">24</a>  
-<a class="jxr_linenumber" name="25" href="#25">25</a>  }
+<a class="jxr_linenumber" name="3" href="#3">3</a>   
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
+<a class="jxr_linenumber" name="5" href="#5">5</a>   
+<a class="jxr_linenumber" name="6" href="#6">6</a>   
+<a class="jxr_linenumber" name="7" href="#7">7</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="8" href="#8">8</a>   <em class="jxr_javadoccomment"> * This kind of sense-key-specific data can be used instead of all the other {@link SenseKeySpecificData} subclasses, if</em>
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> * no valid sense-key-specific data is to be transmitted to the SCSI initiator.</em>
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> * All serialized objects of this class proclaims to contain no valid data.</em>
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/InvalidSenseKeySpecificData.html">InvalidSenseKeySpecificData</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/SenseKeySpecificData.html">SenseKeySpecificData</a> {
+<a class="jxr_linenumber" name="16" href="#16">16</a>  
+<a class="jxr_linenumber" name="17" href="#17">17</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/InvalidSenseKeySpecificData.html">InvalidSenseKeySpecificData</a> () {
+<a class="jxr_linenumber" name="18" href="#18">18</a>          <strong class="jxr_keyword">super</strong>(false);<em class="jxr_comment">// sense key specific data not valid</em>
+<a class="jxr_linenumber" name="19" href="#19">19</a>      }
+<a class="jxr_linenumber" name="20" href="#20">20</a>  
+<a class="jxr_linenumber" name="21" href="#21">21</a>      @Override
+<a class="jxr_linenumber" name="22" href="#22">22</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> serializeSpecificFields (ByteBuffer byteBuffer, <strong class="jxr_keyword">int</strong> index) {
+<a class="jxr_linenumber" name="23" href="#23">23</a>          <em class="jxr_comment">// do nothing</em>
+<a class="jxr_linenumber" name="24" href="#24">24</a>      }
+<a class="jxr_linenumber" name="25" href="#25">25</a>  
+<a class="jxr_linenumber" name="26" href="#26">26</a>  }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

@@ -10,75 +10,70 @@
 
 <a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> org.jscsi.target.scsi.cdb;
 <a class="jxr_linenumber" name="2" href="#2">2</a>   
-<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
-<a class="jxr_linenumber" name="4" href="#4">4</a>   
-<a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.util.ReadWrite;
-<a class="jxr_linenumber" name="6" href="#6">6</a>   
-<a class="jxr_linenumber" name="7" href="#7">7</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <em class="jxr_javadoccomment"> * This class represents Command Descriptor Blocks for the &lt;code&gt;REPORT LUNS&lt;/code&gt; SCSI command.</em>
-<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> * </em>
-<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/jscsi/target/scsi/cdb/ReportLunsCDB.html">ReportLunsCDB</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../org/jscsi/target/scsi/cdb/CommandDescriptorBlock.html">CommandDescriptorBlock</a> {
-<a class="jxr_linenumber" name="13" href="#13">13</a>  
-<a class="jxr_linenumber" name="14" href="#14">14</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="15" href="#15">15</a>  <em class="jxr_javadoccomment">     * The SELECT REPORT field specifies the types of logical unit addresses</em>
-<a class="jxr_linenumber" name="16" href="#16">16</a>  <em class="jxr_javadoccomment">     * that shall be reported.</em>
-<a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment">     * @see SelectReport</em>
-<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="20" href="#20">20</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../../org/jscsi/target/scsi/cdb/SelectReport.html">SelectReport</a> selectReport;
-<a class="jxr_linenumber" name="21" href="#21">21</a>  
-<a class="jxr_linenumber" name="22" href="#22">22</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment">     * The ALLOCATION LENGTH field specifies the maximum number of bytes that an</em>
-<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment">     * application client has allocated in the Data-In Buffer. An allocation</em>
-<a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment">     * length of zero specifies that no data shall be transferred. This</em>
-<a class="jxr_linenumber" name="26" href="#26">26</a>  <em class="jxr_javadoccomment">     * condition shall not be considered as an error. The device server shall</em>
-<a class="jxr_linenumber" name="27" href="#27">27</a>  <em class="jxr_javadoccomment">     * terminate transfers to the Data-In Buffer when the number of bytes</em>
-<a class="jxr_linenumber" name="28" href="#28">28</a>  <em class="jxr_javadoccomment">     * specified by the ALLOCATION LENGTH field have been transferred or when</em>
-<a class="jxr_linenumber" name="29" href="#29">29</a>  <em class="jxr_javadoccomment">     * all available data have been transferred, whichever is less.</em>
-<a class="jxr_linenumber" name="30" href="#30">30</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="31" href="#31">31</a>  <em class="jxr_javadoccomment">     * The allocation length is used to limit the maximum amount of variable length data (e.g., mode data, log</em>
-<a class="jxr_linenumber" name="32" href="#32">32</a>  <em class="jxr_javadoccomment">     * data, diagnostic data) returned to an application client. If the information being transferred to the</em>
-<a class="jxr_linenumber" name="33" href="#33">33</a>  <em class="jxr_javadoccomment">     * Data-In Buffer includes fields containing counts of the number of bytes in some or all of the data,</em>
-<a class="jxr_linenumber" name="34" href="#34">34</a>  <em class="jxr_javadoccomment">     * then the contents of these fields shall not be altered to reflect the truncation, if any, that results</em>
-<a class="jxr_linenumber" name="35" href="#35">35</a>  <em class="jxr_javadoccomment">     * from an insufficient ALLOCATION LENGTH value, unless the standard that describes the Data-In Buffer</em>
-<a class="jxr_linenumber" name="36" href="#36">36</a>  <em class="jxr_javadoccomment">     * format states otherwise.</em>
-<a class="jxr_linenumber" name="37" href="#37">37</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="38" href="#38">38</a>  <em class="jxr_javadoccomment">     * If the amount of information to be transferred exceeds the maximum value that the ALLOCATION LENGTH</em>
-<a class="jxr_linenumber" name="39" href="#39">39</a>  <em class="jxr_javadoccomment">     * field is capable of specifying, the device server shall transfer no data and terminate the command with</em>
-<a class="jxr_linenumber" name="40" href="#40">40</a>  <em class="jxr_javadoccomment">     * CHECK CONDITION status, with the sense key set to ILLEGAL REQUEST, and the additional sense code set to</em>
-<a class="jxr_linenumber" name="41" href="#41">41</a>  <em class="jxr_javadoccomment">     * INVALID FIELD IN CDB.</em>
-<a class="jxr_linenumber" name="42" href="#42">42</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="43" href="#43">43</a>  <em class="jxr_javadoccomment">     * If EVPD is set to zero, the allocation length should be at least five, so that the ADDITIONAL LENGTH</em>
-<a class="jxr_linenumber" name="44" href="#44">44</a>  <em class="jxr_javadoccomment">     * field in the parameter data is returned. If EVPD is set to one, the allocation length should be should</em>
-<a class="jxr_linenumber" name="45" href="#45">45</a>  <em class="jxr_javadoccomment">     * be at least four, so that the PAGE LENGTH field in the parameter data is returned.</em>
-<a class="jxr_linenumber" name="46" href="#46">46</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="47" href="#47">47</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> allocationLength;
+<a class="jxr_linenumber" name="3" href="#3">3</a>   
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
+<a class="jxr_linenumber" name="5" href="#5">5</a>   
+<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.util.ReadWrite;
+<a class="jxr_linenumber" name="7" href="#7">7</a>   
+<a class="jxr_linenumber" name="8" href="#8">8</a>   
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> * This class represents Command Descriptor Blocks for the &lt;code&gt;REPORT LUNS&lt;/code&gt; SCSI command.</em>
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/jscsi/target/scsi/cdb/ReportLunsCDB.html">ReportLunsCDB</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../org/jscsi/target/scsi/cdb/CommandDescriptorBlock.html">CommandDescriptorBlock</a> {
+<a class="jxr_linenumber" name="15" href="#15">15</a>  
+<a class="jxr_linenumber" name="16" href="#16">16</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment">     * The SELECT REPORT field specifies the types of logical unit addresses that shall be reported.</em>
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment">     * @see SelectReport</em>
+<a class="jxr_linenumber" name="20" href="#20">20</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="21" href="#21">21</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../../org/jscsi/target/scsi/cdb/SelectReport.html">SelectReport</a> selectReport;
+<a class="jxr_linenumber" name="22" href="#22">22</a>  
+<a class="jxr_linenumber" name="23" href="#23">23</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment">     * The ALLOCATION LENGTH field specifies the maximum number of bytes that an application client has allocated in the</em>
+<a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment">     * Data-In Buffer. An allocation length of zero specifies that no data shall be transferred. This condition shall</em>
+<a class="jxr_linenumber" name="26" href="#26">26</a>  <em class="jxr_javadoccomment">     * not be considered as an error. The device server shall terminate transfers to the Data-In Buffer when the number</em>
+<a class="jxr_linenumber" name="27" href="#27">27</a>  <em class="jxr_javadoccomment">     * of bytes specified by the ALLOCATION LENGTH field have been transferred or when all available data have been</em>
+<a class="jxr_linenumber" name="28" href="#28">28</a>  <em class="jxr_javadoccomment">     * transferred, whichever is less.</em>
+<a class="jxr_linenumber" name="29" href="#29">29</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="30" href="#30">30</a>  <em class="jxr_javadoccomment">     * The allocation length is used to limit the maximum amount of variable length data (e.g., mode data, log data,</em>
+<a class="jxr_linenumber" name="31" href="#31">31</a>  <em class="jxr_javadoccomment">     * diagnostic data) returned to an application client. If the information being transferred to the Data-In Buffer</em>
+<a class="jxr_linenumber" name="32" href="#32">32</a>  <em class="jxr_javadoccomment">     * includes fields containing counts of the number of bytes in some or all of the data, then the contents of these</em>
+<a class="jxr_linenumber" name="33" href="#33">33</a>  <em class="jxr_javadoccomment">     * fields shall not be altered to reflect the truncation, if any, that results from an insufficient ALLOCATION</em>
+<a class="jxr_linenumber" name="34" href="#34">34</a>  <em class="jxr_javadoccomment">     * LENGTH value, unless the standard that describes the Data-In Buffer format states otherwise.</em>
+<a class="jxr_linenumber" name="35" href="#35">35</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="36" href="#36">36</a>  <em class="jxr_javadoccomment">     * If the amount of information to be transferred exceeds the maximum value that the ALLOCATION LENGTH field is</em>
+<a class="jxr_linenumber" name="37" href="#37">37</a>  <em class="jxr_javadoccomment">     * capable of specifying, the device server shall transfer no data and terminate the command with CHECK CONDITION</em>
+<a class="jxr_linenumber" name="38" href="#38">38</a>  <em class="jxr_javadoccomment">     * status, with the sense key set to ILLEGAL REQUEST, and the additional sense code set to INVALID FIELD IN CDB.</em>
+<a class="jxr_linenumber" name="39" href="#39">39</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="40" href="#40">40</a>  <em class="jxr_javadoccomment">     * If EVPD is set to zero, the allocation length should be at least five, so that the ADDITIONAL LENGTH field in the</em>
+<a class="jxr_linenumber" name="41" href="#41">41</a>  <em class="jxr_javadoccomment">     * parameter data is returned. If EVPD is set to one, the allocation length should be should be at least four, so</em>
+<a class="jxr_linenumber" name="42" href="#42">42</a>  <em class="jxr_javadoccomment">     * that the PAGE LENGTH field in the parameter data is returned.</em>
+<a class="jxr_linenumber" name="43" href="#43">43</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="44" href="#44">44</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> allocationLength;
+<a class="jxr_linenumber" name="45" href="#45">45</a>  
+<a class="jxr_linenumber" name="46" href="#46">46</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/jscsi/target/scsi/cdb/ReportLunsCDB.html">ReportLunsCDB</a> (ByteBuffer buffer) {
+<a class="jxr_linenumber" name="47" href="#47">47</a>          <strong class="jxr_keyword">super</strong>(buffer);
 <a class="jxr_linenumber" name="48" href="#48">48</a>  
-<a class="jxr_linenumber" name="49" href="#49">49</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/jscsi/target/scsi/cdb/ReportLunsCDB.html">ReportLunsCDB</a>(ByteBuffer buffer) {
-<a class="jxr_linenumber" name="50" href="#50">50</a>          <strong class="jxr_keyword">super</strong>(buffer);
-<a class="jxr_linenumber" name="51" href="#51">51</a>  
-<a class="jxr_linenumber" name="52" href="#52">52</a>          <em class="jxr_comment">// select report</em>
-<a class="jxr_linenumber" name="53" href="#53">53</a>          selectReport = SelectReport.getValue(buffer.get(2));
-<a class="jxr_linenumber" name="54" href="#54">54</a>          <strong class="jxr_keyword">if</strong> (selectReport == <strong class="jxr_keyword">null</strong>)
-<a class="jxr_linenumber" name="55" href="#55">55</a>              addIllegalFieldPointer(2);<em class="jxr_comment">// reserved select report value</em>
-<a class="jxr_linenumber" name="56" href="#56">56</a>  
-<a class="jxr_linenumber" name="57" href="#57">57</a>          <em class="jxr_comment">// allocation length</em>
-<a class="jxr_linenumber" name="58" href="#58">58</a>          allocationLength = ReadWrite.readFourByteInt(buffer, 6);
-<a class="jxr_linenumber" name="59" href="#59">59</a>          <strong class="jxr_keyword">if</strong> (allocationLength &lt; 16)
-<a class="jxr_linenumber" name="60" href="#60">60</a>              addIllegalFieldPointer(6);<em class="jxr_comment">// The allocation length should be at</em>
-<a class="jxr_linenumber" name="61" href="#61">61</a>                                        <em class="jxr_comment">// least 16.</em>
-<a class="jxr_linenumber" name="62" href="#62">62</a>      }
-<a class="jxr_linenumber" name="63" href="#63">63</a>  
-<a class="jxr_linenumber" name="64" href="#64">64</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> getAllocationLength() {
-<a class="jxr_linenumber" name="65" href="#65">65</a>          <strong class="jxr_keyword">return</strong> allocationLength;
-<a class="jxr_linenumber" name="66" href="#66">66</a>      }
-<a class="jxr_linenumber" name="67" href="#67">67</a>  
-<a class="jxr_linenumber" name="68" href="#68">68</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../../org/jscsi/target/scsi/cdb/SelectReport.html">SelectReport</a> getSelectReport() {
-<a class="jxr_linenumber" name="69" href="#69">69</a>          <strong class="jxr_keyword">return</strong> selectReport;
-<a class="jxr_linenumber" name="70" href="#70">70</a>      }
-<a class="jxr_linenumber" name="71" href="#71">71</a>  }
+<a class="jxr_linenumber" name="49" href="#49">49</a>          <em class="jxr_comment">// select report</em>
+<a class="jxr_linenumber" name="50" href="#50">50</a>          selectReport = SelectReport.getValue(buffer.get(2));
+<a class="jxr_linenumber" name="51" href="#51">51</a>          <strong class="jxr_keyword">if</strong> (selectReport == <strong class="jxr_keyword">null</strong>) addIllegalFieldPointer(2);<em class="jxr_comment">// reserved select report value</em>
+<a class="jxr_linenumber" name="52" href="#52">52</a>  
+<a class="jxr_linenumber" name="53" href="#53">53</a>          <em class="jxr_comment">// allocation length</em>
+<a class="jxr_linenumber" name="54" href="#54">54</a>          allocationLength = ReadWrite.readFourByteInt(buffer, 6);
+<a class="jxr_linenumber" name="55" href="#55">55</a>          <strong class="jxr_keyword">if</strong> (allocationLength &lt; 16) addIllegalFieldPointer(6);<em class="jxr_comment">// The allocation length should be at</em>
+<a class="jxr_linenumber" name="56" href="#56">56</a>                                                               <em class="jxr_comment">// least 16.</em>
+<a class="jxr_linenumber" name="57" href="#57">57</a>      }
+<a class="jxr_linenumber" name="58" href="#58">58</a>  
+<a class="jxr_linenumber" name="59" href="#59">59</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> getAllocationLength () {
+<a class="jxr_linenumber" name="60" href="#60">60</a>          <strong class="jxr_keyword">return</strong> allocationLength;
+<a class="jxr_linenumber" name="61" href="#61">61</a>      }
+<a class="jxr_linenumber" name="62" href="#62">62</a>  
+<a class="jxr_linenumber" name="63" href="#63">63</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../../org/jscsi/target/scsi/cdb/SelectReport.html">SelectReport</a> getSelectReport () {
+<a class="jxr_linenumber" name="64" href="#64">64</a>          <strong class="jxr_keyword">return</strong> selectReport;
+<a class="jxr_linenumber" name="65" href="#65">65</a>      }
+<a class="jxr_linenumber" name="66" href="#66">66</a>  }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

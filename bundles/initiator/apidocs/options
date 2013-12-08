@@ -1,17 +1,17 @@
 -classpath
-'/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/target/classes:/Users/sebi/.m2/repository/com/google/guava/guava/14.0/guava-14.0.jar:/Users/sebi/.m2/repository/org/jscsi/commons/2.5.1-SNAPSHOT/commons-2.5.1-SNAPSHOT.jar:/Users/sebi/.m2/repository/org/aspectj/aspectjrt/1.7.2/aspectjrt-1.7.2.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-simple/1.7.2/slf4j-simple-1.7.2.jar'
+'/Users/sebi/Documents/workspace/jSCSI/bundles/initiator/target/classes:/Users/sebi/.m2/repository/ch/qos/logback/logback-core/1.0.10/logback-core-1.0.10.jar:/Users/sebi/.m2/repository/com/google/guava/guava/14.0/guava-14.0.jar:/Users/sebi/.m2/repository/ch/qos/logback/logback-classic/1.0.10/logback-classic-1.0.10.jar:/Users/sebi/.m2/repository/org/jscsi/commons/2.5.1-SNAPSHOT/commons-2.5.1-SNAPSHOT.jar:/Users/sebi/.m2/repository/org/aspectj/aspectjrt/1.7.2/aspectjrt-1.7.2.jar:/Users/sebi/.m2/repository/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar'
 -encoding
 'UTF-8'
 -protected
 -sourcepath
-'/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/src/main/java'
+'/Users/sebi/Documents/workspace/jSCSI/bundles/initiator/src/main/java'
 -author
 -bottom
 'Copyright &#169; 2013 <a href="http://www.disy.uni-konstanz.de">University of Konstanz, Distributed Systems Group</a>. All Rights Reserved.'
 -charset
 'UTF-8'
 -d
-'/Users/sebi/Dropbox/github/jSCSI/bundles/initiator/target/site/apidocs'
+'/Users/sebi/Documents/workspace/jSCSI/bundles/initiator/target/site/apidocs'
 -docencoding
 'UTF-8'
 -doctitle

@@ -10,44 +10,44 @@
 
 <a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> org.jscsi.target.scsi.sense.senseDataDescriptor;
 <a class="jxr_linenumber" name="2" href="#2">2</a>   
-<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
-<a class="jxr_linenumber" name="4" href="#4">4</a>   
-<a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.SenseData;
-<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.SenseKeySpecificData;
-<a class="jxr_linenumber" name="7" href="#7">7</a>   
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> * The sense key specific sense data descriptor provides additional information</em>
-<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> * about the exception condition. The format and content of the sense-key</em>
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> * specific data depends on the value in the {@link SenseData#senseKey} field.</em>
-<a class="jxr_linenumber" name="12" href="#12">12</a>  <em class="jxr_javadoccomment"> * </em>
-<a class="jxr_linenumber" name="13" href="#13">13</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
-<a class="jxr_linenumber" name="14" href="#14">14</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/SenseKeySpecificSenseDataDescriptor.html">SenseKeySpecificSenseDataDescriptor</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/SenseDataDescriptor.html">SenseDataDescriptor</a> {
-<a class="jxr_linenumber" name="16" href="#16">16</a>  
-<a class="jxr_linenumber" name="17" href="#17">17</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment">     * The byte position of the SENSE-KEY-SPECIFIC DATA field.</em>
-<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="20" href="#20">20</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> SENSE_KEY_SPECIFIC_DATA_INDEX = 4;
-<a class="jxr_linenumber" name="21" href="#21">21</a>  
-<a class="jxr_linenumber" name="22" href="#22">22</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment">     * Contains sense-key-specific information.</em>
-<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="25" href="#25">25</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/SenseKeySpecificData.html">SenseKeySpecificData</a> senseKeySpecificData;
-<a class="jxr_linenumber" name="26" href="#26">26</a>  
-<a class="jxr_linenumber" name="27" href="#27">27</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="28" href="#28">28</a>  <em class="jxr_javadoccomment">     * The constructor</em>
-<a class="jxr_linenumber" name="29" href="#29">29</a>  <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="30" href="#30">30</a>  <em class="jxr_javadoccomment">     * @param senseKeySpecificData</em>
-<a class="jxr_linenumber" name="31" href="#31">31</a>  <em class="jxr_javadoccomment">     *            provides more detailed information</em>
+<a class="jxr_linenumber" name="3" href="#3">3</a>   
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
+<a class="jxr_linenumber" name="5" href="#5">5</a>   
+<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.SenseData;
+<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.SenseKeySpecificData;
+<a class="jxr_linenumber" name="8" href="#8">8</a>   
+<a class="jxr_linenumber" name="9" href="#9">9</a>   
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> * The sense key specific sense data descriptor provides additional information about the exception condition. The</em>
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <em class="jxr_javadoccomment"> * format and content of the sense-key specific data depends on the value in the {@link SenseData#senseKey} field.</em>
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/SenseKeySpecificSenseDataDescriptor.html">SenseKeySpecificSenseDataDescriptor</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/SenseDataDescriptor.html">SenseDataDescriptor</a> {
+<a class="jxr_linenumber" name="17" href="#17">17</a>  
+<a class="jxr_linenumber" name="18" href="#18">18</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment">     * The byte position of the SENSE-KEY-SPECIFIC DATA field.</em>
+<a class="jxr_linenumber" name="20" href="#20">20</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="21" href="#21">21</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> SENSE_KEY_SPECIFIC_DATA_INDEX = 4;
+<a class="jxr_linenumber" name="22" href="#22">22</a>  
+<a class="jxr_linenumber" name="23" href="#23">23</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment">     * Contains sense-key-specific information.</em>
+<a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="26" href="#26">26</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/SenseKeySpecificData.html">SenseKeySpecificData</a> senseKeySpecificData;
+<a class="jxr_linenumber" name="27" href="#27">27</a>  
+<a class="jxr_linenumber" name="28" href="#28">28</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="29" href="#29">29</a>  <em class="jxr_javadoccomment">     * The constructor</em>
+<a class="jxr_linenumber" name="30" href="#30">30</a>  <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="31" href="#31">31</a>  <em class="jxr_javadoccomment">     * @param senseKeySpecificData provides more detailed information</em>
 <a class="jxr_linenumber" name="32" href="#32">32</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="33" href="#33">33</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/SenseKeySpecificSenseDataDescriptor.html">SenseKeySpecificSenseDataDescriptor</a>(<strong class="jxr_keyword">final</strong> <a href="../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/SenseKeySpecificData.html">SenseKeySpecificData</a> senseKeySpecificData) {
+<a class="jxr_linenumber" name="33" href="#33">33</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/SenseKeySpecificSenseDataDescriptor.html">SenseKeySpecificSenseDataDescriptor</a> (<strong class="jxr_keyword">final</strong> SenseKeySpecificData senseKeySpecificData) {
 <a class="jxr_linenumber" name="34" href="#34">34</a>          <strong class="jxr_keyword">super</strong>(SenseDataDescriptorType.SENSE_KEY_SPECIFIC, 0x06);<em class="jxr_comment">// additional</em>
 <a class="jxr_linenumber" name="35" href="#35">35</a>                                                                  <em class="jxr_comment">// length</em>
 <a class="jxr_linenumber" name="36" href="#36">36</a>          <strong class="jxr_keyword">this</strong>.senseKeySpecificData = senseKeySpecificData;
 <a class="jxr_linenumber" name="37" href="#37">37</a>      }
 <a class="jxr_linenumber" name="38" href="#38">38</a>  
 <a class="jxr_linenumber" name="39" href="#39">39</a>      @Override
-<a class="jxr_linenumber" name="40" href="#40">40</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> serializeSpecificFields(<strong class="jxr_keyword">final</strong> ByteBuffer byteBuffer, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> index) {
+<a class="jxr_linenumber" name="40" href="#40">40</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> serializeSpecificFields (<strong class="jxr_keyword">final</strong> ByteBuffer byteBuffer, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> index) {
 <a class="jxr_linenumber" name="41" href="#41">41</a>  
 <a class="jxr_linenumber" name="42" href="#42">42</a>          senseKeySpecificData.serialize(byteBuffer, index + SENSE_KEY_SPECIFIC_DATA_INDEX);
 <a class="jxr_linenumber" name="43" href="#43">43</a>      }

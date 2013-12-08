@@ -10,55 +10,52 @@
 
 <a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific;
 <a class="jxr_linenumber" name="2" href="#2">2</a>   
-<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
-<a class="jxr_linenumber" name="4" href="#4">4</a>   
-<a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.util.ReadWrite;
-<a class="jxr_linenumber" name="6" href="#6">6</a>   
-<a class="jxr_linenumber" name="7" href="#7">7</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <em class="jxr_javadoccomment"> * Actual retry count sense-key-specific data is used to communicate the number</em>
-<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> * of retries of the recovery algorithm used in attempting to recover an error</em>
-<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> * or exception condition.</em>
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> * </em>
-<a class="jxr_linenumber" name="12" href="#12">12</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
-<a class="jxr_linenumber" name="13" href="#13">13</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/ActualRetryCountSenseKeySpecificData.html">ActualRetryCountSenseKeySpecificData</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/SenseKeySpecificData.html">SenseKeySpecificData</a> {
-<a class="jxr_linenumber" name="15" href="#15">15</a>  
-<a class="jxr_linenumber" name="16" href="#16">16</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment">     * The byte position of the ACTUAL RETRY COUNT field.</em>
-<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="19" href="#19">19</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> ACTUAL_RETRY_COUNT_FIELD_INDEX = 1;
-<a class="jxr_linenumber" name="20" href="#20">20</a>  
-<a class="jxr_linenumber" name="21" href="#21">21</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="22" href="#22">22</a>  <em class="jxr_javadoccomment">     * The ACTUAL RETRY COUNT field returns vendor specific information on the</em>
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment">     * number of retries of the recovery algorithm used in attempting to recover</em>
-<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment">     * an error or exception condition.</em>
+<a class="jxr_linenumber" name="3" href="#3">3</a>   
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
+<a class="jxr_linenumber" name="5" href="#5">5</a>   
+<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.util.ReadWrite;
+<a class="jxr_linenumber" name="7" href="#7">7</a>   
+<a class="jxr_linenumber" name="8" href="#8">8</a>   
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> * Actual retry count sense-key-specific data is used to communicate the number of retries of the recovery algorithm</em>
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> * used in attempting to recover an error or exception condition.</em>
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/ActualRetryCountSenseKeySpecificData.html">ActualRetryCountSenseKeySpecificData</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/SenseKeySpecificData.html">SenseKeySpecificData</a> {
+<a class="jxr_linenumber" name="16" href="#16">16</a>  
+<a class="jxr_linenumber" name="17" href="#17">17</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment">     * The byte position of the ACTUAL RETRY COUNT field.</em>
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="20" href="#20">20</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> ACTUAL_RETRY_COUNT_FIELD_INDEX = 1;
+<a class="jxr_linenumber" name="21" href="#21">21</a>  
+<a class="jxr_linenumber" name="22" href="#22">22</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment">     * The ACTUAL RETRY COUNT field returns vendor specific information on the number of retries of the recovery</em>
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment">     * algorithm used in attempting to recover an error or exception condition.</em>
 <a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="26" href="#26">26</a>  <em class="jxr_javadoccomment">     * This field should be computed in the same way as the retry count fields within the Read-Write Error</em>
-<a class="jxr_linenumber" name="27" href="#27">27</a>  <em class="jxr_javadoccomment">     * Recovery mode page.</em>
+<a class="jxr_linenumber" name="26" href="#26">26</a>  <em class="jxr_javadoccomment">     * This field should be computed in the same way as the retry count fields within the Read-Write Error Recovery mode</em>
+<a class="jxr_linenumber" name="27" href="#27">27</a>  <em class="jxr_javadoccomment">     * page.</em>
 <a class="jxr_linenumber" name="28" href="#28">28</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="29" href="#29">29</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">short</strong> actualRetryCount;
 <a class="jxr_linenumber" name="30" href="#30">30</a>  
 <a class="jxr_linenumber" name="31" href="#31">31</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="32" href="#32">32</a>  <em class="jxr_javadoccomment">     * The constructor.</em>
 <a class="jxr_linenumber" name="33" href="#33">33</a>  <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="34" href="#34">34</a>  <em class="jxr_javadoccomment">     * @param senseKeySpecificDataValid</em>
-<a class="jxr_linenumber" name="35" href="#35">35</a>  <em class="jxr_javadoccomment">     *            &lt;code&gt;true&lt;/code&gt; if and only if the second</em>
-<a class="jxr_linenumber" name="36" href="#36">36</a>  <em class="jxr_javadoccomment">     *            &lt;i&gt;actualRetryCount&lt;/i&gt; parameter is valid</em>
-<a class="jxr_linenumber" name="37" href="#37">37</a>  <em class="jxr_javadoccomment">     * @param actualRetryCount</em>
-<a class="jxr_linenumber" name="38" href="#38">38</a>  <em class="jxr_javadoccomment">     *            the number of performed recovery attempts</em>
-<a class="jxr_linenumber" name="39" href="#39">39</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="40" href="#40">40</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/ActualRetryCountSenseKeySpecificData.html">ActualRetryCountSenseKeySpecificData</a>(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> senseKeySpecificDataValid,
-<a class="jxr_linenumber" name="41" href="#41">41</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> actualRetryCount) {
-<a class="jxr_linenumber" name="42" href="#42">42</a>          <strong class="jxr_keyword">super</strong>(senseKeySpecificDataValid);
-<a class="jxr_linenumber" name="43" href="#43">43</a>          <strong class="jxr_keyword">this</strong>.actualRetryCount = (<strong class="jxr_keyword">short</strong>)actualRetryCount;
-<a class="jxr_linenumber" name="44" href="#44">44</a>      }
-<a class="jxr_linenumber" name="45" href="#45">45</a>  
-<a class="jxr_linenumber" name="46" href="#46">46</a>      @Override
-<a class="jxr_linenumber" name="47" href="#47">47</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> serializeSpecificFields(<strong class="jxr_keyword">final</strong> ByteBuffer byteBuffer, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> index) {
-<a class="jxr_linenumber" name="48" href="#48">48</a>          ReadWrite.writeTwoByteInt(byteBuffer, actualRetryCount, index + ACTUAL_RETRY_COUNT_FIELD_INDEX);
-<a class="jxr_linenumber" name="49" href="#49">49</a>      }
-<a class="jxr_linenumber" name="50" href="#50">50</a>  
-<a class="jxr_linenumber" name="51" href="#51">51</a>  }
+<a class="jxr_linenumber" name="34" href="#34">34</a>  <em class="jxr_javadoccomment">     * @param senseKeySpecificDataValid &lt;code&gt;true&lt;/code&gt; if and only if the second &lt;i&gt;actualRetryCount&lt;/i&gt; parameter is</em>
+<a class="jxr_linenumber" name="35" href="#35">35</a>  <em class="jxr_javadoccomment">     *            valid</em>
+<a class="jxr_linenumber" name="36" href="#36">36</a>  <em class="jxr_javadoccomment">     * @param actualRetryCount the number of performed recovery attempts</em>
+<a class="jxr_linenumber" name="37" href="#37">37</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="38" href="#38">38</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../../org/jscsi/target/scsi/sense/senseDataDescriptor/senseKeySpecific/ActualRetryCountSenseKeySpecificData.html">ActualRetryCountSenseKeySpecificData</a> (<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> senseKeySpecificDataValid, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> actualRetryCount) {
+<a class="jxr_linenumber" name="39" href="#39">39</a>          <strong class="jxr_keyword">super</strong>(senseKeySpecificDataValid);
+<a class="jxr_linenumber" name="40" href="#40">40</a>          <strong class="jxr_keyword">this</strong>.actualRetryCount = (<strong class="jxr_keyword">short</strong>) actualRetryCount;
+<a class="jxr_linenumber" name="41" href="#41">41</a>      }
+<a class="jxr_linenumber" name="42" href="#42">42</a>  
+<a class="jxr_linenumber" name="43" href="#43">43</a>      @Override
+<a class="jxr_linenumber" name="44" href="#44">44</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> serializeSpecificFields (<strong class="jxr_keyword">final</strong> ByteBuffer byteBuffer, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> index) {
+<a class="jxr_linenumber" name="45" href="#45">45</a>          ReadWrite.writeTwoByteInt(byteBuffer, actualRetryCount, index + ACTUAL_RETRY_COUNT_FIELD_INDEX);
+<a class="jxr_linenumber" name="46" href="#46">46</a>      }
+<a class="jxr_linenumber" name="47" href="#47">47</a>  
+<a class="jxr_linenumber" name="48" href="#48">48</a>  }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

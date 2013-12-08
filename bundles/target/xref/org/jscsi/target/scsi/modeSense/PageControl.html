@@ -10,44 +10,44 @@
 
 <a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> org.jscsi.target.scsi.modeSense;
 <a class="jxr_linenumber" name="2" href="#2">2</a>   
-<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.cdb.ModeSense6Cdb;
-<a class="jxr_linenumber" name="4" href="#4">4</a>   
-<a class="jxr_linenumber" name="5" href="#5">5</a>   <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="6" href="#6">6</a>   <em class="jxr_javadoccomment"> * The page control (PC) field specifies the type of mode parameter values to be</em>
-<a class="jxr_linenumber" name="7" href="#7">7</a>   <em class="jxr_javadoccomment"> * returned in the mode pages.</em>
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <em class="jxr_javadoccomment"> * </em>
-<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> * @see ModeSense6Cdb</em>
-<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">public</strong> enum <a href="../../../../../org/jscsi/target/scsi/modeSense/PageControl.html">PageControl</a> {
-<a class="jxr_linenumber" name="13" href="#13">13</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="14" href="#14">14</a>  <em class="jxr_javadoccomment">     * The currently valid values shall be returned.</em>
-<a class="jxr_linenumber" name="15" href="#15">15</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="16" href="#16">16</a>      CURRENT_VALUES(0x00),
-<a class="jxr_linenumber" name="17" href="#17">17</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment">     * Only changeable values shall be returned.</em>
-<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="20" href="#20">20</a>      CHANGEABLE_VALUES(0x01),
-<a class="jxr_linenumber" name="21" href="#21">21</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="22" href="#22">22</a>  <em class="jxr_javadoccomment">     * The default values shall be returned.</em>
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="24" href="#24">24</a>      DEFAULT_VALUES(0x02),
-<a class="jxr_linenumber" name="25" href="#25">25</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="26" href="#26">26</a>  <em class="jxr_javadoccomment">     * The last values that have been saved persistently shall be returned.</em>
-<a class="jxr_linenumber" name="27" href="#27">27</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="28" href="#28">28</a>      SAVED_VALUES(0x03);
-<a class="jxr_linenumber" name="29" href="#29">29</a>  
-<a class="jxr_linenumber" name="30" href="#30">30</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> value;
-<a class="jxr_linenumber" name="31" href="#31">31</a>  
-<a class="jxr_linenumber" name="32" href="#32">32</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../org/jscsi/target/scsi/modeSense/PageControl.html">PageControl</a>(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> value) {
-<a class="jxr_linenumber" name="33" href="#33">33</a>          <strong class="jxr_keyword">this</strong>.value = value;
-<a class="jxr_linenumber" name="34" href="#34">34</a>      }
-<a class="jxr_linenumber" name="35" href="#35">35</a>  
-<a class="jxr_linenumber" name="36" href="#36">36</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a href="../../../../../org/jscsi/target/scsi/modeSense/PageControl.html">PageControl</a> getPageControl(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> value) {
-<a class="jxr_linenumber" name="37" href="#37">37</a>          <strong class="jxr_keyword">final</strong> <a href="../../../../../org/jscsi/target/scsi/modeSense/PageControl.html">PageControl</a>[] vals = values();
-<a class="jxr_linenumber" name="38" href="#38">38</a>          <strong class="jxr_keyword">for</strong> (PageControl p : vals)
-<a class="jxr_linenumber" name="39" href="#39">39</a>              <strong class="jxr_keyword">if</strong> (p.value == value)
-<a class="jxr_linenumber" name="40" href="#40">40</a>                  <strong class="jxr_keyword">return</strong> p;
+<a class="jxr_linenumber" name="3" href="#3">3</a>   
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> org.jscsi.target.scsi.cdb.ModeSense6Cdb;
+<a class="jxr_linenumber" name="5" href="#5">5</a>   
+<a class="jxr_linenumber" name="6" href="#6">6</a>   
+<a class="jxr_linenumber" name="7" href="#7">7</a>   <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="8" href="#8">8</a>   <em class="jxr_javadoccomment"> * The page control (PC) field specifies the type of mode parameter values to be returned in the mode pages.</em>
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <em class="jxr_javadoccomment"> * @see ModeSense6Cdb</em>
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">public</strong> enum <a href="../../../../../org/jscsi/target/scsi/modeSense/PageControl.html">PageControl</a> {
+<a class="jxr_linenumber" name="14" href="#14">14</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <em class="jxr_javadoccomment">     * The currently valid values shall be returned.</em>
+<a class="jxr_linenumber" name="16" href="#16">16</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="17" href="#17">17</a>      CURRENT_VALUES(0x00),
+<a class="jxr_linenumber" name="18" href="#18">18</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment">     * Only changeable values shall be returned.</em>
+<a class="jxr_linenumber" name="20" href="#20">20</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="21" href="#21">21</a>      CHANGEABLE_VALUES(0x01),
+<a class="jxr_linenumber" name="22" href="#22">22</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment">     * The default values shall be returned.</em>
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="25" href="#25">25</a>      DEFAULT_VALUES(0x02),
+<a class="jxr_linenumber" name="26" href="#26">26</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="27" href="#27">27</a>  <em class="jxr_javadoccomment">     * The last values that have been saved persistently shall be returned.</em>
+<a class="jxr_linenumber" name="28" href="#28">28</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="29" href="#29">29</a>      SAVED_VALUES(0x03);
+<a class="jxr_linenumber" name="30" href="#30">30</a>  
+<a class="jxr_linenumber" name="31" href="#31">31</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> value;
+<a class="jxr_linenumber" name="32" href="#32">32</a>  
+<a class="jxr_linenumber" name="33" href="#33">33</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../org/jscsi/target/scsi/modeSense/PageControl.html">PageControl</a> (<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> value) {
+<a class="jxr_linenumber" name="34" href="#34">34</a>          <strong class="jxr_keyword">this</strong>.value = value;
+<a class="jxr_linenumber" name="35" href="#35">35</a>      }
+<a class="jxr_linenumber" name="36" href="#36">36</a>  
+<a class="jxr_linenumber" name="37" href="#37">37</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a href="../../../../../org/jscsi/target/scsi/modeSense/PageControl.html">PageControl</a> getPageControl (<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> value) {
+<a class="jxr_linenumber" name="38" href="#38">38</a>          <strong class="jxr_keyword">final</strong> <a href="../../../../../org/jscsi/target/scsi/modeSense/PageControl.html">PageControl</a>[] vals = values();
+<a class="jxr_linenumber" name="39" href="#39">39</a>          <strong class="jxr_keyword">for</strong> (PageControl p : vals)
+<a class="jxr_linenumber" name="40" href="#40">40</a>              <strong class="jxr_keyword">if</strong> (p.value == value) <strong class="jxr_keyword">return</strong> p;
 <a class="jxr_linenumber" name="41" href="#41">41</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="42" href="#42">42</a>      }
 <a class="jxr_linenumber" name="43" href="#43">43</a>  }

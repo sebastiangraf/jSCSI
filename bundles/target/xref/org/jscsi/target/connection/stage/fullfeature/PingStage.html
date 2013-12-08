@@ -10,84 +10,79 @@
 
 <a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> org.jscsi.target.connection.stage.fullfeature;
 <a class="jxr_linenumber" name="2" href="#2">2</a>   
-<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> java.io.IOException;
-<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
-<a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> java.security.DigestException;
-<a class="jxr_linenumber" name="6" href="#6">6</a>   
-<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> org.jscsi.exception.InternetSCSIException;
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.BasicHeaderSegment;
-<a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.ProtocolDataUnit;
-<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> org.jscsi.parser.nop.NOPOutParser;
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.connection.TargetPduFactory;
-<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.connection.phase.TargetFullFeaturePhase;
-<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.settings.SettingsException;
-<a class="jxr_linenumber" name="14" href="#14">14</a>  
-<a class="jxr_linenumber" name="15" href="#15">15</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="16" href="#16">16</a>  <em class="jxr_javadoccomment"> * A stage for processing NOP-Out PDUs, which are used by the initiator for</em>
-<a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment"> * pinging the target, making sure that the connection is still up.</em>
-<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment"> * The {@link #execute(ProtocolDataUnit)} method will process these ping messages and send a NOP-In PDU as</em>
-<a class="jxr_linenumber" name="20" href="#20">20</a>  <em class="jxr_javadoccomment"> * ping echo, containing a copy of the NOP-Out PDU's data segment.</em>
-<a class="jxr_linenumber" name="21" href="#21">21</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="22" href="#22">22</a>  <em class="jxr_javadoccomment"> * If either the NOP-OUT PDU's initiator or target transfer tag equals the reserved value of 0xffffffff, then</em>
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment"> * no reply will be sent, since the PDU is only supposed to acknowledge a changed ExpCmdSN, or serve as an</em>
-<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment"> * echo to a NOP-IN ping sent by the target.</em>
-<a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment"> * </em>
-<a class="jxr_linenumber" name="26" href="#26">26</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
-<a class="jxr_linenumber" name="27" href="#27">27</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="28" href="#28">28</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/jscsi/target/connection/stage/fullfeature/PingStage.html">PingStage</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../../org/jscsi/target/connection/stage/fullfeature/TargetFullFeatureStage.html">TargetFullFeatureStage</a> {
-<a class="jxr_linenumber" name="29" href="#29">29</a>  
-<a class="jxr_linenumber" name="30" href="#30">30</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> RESERVED_TAG_VALUE = 0xffffffff;
+<a class="jxr_linenumber" name="3" href="#3">3</a>   
+<a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> java.io.IOException;
+<a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> java.nio.ByteBuffer;
+<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> java.security.DigestException;
+<a class="jxr_linenumber" name="7" href="#7">7</a>   
+<a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> org.jscsi.exception.InternetSCSIException;
+<a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> org.jscsi.parser.BasicHeaderSegment;
+<a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> org.jscsi.parser.ProtocolDataUnit;
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> org.jscsi.parser.nop.NOPOutParser;
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.connection.TargetPduFactory;
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.connection.phase.TargetFullFeaturePhase;
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> org.jscsi.target.settings.SettingsException;
+<a class="jxr_linenumber" name="15" href="#15">15</a>  
+<a class="jxr_linenumber" name="16" href="#16">16</a>  
+<a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment"> * A stage for processing NOP-Out PDUs, which are used by the initiator for pinging the target, making sure that the</em>
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment"> * connection is still up.</em>
+<a class="jxr_linenumber" name="20" href="#20">20</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="21" href="#21">21</a>  <em class="jxr_javadoccomment"> * The {@link #execute(ProtocolDataUnit)} method will process these ping messages and send a NOP-In PDU as ping echo,</em>
+<a class="jxr_linenumber" name="22" href="#22">22</a>  <em class="jxr_javadoccomment"> * containing a copy of the NOP-Out PDU's data segment.</em>
+<a class="jxr_linenumber" name="23" href="#23">23</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment"> * If either the NOP-OUT PDU's initiator or target transfer tag equals the reserved value of 0xffffffff, then no reply</em>
+<a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment"> * will be sent, since the PDU is only supposed to acknowledge a changed ExpCmdSN, or serve as an echo to a NOP-IN ping</em>
+<a class="jxr_linenumber" name="26" href="#26">26</a>  <em class="jxr_javadoccomment"> * sent by the target.</em>
+<a class="jxr_linenumber" name="27" href="#27">27</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="28" href="#28">28</a>  <em class="jxr_javadoccomment"> * @author Andreas Ergenzinger</em>
+<a class="jxr_linenumber" name="29" href="#29">29</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="30" href="#30">30</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../org/jscsi/target/connection/stage/fullfeature/PingStage.html">PingStage</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../../../org/jscsi/target/connection/stage/fullfeature/TargetFullFeatureStage.html">TargetFullFeatureStage</a> {
 <a class="jxr_linenumber" name="31" href="#31">31</a>  
-<a class="jxr_linenumber" name="32" href="#32">32</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/jscsi/target/connection/stage/fullfeature/PingStage.html">PingStage</a>(<a href="../../../../../../org/jscsi/target/connection/phase/TargetFullFeaturePhase.html">TargetFullFeaturePhase</a> targetFullFeaturePhase) {
-<a class="jxr_linenumber" name="33" href="#33">33</a>          <strong class="jxr_keyword">super</strong>(targetFullFeaturePhase);
-<a class="jxr_linenumber" name="34" href="#34">34</a>      }
-<a class="jxr_linenumber" name="35" href="#35">35</a>  
-<a class="jxr_linenumber" name="36" href="#36">36</a>      @Override
-<a class="jxr_linenumber" name="37" href="#37">37</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> execute(<strong class="jxr_keyword">final</strong> ProtocolDataUnit pdu) <strong class="jxr_keyword">throws</strong> IOException, InterruptedException,
-<a class="jxr_linenumber" name="38" href="#38">38</a>          InternetSCSIException, DigestException, <a href="../../../../../../org/jscsi/target/settings/SettingsException.html">SettingsException</a> {
-<a class="jxr_linenumber" name="39" href="#39">39</a>  
-<a class="jxr_linenumber" name="40" href="#40">40</a>          <strong class="jxr_keyword">final</strong> BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
-<a class="jxr_linenumber" name="41" href="#41">41</a>          <strong class="jxr_keyword">final</strong> NOPOutParser parser = (NOPOutParser)bhs.getParser();
-<a class="jxr_linenumber" name="42" href="#42">42</a>  
-<a class="jxr_linenumber" name="43" href="#43">43</a>          <strong class="jxr_keyword">if</strong> (parser.getTargetTransferTag() != RESERVED_TAG_VALUE) {
-<a class="jxr_linenumber" name="44" href="#44">44</a>              <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="45" href="#45">45</a>  <em class="jxr_comment">             * This is an error. The jSCSI Target does not send NOP-In ping</em>
-<a class="jxr_linenumber" name="46" href="#46">46</a>  <em class="jxr_comment">             * messages, which would be the only legal reason for the initiator</em>
-<a class="jxr_linenumber" name="47" href="#47">47</a>  <em class="jxr_comment">             * sending a NOP-Out with the TargetTransferTag equal to 0xffffffff.</em>
-<a class="jxr_linenumber" name="48" href="#48">48</a>  <em class="jxr_comment">             * And even if the jSCSI Target was sending pings, the echo would be</em>
-<a class="jxr_linenumber" name="49" href="#49">49</a>  <em class="jxr_comment">             * processed in a dedicated stage.</em>
-<a class="jxr_linenumber" name="50" href="#50">50</a>  <em class="jxr_comment">             * </em>
-<a class="jxr_linenumber" name="51" href="#51">51</a>  <em class="jxr_comment">             * Therefore, we treat this as an error. Close the connection.</em>
-<a class="jxr_linenumber" name="52" href="#52">52</a>  <em class="jxr_comment">             */</em>
-<a class="jxr_linenumber" name="53" href="#53">53</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> InternetSCSIException(<span class="jxr_string">"NOP-Out PDU TargetTransferTag = "</span>
-<a class="jxr_linenumber" name="54" href="#54">54</a>                  + parser.getTargetTransferTag() + <span class="jxr_string">" in PingStage"</span>);
-<a class="jxr_linenumber" name="55" href="#55">55</a>          }
+<a class="jxr_linenumber" name="32" href="#32">32</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> RESERVED_TAG_VALUE = 0xffffffff;
+<a class="jxr_linenumber" name="33" href="#33">33</a>  
+<a class="jxr_linenumber" name="34" href="#34">34</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../../org/jscsi/target/connection/stage/fullfeature/PingStage.html">PingStage</a> (TargetFullFeaturePhase targetFullFeaturePhase) {
+<a class="jxr_linenumber" name="35" href="#35">35</a>          <strong class="jxr_keyword">super</strong>(targetFullFeaturePhase);
+<a class="jxr_linenumber" name="36" href="#36">36</a>      }
+<a class="jxr_linenumber" name="37" href="#37">37</a>  
+<a class="jxr_linenumber" name="38" href="#38">38</a>      @Override
+<a class="jxr_linenumber" name="39" href="#39">39</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> execute (<strong class="jxr_keyword">final</strong> ProtocolDataUnit pdu) <strong class="jxr_keyword">throws</strong> IOException , InterruptedException , InternetSCSIException , DigestException , SettingsException {
+<a class="jxr_linenumber" name="40" href="#40">40</a>  
+<a class="jxr_linenumber" name="41" href="#41">41</a>          <strong class="jxr_keyword">final</strong> BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
+<a class="jxr_linenumber" name="42" href="#42">42</a>          <strong class="jxr_keyword">final</strong> NOPOutParser parser = (NOPOutParser) bhs.getParser();
+<a class="jxr_linenumber" name="43" href="#43">43</a>  
+<a class="jxr_linenumber" name="44" href="#44">44</a>          <strong class="jxr_keyword">if</strong> (parser.getTargetTransferTag() != RESERVED_TAG_VALUE) {
+<a class="jxr_linenumber" name="45" href="#45">45</a>              <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="46" href="#46">46</a>  <em class="jxr_comment">             * This is an error. The jSCSI Target does not send NOP-In ping messages, which would be the only legal</em>
+<a class="jxr_linenumber" name="47" href="#47">47</a>  <em class="jxr_comment">             * reason for the initiator sending a NOP-Out with the TargetTransferTag equal to 0xffffffff. And even if</em>
+<a class="jxr_linenumber" name="48" href="#48">48</a>  <em class="jxr_comment">             * the jSCSI Target was sending pings, the echo would be processed in a dedicated stage. Therefore, we treat</em>
+<a class="jxr_linenumber" name="49" href="#49">49</a>  <em class="jxr_comment">             * this as an error. Close the connection.</em>
+<a class="jxr_linenumber" name="50" href="#50">50</a>  <em class="jxr_comment">             */</em>
+<a class="jxr_linenumber" name="51" href="#51">51</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> InternetSCSIException(<span class="jxr_string">"NOP-Out PDU TargetTransferTag = "</span> + parser.getTargetTransferTag() + <span class="jxr_string">" in PingStage"</span>);
+<a class="jxr_linenumber" name="52" href="#52">52</a>          }
+<a class="jxr_linenumber" name="53" href="#53">53</a>  
+<a class="jxr_linenumber" name="54" href="#54">54</a>          <em class="jxr_comment">// decide whether or not response is necessary</em>
+<a class="jxr_linenumber" name="55" href="#55">55</a>          <strong class="jxr_keyword">if</strong> (bhs.getInitiatorTaskTag() == RESERVED_TAG_VALUE) <strong class="jxr_keyword">return</strong>;<em class="jxr_comment">// send no response</em>
 <a class="jxr_linenumber" name="56" href="#56">56</a>  
-<a class="jxr_linenumber" name="57" href="#57">57</a>          <em class="jxr_comment">// decide whether or not response is necessary</em>
-<a class="jxr_linenumber" name="58" href="#58">58</a>          <strong class="jxr_keyword">if</strong> (bhs.getInitiatorTaskTag() == RESERVED_TAG_VALUE)
-<a class="jxr_linenumber" name="59" href="#59">59</a>              <strong class="jxr_keyword">return</strong>;<em class="jxr_comment">// send no response</em>
-<a class="jxr_linenumber" name="60" href="#60">60</a>  
-<a class="jxr_linenumber" name="61" href="#61">61</a>          <em class="jxr_comment">// else</em>
-<a class="jxr_linenumber" name="62" href="#62">62</a>          <em class="jxr_comment">// prepare response data segment (copy up to initiator's</em>
-<a class="jxr_linenumber" name="63" href="#63">63</a>          <em class="jxr_comment">// MaxRecvDataSegmentLength)</em>
-<a class="jxr_linenumber" name="64" href="#64">64</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> dataSegmentLength =
-<a class="jxr_linenumber" name="65" href="#65">65</a>              Math.min(pdu.getDataSegment().capacity(), settings.getMaxRecvDataSegmentLength());
-<a class="jxr_linenumber" name="66" href="#66">66</a>          <strong class="jxr_keyword">final</strong> ByteBuffer responseDataSegment = ByteBuffer.allocate(dataSegmentLength);
-<a class="jxr_linenumber" name="67" href="#67">67</a>          responseDataSegment.put(pdu.getDataSegment().array(),<em class="jxr_comment">// source array,</em>
-<a class="jxr_linenumber" name="68" href="#68">68</a>              0,<em class="jxr_comment">// offset within the array of the first byte to be read</em>
-<a class="jxr_linenumber" name="69" href="#69">69</a>              dataSegmentLength);<em class="jxr_comment">// length</em>
-<a class="jxr_linenumber" name="70" href="#70">70</a>  
-<a class="jxr_linenumber" name="71" href="#71">71</a>          <em class="jxr_comment">// send response</em>
-<a class="jxr_linenumber" name="72" href="#72">72</a>          <strong class="jxr_keyword">final</strong> ProtocolDataUnit responsePdu = TargetPduFactory.createNopInPDU(0,<em class="jxr_comment">// logicalUnitNumber,</em>
-<a class="jxr_linenumber" name="73" href="#73">73</a>                                                                                 <em class="jxr_comment">// reserved</em>
-<a class="jxr_linenumber" name="74" href="#74">74</a>              bhs.getInitiatorTaskTag(),<em class="jxr_comment">// initiatorTaskTag</em>
-<a class="jxr_linenumber" name="75" href="#75">75</a>              RESERVED_TAG_VALUE,<em class="jxr_comment">// targetTransferTag</em>
-<a class="jxr_linenumber" name="76" href="#76">76</a>              responseDataSegment);
-<a class="jxr_linenumber" name="77" href="#77">77</a>          connection.sendPdu(responsePdu);
-<a class="jxr_linenumber" name="78" href="#78">78</a>      }
-<a class="jxr_linenumber" name="79" href="#79">79</a>  
-<a class="jxr_linenumber" name="80" href="#80">80</a>  }
+<a class="jxr_linenumber" name="57" href="#57">57</a>          <em class="jxr_comment">// else</em>
+<a class="jxr_linenumber" name="58" href="#58">58</a>          <em class="jxr_comment">// prepare response data segment (copy up to initiator's</em>
+<a class="jxr_linenumber" name="59" href="#59">59</a>          <em class="jxr_comment">// MaxRecvDataSegmentLength)</em>
+<a class="jxr_linenumber" name="60" href="#60">60</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> dataSegmentLength = Math.min(pdu.getDataSegment().capacity(), settings.getMaxRecvDataSegmentLength());
+<a class="jxr_linenumber" name="61" href="#61">61</a>          <strong class="jxr_keyword">final</strong> ByteBuffer responseDataSegment = ByteBuffer.allocate(dataSegmentLength);
+<a class="jxr_linenumber" name="62" href="#62">62</a>          responseDataSegment.put(pdu.getDataSegment().array(),<em class="jxr_comment">// source array,</em>
+<a class="jxr_linenumber" name="63" href="#63">63</a>                  0,<em class="jxr_comment">// offset within the array of the first byte to be read</em>
+<a class="jxr_linenumber" name="64" href="#64">64</a>                  dataSegmentLength);<em class="jxr_comment">// length</em>
+<a class="jxr_linenumber" name="65" href="#65">65</a>  
+<a class="jxr_linenumber" name="66" href="#66">66</a>          <em class="jxr_comment">// send response</em>
+<a class="jxr_linenumber" name="67" href="#67">67</a>          <strong class="jxr_keyword">final</strong> ProtocolDataUnit responsePdu = TargetPduFactory.createNopInPDU(0,<em class="jxr_comment">// logicalUnitNumber,</em>
+<a class="jxr_linenumber" name="68" href="#68">68</a>                                                                                 <em class="jxr_comment">// reserved</em>
+<a class="jxr_linenumber" name="69" href="#69">69</a>                  bhs.getInitiatorTaskTag(),<em class="jxr_comment">// initiatorTaskTag</em>
+<a class="jxr_linenumber" name="70" href="#70">70</a>                  RESERVED_TAG_VALUE,<em class="jxr_comment">// targetTransferTag</em>
+<a class="jxr_linenumber" name="71" href="#71">71</a>                  responseDataSegment, parser.getExpectedStatusSequenceNumber());
+<a class="jxr_linenumber" name="72" href="#72">72</a>          connection.sendPdu(responsePdu);
+<a class="jxr_linenumber" name="73" href="#73">73</a>      }
+<a class="jxr_linenumber" name="74" href="#74">74</a>  
+<a class="jxr_linenumber" name="75" href="#75">75</a>  }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>
