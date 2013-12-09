@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <parent>
       <groupId>org.jscsi</groupId>
@@ -55,7 +56,7 @@
                      <instructions>
                         <Bundle-Activator>org.jscsi.target.Activator</Bundle-Activator>
                         <Bundle-SymbolicName>${project.artifactId}-bundle</Bundle-SymbolicName>
-                        <Export-Package>org.jscsi.target</Export-Package>
+                        <Export-Package>org.jscsi.target.*</Export-Package>
                         <Import-Package>
                            org.osgi.framework,
                            javax.crypto,
@@ -96,26 +97,25 @@
          <version>2.5.1-SNAPSHOT</version>
       </dependency>
       <dependency>
-         <groupId>org.jclouds</groupId>
+         <groupId>org.apache.jclouds</groupId>
          <artifactId>jclouds-blobstore</artifactId>
-         <version>1.6.0-alpha.2</version>
+         <version>1.6.3</version>
       </dependency>
       <dependency>
-         <groupId>org.jclouds.provider</groupId>
+         <groupId>org.apache.jclouds.provider</groupId>
          <artifactId>aws-s3</artifactId>
-         <version>1.6.0</version>
+         <version>1.6.3</version>
       </dependency>
       <dependency>
-         <groupId>org.jclouds.api</groupId>
+         <groupId>org.apache.jclouds.api</groupId>
          <artifactId>filesystem</artifactId>
-         <version>1.6.0</version>
+         <version>1.6.3</version>
       </dependency>
       <dependency>
          <groupId>org.osgi</groupId>
          <artifactId>org.osgi.core</artifactId>
          <version>4.3.0</version>
       </dependency>
-
    </dependencies>
 
 </project>
