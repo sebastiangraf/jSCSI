@@ -56,7 +56,7 @@
                      <instructions>
                         <Bundle-Activator>org.jscsi.target.Activator</Bundle-Activator>
                         <Bundle-SymbolicName>${project.artifactId}-bundle</Bundle-SymbolicName>
-                        <Export-Package>org.jscsi.target</Export-Package>
+                        <Export-Package>org.jscsi.target.*</Export-Package>
                         <Import-Package>
                            org.osgi.framework,
                            javax.crypto,
@@ -99,17 +99,17 @@
       <dependency>
          <groupId>org.apache.jclouds</groupId>
          <artifactId>jclouds-blobstore</artifactId>
-         <version>1.6.2-incubating</version>
+         <version>1.6.3</version>
       </dependency>
       <dependency>
          <groupId>org.apache.jclouds.provider</groupId>
          <artifactId>aws-s3</artifactId>
-         <version>1.6.2-incubating</version>
+         <version>1.6.3</version>
       </dependency>
       <dependency>
          <groupId>org.apache.jclouds.api</groupId>
          <artifactId>filesystem</artifactId>
-         <version>1.6.2-incubating</version>
+         <version>1.6.3</version>
       </dependency>
       <dependency>
          <groupId>org.osgi</groupId>
