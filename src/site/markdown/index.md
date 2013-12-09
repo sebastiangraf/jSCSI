@@ -74,3 +74,5 @@ Within the switch of the hosting from [Sourceforge](http://sourceforge.net/proje
 * Flexible disk-size; (thanks Stephen Davidson)
 * Multiple target-handling within one instance; (thanks David L. Smith-Uchida)
 * Working with Mac OS X Initiator (Thanks Rajesh Sharma)
+
+<script type="text/javascript" src="http://www.ohloh.net/p/28236/widgets/project_factoids_stats.js"></script>
