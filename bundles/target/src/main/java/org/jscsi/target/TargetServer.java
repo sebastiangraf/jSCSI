@@ -80,6 +80,11 @@ public final class TargetServer implements Callable<Void> {
      * The connection the target server is using.
      */
     private Connection connection;
+    
+    /**
+     * while this value is true, the target is active.
+     */
+    private boolean running = true;
 
     public TargetServer (final Configuration conf) {
         this.config = conf;
@@ -199,7 +204,7 @@ public final class TargetServer implements Callable<Void> {
             // Making sure the socket is bound to the address used in the config.
             serverSocketChannel.socket().bind(new InetSocketAddress(getConfig().getTargetAddress(), getConfig().getPort()));
 
-            while (true) {
+            while (running) {
                 // Accept the connection request.
                 // If serverSocketChannel is blocking, this method blocks.
                 // The returned channel is in blocking mode.
@@ -243,6 +248,10 @@ public final class TargetServer implements Callable<Void> {
         } catch (IOException e) {
             // this block is entered if the desired port is already in use
             LOGGER.error("Throws Exception", e);
+        }
+        
+        for(TargetSession session: sessions){
+            session.getStorageModule().close();
         }
         return null;
     }
@@ -293,6 +302,13 @@ public final class TargetServer implements Callable<Void> {
      */
     public Connection getConnection () {
         return this.connection;
+    }
+    
+    /**
+     * Stop this target server
+     */
+    public void stop(){
+        this.running = false;
     }
 
 }
