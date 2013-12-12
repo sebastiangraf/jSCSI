@@ -266,7 +266,7 @@
 		<dependency>
 			<groupId>org.perfidix</groupId>
 			<artifactId>perfidix</artifactId>
-			<version>3.6.6</version>
+			<version>3.6.9</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
