@@ -249,8 +249,11 @@ public final class TargetServer implements Callable<Void> {
             // this block is entered if the desired port is already in use
             LOGGER.error("Throws Exception", e);
         }
-        
+
+        System.out.println("Closing socket channel.");
+        serverSocketChannel.close();
         for(TargetSession session: sessions){
+            System.out.println("Commiting uncommited changes.");
             session.getStorageModule().close();
         }
         return null;
@@ -309,6 +312,12 @@ public final class TargetServer implements Callable<Void> {
      */
     public void stop(){
         this.running = false;
+        for(TargetSession session : sessions){
+            if(!session.getConnection().stop()){
+                this.running = true;
+                LOGGER.error("Unable to stop session for " + session.getTargetName());
+            }
+        }
     }
 
 }

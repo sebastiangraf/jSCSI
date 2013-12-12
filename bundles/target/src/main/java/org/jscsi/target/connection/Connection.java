@@ -60,6 +60,8 @@ public interface Connection extends Callable<Void> {
     void initializeConnectionSettingsNegotiator (SessionSettingsNegotiator pSettingsNegotiator);
 
     byte[] getDataInArray (int pLength);
+    
+    public boolean stop();
 
     public static class TargetConnection implements Connection {
 
@@ -277,6 +279,15 @@ public interface Connection extends Callable<Void> {
 
         public void setStatusSequenceNumber (final int statusSequenceNumber) {
             this.statusSequenceNumber = new SerialArithmeticNumber(statusSequenceNumber);
+        }
+        
+        public boolean stop(){
+            if(phase instanceof TargetFullFeaturePhase){
+                ((TargetFullFeaturePhase)phase).stop();
+                return true;
+            }
+            
+            return false;
         }
     }
 }

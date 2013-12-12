@@ -175,4 +175,11 @@ public final class TargetFullFeaturePhase extends TargetPhase {
 
         return false;
     }
+    
+    /**
+     * Stopping this phases execution
+     */
+    public void stop(){
+        this.running = false;
+    }
 }
