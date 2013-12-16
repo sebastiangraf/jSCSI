@@ -124,18 +124,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- To invoke with "mvn clean verify ghDownloads:upload" -->
-			<plugin>
-				<groupId>com.github.github</groupId>
-				<artifactId>downloads-maven-plugin</artifactId>
-				<version>0.6</version>
-				<configuration>
-					<description>Official ${project.name} build of the
-						${project.version} release</description>
-					<override>true</override>
-					<includeAttached>true</includeAttached>
-				</configuration>
-			</plugin>
 			<!-- To invoke with "mvn site:site site:stage site:deploy" + "mvn antrun:run 
 				-N" + "mvn ghSite:site -N" -->
 			<plugin>
