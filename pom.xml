@@ -15,7 +15,7 @@
 	<groupId>org.jscsi</groupId>
 	<artifactId>pom</artifactId>
 	<packaging>pom</packaging>
-	<version>2.5.2-SNAPSHOT</version>
+	<version>2.5.2</version>
 	<name>Builder</name>
 
 	<parent>
