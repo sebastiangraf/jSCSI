@@ -124,16 +124,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- To invoke with "mvn site:site site:stage site:deploy" + "mvn antrun:run 
-				-N" + "mvn ghSite:site -N" -->
-			<plugin>
-				<groupId>com.github.github</groupId>
-				<artifactId>site-maven-plugin</artifactId>
-				<version>0.7</version>
-				<configuration>
-					<message>Building site for ${project.version}</message>
-				</configuration>
-			</plugin>
 			<plugin>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.4</version>
@@ -156,6 +146,8 @@
 					</descriptors>
 				</configuration>
 			</plugin>
+			<!-- To invoke with "mvn site:site site:stage site:deploy" + "mvn antrun:run 
+				-N" +copy the stuff manually -->
 			<plugin>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.2</version>
