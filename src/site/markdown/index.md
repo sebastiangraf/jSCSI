@@ -25,12 +25,12 @@ Both, intiator and target, are freely available over maven central-repo:
 <dependency>
 	<groupId>org.jscsi</groupId>
 	<artifactId>target</artifactId>
-	<version>2.5</version>
+	<version>2.5.2</version>
 </dependency>
 <dependency>
 	<groupId>org.jscsi</groupId>
 	<artifactId>initiator</artifactId>
-	<version>2.5</version>
+	<version>2.5.2</version>
 </dependency>
 ```
 
@@ -59,7 +59,7 @@ jSCSI is maintained currently by
 
 Concluded and adopted subprojects were:
 
-* Andreas Rain, Test-cases
+* Andreas Rain, Test-cases and OSGI-module
 * Nuray Gürler, jSCSI websites
 * Andreas Ergenzinger, jSCSI Target 1.0
 * Patrice Brend'amour, jSCSI Initiator 2.0

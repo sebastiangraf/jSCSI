@@ -2,6 +2,11 @@
 
 #Changelog:
 
+##2.5.2
+
+* Available as OSGI-module
+* minor bugfixes in target
+
 ##2.5
 
 * Easier interface to different Storages within target

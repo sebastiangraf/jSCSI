@@ -11,39 +11,15 @@ jSCSI contains a server (target), a client (initiator) and common classes to wor
 * Get the latest jar over Github or Maven
 
 ```xml
-<!-- Only needed when accessing jscsi 2.1 or older. -->
-<!--<repository>
-	<id>disyInternal</id>
-	<name>Internal Repository for the Distributed System Group</name>
-	<url>http://mavenrepo.disy.inf.uni-konstanz.de/repository/disyInternal</url>
-	<releases>
-		<enabled>true</enabled>
-	</releases>
-	<snapshots>
-		<enabled>false</enabled>
-	</snapshots>
-</repository>
-<repository>
-	<id>disyInternalSnapshot</id>
-	<name>Internal Snapshot Repository for the Distributed System Group</name>
-	<url>http://mavenrepo.disy.inf.uni-konstanz.de/repository/disyInternalSnapshot</url>
-	<releases>
-		<enabled>true</enabled>
-	</releases>
-	<snapshots>
-		<enabled>true</enabled>
-	</snapshots>
-</repository>-->
-
 <dependency>
 	<groupId>org.jscsi</groupId>
 	<artifactId>target</artifactId>
-	<version>2.5</version>
+	<version>2.5.2</version>
 </dependency>
 <dependency>
 	<groupId>org.jscsi</groupId>
 	<artifactId>initiator</artifactId>
-	<version>2.5</version>
+	<version>2.5.2</version>
 </dependency>
 ```
 
