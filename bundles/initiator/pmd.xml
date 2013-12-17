@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.3" timestamp="2013-12-08T21:47:30.803">
+<pmd version="4.3" timestamp="2013-12-17T10:22:37.508">
 <file name="/Users/sebi/Documents/workspace/jSCSI/bundles/initiator/src/main/java/org/jscsi/initiator/Configuration.java">
 <violation beginline="171" endline="174" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.jscsi.initiator" class="Configuration" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
 Unnecessary final modifier in final class

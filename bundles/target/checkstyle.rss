@@ -9,7 +9,7 @@
     <copyright>&#169;2013 University of Konstanz, Distributed Systems Group</copyright>
     <item>
       <title>File: 170,
-             Errors: 7024,
+             Errors: 7049,
              Warnings: 0,
              Infos: 0
       </title>
@@ -556,7 +556,7 @@
                   0
                 </td>
                 <td>
-                  71
+                  82
                 </td>
               </tr>
                           <tr>
@@ -1746,7 +1746,7 @@
                   0
                 </td>
                 <td>
-                  26
+                  29
                 </td>
               </tr>
                           <tr>
@@ -1844,7 +1844,7 @@
                   0
                 </td>
                 <td>
-                  126
+                  137
                 </td>
               </tr>
                           <tr>

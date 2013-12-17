@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.3" timestamp="2013-12-08T21:48:04.661">
+<pmd version="4.3" timestamp="2013-12-17T10:23:19.373">
 <file name="/Users/sebi/Documents/workspace/jSCSI/bundles/target/src/main/java/org/jscsi/target/connection/TargetSenderWorker.java">
 <violation beginline="173" endline="184" begincolumn="16" endcolumn="9" rule="EmptyIfStmt" ruleset="Basic Rules" package="org.jscsi.target.connection" class="TargetSenderWorker" method="receiveFromWire" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="3">
 Avoid empty if statements
