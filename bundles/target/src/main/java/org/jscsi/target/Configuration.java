@@ -2,7 +2,9 @@ package org.jscsi.target;
 
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -193,15 +196,27 @@ public class Configuration {
 
     /**
      * Reads the given configuration file in memory and creates a DOM representation.
-     * 
+     *
      * @throws SAXException If this operation is supported but failed for some reason.
      * @throws ParserConfigurationException If a {@link DocumentBuilder} cannot be created which satisfies the
      *             configuration requested.
      * @throws IOException If any IO errors occur.
      */
     public static Configuration create (final File schemaLocation, final File configFile, final String pTargetAddress) throws SAXException , ParserConfigurationException , IOException {
+        return create(new FileInputStream(schemaLocation), new FileInputStream(configFile), pTargetAddress);
+    }
+
+    /**
+     * Reads the given configuration file in memory and creates a DOM representation.
+     *
+     * @throws SAXException If this operation is supported but failed for some reason.
+     * @throws ParserConfigurationException If a {@link DocumentBuilder} cannot be created which satisfies the
+     *             configuration requested.
+     * @throws IOException If any IO errors occur.
+     */
+    public static Configuration create (final InputStream schemaLocation, final InputStream configFile, final String pTargetAddress) throws SAXException , ParserConfigurationException , IOException {
         final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        final Schema schema = schemaFactory.newSchema(schemaLocation);
+        final Schema schema = schemaFactory.newSchema(new StreamSource(schemaLocation));
 
         // create a validator for the document
         final Validator validator = schema.newValidator();
