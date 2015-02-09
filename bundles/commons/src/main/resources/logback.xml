@@ -37,7 +37,7 @@
     </encoder>
   </appender>
 
-  <root level="info">
+  <root level="${LOG_LEVEL:-info}">
     <appender-ref ref="STDOUT" />
   </root>
 </configuration>
