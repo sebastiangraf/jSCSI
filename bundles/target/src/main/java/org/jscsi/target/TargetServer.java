@@ -3,6 +3,7 @@ package org.jscsi.target;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -180,7 +181,11 @@ public final class TargetServer implements Callable<Void> {
             case 1 :
 
                 // Checking if the schema file is at the default location
-                target = new TargetServer(Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE.exists() ? Configuration.CONFIGURATION_SCHEMA_FILE : new File("classpath://jscsi-target.xsd"), new File(args[0]), targetAddress));
+                target = new TargetServer(
+                        Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE.exists() ?
+                                        new FileInputStream(Configuration.CONFIGURATION_SCHEMA_FILE) :
+                                        TargetServer.class.getResourceAsStream("/jscsi-target.xsd"),
+                                new FileInputStream(args[0]), targetAddress));
                 break;
             case 2 :
                 target = new TargetServer(Configuration.create(new File(args[0]), new File(args[1]), targetAddress));
