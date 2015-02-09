@@ -9,6 +9,7 @@ import static com.google.common.base.Preconditions.checkState;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -385,14 +386,18 @@ public class JCloudsStorageModule implements IStorageModule {
                     // + (System.currentTimeMillis() - time) + "\n");
                     // download.flush();
                 } else {
-                    data = ByteStreams.toByteArray(blob.getPayload().getInput());
+                    try (InputStream is = blob.getPayload().getInput()) {
+                       data = ByteStreams.toByteArray(is);
+                    }
                     // download.write(Integer.toString(mBucketId) + "," +
                     // data.length + " , "
                     // + (System.currentTimeMillis() - time) + "\n");
                     // download.flush();
                     while (data.length < SIZE_PER_BUCKET) {
                         blob = mStore.getBlob(mContainerName, Integer.toString(mBucketId));
-                        data = ByteStreams.toByteArray(blob.getPayload().getInput());
+                        try (InputStream is = blob.getPayload().getInput()) {
+                            data = ByteStreams.toByteArray(is);
+                        }
                         // // DEBUG CODE
                         // download.write(Integer.toString(mBucketId) + "," +
                         // data.length + " , "
