@@ -4,7 +4,7 @@ jSCSI is a feature-complete iSCSI implementation in Java only.
 Platform-independent and fast, jSCSI represents a premium example how low-level protocols can be pushed to higher levels.
 jSCSI contains a server (target), a client (initiator) and common classes to work with the protocol.
 
-[![Build Status](https://secure.travis-ci.org/disy/jSCSI.png)](http://travis-ci.org/disy/jSCSI)
+[![Build Status](https://secure.travis-ci.org/sebastiangraf/jSCSI.png)](http://travis-ci.org/sebastiangraf/jSCSI)
 
 ##Using jSCSI
 
