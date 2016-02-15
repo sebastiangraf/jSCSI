@@ -47,7 +47,7 @@ public class RequestSenseStage extends TargetFullFeatureStage {
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
         final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
 
-        ProtocolDataUnit responsePDU = null;// the response PDU
+        ProtocolDataUnit responsePDU;// the response PDU
 
         // get command details in CDB
         final RequestSenseCdb cdb = new RequestSenseCdb(parser.getCDB());

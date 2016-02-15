@@ -214,7 +214,7 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
      * @return the requested {@link Entry} or <code>null</code>
      */
     private Entry getEntry (final String key) {
-        Entry entry = null;
+        Entry entry;
         // check connection-only entries
         entry = getEntry(key, entries);
         if (entry == null) // keep looking in session-wide entries

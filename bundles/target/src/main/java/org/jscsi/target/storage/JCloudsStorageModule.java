@@ -215,7 +215,7 @@ public class JCloudsStorageModule implements IStorageModule {
             }
 
             final ByteArrayDataOutput output = ByteStreams.newDataOutput(bytes.length);
-            int length = -1;
+            int length;
             if (bucketOffset + bytes.length > SIZE_PER_BUCKET) {
                 length = SIZE_PER_BUCKET - bucketOffset;
             } else {
@@ -240,7 +240,7 @@ public class JCloudsStorageModule implements IStorageModule {
     }
 
     private final byte[] getAndprefetchBuckets (final int pBucketStartId) throws InterruptedException , ExecutionException {
-        byte[] returnval = null;
+        byte[] returnval;
         Future<Map.Entry<Integer , byte[]>> startTask = null;
         for (int i = pBucketStartId; i < pBucketStartId + BUCKETS_TO_PREFETCH; i++) {
             Future<Map.Entry<Integer , byte[]>> currentTask = mRunningReadTasks.remove(i);

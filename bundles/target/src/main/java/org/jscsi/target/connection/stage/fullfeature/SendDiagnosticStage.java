@@ -38,7 +38,7 @@ public class SendDiagnosticStage extends TargetFullFeatureStage {
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
         final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
 
-        ProtocolDataUnit responsePdu = null;// the response PDU
+        ProtocolDataUnit responsePdu;// the response PDU
 
         // get command details in CDB
         final SendDiagnosticCdb cdb = new SendDiagnosticCdb(parser.getCDB());

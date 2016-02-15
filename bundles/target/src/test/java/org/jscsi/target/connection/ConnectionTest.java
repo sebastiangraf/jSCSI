@@ -305,7 +305,7 @@ public class ConnectionTest {
                 final BasicHeaderSegment bhs = new ProtocolDataUnitFactory().create(false, true, OperationCode.SCSI_COMMAND, "None", "None").getBasicHeaderSegment();
                 final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
                 final InquiryCDB cdb = new InquiryCDB(parser.getCDB());
-                IResponseData responseData = null;
+                IResponseData responseData;
 
                 if (!cdb.getEnableVitalProductData()) {
                     responseData = StandardInquiryData.getInstance();

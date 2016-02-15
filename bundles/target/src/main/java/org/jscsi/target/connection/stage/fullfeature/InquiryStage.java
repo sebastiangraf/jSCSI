@@ -40,7 +40,7 @@ public class InquiryStage extends TargetFullFeatureStage {
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
         final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
 
-        ProtocolDataUnit responsePdu = null;// the response PDU
+        ProtocolDataUnit responsePdu;// the response PDU
 
         // get command details in CDB
         if (LOGGER.isDebugEnabled()) {// print CDB bytes
@@ -71,7 +71,7 @@ public class InquiryStage extends TargetFullFeatureStage {
             // PDU is okay
             // carry out command
 
-            IResponseData responseData = null;
+            IResponseData responseData;
 
             // "If the EVPD bit is set to zero, ...
             if (!cdb.getEnableVitalProductData()) {

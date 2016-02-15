@@ -301,7 +301,7 @@ public class Configuration {
 
         // CreateNode with size
         nextNode = chopWhiteSpaces(nextNode.getNextSibling());
-        long storageLength = -1;
+        long storageLength;
         boolean create = true;
         if (nextNode.getLocalName().equals(ELEMENT_CREATE)) {
             Node sizeAttribute = nextNode.getAttributes().getNamedItem(ATTRIBUTE_SIZE);
