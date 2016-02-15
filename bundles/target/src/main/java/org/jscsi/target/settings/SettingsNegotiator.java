@@ -22,7 +22,7 @@ public abstract class SettingsNegotiator {
      * <p>
      * These elements might change consecutively during parameter negotiations.
      */
-    protected List<Entry> entries = new ArrayList<Entry>();
+    protected List<Entry> entries = new ArrayList<>();
 
     /**
      * A back-up copy of the last consistent state of all elements in {@link #entries} or <code>null</code>.
@@ -54,7 +54,7 @@ public abstract class SettingsNegotiator {
      */
     protected static final List<Entry> copy (final List<Entry> entries) {
         if (entries == null) return null;
-        final ArrayList<Entry> copy = new ArrayList<Entry>();
+        final ArrayList<Entry> copy = new ArrayList<>();
         for (Entry e : entries)
             copy.add(e.copy());
         return copy;

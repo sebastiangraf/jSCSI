@@ -149,15 +149,15 @@ public class JCloudsStorageModule implements IStorageModule {
 
         final ExecutorService writerService = Executors.newFixedThreadPool(20);
         final ExecutorService readerService = Executors.newFixedThreadPool(20);
-        mRunningWriteTasks = new ConcurrentHashMap<Integer , Future<Integer>>();
-        mRunningReadTasks = new ConcurrentHashMap<Integer , Future<Map.Entry<Integer , byte[]>>>();
+        mRunningWriteTasks = new ConcurrentHashMap<>();
+        mRunningReadTasks = new ConcurrentHashMap<>();
 
-        mReaderService = new ExecutorCompletionService<Map.Entry<Integer , byte[]>>(readerService);
+        mReaderService = new ExecutorCompletionService<>(readerService);
         final Thread readHashmapCleaner = new Thread(new ReadFutureCleaner());
         readHashmapCleaner.setDaemon(true);
         readHashmapCleaner.start();
 
-        mWriterService = new ExecutorCompletionService<Integer>(writerService);
+        mWriterService = new ExecutorCompletionService<>(writerService);
         final Thread writeHashmapCleaner = new Thread(new WriteFutureCleaner());
         writeHashmapCleaner.setDaemon(true);
         writeHashmapCleaner.start();

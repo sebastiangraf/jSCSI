@@ -52,7 +52,7 @@ public final class TextNegotiationStage extends TargetFullFeatureStage {
         // tokenize key-value pairs
         final List<String> requestKeyValuePairs = TextParameter.tokenizeKeyValuePairs(textRequest);
 
-        final List<String> responseKeyValuePairs = new Vector<String>();
+        final List<String> responseKeyValuePairs = new Vector<>();
 
         // process SendTargets command
         if (requestKeyValuePairs != null) {

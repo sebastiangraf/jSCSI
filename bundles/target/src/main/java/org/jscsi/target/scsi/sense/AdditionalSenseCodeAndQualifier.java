@@ -47,7 +47,7 @@ public enum AdditionalSenseCodeAndQualifier {
          * TODO replace ConcurrentHashMap with sorted array and use binary search. Has low priority since sense data is
          * not needed in properly working iSCSI exchanges.
          */
-        mapping = new ConcurrentHashMap<Short , AdditionalSenseCodeAndQualifier>();
+        mapping = new ConcurrentHashMap<>();
         for (AdditionalSenseCodeAndQualifier a : AdditionalSenseCodeAndQualifier.values())
             mapping.put(a.value, a);
     }

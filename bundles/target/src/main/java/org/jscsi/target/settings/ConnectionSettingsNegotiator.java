@@ -131,8 +131,8 @@ public final class ConnectionSettingsNegotiator extends SettingsNegotiator {
     public boolean negotiate (TargetServer target, final LoginStage loginStage, final boolean leadingConnection, final boolean initialPdu, final List<String> requestKeyValuePairs, final List<String> responseKeyValuePairs) {
 
         // split up key=value pairs from requester
-        final List<String> keys = new Vector<String>();
-        final List<String> values = new Vector<String>();
+        final List<String> keys = new Vector<>();
+        final List<String> values = new Vector<>();
         for (String keyValuePair : requestKeyValuePairs) {
             final String[] split = TextParameter.splitKeyValuePair(keyValuePair);
             if (split == null) {

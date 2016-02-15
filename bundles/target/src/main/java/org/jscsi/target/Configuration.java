@@ -155,7 +155,7 @@ public class Configuration {
             targetAddress = pTargetAddress;
         }
 
-        targets = new ArrayList<Target>();
+        targets = new ArrayList<>();
     }
 
     public int getInMaxRecvTextPduSequenceLength () {

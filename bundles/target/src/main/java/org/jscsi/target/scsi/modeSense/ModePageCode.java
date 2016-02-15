@@ -44,7 +44,7 @@ public enum ModePageCode {
      * 
      * @see #joinCodes(int, int)
      */
-    private static Map<Integer , ModePageCode> map = new HashMap<Integer , ModePageCode>();
+    private static Map<Integer , ModePageCode> map = new HashMap<>();
     static {// initialize map
         final ModePageCode[] modePages = values();
         for (ModePageCode mp : modePages)
