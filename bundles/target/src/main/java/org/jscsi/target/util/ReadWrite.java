@@ -12,6 +12,9 @@ import java.nio.ByteBuffer;
  */
 public final class ReadWrite {
 
+    private ReadWrite() {
+    }
+
     /**
      * Reads a specified byte from a {@link ByteBuffer} and returns its value as an unsigned integer.
      * 

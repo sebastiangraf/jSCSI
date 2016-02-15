@@ -17,6 +17,9 @@ public class Debug {
      */
     private static final int BYTES_PER_LINE = 4;
 
+    private Debug() {
+    }
+
     /**
      * Prints the <i>buffer</i> content to <code>System.out</code>.
      * 
