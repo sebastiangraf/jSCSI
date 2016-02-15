@@ -305,7 +305,7 @@ public class Configuration {
         boolean create = true;
         if (nextNode.getLocalName().equals(ELEMENT_CREATE)) {
             Node sizeAttribute = nextNode.getAttributes().getNamedItem(ATTRIBUTE_SIZE);
-            storageLength = Math.round(((Double.valueOf(sizeAttribute.getTextContent())) * Math.pow(1024, 3)));
+            storageLength = Math.round(Double.valueOf(sizeAttribute.getTextContent()) * Math.pow(1024, 3));
         } else {
             storageLength = new File(storageFilePath).length();
             create = false;

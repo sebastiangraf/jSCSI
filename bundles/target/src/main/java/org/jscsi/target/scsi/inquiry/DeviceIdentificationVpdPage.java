@@ -96,7 +96,7 @@ public class DeviceIdentificationVpdPage implements IResponseData {
     private short getPageLength () {
         short pageLength = 0;
         for (int i = 0; i < identificationDescriptors.length; ++i) {
-            pageLength += (identificationDescriptors[i].size());
+            pageLength += identificationDescriptors[i].size();
         }
         return pageLength;
     }

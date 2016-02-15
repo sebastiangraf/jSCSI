@@ -119,7 +119,7 @@ public class FileStorageModule implements IStorageModule {
             Files.write(new File(mBaseDir + File.separator + filePos).toPath(), cachedBytes);
 
             byte[] nextStep = new byte[bytes.length - (mFileSize - storageOffset)];
-            System.arraycopy(bytes, (mFileSize - storageOffset), nextStep, 0, bytes.length - (mFileSize - storageOffset));
+            System.arraycopy(bytes, mFileSize - storageOffset, nextStep, 0, bytes.length - (mFileSize - storageOffset));
             write(nextStep, storageIndex + (mFileSize - storageOffset));
         } else {
             System.arraycopy(bytes, 0, cachedBytes, storageOffset, bytes.length);

@@ -80,7 +80,7 @@ public final class TextNegotiationStage extends TargetFullFeatureStage {
                 final boolean sendTargetName = // see upper table
                 !normal && sendTargetsValue.equals(TextKeyword.ALL);
                 final boolean sendTargetAddress = // see upper table
-                (!normal && sendTargetsValue.equals(TextKeyword.ALL)) || (session.getTargetServer().isValidTargetName(sendTargetsValue)) || (normal && sendTargetsValue.length() == 0);
+                (!normal && sendTargetsValue.equals(TextKeyword.ALL)) || session.getTargetServer().isValidTargetName(sendTargetsValue) || (normal && sendTargetsValue.length() == 0);
 
                 /*
                  * A target record consists of a TargetName key-value pair followed by one or more TargetAddress

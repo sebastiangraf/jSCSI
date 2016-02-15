@@ -80,7 +80,7 @@ public class TargetPduFactory {
         bhs.setInitiatorTaskTag(initiatorTaskTag);
         parser.setTime2Wait(time2Wait);
         parser.setTime2Retain(time2Retain);
-        return (pdu);
+        return pdu;
     }
 
     public static final ProtocolDataUnit createTMResponsePdu (TaskManagementFunctionResponseParser.ResponseCode response, int initiatorTaskTag) {
@@ -89,7 +89,7 @@ public class TargetPduFactory {
         final TaskManagementFunctionResponseParser parser = (TaskManagementFunctionResponseParser) bhs.getParser();
         parser.setResponse(response);
         bhs.setInitiatorTaskTag(initiatorTaskTag);
-        return (pdu);
+        return pdu;
     }
 
     public static final ProtocolDataUnit createReadyToTransferPdu (long logicalUnitNumber, int initiatorTaskTag, int targetTransferTag, int readyToTransferSequenceNumber, int bufferOffset, int desiredDataTransferLength) {
