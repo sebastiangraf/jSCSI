@@ -56,7 +56,7 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
             final List<String> requestKeyValuePairs = TextParameter.tokenizeKeyValuePairs(requestTextParameters);
 
             // Vector for AuthMethod keys
-            final List<String> authMethodKeyValuePairs = new Vector<String>();
+            final List<String> authMethodKeyValuePairs = new Vector<>();
 
             // log initiator's key-value pairs
             if (LOGGER.isDebugEnabled()) {
@@ -104,7 +104,7 @@ public final class SecurityNegotiationStage extends TargetLoginStage {
             }
 
             // negotiate remaining parameters
-            final Vector<String> responseKeyValuePairs = new Vector<String>();// these
+            final Vector<String> responseKeyValuePairs = new Vector<>();// these
                                                                               // will
                                                                               // be
                                                                               // sent

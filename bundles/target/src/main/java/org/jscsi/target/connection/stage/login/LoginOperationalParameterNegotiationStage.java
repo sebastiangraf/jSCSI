@@ -47,7 +47,7 @@ public final class LoginOperationalParameterNegotiationStage extends TargetLogin
 
         // negotiate parameters, leave if unsuccessful
         final List<String> requestKeyValuePairs = TextParameter.tokenizeKeyValuePairs(keyValuePairProposal);
-        final List<String> responseKeyValuePairs = new Vector<String>();
+        final List<String> responseKeyValuePairs = new Vector<>();
         if (!negotiator.negotiate(session.getTargetServer(), stageNumber, connection.isLeadingConnection(), ((TargetLoginPhase) targetPhase).getFirstPduAndSetToFalse(), requestKeyValuePairs, responseKeyValuePairs)) {
             // negotiation failure, no exception
             sendRejectPdu(LoginStatus.INITIATOR_ERROR);

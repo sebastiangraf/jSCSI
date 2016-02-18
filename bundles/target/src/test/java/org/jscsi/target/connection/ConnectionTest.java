@@ -104,7 +104,7 @@ public class ConnectionTest {
         assertEquals(pStages.length, pDataUnits.length);
         assertEquals(pStages.length, pChecker.length);
 
-        List<ProtocolDataUnit> units = new ArrayList<ProtocolDataUnit>();
+        List<ProtocolDataUnit> units = new ArrayList<>();
 
         for (int i = 0; i < 8; i++) {
             pStages[i].execute(pDataUnits[i]);
@@ -424,7 +424,7 @@ public class ConnectionTest {
                 // tokenize key-value pairs
                 final List<String> requestKeyValuePairs = TextParameter.tokenizeKeyValuePairs(textRequest);
 
-                final List<String> responseKeyValuePairs = new Vector<String>();
+                final List<String> responseKeyValuePairs = new Vector<>();
 
                 // process SendTargets command
                 if (requestKeyValuePairs != null) {

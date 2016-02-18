@@ -26,7 +26,7 @@ public final class TextParameter {
      * @return a {@link Vector} of {@link String}s containing the purged key value pairs
      */
     public static List<String> tokenizeKeyValuePairs (final String keyValuePairs) {
-        final List<String> result = new Vector<String>();
+        final List<String> result = new Vector<>();
         if (keyValuePairs == null) return result;
         final String[] split = keyValuePairs.split(TextKeyword.NULL_CHAR);
         for (int i = 0; i < split.length; ++i)
@@ -112,7 +112,7 @@ public final class TextParameter {
         if (a == null || b == null) return null;
         final int maxLength = Math.max(a.length, b.length);// prevent growing of
                                                            // the ArrayList
-        final ArrayList<String> intersection = new ArrayList<String>(maxLength);
+        final ArrayList<String> intersection = new ArrayList<>(maxLength);
         for (int i = 0; i < a.length; ++i) {
             for (int j = 0; j < b.length; ++j) {
                 if (a[i] == null || b[j] == null) return null;

@@ -54,7 +54,7 @@ public final class TargetServer implements Callable<Void> {
     /**
      * Contains all active {@link TargetSession}s.
      */
-    private Collection<TargetSession> sessions = new Vector<TargetSession>();
+    private Collection<TargetSession> sessions = new Vector<>();
 
     /**
      * The jSCSI Target's global parameters.
@@ -69,7 +69,7 @@ public final class TargetServer implements Callable<Void> {
     /**
      * The table of targets
      */
-    private HashMap<String , Target> targets = new HashMap<String , Target>();
+    private HashMap<String , Target> targets = new HashMap<>();
 
     /**
      * A target-wide counter used for providing the value of sent {@link ProtocolDataUnit}s'
@@ -139,7 +139,7 @@ public final class TargetServer implements Callable<Void> {
         Enumeration<NetworkInterface> interfaceEnum = NetworkInterface.getNetworkInterfaces();
         NetworkInterface i;
         int addressCounter = 0;
-        List<InetAddress> addresses = new ArrayList<InetAddress>();
+        List<InetAddress> addresses = new ArrayList<>();
         while (interfaceEnum.hasMoreElements()) {
             i = interfaceEnum.nextElement();
             Enumeration<InetAddress> addressEnum = i.getInetAddresses();
