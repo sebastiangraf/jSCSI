@@ -16,6 +16,9 @@ import java.util.regex.Pattern;
  */
 public final class TextParameter {
 
+    private TextParameter() {
+    }
+
     /**
      * Returns the <i>key-value</i> pairs contained in a null character-separated text data segment in an array of
      * {@link String}s.

@@ -37,6 +37,9 @@ public class TargetPduFactory {
      */
     private static final ProtocolDataUnitFactory factory = new ProtocolDataUnitFactory();
 
+    private TargetPduFactory() {
+    }
+
     public static final ProtocolDataUnit createDataInPdu (boolean finalFlag, boolean acknowledgeFlag, boolean residualOverflowFlag, boolean residualUnderflowFlag, boolean statusFlag, SCSIStatus status, long logicalUnitNumber, int initiatorTaskTag, int targetTransferTag, int dataSequenceNumber,//
             int bufferOffset, int residualCount, ByteBuffer dataSegment) {
         final ProtocolDataUnit pdu = factory.create(false, finalFlag, OperationCode.SCSI_DATA_IN, "None", "None");

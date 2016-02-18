@@ -12,6 +12,9 @@ package org.jscsi.target.util;
  */
 public final class BitManip {
 
+    private BitManip() {
+    }
+
     /**
      * Sets a single bit. If the <i>value</i> parameter is <code>true</code>, the bit will be set to <code>one</code>,
      * and to <code>zero</code> otherwise. All other bits will be left unchanged.

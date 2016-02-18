@@ -61,4 +61,6 @@ public final class TextKeyword {
     public static final String NULL_CHAR = Character.valueOf((char) 0).toString();
     public static final String COLON = ":";
 
+    private TextKeyword() {
+    }
 }
