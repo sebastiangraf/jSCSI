@@ -62,7 +62,7 @@ public class FormatUnitStage extends TargetFullFeatureStage {
         final BasicHeaderSegment bhs = pdu.getBasicHeaderSegment();
         final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
 
-        ProtocolDataUnit responsePdu = null;// the response PDU
+        ProtocolDataUnit responsePdu;// the response PDU
 
         // get command details in CDB
         final FormatUnitCDB cdb = new FormatUnitCDB(parser.getCDB());
