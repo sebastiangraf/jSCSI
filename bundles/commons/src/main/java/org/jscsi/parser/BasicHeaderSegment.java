@@ -391,6 +391,20 @@ public final class BasicHeaderSegment {
 
         return false;
     }
+    
+    
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (immediateFlag ? 1 : 0);
+        result = 31 * result + (operationCode != null ? operationCode.hashCode() : 0);
+        result = 31 * result + (finalFlag ? 1 : 0);
+        result = 31 * result + (int) totalAHSLength;
+        result = 31 * result + dataSegmentLength;
+        result = 31 * result + initiatorTaskTag;
+        result = 31 * result + (parser != null ? parser.hashCode() : 0);
+        return result;
+    }
 
     /**
      * Clears all the stored content of this BasicHeaderSegment object.

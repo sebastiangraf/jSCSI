@@ -551,6 +551,16 @@ public final class ProtocolDataUnit {
     }
 
     // --------------------------------------------------------------------------
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (basicHeaderSegment != null ? basicHeaderSegment.hashCode() : 0);
+        result = 31 * result + (additionalHeaderSegments != null ? additionalHeaderSegments.hashCode() : 0);
+        result = 31 * result + (dataSegment != null ? dataSegment.hashCode() : 0);
+        result = 31 * result + (headerDigest != null ? headerDigest.hashCode() : 0);
+        result = 31 * result + (dataDigest != null ? dataDigest.hashCode() : 0);
+        return result;
+    }
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------

@@ -355,6 +355,17 @@ final class AdditionalHeaderSegment {
         return false;
     }
 
+    // --------------------------------------------------------------------------
+    // --------------------------------------------------------------------------
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (int) length;
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (specificField != null ? specificField.hashCode() : 0);
+        return result;
+    }
+
     /**
      * This method checks the integrity of the this Additional Header Segment object to garantee a valid specification.
      * 
