@@ -165,7 +165,7 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                     running = false;
                     break;
                 default :
-                    LOGGER.error("Recieved unsupported opcode for " + pdu.getBasicHeaderSegment().getOpCode());
+                    LOGGER.error("Received unsupported opcode for " + pdu.getBasicHeaderSegment().getOpCode());
                     stage = new UnsupportedOpCodeStage(this);
             }
 
