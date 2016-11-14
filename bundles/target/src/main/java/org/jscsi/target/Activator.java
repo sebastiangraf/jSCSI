@@ -41,14 +41,14 @@ public class Activator implements BundleActivator {
             Files.copy(context.getBundle().getResource("/jscsi-target.xsd").openStream(), schemaFile.toPath());
         }
         
-        System.out.println("Schemafile: " + ((schemaFile.exists())? "exists" : "does not exist"));
+        System.out.println("Schemafile: " + (schemaFile.exists() ? "exists" : "does not exist"));
         
         File configFile = new File("jscsi-target.xml");
         if(configFile.exists() == false){
             Files.copy(context.getBundle().getResource("/jscsi-target.xml").openStream(), configFile.toPath());
         }
         
-        System.out.println("Configfile: " + ((configFile.exists())? "exists" : "does not exist"));
+        System.out.println("Configfile: " + (configFile.exists() ? "exists" : "does not exist"));
 
         target = new TargetServer(Configuration.create(schemaFile, configFile, addr.getHostAddress()));
 

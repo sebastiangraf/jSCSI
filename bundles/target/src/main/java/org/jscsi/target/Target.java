@@ -39,8 +39,7 @@ public class Target {
     @Override
     public int hashCode () {
         final int prime = 31;
-        int result;
-        result = prime + ((targetName == null) ? 0 : targetName.hashCode());
+        final int result = prime + (targetName == null ? 0 : targetName.hashCode());
         return result;
     }
 
