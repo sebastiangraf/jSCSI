@@ -8,6 +8,8 @@ import java.io.IOException;
 
 public class SynchronizedRandomAccessStorageModule extends RandomAccessStorageModule implements IStorageModule {
 
+    private static final int VIRTUAL_BLOCK_SIZE = 512;
+
     public SynchronizedRandomAccessStorageModule (long sizeInBlocks, File file) throws FileNotFoundException {
         super(sizeInBlocks, file);
     }
@@ -20,6 +22,11 @@ public class SynchronizedRandomAccessStorageModule extends RandomAccessStorageMo
     @Override
     public synchronized void write (byte[] bytes, long storageIndex) throws IOException {
         super.write(bytes, storageIndex);
+    }
+
+    @Override
+    public int getBlockSize() {
+        return VIRTUAL_BLOCK_SIZE;
     }
 
 }

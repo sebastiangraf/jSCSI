@@ -86,6 +86,8 @@ public class JCloudsStorageModule implements IStorageModule {
     private static byte[] keyValue = new byte[] { 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k' };
     private static final Key KEY = new SecretKeySpec(keyValue, "AES");
 
+    private static final int VIRTUAL_BLOCK_SIZE = 512;
+
     /** Number of Bytes in Bucket. */
     public final static int SIZE_PER_BUCKET = BLOCK_IN_CLUSTER * VIRTUAL_BLOCK_SIZE;
 
@@ -317,6 +319,11 @@ public class JCloudsStorageModule implements IStorageModule {
     @Override
     public void close () throws IOException {
         mContext.close();
+    }
+
+    @Override
+    public int getBlockSize() {
+        return VIRTUAL_BLOCK_SIZE;
     }
 
     /**

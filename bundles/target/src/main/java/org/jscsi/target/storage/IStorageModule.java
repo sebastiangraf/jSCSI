@@ -19,12 +19,6 @@ import org.jscsi.target.scsi.cdb.CommandDescriptorBlock;
  * @author Andreas Ergenzinger
  */
 public interface IStorageModule {
-
-    /**
-     * A fictitious block size.
-     */
-    public static final int VIRTUAL_BLOCK_SIZE = 512;
-
     /**
      * This method can be used for checking if a (series of) I/O operations will result in an {@link IOException} due to
      * trying to access blocks outside the medium's boundaries.
@@ -96,4 +90,10 @@ public interface IStorageModule {
      */
     void close () throws IOException;
 
+    /**
+     * Get block size of underlying storage medium.
+     *
+     * @return block size.
+     */
+    int getBlockSize();
 }

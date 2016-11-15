@@ -1,8 +1,5 @@
 package org.jscsi.target.connection.stage.fullfeature;
 
-
-import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
-
 import java.io.IOException;
 import java.security.DigestException;
 
@@ -79,10 +76,10 @@ public final class ReadCapacityStage extends TargetFullFeatureStage {
             ReadCapacityParameterData parameterData;
             if (cdb instanceof ReadCapacity10Cdb)
                 parameterData = new ReadCapacity10ParameterData(session.getStorageModule().getSizeInBlocks(),// returnedLogicalBlockAddress
-                VIRTUAL_BLOCK_SIZE);// logicalBlockLengthInBytes
+                session.getStorageModule().getBlockSize());// logicalBlockLengthInBytes
             else
                 parameterData = new ReadCapacity16ParameterData(session.getStorageModule().getSizeInBlocks(),// returnedLogicalBlockAddress
-                VIRTUAL_BLOCK_SIZE);// logicalBlockLengthInBytes
+                session.getStorageModule().getBlockSize());// logicalBlockLengthInBytes
 
             sendResponse(bhs.getInitiatorTaskTag(),// initiatorTaskTag,
                     parser.getExpectedDataTransferLength(),// expectedDataTransferLength,

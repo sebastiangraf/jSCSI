@@ -33,6 +33,8 @@ public class FileStorageModule implements IStorageModule {
     /** How many file contents have to be cached. */
     private final int CACHE_SIZE;
 
+    private static final int VIRTUAL_BLOCK_SIZE = 512;
+
     /**
      * @param pBaseDir - The root directory for the filestorage (will be created if not exists)
      * @param pStorageSize - The size of the storage
@@ -165,6 +167,11 @@ public class FileStorageModule implements IStorageModule {
     @Override
     public void close () throws IOException {
         // Nothing to close, each bucket is opened individually.
+    }
+
+    @Override
+    public int getBlockSize() {
+        return VIRTUAL_BLOCK_SIZE;
     }
 
 }
