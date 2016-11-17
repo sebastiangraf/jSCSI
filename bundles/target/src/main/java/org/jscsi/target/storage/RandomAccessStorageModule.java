@@ -27,6 +27,8 @@ public class RandomAccessStorageModule implements IStorageModule {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomAccessStorageModule.class);
 
+    private static final int VIRTUAL_BLOCK_SIZE = 512;
+
     /**
      * The mode {@link String} parameter used during the instantiation of {@link #randomAccessFile}.
      * <p>
@@ -106,6 +108,11 @@ public class RandomAccessStorageModule implements IStorageModule {
      */
     public final void close () throws IOException {
         randomAccessFile.close();
+    }
+
+    @Override
+    public int getBlockSize() {
+        return VIRTUAL_BLOCK_SIZE;
     }
 
     /**

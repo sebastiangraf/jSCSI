@@ -1,8 +1,5 @@
 package org.jscsi.target.connection.stage.fullfeature;
 
-
-import static org.jscsi.target.storage.IStorageModule.VIRTUAL_BLOCK_SIZE;
-
 import java.io.IOException;
 import java.security.DigestException;
 
@@ -106,8 +103,8 @@ public final class WriteStage extends ReadOrWriteStage {
         final long logicalBlockAddress = cdb.getLogicalBlockAddress();
 
         // transform to from block units to byte units
-        final int transferLengthInBytes = transferLength * VIRTUAL_BLOCK_SIZE;
-        long storageIndex = logicalBlockAddress * VIRTUAL_BLOCK_SIZE;
+        final int transferLengthInBytes = transferLength * session.getStorageModule().getBlockSize();
+        long storageIndex = logicalBlockAddress * session.getStorageModule().getBlockSize();
 
         // check if requested blocks are out of bounds
         // (might add FPSKSD to the CDB's list to be detected in the next step)
