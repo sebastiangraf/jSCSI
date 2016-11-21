@@ -78,11 +78,6 @@ public final class TargetServer implements Callable<Void> {
     private static final AtomicInteger nextTargetTransferTag = new AtomicInteger();
 
     /**
-     * The connection the target server is using.
-     */
-    private Connection connection;
-    
-    /**
      * while this value is true, the target is active.
      */
     private boolean running = true;
@@ -197,6 +192,41 @@ public final class TargetServer implements Callable<Void> {
         target.call();
     }
 
+    private class ConnectionHandler implements Runnable {
+
+        private final TargetConnection targetConnection;
+
+        ConnectionHandler(TargetConnection targetConnection) {
+            this.targetConnection = targetConnection;
+        }
+
+        @Override
+        public void run() {
+            try {
+                targetConnection.call();
+            } catch (Exception e) {
+                LOGGER.error("running target error:" + e);
+            } finally {
+                // coming back from call() means the session is ended
+                // we can delete the target from local cache.
+                synchronized (targets) {
+                    Target target = targetConnection.getTargetSession().getTarget();
+                    if (target != null) {
+                        targets.remove(target.getTargetName());
+                        try {
+                            target.getStorageModule().close();
+                        } catch (Exception e) {
+                            LOGGER.error("Error when closing storage:" + e);
+                        }
+                        LOGGER.info("closed local storage module");
+                    } else {
+                        LOGGER.warn("No target to delete on logout?");
+                    }
+                }
+            }
+        }
+    }
+
     public Void call () throws Exception {
 
         // Create a blocking server socket and check for connections
@@ -218,9 +248,9 @@ public final class TargetServer implements Callable<Void> {
                 // deactivate Nagle algorithm
                 socketChannel.socket().setTcpNoDelay(true);
 
-                connection = new TargetConnection(socketChannel, true);
+                TargetConnection newConnection = new TargetConnection(socketChannel, true);
                 try {
-                    final ProtocolDataUnit pdu = connection.receivePdu();
+                    final ProtocolDataUnit pdu = newConnection.receivePdu();
                     // confirm OpCode-
                     if (pdu.getBasicHeaderSegment().getOpCode() != OperationCode.LOGIN_REQUEST) throw new InternetSCSIException();
                     // get initiatorSessionID
@@ -232,7 +262,7 @@ public final class TargetServer implements Callable<Void> {
                      * TODO get (new or existing) session based on TSIH But since we don't do session reinstatement and
                      * MaxConnections=1, we can just create a new one.
                      */
-                    TargetSession session = new TargetSession(this, connection, initiatorSessionID, parser.getCommandSequenceNumber(),// set
+                    TargetSession session = new TargetSession(this, newConnection, initiatorSessionID, parser.getCommandSequenceNumber(),// set
                                                                                                                                       // ExpCmdSN
                                                                                                                                       // (PDU
                                                                                                                                       // is
@@ -244,7 +274,7 @@ public final class TargetServer implements Callable<Void> {
 
                     sessions.add(session);
                     // threadPool.submit(connection);// ignore returned Future
-                    connection.call();
+                    new Thread(new ConnectionHandler((newConnection))).start();
                 } catch (DigestException | InternetSCSIException | SettingsException e) {
                     LOGGER.info("Throws Exception", e);
                     continue;
@@ -301,15 +331,6 @@ public final class TargetServer implements Callable<Void> {
      */
     public boolean isValidTargetName (String checkTargetName) {
         return targets.containsKey(checkTargetName);
-    }
-
-    /**
-     * Using this connection mainly for test pruposes.
-     * 
-     * @return the connection the target server established.
-     */
-    public Connection getConnection () {
-        return this.connection;
     }
     
     /**
