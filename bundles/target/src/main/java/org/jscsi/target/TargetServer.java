@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jscsi.exception.InternetSCSIException;
@@ -72,16 +74,16 @@ public final class TargetServer implements Callable<Void> {
     private HashMap<String , Target> targets = new HashMap<>();
 
     /**
+     * The thread pool.
+     */
+    private final ExecutorService workerPool;
+
+    /**
      * A target-wide counter used for providing the value of sent {@link ProtocolDataUnit}s'
      * <code>Target Transfer Tag</code> field, unless that field is reserved.
      */
     private static final AtomicInteger nextTargetTransferTag = new AtomicInteger();
 
-    /**
-     * The connection the target server is using.
-     */
-    private Connection connection;
-    
     /**
      * while this value is true, the target is active.
      */
@@ -106,6 +108,7 @@ public final class TargetServer implements Callable<Void> {
         }
 
         this.deviceIdentificationVpdPage = new DeviceIdentificationVpdPage(this);
+        this.workerPool = Executors.newCachedThreadPool();
     }
 
     /**
@@ -197,6 +200,42 @@ public final class TargetServer implements Callable<Void> {
         target.call();
     }
 
+    private class ConnectionHandler implements Callable {
+
+        private final TargetConnection targetConnection;
+
+        ConnectionHandler(TargetConnection targetConnection) {
+            this.targetConnection = targetConnection;
+        }
+
+        @Override
+        public Void call() throws Exception {
+            try {
+                targetConnection.call();
+            } catch (Exception e) {
+                LOGGER.error("running target error:", e);
+            } finally {
+                // coming back from call() means the session is ended
+                // we can delete the target from local cache.
+                synchronized (targets) {
+                    Target target = targetConnection.getTargetSession().getTarget();
+                    if (target != null) {
+                        targets.remove(target.getTargetName());
+                        try {
+                            target.getStorageModule().close();
+                        } catch (Exception e) {
+                            LOGGER.error("Error when closing storage:", e);
+                        }
+                        LOGGER.info("closed local storage module");
+                    } else {
+                        LOGGER.warn("No target to delete on logout?");
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
     public Void call () throws Exception {
 
         // Create a blocking server socket and check for connections
@@ -218,9 +257,9 @@ public final class TargetServer implements Callable<Void> {
                 // deactivate Nagle algorithm
                 socketChannel.socket().setTcpNoDelay(true);
 
-                connection = new TargetConnection(socketChannel, true);
+                TargetConnection newConnection = new TargetConnection(socketChannel, true);
                 try {
-                    final ProtocolDataUnit pdu = connection.receivePdu();
+                    final ProtocolDataUnit pdu = newConnection.receivePdu();
                     // confirm OpCode-
                     if (pdu.getBasicHeaderSegment().getOpCode() != OperationCode.LOGIN_REQUEST) throw new InternetSCSIException();
                     // get initiatorSessionID
@@ -232,7 +271,7 @@ public final class TargetServer implements Callable<Void> {
                      * TODO get (new or existing) session based on TSIH But since we don't do session reinstatement and
                      * MaxConnections=1, we can just create a new one.
                      */
-                    TargetSession session = new TargetSession(this, connection, initiatorSessionID, parser.getCommandSequenceNumber(),// set
+                    TargetSession session = new TargetSession(this, newConnection, initiatorSessionID, parser.getCommandSequenceNumber(),// set
                                                                                                                                       // ExpCmdSN
                                                                                                                                       // (PDU
                                                                                                                                       // is
@@ -244,7 +283,7 @@ public final class TargetServer implements Callable<Void> {
 
                     sessions.add(session);
                     // threadPool.submit(connection);// ignore returned Future
-                    connection.call();
+                    workerPool.submit(new ConnectionHandler(newConnection)); // ignore returned Future
                 } catch (DigestException | InternetSCSIException | SettingsException e) {
                     LOGGER.info("Throws Exception", e);
                     continue;
@@ -301,15 +340,6 @@ public final class TargetServer implements Callable<Void> {
      */
     public boolean isValidTargetName (String checkTargetName) {
         return targets.containsKey(checkTargetName);
-    }
-
-    /**
-     * Using this connection mainly for test pruposes.
-     * 
-     * @return the connection the target server established.
-     */
-    public Connection getConnection () {
-        return this.connection;
     }
     
     /**
