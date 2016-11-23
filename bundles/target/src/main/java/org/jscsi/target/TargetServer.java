@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class TargetServer implements Callable<Void> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TargetServer.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(TargetServer.class);
 
     /**
      * A {@link SocketChannel} used for listening to incoming connections.
@@ -71,7 +71,7 @@ public final class TargetServer implements Callable<Void> {
     /**
      * The table of targets
      */
-    private HashMap<String , Target> targets = new HashMap<>();
+    protected HashMap<String , Target> targets = new HashMap<>();
 
     /**
      * The thread pool.
