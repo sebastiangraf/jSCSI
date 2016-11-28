@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Ergenzinger, University of Konstanz
  * @author Sebastian Graf, University of Konstanz
  */
-public final class TargetServer implements Callable<Void> {
+public class TargetServer implements Callable<Void> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(TargetServer.class);
 
