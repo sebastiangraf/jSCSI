@@ -1,3 +1,5 @@
+build
+.gradle
 .DS_Store
 .settings
 .project
@@ -5,4 +7,5 @@
 storage.dat
 /target
 test-output
-
+.idea
+*.iml

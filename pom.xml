@@ -140,7 +140,6 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 					<descriptors>
 						<descriptor>src/main/assembly/jarAssembly.xml</descriptor>
 					</descriptors>

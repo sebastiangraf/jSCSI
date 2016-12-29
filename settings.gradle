@@ -1,0 +1,6 @@
+rootProject.name = 'pom'
+include ':initiator'
+include ':target'
+
+project(':initiator').projectDir = "$rootDir/bundles/initiator" as File
+project(':target').projectDir = "$rootDir/bundles/target" as File

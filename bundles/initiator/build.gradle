@@ -1,0 +1,11 @@
+
+description = 'Initiator'
+dependencies {
+    compile group: 'org.jscsi', name: 'commons', version:'2.5.3-SNAPSHOT'
+}
+
+task packageTests(type: Jar) {
+  from sourceSets.test.output
+  classifier = 'tests'
+}
+artifacts.archives packageTests

@@ -1,0 +1,15 @@
+
+description = 'Target'
+dependencies {
+    compile group: 'org.jscsi', name: 'commons', version:'2.5.3-SNAPSHOT'
+    compile group: 'org.apache.jclouds', name: 'jclouds-blobstore', version:'1.8.1'
+    compile group: 'org.apache.jclouds.provider', name: 'aws-s3', version:'1.8.1'
+    compile group: 'org.apache.jclouds.api', name: 'filesystem', version:'1.8.1'
+    compile group: 'org.osgi', name: 'org.osgi.core', version:'4.3.0'
+}
+
+task packageTests(type: Jar) {
+  from sourceSets.test.output
+  classifier = 'tests'
+}
+artifacts.archives packageTests
