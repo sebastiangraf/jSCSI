@@ -1,44 +1,44 @@
-allprojects  {
-  apply plugin: 'maven'
+allprojects {
+    apply plugin: 'maven'
 
-  group = 'org.jscsi'
-version = '2.5.3-SNAPSHOT'
+    group = 'org.jscsi'
+    version = '2.5.3-SNAPSHOT'
 }
 
 subprojects {
-  apply plugin: 'java'
-  sourceCompatibility = 1.7
-  targetCompatibility = 1.7
-  tasks.withType(JavaCompile) {
-  	options.encoding = 'UTF-8'
-  }
+    apply plugin: 'java'
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
 
-  task packageSources(type: Jar) {
-classifier = 'sources'
-from sourceSets.main.allSource
+    task packageSources(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
 
-}
-artifacts.archives packageSources
-  repositories {
-    mavenLocal()
-    
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url "http://repo.maven.apache.org/maven2" }
-  }
+    }
+    artifacts.archives packageSources
+    repositories {
+        mavenLocal()
 
-  configurations.all {
-}
-  dependencies {
-    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.2'
-    compile group: 'ch.qos.logback', name: 'logback-core', version:'1.0.10'
-    compile group: 'ch.qos.logback', name: 'logback-classic', version:'1.0.10'
-    compile group: 'com.google.guava', name: 'guava', version:'17.0'
-    compile group: 'org.aspectj', name: 'aspectjrt', version:'1.7.2'
-    testCompile group: 'org.testng', name: 'testng', version:'6.8'
-    testCompile group: 'org.perfidix', name: 'perfidix', version:'3.6.9'
-    testCompile group: 'org.mockito', name: 'mockito-core', version:'1.9.5'
-}
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "http://repo.maven.apache.org/maven2" }
+    }
 
-  test.useTestNG()
+    configurations.all {
+    }
+    dependencies {
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.2'
+        compile group: 'ch.qos.logback', name: 'logback-core', version: '1.0.10'
+        compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.0.10'
+        compile group: 'com.google.guava', name: 'guava', version: '17.0'
+        compile group: 'org.aspectj', name: 'aspectjrt', version: '1.7.2'
+        testCompile group: 'org.testng', name: 'testng', version: '6.8'
+        testCompile group: 'org.perfidix', name: 'perfidix', version: '3.6.9'
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '1.9.5'
+    }
+
+    test.useTestNG()
 
 }
