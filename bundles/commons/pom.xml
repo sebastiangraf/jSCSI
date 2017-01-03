@@ -9,5 +9,5 @@
 
     <artifactId>commons</artifactId>
     <packaging>jar</packaging>
-
+    <name>${project.groupId}:${project.artifactId}</name>
 </project>

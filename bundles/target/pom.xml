@@ -9,6 +9,7 @@
 
    <artifactId>target</artifactId>
    <packaging>jar</packaging>
+   <name>${project.groupId}:${project.artifactId}</name>
 
    <properties>
       <jclouds.version>1.8.1</jclouds.version>
