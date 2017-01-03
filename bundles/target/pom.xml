@@ -8,15 +8,8 @@
    </parent>
 
    <artifactId>target</artifactId>
-   <name>Target</name>
+   <name>${project.groupId}:${project.artifactId}</name>
    <packaging>jar</packaging>
-
-   <url>http://disy.github.com/jSCSI/</url>
-   <scm>
-      <url>git@github.com:disy/jSCSI.git</url>
-      <connection>scm:git:git@github.com:disy/jSCSI.git</connection>
-      <developerConnection>scm:git:git@github.com:disy/jSCSI.git</developerConnection>
-   </scm>
 
    <properties>
       <jclouds.version>1.8.1</jclouds.version>

@@ -16,24 +16,18 @@
 	<artifactId>pom</artifactId>
 	<packaging>pom</packaging>
 	<version>2.5.3-SNAPSHOT</version>
-	<name>Builder</name>
-
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
+	<name>${project.groupId}:${project.artifactId}</name>
 
 	<description>jSCSI is a feature-complete iSCSI implementation in Java only. Platform-independent and fast, jSCSI represents a premium example how low-level protocols can be pushed to higher levels. jSCSI contains a server (target), a client (initiator) and common classes to work with the protocol.</description>
 
-	<url>http://disy.github.com/jSCSI/</url>
-	<scm>
-		<url>git@github.com:disy/jSCSI.git</url>
-		<connection>scm:git:git@github.com:disy/jSCSI.git</connection>
-		<developerConnection>scm:git:git@github.com:disy/jSCSI.git</developerConnection>
-	</scm>
+	<url>http://jscsi.org</url>
+    <scm>
+      <connection>scm:git:git://github.com/sebastiangraf/jscsi.git</connection>
+      <developerConnection>scm:git:ssh://github.com:sebastiangraf/jscsi.git</developerConnection>
+      <url>http://github.com/sebastiangraf/jscsi/tree/master</url>
+    </scm>
 	<issueManagement>
-		<url>https://github.com/disy/jSCSI/issues</url>
+		<url>https://github.com/sebastiangraf/jSCSI/issues</url>
 		<system>GitHub Issues</system>
 	</issueManagement>
 	<licenses>
@@ -45,31 +39,16 @@
 	</licenses>
 	<ciManagement>
 		<system>Travis CI</system>
-		<url>http://travis-ci.org/#!/disy/jSCSI</url>
+		<url>http://travis-ci.org/#!/sebastiangraf/jSCSI</url>
 	</ciManagement>
 	<developers>
 		<developer>
 			<name>Sebastian Graf</name>
-			<email>Sebastian.Graf@uni-konstanz.de</email>
-			<url>http://www.disy.uni-konstanz.de/en/members/sebastian-graf/</url>
-			<organization>University of Konstanz, Distributed Systems Group
-			</organization>
-			<organizationUrl>http://www.disy.uni-konstanz.de/</organizationUrl>
+			<email>Sebastian.Graf@toolsmith.ch</email>
+			<url>http://toolsmith.ch</url>
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
-	<organization>
-		<name>University of Konstanz, Distributed Systems Group</name>
-		<url>http://www.disy.uni-konstanz.de</url>
-	</organization>
-	<mailingLists>
-		<mailingList>
-			<name>jSCSI Mailing List</name>
-			<subscribe>jscsi-subscribe@mailman.uni-konstanz.de</subscribe>
-			<unsubscribe>jscsi-unsibscribe@mailman.uni-konstanz.de</unsubscribe>
-			<post>jscsi@mailman.uni-konstanz.de</post>
-		</mailingList>
-	</mailingLists>
 	<build>
 		<plugins>
 			<plugin>
@@ -93,6 +72,7 @@
 				<version>2.9</version>
 				<executions>
 					<execution>
+                        <id>attach-sources</id>
 						<goals>
 							<goal>test-jar</goal>
 							<goal>jar</goal>
@@ -105,18 +85,7 @@
 				<version>2.2.1</version>
 				<executions>
 					<execution>
-						<goals>
-							<goal>test-jar</goal>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
-				<executions>
-					<execution>
+                        <id>attach-sources</id>
 						<goals>
 							<goal>test-jar</goal>
 							<goal>jar</goal>
@@ -126,7 +95,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.4</version>
+				<version>1.6</version>
 				<executions>
 					<execution>
 						<phase>deploy</phase>
@@ -290,29 +259,31 @@
 	</distributionManagement>
 
 	<modules>
+		<module>bundles/commons</module>
 		<module>bundles/initiator</module>
 		<module>bundles/target</module>
 	</modules>
 
 	<profiles>
 		<profile>
-			<id>all</id>
-			<modules>
-				<module>bundles/commons</module>
-				<module>bundles/initiator</module>
-				<module>bundles/target</module>
-				<module>bundles/testing</module>
-			</modules>
-		</profile>
-		<profile>
 			<id>release</id>
-			<modules>
-				<module>bundles/commons</module>
-				<module>bundles/initiator</module>
-				<module>bundles/target</module>
-			</modules>
+            <build>
+              <plugins>
+                <plugin>
+                  <groupId>org.sonatype.plugins</groupId>
+                  <artifactId>nexus-staging-maven-plugin</artifactId>
+                  <version>1.6.7</version>
+                  <extensions>true</extensions>
+                  <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                  </configuration>
+                </plugin>
+              </plugins>
+            </build>
 		</profile>
-                <profile>
+        <profile>
 			<id>doclint-java8-disable</id>
 			<activation>
 				<jdk>[1.8,)</jdk>
