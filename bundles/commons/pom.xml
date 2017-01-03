@@ -7,8 +7,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>commons</artifactId>
-    <name>Libraries</name>
+    <artifactId>commons</artifactId>g
     <packaging>jar</packaging>
 
 </project>
