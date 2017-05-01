@@ -12,20 +12,20 @@ pipeline {
                 sh 'mvn -B clean compile'
             }
         }
-	    stage('Unit Tests') {
-			steps {
-	        	sh 'mvn -B test'
-				junit '**/target/surefire-reports/junitreports/*.xml'
-	    	}
-		}
-		stage('Deploy Snapshot when on master branch'){
-			when {
-				branch 'master'
-			}
-			steps {
-				sh 'mvn -B -DskipTests=true clean deploy'
-			}
-		}
+        stage('Unit Tests') {
+            steps {
+                sh 'mvn -B test'
+                junit '**/target/surefire-reports/junitreports/*.xml'
+            }
+        }
+        stage('Deploy Snapshot when on master branch'){
+             when {
+                 branch 'master'
+             }
+             steps {
+                 sh 'mvn -B -DskipTests=true clean deploy'
+             }
+        }
     }
 
 	post {
