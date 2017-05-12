@@ -7,7 +7,7 @@ pipeline {
 	        jdk 'jdk8' 
 	}
     parameters {
-        booleanParam(name: 'Release Build?', defaultValue: 'false', description: 'Should project be released?')
+        booleanParam(name: 'Release Build?', defaultValue: false, description: 'Should project be released?')
     }
     stages {
         stage('Unit Tests') {
