@@ -2,10 +2,10 @@
 
 pipeline {
     agent any
-	tools { 
-	        maven 'Maven 3.5.0' 
-	        jdk 'jdk8' 
-	}
+    tools {
+        maven 'Maven 3.5.0'
+        jdk 'jdk8'
+    }
     parameters {
         booleanParam(name: 'Release Build?', defaultValue: false, description: 'Should project be released?')
     }
@@ -16,22 +16,17 @@ pipeline {
                 junit '**/target/surefire-reports/junitreports/*.xml'
             }
         }
-        parallel{
-        stage('Deploy Snapshot when on master branch'){
-             when {
-                 branch 'master'
-             }
-             steps {
-                sh 'mvn -B clean -DskipTests=true clean deploy'
-             }
-        }
-        stage('Make Sonar analysis') {
+        stage('When on master, Deploy Snapshot and analyze for sonar') {
             when {
                 branch 'master'
             }
-            withSonarQubeEnv('codequality.toolsmith.ch') {
-                sh 'mvn -B clean sonar:sonar'
+            steps {
+                sh 'mvn -B clean -DskipTests=true clean deploy'
+                withSonarQubeEnv('codequality.toolsmith.ch') {
+                    sh 'mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent test'
+                    sh 'mvn -B sonar:sonar'
+                }
             }
-        }}
+        }
     }
 }
