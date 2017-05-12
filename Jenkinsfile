@@ -7,7 +7,7 @@ pipeline {
 	        jdk 'jdk8' 
 	}
     parameters {
-        boolean(name: 'Release Build?', defaultValue: 'false', description: 'Should project be released?')
+        booleanParam(name: 'Release Build?', defaultValue: 'false', description: 'Should project be released?')
     }
     stages {
         stage('Unit Tests') {
@@ -21,8 +21,12 @@ pipeline {
                  branch 'master'
              }
              steps {
+                 withSonarQubeEnv('codequality.toolsmith.ch') {
+                     sh 'mvn clean package sonar:sonar'
+                 }
                  sh 'mvn -B -DskipTests=true clean deploy'
              }
+
         }
     }
 }
