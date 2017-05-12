@@ -16,17 +16,22 @@ pipeline {
                 junit '**/target/surefire-reports/junitreports/*.xml'
             }
         }
+        parallel{
         stage('Deploy Snapshot when on master branch'){
              when {
                  branch 'master'
              }
              steps {
-                 withSonarQubeEnv('codequality.toolsmith.ch') {
-                     sh 'mvn clean package sonar:sonar'
-                 }
-                 sh 'mvn -B -DskipTests=true clean deploy'
+                sh 'mvn -B clean -DskipTests=true clean deploy'
              }
-
         }
+        stage('Make Sonar analysis') {
+            when {
+                branch 'master'
+            }
+            withSonarQubeEnv('codequality.toolsmith.ch') {
+                sh 'mvn -B clean sonar:sonar'
+            }
+        }}
     }
 }
