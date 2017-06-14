@@ -21,7 +21,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                sh 'mvn -B clean -DskipTests=true clean deploy'
+                sh 'mvn -B clean deploy -DskipTests=true'
                 withSonarQubeEnv('codequality.toolsmith.ch') {
                     sh 'mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent test'
                     sh 'mvn -B sonar:sonar'
