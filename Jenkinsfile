@@ -30,7 +30,10 @@ pipeline {
         }
         stage('When on master and release set, release') {
             when {
-                expression { params.release }
+                expression {
+                    GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+                    return GIT_BRANCH == 'origin/master' && params.release
+                }
             }
             steps {
                 sh 'git checkout master'
