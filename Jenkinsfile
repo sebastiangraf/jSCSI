@@ -10,6 +10,20 @@ pipeline {
         booleanParam(name: 'release', defaultValue: false, description: 'Should project be released?')
     }
     stages {
+        stage('When on master and release set, release') {
+            when {
+                expression {
+                    GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
+                    sh 'echo $GIT_BRANCH'
+                    sh 'echo params.release'
+                    return GIT_BRANCH == 'origin/master' && params.release
+                }
+            }
+            steps {
+                sh 'git checkout master'
+                sh 'echo "release comes here"'
+            }
+        }
         stage('Unit Tests') {
             steps {
                 sh 'mvn -B test'
@@ -28,17 +42,6 @@ pipeline {
                 }
             }
         }
-        stage('When on master and release set, release') {
-            when {
-                expression {
-                    GIT_BRANCH = 'origin/' + sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
-                    return GIT_BRANCH == 'origin/master' && params.release
-                }
-            }
-            steps {
-                sh 'git checkout master'
-                sh 'echo "release comes here"'
-            }
-        }
+
     }
 }
