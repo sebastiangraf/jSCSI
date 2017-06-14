@@ -7,7 +7,7 @@ pipeline {
         jdk 'jdk8'
     }
     parameters {
-        booleanParam(name: 'Release Build?', defaultValue: false, description: 'Should project be released?')
+        booleanParam(name: 'release', defaultValue: false, description: 'Should project be released?')
     }
     stages {
         stage('Unit Tests') {
@@ -26,6 +26,15 @@ pipeline {
                     sh 'mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent test'
                     sh 'mvn -B sonar:sonar'
                 }
+            }
+        }
+        stage('When on master and release set, release') {
+            when {
+                expression { params.release }
+            }
+            steps {
+                sh 'git checkout master'
+                sh 'echo "release comes here"'
             }
         }
     }
