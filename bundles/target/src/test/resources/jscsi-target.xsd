@@ -92,6 +92,10 @@
                 default="false" minOccurs="0" maxOccurs="1" />
             <xs:element name="Port" type="TargetPortType"
                 default="3260" minOccurs="0" maxOccurs="1" />
+            <xs:element name="ExternalPort" type="TargetPortType"
+                        minOccurs="0" maxOccurs="1" />
+            <xs:element name="ExternalAddress" type="TargetPortType"
+                        minOccurs="0" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 

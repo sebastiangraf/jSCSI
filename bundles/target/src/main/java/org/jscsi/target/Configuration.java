@@ -1,13 +1,14 @@
 package org.jscsi.target;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
+import org.jscsi.target.scsi.lun.LogicalUnitNumber;
+import org.jscsi.target.settings.TextKeyword;
+import org.jscsi.target.storage.IStorageModule;
+import org.jscsi.target.storage.JCloudsStorageModule;
+import org.jscsi.target.storage.RandomAccessStorageModule;
+import org.jscsi.target.storage.SynchronizedRandomAccessStorageModule;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -19,19 +20,14 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
-import org.jscsi.target.scsi.lun.LogicalUnitNumber;
-import org.jscsi.target.settings.TextKeyword;
-import org.jscsi.target.storage.IStorageModule;
-import org.jscsi.target.storage.JCloudsStorageModule;
-import org.jscsi.target.storage.RandomAccessStorageModule;
-import org.jscsi.target.storage.SynchronizedRandomAccessStorageModule;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -64,6 +60,8 @@ public class Configuration {
     // Global configuration elements
     public static final String ELEMENT_ALLOWSLOPPYNEGOTIATION = "AllowSloppyNegotiation";
     public static final String ELEMENT_PORT = "Port";
+    public static final String ELEMENT_EXTERNAL_PORT = "ExternalPort";
+    public static final String ELEMENT_EXTERNAL_ADDRESS = "ExternalAddress";
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -94,12 +92,24 @@ public class Configuration {
     protected String targetAddress;
 
     /**
+     * The target address which will be returned by the discovery.
+     * <p>
+     * Could be different from the targetAddress in case of external
+     */
+    protected String externalTargetAddress;
+
+    /**
      * The port used by the jSCSI Target for listening for new connections.
      * <p>
      * The default port number is 3260. This value may be overridden by specifying a different value in the
      * configuration file.
      */
     protected int port;
+
+    /**
+     * The port used to connect to service. Could be different from the port in case of api gateway.
+     */
+    protected int externalPort;
 
     /**
      * This variable toggles the strictness with which the parameters <code>IFMarkInt</code> and <code>OFMarkInt</code>
@@ -145,17 +155,25 @@ public class Configuration {
      */
     private final int maxRecvTextPduSequenceLength = 4;
 
-    public Configuration (final String pTargetAddress) throws IOException {
-        port = 3260;
+    public Configuration(final String pTargetAddress, String externalTargetAddress, int externalPort) throws IOException {
+        this.port = 3260;
+        this.externalPort = externalPort;
+        this.externalTargetAddress = externalTargetAddress;
+        this.targetAddress = pTargetAddress;
+        targets = new ArrayList<>();
+    }
 
+    public Configuration (final String pTargetAddress) throws IOException {
+        this(defaultTargetAddress(pTargetAddress), defaultTargetAddress(pTargetAddress), 3260);
+    }
+
+    private static String defaultTargetAddress(String pTargetAddress) throws UnknownHostException {
         if (pTargetAddress.equals("")) {
-            targetAddress = InetAddress.getLocalHost().getHostAddress();
+            return InetAddress.getLocalHost().getHostAddress();
 
         } else {
-            targetAddress = pTargetAddress;
+            return pTargetAddress;
         }
-
-        targets = new ArrayList<>();
     }
 
     public int getInMaxRecvTextPduSequenceLength () {
@@ -252,6 +270,20 @@ public class Configuration {
         else
             returnConfiguration.port = 3260;
 
+        // external port
+        if (root.getElementsByTagName(ELEMENT_EXTERNAL_PORT).getLength() > 0)
+            returnConfiguration.externalPort = Integer.parseInt(root.getElementsByTagName(ELEMENT_EXTERNAL_PORT).item(0).getTextContent());
+        else
+            returnConfiguration.externalPort = returnConfiguration.port;
+
+
+        // external address
+        if (root.getElementsByTagName(ELEMENT_EXTERNAL_ADDRESS).getLength() > 0)
+            returnConfiguration.externalTargetAddress = root.getElementsByTagName(ELEMENT_EXTERNAL_ADDRESS).item(0).getTextContent();
+        else
+            returnConfiguration.externalTargetAddress = pTargetAddress;
+
+
         // support sloppy text parameter negotiation (i.e. the jSCSI Initiator)?
         final Node allowSloppyNegotiationNode = root.getElementsByTagName(ELEMENT_ALLOWSLOPPYNEGOTIATION).item(0);
         if (allowSloppyNegotiationNode == null)
@@ -325,4 +357,11 @@ public class Configuration {
         return toIterate;
     }
 
+    public String getExternalTargetAddress() {
+        return externalTargetAddress;
+    }
+
+    public int getExternalPort() {
+        return externalPort;
+    }
 }
