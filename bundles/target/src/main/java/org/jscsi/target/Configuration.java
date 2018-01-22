@@ -270,23 +270,29 @@ public class Configuration {
         // else it is null
 
         // port
-        if (root.getElementsByTagName(ELEMENT_PORT).getLength() > 0)
-            returnConfiguration.port = Integer.parseInt(root.getElementsByTagName(ELEMENT_PORT).item(0).getTextContent());
-        else
+        NodeList portTags = root.getElementsByTagName(ELEMENT_PORT);
+        if (portTags.getLength() > 0) {
+            returnConfiguration.port = Integer.parseInt(portTags.item(0).getTextContent());
+        } else {
             returnConfiguration.port = 3260;
+        }
 
         // external port
-        if (root.getElementsByTagName(ELEMENT_EXTERNAL_PORT).getLength() > 0)
-            returnConfiguration.externalPort = Integer.parseInt(root.getElementsByTagName(ELEMENT_EXTERNAL_PORT).item(0).getTextContent());
-        else
+        NodeList externalPortTags = root.getElementsByTagName(ELEMENT_EXTERNAL_PORT);
+        if (externalPortTags.getLength() > 0) {
+            returnConfiguration.externalPort = Integer.parseInt(externalPortTags.item(0).getTextContent());
+        } else {
             returnConfiguration.externalPort = returnConfiguration.port;
+        }
 
 
         // external address
-        if (root.getElementsByTagName(ELEMENT_EXTERNAL_ADDRESS).getLength() > 0)
-            returnConfiguration.externalTargetAddress = root.getElementsByTagName(ELEMENT_EXTERNAL_ADDRESS).item(0).getTextContent();
-        else
+        NodeList externalAddressTAgs = root.getElementsByTagName(ELEMENT_EXTERNAL_ADDRESS);
+        if (externalAddressTAgs.getLength() > 0) {
+            returnConfiguration.externalTargetAddress = externalAddressTAgs.item(0).getTextContent();
+        } else {
             returnConfiguration.externalTargetAddress = pTargetAddress;
+        }
 
 
         // support sloppy text parameter negotiation (i.e. the jSCSI Initiator)?
