@@ -92,17 +92,17 @@ public final class TextNegotiationStage extends TargetFullFeatureStage {
                     for (String curTargetName : session.getTargetServer().getTargetNames()) {
                         responseKeyValuePairs.add(TextParameter.toKeyValuePair(TextKeyword.TARGET_NAME, curTargetName));
                         // add TargetAddress
-                        if (sendTargetAddress) responseKeyValuePairs.add(TextParameter.toKeyValuePair(TextKeyword.TARGET_ADDRESS, session.getTargetServer().getConfig().getTargetAddress() + // domain
+                        if (sendTargetAddress) responseKeyValuePairs.add(TextParameter.toKeyValuePair(TextKeyword.TARGET_ADDRESS, session.getTargetServer().getConfig().getExternalTargetAddress() + // domain
                         TextKeyword.COLON + // :
-                        session.getTargetServer().getConfig().getPort() + // port
+                        session.getTargetServer().getConfig().getExternalPort() + // port
                         TextKeyword.COMMA + // ,
                         session.getTargetServer().getConfig().getTargetPortalGroupTag())); // groupTag)
                     }
                 } else {
                     // We're here if they sent us a target name and are asking for the address (I think)
-                    if (sendTargetAddress) responseKeyValuePairs.add(TextParameter.toKeyValuePair(TextKeyword.TARGET_ADDRESS, session.getTargetServer().getConfig().getTargetAddress() + // domain
+                    if (sendTargetAddress) responseKeyValuePairs.add(TextParameter.toKeyValuePair(TextKeyword.TARGET_ADDRESS, session.getTargetServer().getConfig().getExternalTargetAddress() + // domain
                     TextKeyword.COLON + // :
-                    session.getTargetServer().getConfig().getPort() + // port
+                    session.getTargetServer().getConfig().getExternalPort() + // port
                     TextKeyword.COMMA + // ,
                     session.getTargetServer().getConfig().getTargetPortalGroupTag())); // groupTag)
                 }
