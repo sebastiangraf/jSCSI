@@ -1,4 +1,4 @@
-#jSCSI - A Java iSCSI Framework
+# jSCSI - A Java iSCSI Framework
 
 jSCSI is a feature-complete iSCSI implementation in Java only.
 Platform-independent and fast, jSCSI represents a premium example how low-level protocols can be pushed to higher levels.
@@ -41,22 +41,22 @@ For further documentation and as an example, please refer to the examples in the
 * bundles: bundles containing the projects
 * pom.xml: Simple pom (yes we use Maven)
 
-##License
+## License
 
 This work is released in the public domain under the BSD 3-clause license
 
-##Further information
+## Further information
 
 The project is currently under refactoring, the documentation is accessible under http://jscsi.org (pointing to http://disy.github.com/jscsi/) and a mailinglist has been set up:
 https://mailman.uni-konstanz.de/mailman/listinfo/jscsi
 
-##Publications
+## Publications
 
 * A TechReport describes the second iteration of the framework: [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84511)
 * The framework was presented at the Jazoon '07 as work in progress: [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-84424)
 * jSCSI acted as backend for a block visualization presented at the InfoVis 2006: [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-69096)
 
-##Concluded Thesis
+## Concluded Thesis
 
 * Target 1.0 (english): TO FOLLOW
 * Initiator 2.0 (german only): [PDF](http://nbn-resolving.de/urn:nbn:de:bsz:352-opus-130096)
@@ -65,7 +65,7 @@ https://mailman.uni-konstanz.de/mailman/listinfo/jscsi
 
 Any questions, just contact sebastian.graf AT uni-konstanz.de
 
-##Involved People
+## Involved People
 
 jSCSI is maintained by:
 
