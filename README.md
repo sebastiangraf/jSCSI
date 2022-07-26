@@ -6,7 +6,7 @@ jSCSI contains a server (target), a client (initiator) and common classes to wor
 
 [![Build Status](https://secure.travis-ci.org/sebastiangraf/jSCSI.png)](http://travis-ci.org/sebastiangraf/jSCSI)
 
-##Using jSCSI
+## Using jSCSI
 
 * Get the latest jar over Github or Maven
 
@@ -34,7 +34,7 @@ The schema and an example config are accessible as download as well and included
 
 For further documentation and as an example, please refer to the examples in the initiator- and target-module.
 
-##Content
+## Content
 
 * README: this readme file
 * LICENSE: license file
