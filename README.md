@@ -41,6 +41,16 @@ For further documentation and as an example, please refer to the examples in the
 * bundles: bundles containing the projects
 * pom.xml: Simple pom (yes we use Maven)
 
+## Build
+* jar only:
+```bash
+mvn -Dmaven.test.skip=true -Dmaven.source.skip=true -Dmaven.javadoc.skip=true clean package
+```
+* jar, javadoc and sources:
+```bash
+mvn -Dmaven.test.skip=true -Pdoclint-java8-disable clean package
+```
+
 ## License
 
 This work is released in the public domain under the BSD 3-clause license

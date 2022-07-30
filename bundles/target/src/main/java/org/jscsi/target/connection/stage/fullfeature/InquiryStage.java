@@ -14,6 +14,7 @@ import org.jscsi.target.scsi.cdb.InquiryCDB;
 import org.jscsi.target.scsi.inquiry.PageCode.VitalProductDataPageName;
 import org.jscsi.target.scsi.inquiry.StandardInquiryData;
 import org.jscsi.target.scsi.inquiry.SupportedVpdPages;
+import org.jscsi.target.scsi.inquiry.UnitSerialNumberPage;
 import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.util.Debug;
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A stage for processing <code>INQUIRY</code> SCSI commands.
- * 
+ *
  * @author Andreas Ergenzinger
  */
 public class InquiryStage extends TargetFullFeatureStage {
@@ -61,6 +62,7 @@ public class InquiryStage extends TargetFullFeatureStage {
         if (illegalFieldPointers != null) {
             // an illegal request has been made
             LOGGER.error("illegal INQUIRY request");
+            LOGGER.error("CDB bytes: \n" + Debug.byteBufferToString(parser.getCDB()));
 
             responsePdu = createFixedFormatErrorPdu(illegalFieldPointers, bhs.getInitiatorTaskTag(), parser.getExpectedDataTransferLength());
 
@@ -92,6 +94,9 @@ public class InquiryStage extends TargetFullFeatureStage {
                     case DEVICE_IDENTIFICATION :
                         responseData = session.getTargetServer().getDeviceIdentificationVpdPage();
                         break;
+                    case UNIT_SERIAL_NUMBER :
+                        responseData = UnitSerialNumberPage.getInstance();
+                        break;
                     default :
                         // The initiator must not request unsupported mode pages.
                         throw new InternetSCSIException();
@@ -100,7 +105,7 @@ public class InquiryStage extends TargetFullFeatureStage {
 
             // send response
             sendResponse(bhs.getInitiatorTaskTag(), parser.getExpectedDataTransferLength(), responseData);
-           
+
         }
 
     }

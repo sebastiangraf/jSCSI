@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
  * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
  * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
  * endorse or promote products derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
@@ -27,6 +27,7 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.google.common.io.BaseEncoding;
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.datasegment.AbstractDataSegment;
 import org.jscsi.parser.datasegment.IDataSegmentIterator.IDataSegmentChunk;
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * <h1>ProtocolDataUnit</h1>
  * <p>
  * This class encapsulates a Protocol Data Unit (PDU), which is defined in the iSCSI Standard (RFC 3720).
- * 
+ *
  * @author Volker Wildi
  */
 public final class ProtocolDataUnit {
@@ -95,7 +96,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Default constructor, creates a new, empty ProtcolDataUnit object.
-     * 
+     *
      * @param initHeaderDigest The instance of the digest to use for the Basic Header Segment protection.
      * @param initDataDigest The instance of the digest to use for the Data Segment protection.
      */
@@ -115,7 +116,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Serialize all informations of this PDU object to its byte representation.
-     * 
+     *
      * @return The byte representation of this PDU.
      * @throws InternetSCSIException If any violation of the iSCSI-Standard emerge.
      * @throws IOException if an I/O error occurs.
@@ -134,7 +135,7 @@ public final class ProtocolDataUnit {
         }
 
         offset += serializeAdditionalHeaderSegments(pdu, offset);
-        
+
         // write header digest
         // TODO: Move CRC calculation in BasicHeaderSegment.serialize?
         if (basicHeaderSegment.getParser().canHaveDigests()) {
@@ -150,12 +151,12 @@ public final class ProtocolDataUnit {
             offset += serializeDigest(pdu, dataDigest);
         }
 
-        return (ByteBuffer) pdu.rewind();
+        return pdu.rewind();
     }
 
     /**
      * Deserializes (parses) a given byte representation of a PDU to an PDU object.
-     * 
+     *
      * @param pdu The byte representation of an PDU to parse.
      * @return The number of bytes, which are serialized.
      * @throws InternetSCSIException If any violation of the iSCSI-Standard emerge.
@@ -178,7 +179,7 @@ public final class ProtocolDataUnit {
     /**
      * Deserializes a given array starting from offset <code>0</code> and store the informations in the
      * BasicHeaderSegment object..
-     * 
+     *
      * @param bhs The array to read from.
      * @throws InternetSCSIException If any violation of the iSCSI-Standard emerge.
      * @throws DigestException There is a mismatch of the digest.
@@ -202,7 +203,7 @@ public final class ProtocolDataUnit {
     /**
      * Deserializes a array (starting from offset <code>0</code>) and store the informations to the
      * <code>AdditionalHeaderSegment</code> object.
-     * 
+     *
      * @param pdu The array to read from.
      * @return The length of the read bytes.
      * @throws InternetSCSIException If any violation of the iSCSI-Standard emerge.
@@ -215,7 +216,7 @@ public final class ProtocolDataUnit {
     /**
      * Deserializes a array (starting from the given offset) and store the informations to the
      * <code>AdditionalHeaderSegment</code> object.
-     * 
+     *
      * @param pdu The <code>ByteBuffer</code> to read from.
      * @param offset The offset to start from.
      * @return The length of the written bytes.
@@ -241,7 +242,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Serialize all the contained additional header segments to the destination array starting from the given offset.
-     * 
+     *
      * @param dst The destination array to write in.
      * @param offset The offset to start to write in <code>dst</code>.
      * @return The written length.
@@ -259,7 +260,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Serializes the data segment (binary or key-value pairs) to a destination array, staring from offset to write.
-     * 
+     *
      * @param dst The array to write in.
      * @param offset The start offset to start from in <code>dst</code>.
      * @return The written length.
@@ -276,7 +277,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Deserializes a array (starting from the given offset) and store the informations to the Data Segment.
-     * 
+     *
      * @param pdu The array to read from.
      * @param offset The offset to start from.
      * @return The length of the written bytes.
@@ -312,7 +313,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Writes this <code>ProtocolDataUnit</code> object to the given <code>SocketChannel</code>.
-     * 
+     *
      * @param sChannel <code>SocketChannel</code> to write to.
      * @return The number of bytes written, possibly zero.
      * @throws InternetSCSIException if any violation of the iSCSI-Standard emerge.
@@ -337,7 +338,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Reads from the given <code>SocketChannel</code> all the neccassary bytes to fill this PDU.
-     * 
+     *
      * @param sChannel <code>SocketChannel</code> to read from.
      * @return The number of bytes, possibly zero,or <code>-1</code> if the channel has reached end-of-stream
      * @throws IOException if an I/O error occurs.
@@ -420,7 +421,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Returns an iterator to all contained Additional Header Segment in this PDU.
-     * 
+     *
      * @return The iterator to the contained Additional Header Segment.
      * @see AdditionalHeaderSegment
      */
@@ -431,7 +432,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Returns the Basic Header Segment contained in this PDU.
-     * 
+     *
      * @return The Basic Header Segment.
      * @see BasicHeaderSegment
      */
@@ -442,7 +443,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Gets the data segment in this PDU.
-     * 
+     *
      * @return The data segment of this <code>ProtocolDataUnit</code> object.
      */
     public final ByteBuffer getDataSegment () {
@@ -458,7 +459,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Sets a new data segment in this PDU.
-     * 
+     *
      * @param chunk The new data segment of this <code>ProtocolDataUnit</code> object.
      */
     public final void setDataSegment (final IDataSegmentChunk chunk) {
@@ -472,7 +473,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Returns the instance of the used digest algorithm for the header.
-     * 
+     *
      * @return The instance of the header digest.
      */
     public final IDigest getHeaderDigest () {
@@ -482,7 +483,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Sets the digest of the header to use for data integrity.
-     * 
+     *
      * @param newHeaderDigest An instance of the new header digest.
      */
     public final void setHeaderDigest (final IDigest newHeaderDigest) {
@@ -492,7 +493,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Returns the instance of the used digest algorithm for the data segment.
-     * 
+     *
      * @return The instance of the data digest.
      */
     public final IDigest getDataDigest () {
@@ -502,7 +503,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Sets the digest of the data segment to use for data integrity.
-     * 
+     *
      * @param newDataDigest An instance of the new data segment digest.
      */
     public final void setDataDigest (final IDigest newDataDigest) {
@@ -516,13 +517,21 @@ public final class ProtocolDataUnit {
     /** {@inheritDoc} */
     @Override
     public final String toString () {
-
         final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
 
         sb.append(basicHeaderSegment.toString());
-
         for (AdditionalHeaderSegment ahs : additionalHeaderSegments) {
             sb.append(ahs.toString());
+        }
+
+        if (dataSegment.limit () > 0) {
+            sb.append ("  DataSegment (first 16 bytes): 0x");
+            byte[] preview = new byte [Math.min (dataSegment.limit (), 16)];
+            // NOT to use mark and reset because
+            // "If the mark is defined and larger than the new position then it is discarded."
+            int pos = dataSegment.position ();
+            dataSegment.position (0).get (preview).position (pos);
+            sb.append (BaseEncoding.base16 ().withSeparator (" ", 2).encode (preview));
         }
 
         return sb.toString();
@@ -567,7 +576,7 @@ public final class ProtocolDataUnit {
 
     /**
      * Calculates the needed size (in bytes) of serializing this object.
-     * 
+     *
      * @return The needed size to store this object.
      */
     private final int calcSize () {
