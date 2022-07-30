@@ -11,7 +11,7 @@ import org.jscsi.target.scsi.inquiry.PageCode.VitalProductDataPageName;
  * This Vital Product Data page contains a list of the VPD page codes supported by the logical unit.
  * <p>
  * This class uses the singleton pattern since the list of supported Vital Product Data page requests will never change.
- * 
+ *
  * @author Andreas Ergenzinger
  */
 public final class SupportedVpdPages implements IResponseData {
@@ -29,14 +29,15 @@ public final class SupportedVpdPages implements IResponseData {
     /*
      * determine which pages to support must be in ascending order see PAGECode.VitalProductDataPageName
      */
-    public static final byte[] SUPPORTED_VPD_PAGES = new byte[] { (byte) 0x00,// SUPPORTED_VPD_PAGES,
-            // mandatory
-    (byte) 0x83,// DECIVE_IDENTIFICATION, mandatory
+    public static final byte[] SUPPORTED_VPD_PAGES = new byte[] {
+        (byte) 0x00,// SUPPORTED_VPD_PAGES, mandatory
+        (byte) 0x80,// UNIT_SERIAL_NUMBER
+        (byte) 0x83,// DECIVE_IDENTIFICATION, mandatory
     };
 
     /**
      * Returns the singleton.
-     * 
+     *
      * @return the singleton
      */
     public static SupportedVpdPages getInstance () {
@@ -48,6 +49,7 @@ public final class SupportedVpdPages implements IResponseData {
         // private due to singleton pattern
     }
 
+    @Override
     public void serialize (ByteBuffer byteBuffer, int index) {
 
         // *** byte 0 ***
@@ -82,13 +84,14 @@ public final class SupportedVpdPages implements IResponseData {
             byteBuffer.put(SUPPORTED_VPD_PAGES[i]);
     }
 
+    @Override
     public int size () {
         return HEADER_SIZE + SUPPORTED_VPD_PAGES.length;
     }
 
     /**
      * Returns <code>true</code> for those and only for those VPD Page Codes which are supported by the jSCSI Target.
-     * 
+     *
      * @param vitalProductDataPageName VPD Page Name whose support is inquired
      * @return <code>true</code> for those and only for those VPD Page Codes which are supported by the jSCSI Target
      */

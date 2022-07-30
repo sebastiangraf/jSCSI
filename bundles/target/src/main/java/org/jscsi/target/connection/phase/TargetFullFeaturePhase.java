@@ -20,6 +20,7 @@ import org.jscsi.target.connection.stage.fullfeature.PingStage;
 import org.jscsi.target.connection.stage.fullfeature.ReadCapacityStage;
 import org.jscsi.target.connection.stage.fullfeature.ReadStage;
 import org.jscsi.target.connection.stage.fullfeature.ReportLunsStage;
+import org.jscsi.target.connection.stage.fullfeature.ReportOpCodesStage;
 import org.jscsi.target.connection.stage.fullfeature.RequestSenseStage;
 import org.jscsi.target.connection.stage.fullfeature.SendDiagnosticStage;
 import org.jscsi.target.connection.stage.fullfeature.TargetFullFeatureStage;
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Objects of this class represent the Target Full Feature Phase of a connection.
- * 
+ *
  * @see TargetPhase
  * @author Andreas Ergenzinger
  */
@@ -56,7 +57,7 @@ public final class TargetFullFeaturePhase extends TargetPhase {
 
     /**
      * The constructor.
-     * 
+     *
      * @param connection {@inheritDoc}
      */
     public TargetFullFeaturePhase (Connection connection) {
@@ -66,7 +67,7 @@ public final class TargetFullFeaturePhase extends TargetPhase {
 
     /**
      * Starts the full feature phase.
-     * 
+     *
      * @return {@inheritDoc}
      * @throws OperationNotSupportedException {@inheritDoc}
      * @throws IOException {@inheritDoc}
@@ -75,6 +76,7 @@ public final class TargetFullFeaturePhase extends TargetPhase {
      * @throws DigestException {@inheritDoc}
      * @throws SettingsException {@inheritDoc}
      */
+    @Override
     public boolean execute () throws DigestException , IOException , InterruptedException , InternetSCSIException , SettingsException {
 
         running = true;
@@ -89,6 +91,7 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                     if (connection.getTargetSession().isNormalSession()) {
                         final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
                         ScsiOperationCode scsiOpCode = ScsiOperationCode.valueOf(parser.getCDB().get(0));
+                        int scsiServiceAction = parser.getCDB().get(1) & 0x1F;
 
                         LOGGER.debug("scsiOpCode = " + scsiOpCode);// log SCSI
                                                                    // Operation Code
@@ -121,20 +124,31 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                                 case SEND_DIAGNOSTIC :
                                     stage = new SendDiagnosticStage(this);
                                     break;
-                                case READ_CAPACITY_10 :// use common read capacity stage
-                                case READ_CAPACITY_16 :
+                                case READ_CAPACITY_16 :// use common read capacity stage
+                                case READ_CAPACITY_10 :
                                     stage = new ReadCapacityStage(this);
                                     break;
-                                case WRITE_6 :// use common write stage
+                                case WRITE_16 :// use common write stage
+                                case WRITE_12 :
                                 case WRITE_10 :
+                                case WRITE_6  :
                                     stage = new WriteStage(this);
                                     break;
-                                case READ_6 :// use common read stage
+                                case READ_16 :// use common read stage
+                                case READ_12 :
                                 case READ_10 :
+                                case READ_6  :
                                     stage = new ReadStage(this);
                                     break;
                                 case REPORT_LUNS :
                                     stage = new ReportLunsStage(this);
+                                    break;
+                                case REPORT_OP_CODES :
+                                    if (scsiServiceAction == 0x0C) {
+                                        stage = new ReportOpCodesStage(this);
+                                    } else {
+                                        scsiOpCode = null;
+                                    }
                                     break;
                                 default :
                                     scsiOpCode = null;
@@ -175,7 +189,7 @@ public final class TargetFullFeaturePhase extends TargetPhase {
 
         return false;
     }
-    
+
     /**
      * Stopping this phases execution
      */

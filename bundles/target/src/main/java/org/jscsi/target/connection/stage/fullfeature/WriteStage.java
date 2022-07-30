@@ -18,6 +18,8 @@ import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.scsi.ScsiResponseDataSegment;
 import org.jscsi.target.scsi.cdb.ScsiOperationCode;
 import org.jscsi.target.scsi.cdb.Write10Cdb;
+import org.jscsi.target.scsi.cdb.Write12Cdb;
+import org.jscsi.target.scsi.cdb.Write16Cdb;
 import org.jscsi.target.scsi.cdb.Write6Cdb;
 import org.jscsi.target.scsi.cdb.WriteCdb;
 import org.jscsi.target.settings.SettingsException;
@@ -27,8 +29,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * A stage for processing <code>WRITE (6)</code> and <code>WRITE (10)</code> SCSI commands.
- * 
+ * A stage for processing <code>WRITE (6), (10), (12), (16)</code> SCSI commands.
+ *
  * @author Andreas Ergenzinger
  */
 public final class WriteStage extends ReadOrWriteStage {
@@ -47,7 +49,7 @@ public final class WriteStage extends ReadOrWriteStage {
     /**
      * Is used for checking if the PDUs received in a Data-Out sequence actually are Data-Out PDU and if the PDUs have
      * been received in order.
-     * 
+     *
      * @param parser the {@link AbstractMessageParser} subclass instance retrieved from the {@link ProtocolDataUnit}'s
      *            {@link BasicHeaderSegment}
      * @throws InternetSCSIException if an unexpected PDU has been received
@@ -90,7 +92,11 @@ public final class WriteStage extends ReadOrWriteStage {
         final int initiatorTaskTag = bhs.getInitiatorTaskTag();
         WriteCdb cdb;
         final ScsiOperationCode scsiOpCode = ScsiOperationCode.valueOf(parser.getCDB().get(0));
-        if (scsiOpCode == ScsiOperationCode.WRITE_10)
+        if (scsiOpCode == ScsiOperationCode.WRITE_16)
+            cdb = new Write16Cdb(parser.getCDB());
+        else if (scsiOpCode == ScsiOperationCode.WRITE_12)
+            cdb = new Write12Cdb(parser.getCDB());
+        else if (scsiOpCode == ScsiOperationCode.WRITE_10)
             cdb = new Write10Cdb(parser.getCDB());
         else if (scsiOpCode == ScsiOperationCode.WRITE_6)
             cdb = new Write6Cdb(parser.getCDB());
@@ -117,9 +123,9 @@ public final class WriteStage extends ReadOrWriteStage {
              * WriteStage is simply left early (without closing the connection), the initiator may send additional
              * unsolicited Data-Out PDUs, which the jSCSI Target is currently unable to ignore or process properly.
              */
-            LOGGER.debug("illegal field in Write CDB");
-            LOGGER.debug("CDB:\n" + Debug.byteBufferToString(parser.getCDB()));
-            
+            LOGGER.error("illegal field in Write CDB");
+            LOGGER.error("CDB:\n" + Debug.byteBufferToString(parser.getCDB()));
+
             // Not necessarily close the connection
 
             // create and send error PDU and leave stage
