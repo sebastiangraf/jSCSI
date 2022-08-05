@@ -95,6 +95,7 @@ public class TargetServer implements Callable<Void> {
 
         // read target settings from configuration file
 
+        LOGGER.debug("   target address: " + getConfig().getTargetAddress());
         LOGGER.debug("   port:           " + getConfig().getPort());
         LOGGER.debug("   loading targets.");
         // open the storage medium
