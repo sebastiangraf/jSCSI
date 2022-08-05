@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The central class of the jSCSI Target, which keeps track of all active {@link TargetSession}s, stores target-wide
  * parameters and variables, and which contains the {@link #main(String[])} method for starting the program.
- * 
+ *
  * @author Andreas Ergenzinger, University of Konstanz
  * @author Sebastian Graf, University of Konstanz
  */
@@ -64,7 +64,7 @@ public class TargetServer implements Callable<Void> {
     private Configuration config;
 
     /**
-     * 
+     *
      */
     private DeviceIdentificationVpdPage deviceIdentificationVpdPage;
 
@@ -114,7 +114,7 @@ public class TargetServer implements Callable<Void> {
     /**
      * Gets and increments the value to use in the next unreserved <code>Target Transfer Tag</code> field of the next
      * PDU to be sent by the jSCSI Target.
-     * 
+     *
      * @see #nextTargetTransferTag
      * @return the value to use in the next unreserved <code>Target Transfer Tag
      * </code> field
@@ -130,7 +130,7 @@ public class TargetServer implements Callable<Void> {
 
     /**
      * Starts the jSCSI target.
-     * 
+     *
      * @param args all command line arguments are ignored
      * @throws IOException
      */
@@ -175,8 +175,8 @@ public class TargetServer implements Callable<Void> {
 
         String targetAddress = addresses.get(chosenIndex).getHostAddress();
         System.out.println("Using ip address " + addresses.get(chosenIndex).getHostAddress());
-        
-        
+
+
         switch (args.length) {
             case 0 :
                 target = new TargetServer(Configuration.create(targetAddress));
@@ -217,6 +217,9 @@ public class TargetServer implements Callable<Void> {
             } finally {
                 // coming back from call() means the session is ended
                 // we can delete the target from local cache.
+                // - - - -
+                // No, it is not local cache, but shared by all sessions.
+                /*
                 synchronized (targets) {
                     Target target = targetConnection.getTargetSession().getTarget();
                     if (target != null) {
@@ -231,11 +234,13 @@ public class TargetServer implements Callable<Void> {
                         LOGGER.warn("No target to delete on logout?");
                     }
                 }
+                */
             }
             return null;
         }
     }
 
+    @Override
     public Void call () throws Exception {
 
         // Create a blocking server socket and check for connections
@@ -263,7 +268,7 @@ public class TargetServer implements Callable<Void> {
                     // confirm OpCode-
                     if (pdu.getBasicHeaderSegment().getOpCode() != OperationCode.LOGIN_REQUEST) throw new InternetSCSIException();
                     // get initiatorSessionID
-                    
+
                     LoginRequestParser parser = (LoginRequestParser) pdu.getBasicHeaderSegment().getParser();
                     ISID initiatorSessionID = parser.getInitiatorSessionID();
 
@@ -319,7 +324,7 @@ public class TargetServer implements Callable<Void> {
 
     /**
      * Removes a session from the jSCSI Target's list of active sessions.
-     * 
+     *
      * @param session the session to remove from the list of active sessions
      */
     public synchronized void removeTargetSession (TargetSession session) {
@@ -334,14 +339,14 @@ public class TargetServer implements Callable<Void> {
 
     /**
      * Checks to see if this target name is valid.
-     * 
+     *
      * @param checkTargetName
      * @return true if the the target name is configured
      */
     public boolean isValidTargetName (String checkTargetName) {
         return targets.containsKey(checkTargetName);
     }
-    
+
     /**
      * Stop this target server
      */

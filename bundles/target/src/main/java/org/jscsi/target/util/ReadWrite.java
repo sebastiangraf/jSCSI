@@ -2,12 +2,13 @@ package org.jscsi.target.util;
 
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 
 /**
  * This utility class contains static methods for reading/writing integers of various lengths and character strings
  * from/to {@link ByteBuffer} objects and byte arrays.
- * 
+ *
  * @author Andreas Ergenzinger
  */
 public final class ReadWrite {
@@ -17,7 +18,7 @@ public final class ReadWrite {
 
     /**
      * Reads a specified byte from a {@link ByteBuffer} and returns its value as an unsigned integer.
-     * 
+     *
      * @param buffer the {@link ByteBuffer} containing the byte
      * @param start the index position of the byte in the {@link ByteBuffer}
      * @return the unsigned integer value of the byte
@@ -29,7 +30,7 @@ public final class ReadWrite {
 
     /**
      * Reads a specified byte from a byte array and returns its value as an unsigned integer.
-     * 
+     *
      * @param array the array containing the byte
      * @param start the index position of the byte in the array
      * @return the unsigned integer value of the byte
@@ -41,7 +42,7 @@ public final class ReadWrite {
     /**
      * Reads an unsigned 2-byte integer from two consecutive big-endian-ordered bytes of a {@link ByteBuffer} object and
      * returns the value.
-     * 
+     *
      * @param buffer the {@link ByteBuffer} containing the bytes
      * @param start the index position of the most-significant byte
      * @return the unsigned value of the two-byte integer
@@ -55,7 +56,7 @@ public final class ReadWrite {
     /**
      * Reads an unsigned 2-byte integer from two consecutive big-endian-ordered bytes of a byte array and returns the
      * value.
-     * 
+     *
      * @param array the byte array containing the bytes
      * @param start the index position of the most-significant byte
      * @return the unsigned value of the two-byte integer
@@ -67,7 +68,7 @@ public final class ReadWrite {
     /**
      * Reads an unsigned 3-byte integer from three consecutive big-endian-ordered bytes of a {@link ByteBuffer} object
      * and returns the value.
-     * 
+     *
      * @param buffer the {@link ByteBuffer} containing the bytes
      * @param start the index position of the most-significant byte
      * @return the unsigned value of the three-byte integer
@@ -82,7 +83,7 @@ public final class ReadWrite {
     /**
      * Reads an unsigned 3-byte integer from three consecutive big-endian-ordered bytes of a byte array and returns the
      * value.
-     * 
+     *
      * @param array the byte array containing the bytes
      * @param start the index position of the most-significant byte
      * @return the unsigned value of the three-byte integer
@@ -94,7 +95,7 @@ public final class ReadWrite {
     /**
      * Reads a (signed) 4-byte integer from four consecutive big-endian-ordered bytes of a {@link ByteBuffer} object and
      * returns the value.
-     * 
+     *
      * @param buffer the {@link ByteBuffer} containing the bytes
      * @param start the index position of the most-significant byte
      * @return the value of the four-byte integer
@@ -110,7 +111,7 @@ public final class ReadWrite {
     /**
      * Reads a (signed) 4-byte integer from four consecutive big-endian-ordered bytes of a byte array and returns the
      * value.
-     * 
+     *
      * @param array the byte array containing the bytes
      * @param start the index position of the most-significant byte
      * @return the unsigned value of the four-byte integer
@@ -120,12 +121,24 @@ public final class ReadWrite {
     }
 
     /**
+     * Reads a (signed) 8-byte integer from eight consecutive big-endian-ordered bytes of a {@link ByteBuffer} object and
+     * returns the value.
+     *
+     * @param buffer the {@link ByteBuffer} containing the bytes
+     * @param start the index position of the most-significant byte
+     * @return the value of the four-byte integer
+     */
+    public static final long readEightByteInt (ByteBuffer buffer, int start) {
+        return buffer.order (ByteOrder.BIG_ENDIAN).getLong (start);
+    }
+
+    /**
      * Puts the characters in the passed String into an array of one or more ByteBuffers and returns it.
      * <p>
      * If the String does not end with a null character, one will be appended. If the String's length is larger than the
      * specified <i>bufferSize</i>, all but the last ByteBuffer will have <i>capacity() = bufferSize</i>, the last one
      * will contain the remaining String characters.
-     * 
+     *
      * @param string the String to be put into the ByteBuffer
      * @param bufferSize the maximum size of the returned ByteBuffers
      * @return an array of ByteBuffers containing the passed String
@@ -148,7 +161,7 @@ public final class ReadWrite {
 
     /**
      * Puts the characters in the passed String into a ByteBuffer of equal length and returns it.
-     * 
+     *
      * @param string any String
      * @return a ByteBuffer containing the characters of the passed String
      */
@@ -162,7 +175,7 @@ public final class ReadWrite {
 
     /**
      * Appends the content of a <code>ProtocolDataUnit</code> (text) data segment to a {@link StringBuilder};
-     * 
+     *
      * @param byteBuffer the PDU's data segment
      * @param stringBuilder the {@link StringBuilder} that will be extended
      */
@@ -174,9 +187,9 @@ public final class ReadWrite {
     /**
      * Writes the given <i>value</i> to the <i>buffer</i> in big-endian format, with the index position of the most
      * significant byte being <i>start</i>.
-     * 
+     *
      * To get the value back from the buffer, use readUnsignedInt.
-     * 
+     *
      * @param value the integer to write to the ByteBuffer
      * @param buffer where the integer will be stored
      * @param start index of the most significant byte of the stored <i>value</i>
@@ -191,7 +204,7 @@ public final class ReadWrite {
 
     /**
      * Returns the bytes in a {@link ByteBuffer} as a UTF-8 encoded {@link String}.
-     * 
+     *
      * @param buffer a {@link ByteBuffer} containing UTF-8 encoded characters.
      * @return a String representation of the <i>buffer</i>'s content
      */
@@ -202,7 +215,7 @@ public final class ReadWrite {
 
     /**
      * Splits the passed <i>value</i> into bytes and returns them in an array, in big-endian format.
-     * 
+     *
      * @param value the long to split
      * @return byte representation of the parameter
      */
@@ -216,7 +229,7 @@ public final class ReadWrite {
     /**
      * Writes the given <i>value</i> to the <i>buffer</i> in big-endian format, with the index position of the most
      * significant byte being <i>index</i>.
-     * 
+     *
      * @param value the integer to write to the ByteBuffer
      * @param buffer where the integer will be stored
      * @param index index of the most significant byte of the stored <i>value</i>
@@ -231,7 +244,7 @@ public final class ReadWrite {
     /**
      * Writes the two least-significant big-endian-ordered bytes of an integer the a specified position in a
      * {@link ByteBuffer}.
-     * 
+     *
      * @param buffer where the bytes will be written
      * @param value the value to convert and copy
      * @param index the position of the most significant byte in the {@link ByteBuffer}
@@ -245,7 +258,7 @@ public final class ReadWrite {
     /**
      * Writes the three least-significant big-endian-ordered bytes of an integer the a specified position in a
      * {@link ByteBuffer}.
-     * 
+     *
      * @param buffer where the bytes will be written
      * @param value the value to convert and copy
      * @param index the position of the most significant byte in the {@link ByteBuffer}
@@ -261,7 +274,7 @@ public final class ReadWrite {
     /**
      * Reads an unsigned 4-byte integer from four consecutive big-endian-ordered bytes of a {@link ByteBuffer} object
      * and returns the value.
-     * 
+     *
      * @param buffer the {@link ByteBuffer} containing the bytes
      * @param start the index position of the most-significant byte
      * @return the value of the unsigned four-byte integer
