@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.jscsi.target.storage;
 
@@ -45,9 +45,9 @@ import com.google.common.io.ByteStreams;
 /**
  * JClouds-Binding to store blocks as buckets in clouds-backends. This class utilizes caching as well as multithreaded
  * writing to improve performance.
- * 
+ *
  * @author Sebastian Graf, University of Konstanz
- * 
+ *
  */
 @Beta
 public class JCloudsStorageModule implements IStorageModule {
@@ -114,10 +114,10 @@ public class JCloudsStorageModule implements IStorageModule {
     /**
      * Creates a new {@link JCloudsStorageModule} backed by the specified file. If no such file exists, a
      * {@link FileNotFoundException} will be thrown.
-     * 
+     *
      * @param pSizeInBlocks blocksize for this module
      * @param pFile local storage, not used over here
-     * 
+     *
      */
     public JCloudsStorageModule (final long pSizeInBlocks, final File pFile) {
         // number * 512 = size in bytes
@@ -273,7 +273,7 @@ public class JCloudsStorageModule implements IStorageModule {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @throws Exception
      */
     @Override
@@ -328,7 +328,7 @@ public class JCloudsStorageModule implements IStorageModule {
 
     /**
      * Getting credentials for aws from homedir/.credentials
-     * 
+     *
      * @return a two-dimensional String[] with login and password
      */
     private static String[] getCredentials () {
@@ -353,9 +353,9 @@ public class JCloudsStorageModule implements IStorageModule {
 
     /**
      * Single task to write data to the cloud.
-     * 
+     *
      * @author Sebastian Graf, University of Konstanz
-     * 
+     *
      */
     class ReadTask implements Callable<Map.Entry<Integer , byte[]>> {
 
@@ -393,7 +393,7 @@ public class JCloudsStorageModule implements IStorageModule {
                     // + (System.currentTimeMillis() - time) + "\n");
                     // download.flush();
                 } else {
-                    try (InputStream is = blob.getPayload().getInput()) {
+                    try (InputStream is = blob.getPayload().openStream()) {
                        data = ByteStreams.toByteArray(is);
                     }
                     // download.write(Integer.toString(mBucketId) + "," +
@@ -402,7 +402,7 @@ public class JCloudsStorageModule implements IStorageModule {
                     // download.flush();
                     while (data.length < SIZE_PER_BUCKET) {
                         blob = mStore.getBlob(mContainerName, Integer.toString(mBucketId));
-                        try (InputStream is = blob.getPayload().getInput()) {
+                        try (InputStream is = blob.getPayload().openStream()) {
                             data = ByteStreams.toByteArray(is);
                         }
                         // // DEBUG CODE
@@ -444,9 +444,9 @@ public class JCloudsStorageModule implements IStorageModule {
 
     /**
      * Single task to write data to the cloud.
-     * 
+     *
      * @author Sebastian Graf, University of Konstanz
-     * 
+     *
      */
     class WriteTask implements Callable<Integer> {
         /**
@@ -504,6 +504,7 @@ public class JCloudsStorageModule implements IStorageModule {
 
     class ReadFutureCleaner extends Thread {
 
+        @Override
         public void run () {
             while (true) {
                 try {
@@ -520,6 +521,7 @@ public class JCloudsStorageModule implements IStorageModule {
 
     class WriteFutureCleaner extends Thread {
 
+        @Override
         public void run () {
             while (true) {
                 try {
