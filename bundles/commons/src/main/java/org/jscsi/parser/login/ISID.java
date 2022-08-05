@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
  * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
  * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
  * endorse or promote products derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
@@ -147,7 +147,7 @@ import org.jscsi.utils.Utils;
  * it is installed (see Section 9.1.1 Conservative Reuse of ISIDs and Section 9.1.2 iSCSI Name, ISID, and TPGT Use). The
  * resultant ISID MUST also be persistent over power cycles, reboot, card swap, etc. For details have a look in the
  * [RFC3721].
- * 
+ *
  * @author Volker Wildi
  */
 public final class ISID {
@@ -186,7 +186,7 @@ public final class ISID {
 
         /**
          * Returns the value of this enumeration.
-         * 
+         *
          * @return The value of this enumeration.
          */
         public final byte value () {
@@ -196,7 +196,7 @@ public final class ISID {
 
         /**
          * Returns the constant defined for the given <code>value</code>.
-         * 
+         *
          * @param value The value to search for.
          * @return The constant defined for the given <code>value</code>. Or <code>null</code>, if this value is not
          *         defined by this enumeration.
@@ -209,6 +209,7 @@ public final class ISID {
     }
 
     /** Bit mask to extract the first int out from a long. */
+    @SuppressWarnings("unused")
     private static final long FIRST_LINE_FLAG_MASK = 0xFFFFFFFF00000000L;
 
     /** Bit flag mask to get the field <code>A</code> in this ISID. */
@@ -247,7 +248,7 @@ public final class ISID {
 
     /**
      * This constructor creates a new ISID object with the given settings.
-     * 
+     *
      * @param initT The new T-Value.
      * @param initA The new A-Value.
      * @param initB The new B-Value.
@@ -266,7 +267,7 @@ public final class ISID {
     /**
      * This method creates an Initiator Session ID of the <code>Random</code> format defined in the iSCSI Standard
      * (RFC3720).
-     * 
+     *
      * @param seed The initialization seed for random generator.
      * @return A instance of an <code>ISID</code>.
      */
@@ -285,7 +286,7 @@ public final class ISID {
 
     /**
      * Serializes this ISID object ot its byte representation.
-     * 
+     *
      * @return The byte representation of this ISID object.
      * @throws InternetSCSIException If any violation of the iSCSI-Standard emerge.
      */
@@ -300,7 +301,7 @@ public final class ISID {
         firstLine |= a << Constants.THREE_BYTES_SHIFT;
         firstLine &= 0x00ffffff;
         firstLine |= t.value() << T_FIELD_SHIFT;
-        
+
         isid = Utils.getUnsignedLong(firstLine) << Constants.FOUR_BYTES_SHIFT;
         isid |= Utils.getUnsignedLong(d) << Constants.TWO_BYTES_SHIFT;
 
@@ -309,13 +310,13 @@ public final class ISID {
 
     /**
      * Parses a given ISID in this ISID obejct.
-     * 
+     *
      * @param isid The byte representation of a ISID to parse.
      * @throws InternetSCSIException If any violation of the iSCSI-Standard emerge.
      */
     final void deserialize ( long isid) throws InternetSCSIException {
         int line = (int) (isid >>> Constants.FOUR_BYTES_SHIFT);
-        
+
         t = Format.valueOf((byte) (line  >>> T_FIELD_SHIFT));
         a = (byte) ((line & A_FIELD_FLAG_MASK) >>> Constants.THREE_BYTES_SHIFT);
         b = (short) ((line & Constants.MIDDLE_TWO_BYTES_SHIFT) >>> Constants.ONE_BYTE_SHIFT);
@@ -332,9 +333,10 @@ public final class ISID {
 
     /**
      * Creates a string with all fields of this ISID object.
-     * 
+     *
      * @return The string representation.
      */
+    @Override
     public final String toString () {
 
         final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
@@ -351,7 +353,7 @@ public final class ISID {
 
     /**
      * This method compares a given ISID object with this object for value equality.
-     * 
+     *
      * @param isid The given ISID object to check.
      * @return <code>True</code>, if the values of the two ISID objects are equal. Else <code>false</code>.
      */
@@ -408,7 +410,7 @@ public final class ISID {
 
     /**
      * Returns the value of the field <code>A</code>.
-     * 
+     *
      * @return The value of the field <code>A</code>.
      */
     public final byte getA () {
@@ -418,7 +420,7 @@ public final class ISID {
 
     /**
      * Returns the value of the field <code>B</code>.
-     * 
+     *
      * @return The value of the field <code>B</code>.
      */
     public final short getB () {
@@ -428,7 +430,7 @@ public final class ISID {
 
     /**
      * Returns the value of the field <code>C</code>.
-     * 
+     *
      * @return The value of the field <code>C</code>.
      */
     public final byte getC () {
@@ -438,7 +440,7 @@ public final class ISID {
 
     /**
      * Returns the value of the field <code>D</code>.
-     * 
+     *
      * @return The value of the field <code>D</code>.
      */
     public final short getD () {
@@ -448,7 +450,7 @@ public final class ISID {
 
     /**
      * Returns the value of the field <code>T</code>.
-     * 
+     *
      * @return The value of the field <code>T</code>.
      */
     public final Format getT () {
@@ -461,7 +463,7 @@ public final class ISID {
 
     /**
      * This method checks, if all fields are valid. In these cases an exception will be thrown.
-     * 
+     *
      * @throws InternetSCSIException If the integrity is violated.
      */
     protected final void checkIntegrity () throws InternetSCSIException {

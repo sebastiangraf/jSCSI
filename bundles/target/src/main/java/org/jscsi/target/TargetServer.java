@@ -28,7 +28,6 @@ import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.ISID;
 import org.jscsi.parser.login.LoginRequestParser;
-import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.Connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.scsi.inquiry.DeviceIdentificationVpdPage;
@@ -200,7 +199,7 @@ public class TargetServer implements Callable<Void> {
         target.call();
     }
 
-    private class ConnectionHandler implements Callable {
+    private class ConnectionHandler implements Callable<Void> {
 
         private final TargetConnection targetConnection;
 
