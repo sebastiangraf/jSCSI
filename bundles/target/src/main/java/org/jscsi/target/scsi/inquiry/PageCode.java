@@ -11,7 +11,7 @@ import org.jscsi.target.scsi.cdb.InquiryCDB;
  * To find out which page was requested, first create a new {@link PageCode} object using the value provided in the
  * command descriptor block's PAGE CODE field, and then call its {@link #getVitalProductDataPageName()} method. This
  * complicated approach is necessary, since some VPD pages are associated with more than just one page code.
- * 
+ *
  * @author Andreas Ergenzinger
  */
 public class PageCode {
@@ -23,7 +23,7 @@ public class PageCode {
 
     /**
      * Creates a new {@link PageCode} object.
-     * 
+     *
      * @param value the value of the PAGE CODE field
      */
     public PageCode (final byte value) {
@@ -32,7 +32,7 @@ public class PageCode {
 
     /**
      * Returns the value of the PAGE CODE field.
-     * 
+     *
      * @return the value of the PAGE CODE field
      */
     public final byte getValue () {
@@ -41,7 +41,7 @@ public class PageCode {
 
     /**
      * Returns the VPD page name associated with the PAGE CODE {@link #value}.
-     * 
+     *
      * @return the VPD page name associated with the PAGE CODE {@link #value}
      */
     public final VitalProductDataPageName getVitalProductDataPageName () {
@@ -55,6 +55,8 @@ public class PageCode {
         if (value == 0x86) return VitalProductDataPageName.EXTENDED_INQUIRY_DATA;
         if (value == 0x87) return VitalProductDataPageName.MODE_PAGE_POLICY;
         if (value == 0x88) return VitalProductDataPageName.SCSI_PORTS;
+        if (value == 0xb0) return VitalProductDataPageName.BLOCK_LIMITS;
+        if (value == 0xb2) return VitalProductDataPageName.LOGICAL_BLOCK_PROVISIONING;
         if (0x89 <= value && value <= 0xaf) return VitalProductDataPageName.RESERVED;
         if (0xb0 <= value && value <= 0xbf)
             return VitalProductDataPageName.DEVICE_TYPE_SPECIFIC;
@@ -64,7 +66,7 @@ public class PageCode {
 
     /**
      * An enumeration of unique identifiers for Vital Product Data Pages.
-     * 
+     *
      * @author Andreas Ergenzinger
      */
     public enum VitalProductDataPageName {
@@ -112,6 +114,14 @@ public class PageCode {
          * {@link PageCode} values 0x89-0xaf
          */
         RESERVED,
+        /**
+         * {@link PageCode} value 0xb0
+         */
+        BLOCK_LIMITS,
+        /**
+         * {@link PageCode} value 0xb2
+         */
+        LOGICAL_BLOCK_PROVISIONING,
         /**
          * {@link PageCode} values 0xb0-0xbf
          */
