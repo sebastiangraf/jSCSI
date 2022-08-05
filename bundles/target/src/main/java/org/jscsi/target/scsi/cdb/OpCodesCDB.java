@@ -20,7 +20,7 @@ public class OpCodesCDB extends CommandDescriptorBlock {
 
     public OpCodesCDB (ByteBuffer buffer) {
         super (buffer);
-        inReportingOptions       = ReadWrite.readOneByteInt  (buffer, 2) & 7;
+        inReportingOptions       = ReadWrite.readOneByteInt  (buffer, 2) & 0b111;
         inRequestedOperationCode = ReadWrite.readOneByteInt  (buffer, 3);
         inRequestedServiceAction = ReadWrite.readTwoByteInt  (buffer, 4);
         inAllocationLength       = ReadWrite.readFourByteInt (buffer, 6);

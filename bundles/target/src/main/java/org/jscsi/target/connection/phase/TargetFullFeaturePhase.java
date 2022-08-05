@@ -23,6 +23,7 @@ import org.jscsi.target.connection.stage.fullfeature.ReportLunsStage;
 import org.jscsi.target.connection.stage.fullfeature.ReportOpCodesStage;
 import org.jscsi.target.connection.stage.fullfeature.RequestSenseStage;
 import org.jscsi.target.connection.stage.fullfeature.SendDiagnosticStage;
+import org.jscsi.target.connection.stage.fullfeature.SyncCacheStage;
 import org.jscsi.target.connection.stage.fullfeature.TargetFullFeatureStage;
 import org.jscsi.target.connection.stage.fullfeature.TestUnitReadyStage;
 import org.jscsi.target.connection.stage.fullfeature.TextNegotiationStage;
@@ -91,7 +92,6 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                     if (connection.getTargetSession().isNormalSession()) {
                         final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
                         ScsiOperationCode scsiOpCode = ScsiOperationCode.valueOf(parser.getCDB().get(0));
-                        int scsiServiceAction = parser.getCDB().get(1) & 0x1F;
 
                         LOGGER.debug("scsiOpCode = " + scsiOpCode);// log SCSI
                                                                    // Operation Code
@@ -144,11 +144,16 @@ public final class TargetFullFeaturePhase extends TargetPhase {
                                     stage = new ReportLunsStage(this);
                                     break;
                                 case REPORT_OP_CODES :
+                                    int scsiServiceAction = parser.getCDB().get(1) & 0b11111;
                                     if (scsiServiceAction == 0x0C) {
                                         stage = new ReportOpCodesStage(this);
                                     } else {
                                         scsiOpCode = null;
                                     }
+                                    break;
+                                case SYNCHRONIZE_CACHE_16:
+                                case SYNCHRONIZE_CACHE_10:
+                                    stage = new SyncCacheStage(this);
                                     break;
                                 default :
                                     scsiOpCode = null;

@@ -12,7 +12,6 @@ import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.scsi.cdb.OpCodesCDB;
 import org.jscsi.target.scsi.report.OneOpCode;
 import org.jscsi.target.settings.SettingsException;
-import org.jscsi.target.util.Debug;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,20 +35,16 @@ public class ReportOpCodesStage extends TargetFullFeatureStage {
         final SCSICommandParser parser = (SCSICommandParser) bhs.getParser();
 
         // get command details in CDB
-        if (LOGGER.isDebugEnabled()) {// print CDB bytes
-            LOGGER.debug("CDB bytes: \n" + Debug.byteBufferToString(parser.getCDB()));
-        }
         final OpCodesCDB cdb = new OpCodesCDB(parser.getCDB());
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("cdb.getAllocationLength() = " + cdb.getAllocationLength());
-            LOGGER.debug("cdb.isNormalACA() = " + cdb.isNormalACA());
             LOGGER.debug("cdb.getReportingOptions() = " + cdb.getReportingOptions());
             LOGGER.debug("cdb.getRequestedOperationCode() = " + cdb.getRequestedOperationCode());
         }
 
         if (cdb.getReportingOptions() != 0b001) {
             throw new InternetSCSIException("Only REPORTING OPTIONS = 001b is supported now but request is " +
-                                            cdb.getReportingOptions());
+                                            Integer.toBinaryString (cdb.getReportingOptions()) + "b.");
         }
 
         // send response
