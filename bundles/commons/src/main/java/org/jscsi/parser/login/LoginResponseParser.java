@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
  * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
  * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
  * endorse or promote products derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
@@ -25,6 +25,8 @@ import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
 import org.jscsi.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -59,10 +61,12 @@ import org.jscsi.utils.Utils;
  * negotiation keys). All keys in Chapter 12, except for the X extension formats, MUST be supported by iSCSI initiators
  * and targets. Keys in Chapter 11, only need to be supported when the function to which they refer is mandatory to
  * implement.
- * 
+ *
  * @author Volker Wildi
  */
 public final class LoginResponseParser extends TargetMessageParser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger (LoginResponseParser.class);
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -87,7 +91,7 @@ public final class LoginResponseParser extends TargetMessageParser {
      * <p>
      * If the target wishes to reject the Login Request for more than one reason, it should return the primary reason
      * for the rejection.
-     * 
+     *
      * @see LoginStatus
      */
     private LoginStatus status;
@@ -115,7 +119,7 @@ public final class LoginResponseParser extends TargetMessageParser {
 
     /**
      * Default constructor, creates a new, empty <code>LoginResponseParser</code> object.
-     * 
+     *
      * @param initProtocolDataUnit The reference <code>ProtocolDataUnit</code> instance, which contains this
      *            <code>LoginResponseParser</code> subclass object.
      */
@@ -195,7 +199,7 @@ public final class LoginResponseParser extends TargetMessageParser {
      * A non-zero Status-Class indicates an exception. In this case, Status-Class is sufficient for a simple initiator
      * to use when handling exceptions, without having to look at the Status-Detail. The Status-Detail allows
      * finer-grained exception handling for more sophisticated initiators and for better information for logging.
-     * 
+     *
      * @return The status of this LoginResponseParser object.
      */
     public final LoginStatus getStatus () {
@@ -208,7 +212,7 @@ public final class LoginResponseParser extends TargetMessageParser {
      * complete (it will be continued on subsequent Login Responses); otherwise, it indicates that this Login Response
      * ends a set of key=value pairs. A Login Response with the <code>C</code> bit set to <code>1</code> MUST have the
      * <code>T</code> bit set to <code>0</code>.
-     * 
+     *
      * @return The status of the Continue Flag of this <code>LoginResponseParser</code> object.
      */
     public final boolean isContinueFlag () {
@@ -218,7 +222,7 @@ public final class LoginResponseParser extends TargetMessageParser {
 
     /**
      * Returns the <em>Current Stage Number</em> of this Login Response Message.
-     * 
+     *
      * @return Number of the Current Stage.
      * @see org.jscsi.parser.login.LoginStage
      */
@@ -229,7 +233,7 @@ public final class LoginResponseParser extends TargetMessageParser {
 
     /**
      * Returns the Initiator Session ID (ISID) of this LoginResponseParser object.
-     * 
+     *
      * @return Returns the Initiator Session ID (ISID) of this LoginResponseParser object.
      * @see ISID
      */
@@ -244,7 +248,7 @@ public final class LoginResponseParser extends TargetMessageParser {
      * All Login Responses within the Login Phase MUST carry the same Version-max.
      * <p>
      * The initiator MUST use the value presented as a response to the first Login Request.
-     * 
+     *
      * @return The maximum version of this login request message.
      */
     public final int getMaxVersion () {
@@ -261,7 +265,7 @@ public final class LoginResponseParser extends TargetMessageParser {
      * All Login Responses within the Login Phase MUST carry the same Version-active.
      * <p>
      * The initiator MUST use the value presented as a response to the first Login Request.
-     * 
+     *
      * @return The active version of this <code>LoginResponseParser</code> object.
      */
     public final int getActiveVersion () {
@@ -271,7 +275,7 @@ public final class LoginResponseParser extends TargetMessageParser {
 
     /**
      * Returns the <em> Next Stage Number</em> of this Login Response Message.
-     * 
+     *
      * @return The Number of the Next Stage.
      * @see org.jscsi.parser.login.LoginStage
      */
@@ -286,7 +290,7 @@ public final class LoginResponseParser extends TargetMessageParser {
      * Final-Response in a new session, this field should be set to the TSIH provided by the initiator in the Login
      * Request. For a new session, the target MUST generate a non-zero TSIH and ONLY return it in the Login
      * Final-Response (see Section 5.3 Login Phase).
-     * 
+     *
      * @return Returns the Target Session Identifying Handle of this <code>LoginResponseParser</code> object.
      */
     public final short getTargetSessionIdentifyingHandle () {
@@ -361,19 +365,10 @@ public final class LoginResponseParser extends TargetMessageParser {
     /** {@inheritDoc} */
     @Override
     protected final void checkIntegrity () throws InternetSCSIException {
-
-        String exceptionMessage;
-        do {
-            if (status != LoginStatus.SUCCESS && statusSequenceNumber != 0) {
-                exceptionMessage = "While no successful login is preformed, the StatusSequenceNumber must be 0.";
-                break;
-            }
-
-            // message is checked correctly
-            return;
-        } while (false);
-
-        throw new InternetSCSIException(exceptionMessage);
+        if (status != LoginStatus.SUCCESS && statusSequenceNumber != 0) {
+            LOGGER.warn ("While no successful login is preformed, the StatusSequenceNumber must be 0.");
+            // throw new InternetSCSIException(exceptionMessage);
+        }
     }
 
     // --------------------------------------------------------------------------
