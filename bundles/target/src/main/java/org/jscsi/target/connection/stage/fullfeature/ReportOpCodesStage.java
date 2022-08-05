@@ -44,13 +44,19 @@ public class ReportOpCodesStage extends TargetFullFeatureStage {
             LOGGER.debug("cdb.getAllocationLength() = " + cdb.getAllocationLength());
             LOGGER.debug("cdb.isNormalACA() = " + cdb.isNormalACA());
             LOGGER.debug("cdb.getReportingOptions() = " + cdb.getReportingOptions());
+            LOGGER.debug("cdb.getRequestedOperationCode() = " + cdb.getRequestedOperationCode());
+        }
+
+        if (cdb.getReportingOptions() != 0b001) {
+            throw new InternetSCSIException("Only REPORTING OPTIONS = 001b is supported now but request is " +
+                                            cdb.getReportingOptions());
         }
 
         // send response
         sendResponse (
             bhs.getInitiatorTaskTag(),
             parser.getExpectedDataTransferLength(),
-            new OneOpCode (cdb.getReportingOptions())
+            new OneOpCode (cdb.getRequestedOperationCode())
         );
     }
 

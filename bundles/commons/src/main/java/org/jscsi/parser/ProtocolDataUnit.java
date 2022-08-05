@@ -25,7 +25,6 @@ import java.nio.channels.SocketChannel;
 import java.security.DigestException;
 import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 import com.google.common.io.BaseEncoding;
@@ -522,7 +521,7 @@ public final class ProtocolDataUnit {
         BaseEncoding base16 = BaseEncoding.base16 ().withSeparator (" ", 2).lowerCase ();
 
         try {
-            sb.append ("First 16 bytes: 0x");
+            sb.append ("  First 16 bytes: 0x");
             byte[] pdu = new byte [calcSize()];
             basicHeaderSegment.serialize (ByteBuffer.wrap (pdu), 0);
             sb.append (base16.encode (pdu, 0, 16)).append ("\n");
