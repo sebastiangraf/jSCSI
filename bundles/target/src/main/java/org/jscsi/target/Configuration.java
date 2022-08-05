@@ -34,13 +34,15 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
+import com.google.common.base.Strings;
+
 
 /**
  * Instances of {@link Configuration} provides access target-wide parameters, variables that are the same across all
  * sessions and connections that do not change after initialization and which play a role during text parameter
  * negotiation. Some of these parameters are provided or can be overridden by the content of an XML file -
  * <code>jscsi-target.xml</code>.
- * 
+ *
  * @author Andreas Ergenzinger, University of Konstanz
  */
 public class Configuration {
@@ -66,6 +68,7 @@ public class Configuration {
     public static final String ELEMENT_ALLOWSLOPPYNEGOTIATION = "AllowSloppyNegotiation";
     public static final String ELEMENT_PORT = "Port";
     public static final String ELEMENT_EXTERNAL_PORT = "ExternalPort";
+    public static final String ELEMENT_ADDRESS = "Address";
     public static final String ELEMENT_EXTERNAL_ADDRESS = "ExternalAddress";
 
     // --------------------------------------------------------------------------
@@ -173,7 +176,7 @@ public class Configuration {
     }
 
     private static String defaultTargetAddress(String pTargetAddress) throws UnknownHostException {
-        if (pTargetAddress.equals("")) {
+        if (Strings.isNullOrEmpty (pTargetAddress)) {
             return InetAddress.getLocalHost().getHostAddress();
 
         } else {
@@ -237,7 +240,19 @@ public class Configuration {
      *             configuration requested.
      * @throws IOException If any IO errors occur.
      */
-    public static Configuration create (final InputStream schemaLocation, final InputStream configFile, final String pTargetAddress) throws SAXException , ParserConfigurationException , IOException {
+    public static Configuration create (final File schemaLocation, final File configFile) throws SAXException , ParserConfigurationException , IOException {
+        return create(new FileInputStream(schemaLocation), new FileInputStream(configFile), null);
+    }
+
+    /**
+     * Reads the given configuration file in memory and creates a DOM representation.
+     *
+     * @throws SAXException If this operation is supported but failed for some reason.
+     * @throws ParserConfigurationException If a {@link DocumentBuilder} cannot be created which satisfies the
+     *             configuration requested.
+     * @throws IOException If any IO errors occur.
+     */
+    public static Configuration create (final InputStream schemaLocation, final InputStream configFile, String pTargetAddress) throws SAXException , ParserConfigurationException , IOException {
         final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         final Schema schema = schemaFactory.newSchema(new StreamSource(schemaLocation));
 
@@ -254,6 +269,14 @@ public class Configuration {
 
         validator.validate(source, result);
         Document root = (Document) result.getNode();
+
+        // target address
+        if (Strings.isNullOrEmpty (pTargetAddress)) {
+            NodeList tagsAddress = root.getElementsByTagName(ELEMENT_ADDRESS);
+            if (tagsAddress.getLength() > 0) {
+                pTargetAddress = tagsAddress.item(0).getTextContent();
+            }
+        }
 
         // TargetName
         Configuration returnConfiguration = new Configuration(pTargetAddress);

@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
  * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
  * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
  * endorse or promote products derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
@@ -28,7 +28,6 @@ import org.jscsi.parser.Constants;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.TargetMessageParser;
 import org.jscsi.parser.datasegment.DataSegmentFactory.DataSegmentFormat;
-import org.jscsi.parser.logout.LogoutResponse;
 import org.jscsi.utils.Utils;
 
 
@@ -63,14 +62,14 @@ import org.jscsi.utils.Utils;
  * <p>
  * <h4>TotalAHSLength and DataSegmentLength</h4> For this PDU TotalAHSLength and DataSegmentLength MUST be
  * <code>0</code>.
- * 
+ *
  * @author Volker Wildi
  */
 public final class TaskManagementFunctionResponseParser extends TargetMessageParser {
 
     /**
      * This enumeration defines all valid response code, which are defined in the iSCSI Standard (RFC 3720).
-     * 
+     *
      * @author Volker Wildi
      */
     public static enum ResponseCode {
@@ -110,7 +109,7 @@ public final class TaskManagementFunctionResponseParser extends TargetMessagePar
 
         /**
          * Returns the value of this enumeration.
-         * 
+         *
          * @return The value of this enumeration.
          */
         public final byte value () {
@@ -120,7 +119,7 @@ public final class TaskManagementFunctionResponseParser extends TargetMessagePar
 
         /**
          * Returns the constant defined for the given <code>value</code>.
-         * 
+         *
          * @param value The value to search for.
          * @return The constant defined for the given <code>value</code>. Or <code>null</code>, if this value is not
          *         defined by this enumeration.
@@ -142,7 +141,7 @@ public final class TaskManagementFunctionResponseParser extends TargetMessagePar
 
     /**
      * Default constructor, creates a new, empty <code>TaskManagementFunctionResponseParser</code> object.
-     * 
+     *
      * @param initProtocolDataUnit The reference <code>ProtocolDataUnit</code> instance, which contains this
      *            <code>TaskManagementFunctionResponseParser</code> subclass object.
      */
@@ -260,7 +259,7 @@ public final class TaskManagementFunctionResponseParser extends TargetMessagePar
      * field in the Task Management function request is outside the valid CmdSN window, then targets must return the
      * "Task does not exist" response.</li>
      * </ol>
-     * 
+     *
      * @return The response code of this <code>TaskManagementFunctionResponseParser</code> object.
      */
     public final ResponseCode getResponse () {
