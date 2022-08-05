@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
  * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
  * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
  * endorse or promote products derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
@@ -30,7 +30,7 @@ import org.jscsi.utils.Utils;
 
 /**
  * This class parses a Data-In message defined in the iSCSI Standard (RFC3720).
- * 
+ *
  * @author Volker Wildi
  */
 public class DataInParser extends TargetMessageParser {
@@ -88,7 +88,7 @@ public class DataInParser extends TargetMessageParser {
 
     /**
      * Default constructor, creates a new, empty DataInParser object.
-     * 
+     *
      * @param initProtocolDataUnit The reference <code>ProtocolDataUnit</code> instance, which contains this
      *            <code>DataInParser</code> subclass object.
      */
@@ -175,7 +175,7 @@ public class DataInParser extends TargetMessageParser {
      * have to be in increasing Buffer Offset order and overlays are forbidden.<br/>
      * The ordering between sequences is determined by DataSequenceInOrder. When set to Yes, it means that sequences
      * have to be in increasing Buffer Offset order and overlays are forbidden.
-     * 
+     *
      * @return The buffer offset of this DataInParser object.
      */
     public int getBufferOffset () {
@@ -191,7 +191,7 @@ public class DataInParser extends TargetMessageParser {
      * For output (write) data PDUs, the DataSN is the Data-Out PDU number within the current output sequence. The
      * current output sequence is either identified by the Initiator Task Tag (for unsolicited data) or is a data
      * sequence generated for one R2T (for data solicited through R2T).
-     * 
+     *
      * @return The Data Sequence Number of this DataInParser object.
      */
     public int getDataSequenceNumber () {
@@ -206,7 +206,7 @@ public class DataInParser extends TargetMessageParser {
      * Residual Count indicates the number of bytes that were not transferred because the initiator’s Expected Data
      * Transfer Length was not sufficient. If the U bit is set, the Residual Count indicates the number of bytes that
      * were not transferred out of the number of bytes expected to be transferred.
-     * 
+     *
      * @return The Residual Count of this object.
      */
     public int getResidualCount () {
@@ -225,7 +225,7 @@ public class DataInParser extends TargetMessageParser {
      * is reserved and means that the Target Transfer Tag is not supplied. If the Target Transfer Tag is provided, then
      * the LUN field MUST hold a valid value and be consistent with whatever was specified with the command; otherwise,
      * the LUN field is reserved.
-     * 
+     *
      * @return Returns the Target Transfer Tag of this DataInParser object.
      */
     public int getTargetTaskTag () {
@@ -251,7 +251,7 @@ public class DataInParser extends TargetMessageParser {
      * initiator also MUST NOT acknowledge the status for the task before those holes are filled. A status
      * acknowledgement for a task that generated the Data-In PDUs is considered by the target as an implicit
      * acknowledgement of the Data-In PDUs if such an acknowledgement was requested by the target.
-     * 
+     *
      * @return Returns <code>true</code>, if the AcknowledgeBit is set. Else <code>false</code>.
      */
     public boolean isAcknowledgeFlag () {
@@ -262,7 +262,7 @@ public class DataInParser extends TargetMessageParser {
     /**
      * In this case, the Bidirectional Read Residual Count indicates the number of bytes that were not transferred to
      * the initiator because the initiator’s Expected Bidirectional Read Data Transfer Length was not sufficient.
-     * 
+     *
      * @return <code>True</code>, if the ReadResidualOverflow-Flag of this object is set. Else <code>false</code>.
      */
     public boolean isBidirectionalReadResidualOverflow () {
@@ -273,7 +273,7 @@ public class DataInParser extends TargetMessageParser {
     /**
      * In this case, the Bidirectional Read Residual Count indicates the number of bytes that were not transferred to
      * the initiator out of the number of bytes expected to be transferred.
-     * 
+     *
      * @return <code>True</code>, if the ReadResidualUnderflow-Flag of this object is set. Else <code>false</code>.
      */
     public boolean isBidirectionalReadResidualUnderflow () {
@@ -285,7 +285,7 @@ public class DataInParser extends TargetMessageParser {
      * In this case, the Residual Count indicates the number of bytes that were not transferred because the initiator’s
      * Expected Data Transfer Length was not sufficient. For a bidirectional operation, the Residual Count contains the
      * residual for the write operation.
-     * 
+     *
      * @return <code>True</code>, if the ResidualOverflow-Flag of this object is set. Else <code>false</code>.
      */
     public boolean isResidualOverflow () {
@@ -297,7 +297,7 @@ public class DataInParser extends TargetMessageParser {
      * In this case, the Residual Count indicates the number of bytes that were not transferred out of the number of
      * bytes that were expected to be transferred. For a bidirectional operation, the Residual Count contains the
      * residual for the write operation.
-     * 
+     *
      * @return <code>True</code>, if the ResidualUnderflow-Flag of this object is set. Else <code>false</code>.
      */
     public boolean isResidualUnderflow () {
@@ -312,7 +312,7 @@ public class DataInParser extends TargetMessageParser {
      * If a SCSI device error is detected while data from the initiator is still expected (the command PDU did not
      * contain all the data and the target has not received a Data PDU with the final bit Set), the target MUST wait
      * until it receives a Data PDU with the F bit set in the last expected sequence before sending the Response PDU.
-     * 
+     *
      * @return The status code of this object.
      * @see SCSIStatus
      */
@@ -326,7 +326,7 @@ public class DataInParser extends TargetMessageParser {
      * <code>F bit</code> MUST also be set to <code>1</code>.<br/>
      * The fields StatSN, Status, and Residual Count only have meaningful content if the S bit is set to <code>1</code>
      * and their values are defined in Section 10.4 SCSI Response.
-     * 
+     *
      * @return <code>True</code>, if the Status-Flag of this object is set. Else <code>false</code>.
      */
     public boolean isStatusFlag () {
@@ -462,10 +462,10 @@ public class DataInParser extends TargetMessageParser {
             line |= ACKNOWLEDGE_FLAG_MASK;
         }
         if (residualOverflow) {
-            line |= Constants.READ_RESIDUAL_OVERFLOW_FLAG_MASK;
+            line |= Constants.RESIDUAL_OVERFLOW_FLAG_MASK;
         }
         if (residualUnderflow) {
-            line |= Constants.READ_RESIDUAL_UNDERFLOW_FLAG_MASK;
+            line |= Constants.RESIDUAL_UNDERFLOW_FLAG_MASK;
         }
         if (statusFlag) {
             line |= STATUS_FLAG_MASK;
