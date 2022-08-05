@@ -2,7 +2,9 @@ package org.jscsi.target.connection.stage.fullfeature;
 
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.security.DigestException;
+import java.util.Arrays;
 
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
@@ -26,6 +28,7 @@ import org.slf4j.LoggerFactory;
  * A stage for processing <code>INQUIRY</code> SCSI commands.
  *
  * @author Andreas Ergenzinger
+ * @author CHEN Qingcan
  */
 public class InquiryStage extends TargetFullFeatureStage {
 
@@ -97,6 +100,19 @@ public class InquiryStage extends TargetFullFeatureStage {
                     case UNIT_SERIAL_NUMBER :
                         responseData = UnitSerialNumberPage.getInstance();
                         break;
+                    case BLOCK_LIMITS :
+                        byte[] responseBlockLimits = new byte [4 + 0x3c];
+                        Arrays.fill (responseBlockLimits, (byte)0); // nothing special, all zero.
+                        responseBlockLimits[1] = (byte) 0xb0;       // Block Limits
+                        responseBlockLimits[3] = (byte) 0x3c;       // PAGE LENGTH
+                        responseData = new SimplePage (responseBlockLimits);
+                        break;
+                    case LOGICAL_BLOCK_PROVISIONING :
+                        responseData = new SimplePage (new byte[] {
+                            0x00, (byte) 0xb2, 0x00, 0x04,  // PAGE LENGTH = 4
+                            0x00, 0x00, 0x00, 0x00          // nothing special, all zero.
+                        });
+                        break;
                     default :
                         // The initiator must not request unsupported mode pages.
                         throw new InternetSCSIException();
@@ -105,7 +121,25 @@ public class InquiryStage extends TargetFullFeatureStage {
 
             // send response
             sendResponse(bhs.getInitiatorTaskTag(), parser.getExpectedDataTransferLength(), responseData);
+        }
+    }
 
+    private static class SimplePage implements IResponseData {
+
+        private final byte[] data;
+        public SimplePage (byte[] data) {
+            this.data = data != null ? data : new byte [0];
+        }
+
+        @Override
+        public void serialize (ByteBuffer out, int index) {
+            out.position (index);
+            out.put (data);
+        }
+
+        @Override
+        public int size () {
+            return data.length;
         }
 
     }

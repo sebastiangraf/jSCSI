@@ -26,8 +26,10 @@ public enum ScsiOperationCode {
     READ_CAPACITY_10    ((byte) 0x25),
     READ_10             ((byte) 0x28),
     WRITE_10            ((byte) 0x2a),
+    SYNCHRONIZE_CACHE_10((byte) 0x35),
     READ_16             ((byte) 0x88),
     WRITE_16            ((byte) 0x8a),
+    SYNCHRONIZE_CACHE_16((byte) 0x91),
     READ_CAPACITY_16    ((byte) 0x9e),
     REPORT_LUNS         ((byte) 0xa0),
     /** REPORT SUPPORTED OPERATION CODES */

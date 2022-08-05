@@ -518,6 +518,17 @@ public final class ProtocolDataUnit {
     @Override
     public final String toString () {
         final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
+        BaseEncoding base16 = BaseEncoding.base16 ().withSeparator (" ", 2).lowerCase ();
+
+        try {
+            sb.append ("  First 16 bytes: 0x");
+            byte[] pdu = new byte [calcSize()];
+            basicHeaderSegment.serialize (ByteBuffer.wrap (pdu), 0);
+            sb.append (base16.encode (pdu, 0, 16)).append ("\n");
+
+        } catch (InternetSCSIException e) {
+            sb.append ("Exception in serialize: " + e.getMessage ());
+        }
 
         sb.append(basicHeaderSegment.toString());
         for (AdditionalHeaderSegment ahs : additionalHeaderSegments) {
@@ -531,7 +542,7 @@ public final class ProtocolDataUnit {
             // "If the mark is defined and larger than the new position then it is discarded."
             int pos = dataSegment.position ();
             dataSegment.position (0).get (preview).position (pos);
-            sb.append (BaseEncoding.base16 ().withSeparator (" ", 2).encode (preview));
+            sb.append (base16.encode (preview));
         }
 
         return sb.toString();
