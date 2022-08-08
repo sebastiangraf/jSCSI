@@ -95,8 +95,10 @@ public class TargetServer implements Callable<Void> {
 
         // read target settings from configuration file
 
-        LOGGER.debug("   target address: " + getConfig().getTargetAddress());
-        LOGGER.debug("   port:           " + getConfig().getPort());
+        LOGGER.debug("   target address:   " + getConfig().getTargetAddress());
+        LOGGER.debug("   port:             " + getConfig().getPort());
+        LOGGER.debug("   external address: " + getConfig().getExternalTargetAddress());
+        LOGGER.debug("   external port:    " + getConfig().getExternalPort());
         LOGGER.debug("   loading targets.");
         // open the storage medium
         List<Target> targetInfo = getConfig().getTargets();
@@ -104,7 +106,7 @@ public class TargetServer implements Callable<Void> {
 
             targets.put(curTargetInfo.getTargetName(), curTargetInfo);
             // print configuration and medium details
-            LOGGER.debug("   target name:    " + curTargetInfo.getTargetName() + " loaded.");
+            LOGGER.debug("   target name:      " + curTargetInfo.getTargetName() + " loaded.");
         }
 
         this.deviceIdentificationVpdPage = new DeviceIdentificationVpdPage(this);

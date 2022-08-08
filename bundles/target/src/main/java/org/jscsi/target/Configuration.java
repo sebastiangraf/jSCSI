@@ -31,7 +31,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import com.google.common.base.Strings;
@@ -44,6 +43,7 @@ import com.google.common.base.Strings;
  * <code>jscsi-target.xml</code>.
  *
  * @author Andreas Ergenzinger, University of Konstanz
+ * @author CHEN Qingcan
  */
 public class Configuration {
 
@@ -61,6 +61,7 @@ public class Configuration {
     public static final String ELEMENT_ASYNCFILESTORAGE = "AsyncFileStorage";
     public static final String ELEMENT_JCLOUDSSTORAGE = "JCloudsStorage";
     public static final String ELEMENT_FILESTORAGE = "FileStorage";
+    public static final String ELEMENT_PATH= "Path";
     public static final String ELEMENT_CREATE = "Create";
     public static final String ATTRIBUTE_SIZE = "size";
 
@@ -70,6 +71,11 @@ public class Configuration {
     public static final String ELEMENT_EXTERNAL_PORT = "ExternalPort";
     public static final String ELEMENT_ADDRESS = "Address";
     public static final String ELEMENT_EXTERNAL_ADDRESS = "ExternalAddress";
+
+    // Vendor info
+    public static final String ELEMENT_VENDOR_ID = "VendorID";
+    public static final String ELEMENT_PRODUCT_ID = "ProductID";
+    public static final String ELEMENT_PRODUCT_REVISION = "ProductRevisionLevel";
 
     // --------------------------------------------------------------------------
     // --------------------------------------------------------------------------
@@ -162,6 +168,21 @@ public class Configuration {
      * size, this value could be set to <code>1</code> without negatively affecting compatibility with most initiators.
      */
     private final int maxRecvTextPduSequenceLength = 4;
+
+    /**
+     * VENDOR IDENTIFICATION field returned in Standard INQUIRY data.
+     */
+    protected String idVendor = "";
+
+    /**
+     * PRODUCT IDENTIFICATION field returned in Standard INQUIRY data.
+     */
+    protected String idProduct = "";
+
+    /**
+     * PRODUCT REVISION LEVEL field returned in Standard INQUIRY data.
+     */
+    protected String revProduct = "";
 
     public Configuration(final String pTargetAddress, String externalTargetAddress, int externalPort) throws IOException {
         this.port = 3260;
@@ -325,20 +346,38 @@ public class Configuration {
         else
             returnConfiguration.allowSloppyNegotiation = Boolean.parseBoolean(allowSloppyNegotiationNode.getTextContent());
 
+
+        // vendor info
+        NodeList tagsVendorID = root.getElementsByTagName(ELEMENT_VENDOR_ID);
+        if (tagsVendorID.getLength() > 0) {
+            returnConfiguration.idVendor = tagsVendorID.item(0).getTextContent();
+        }
+        NodeList tagsProductID = root.getElementsByTagName(ELEMENT_PRODUCT_ID);
+        if (tagsProductID.getLength() > 0) {
+            returnConfiguration.idProduct = tagsProductID.item(0).getTextContent();
+        }
+        NodeList tagsProductRevision = root.getElementsByTagName(ELEMENT_PRODUCT_REVISION);
+        if (tagsProductRevision.getLength() > 0) {
+            returnConfiguration.revProduct = tagsProductRevision.item(0).getTextContent();
+        }
+
         return returnConfiguration;
 
     }
 
     protected static Target parseTargetElement (Element targetElement) throws IOException {
         // TargetName
-        // TargetName
-        Node nextNode = chopWhiteSpaces(targetElement.getFirstChild());
-        // assert
-        // nextNode.getLocalName().equals(OperationalTextKey.TARGET_NAME);
+        Node nextNode = chopNotEquals (targetElement.getFirstChild(), TextKeyword.TARGET_NAME);
+        if (nextNode == null) {
+            throw new IOException (TextKeyword.TARGET_NAME + " tag not found.");
+        }
         String targetName = nextNode.getTextContent();
 
         // TargetAlias (optional)
         nextNode = chopWhiteSpaces(nextNode.getNextSibling());
+        if (nextNode == null) {
+            throw new IOException (TextKeyword.TARGET_NAME + " tag has no sibling.");
+        }
         String targetAlias = "";
         if (nextNode.getLocalName().equals(TextKeyword.TARGET_ALIAS)) {
             targetAlias = nextNode.getTextContent();
@@ -357,12 +396,15 @@ public class Configuration {
             case ELEMENT_JCLOUDSSTORAGE :
                 kind = JCloudsStorageModule.class;
                 break;
+            default:
+                throw new IOException ("Unknown storage: " + nextNode.getLocalName());
         }
 
-        // Getting storagepath
-        nextNode = nextNode.getFirstChild();
-        nextNode = chopWhiteSpaces(nextNode);
-        // assert nextNode.getLocalName().equals(ELEMENT_PATH);
+        // Getting storage path
+        nextNode = chopNotEquals (nextNode.getFirstChild(), ELEMENT_PATH);
+        if (nextNode == null) {
+            throw new IOException (ELEMENT_PATH + " tag not found.");
+        }
         String storageFilePath = nextNode.getTextContent();
 
         // CreateNode with size
@@ -380,15 +422,24 @@ public class Configuration {
         final IStorageModule module = RandomAccessStorageModule.open(new File(storageFilePath), storageLength, create, kind);
 
         return new Target(targetName, targetAlias, module);
-
     }
 
     protected static Node chopWhiteSpaces (final Node node) {
         Node toIterate = node;
-        while (toIterate instanceof Text && toIterate.getTextContent().trim().length() == 0) {
+        while (toIterate != null) {
+            if (toIterate instanceof Element) break;
             toIterate = toIterate.getNextSibling();
         }
         return toIterate;
+    }
+
+    protected static Node chopNotEquals (final Node node, final String tag) {
+        Node next = node;
+        while (next != null) {
+            if (Strings.nullToEmpty (next.getLocalName()).equals(tag)) break;
+            next = next.getNextSibling();
+        }
+        return next;
     }
 
     public String getExternalTargetAddress() {
@@ -398,4 +449,17 @@ public class Configuration {
     public int getExternalPort() {
         return externalPort;
     }
+
+    public String getVendorID() {
+        return idVendor;
+    }
+
+    public String getProductID() {
+        return idProduct;
+    }
+
+    public String getProductRevisionLevel() {
+        return revProduct;
+    }
+
 }

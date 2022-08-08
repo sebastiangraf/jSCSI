@@ -92,8 +92,18 @@
                 default="false" minOccurs="0" maxOccurs="1" />
             <xs:element name="Address" type="xs:string"
                 minOccurs="0" maxOccurs="1" />
+            <xs:element name="ExternalAddress" type="xs:string"
+                minOccurs="0" maxOccurs="1" />
             <xs:element name="Port" type="TargetPortType"
                 default="3260" minOccurs="0" maxOccurs="1" />
+            <xs:element name="ExternalPort" type="TargetPortType"
+                default="3260" minOccurs="0" maxOccurs="1" />
+            <xs:element name="VendorID" type="xs:string"
+                minOccurs="0" maxOccurs="1" />
+            <xs:element name="ProductID" type="xs:string"
+                minOccurs="0" maxOccurs="1" />
+            <xs:element name="ProductRevisionLevel" type="xs:string"
+                minOccurs="0" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
