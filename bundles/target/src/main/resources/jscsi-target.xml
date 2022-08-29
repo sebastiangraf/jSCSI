@@ -32,7 +32,7 @@
 			<!--
 			Available storage:
 			* AsyncFileStorage  - Implemented by RandomAccessStorageModule class.
-			                      Access the storage file by RandomAccessFile, opened in "rwd" mode,
+			                      Access the storage file by java.io.RandomAccessFile, opened in "rwd" mode,
 			                      which requires that every update to the file's content be written synchronously
 			                      to the underlying storage device.
 			* SyncFileStorage   - Implemented by SynchronizedRandomAccessStorageModule class.
@@ -91,17 +91,17 @@
 		<ExternalPort>3260</ExternalPort>
 		<!--
 		Optional, no more than  8 ASCII characters, automatically truncated if too long,
-		see StandardInquiryData for default value.
+		see StandardInquiryData class for default value.
 		-->
 		<VendorID>jSCSIorg</VendorID>
 		<!--
 		Optional, no more than 16 ASCII characters, automatically truncated if too long,
-		see StandardInquiryData for default value.
+		see StandardInquiryData class for default value.
 		-->
 		<ProductID>iSCSI target</ProductID>
 		<!--
 		Optional, no more than  4 ASCII characters, automatically truncated if too long,
-		see StandardInquiryData for default value.
+		see StandardInquiryData class for default value.
 		-->
 		<ProductRevisionLevel>1.00</ProductRevisionLevel>
 	</GlobalConfig>
