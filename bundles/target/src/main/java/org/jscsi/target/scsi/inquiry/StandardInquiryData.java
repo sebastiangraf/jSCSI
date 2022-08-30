@@ -3,19 +3,19 @@ package org.jscsi.target.scsi.inquiry;
 
 import java.nio.ByteBuffer;
 
+import org.jscsi.target.Configuration;
 import org.jscsi.target.scsi.IResponseData;
 import org.jscsi.target.scsi.cdb.ScsiOperationCode;
+import org.jscsi.utils.Utils;
+
+import com.google.common.base.Strings;
 
 
 /**
  * The standard inquiry data, sent as a response to an {@link ScsiOperationCode#INQUIRY} command.
- * <p>
- * This class uses the singleton pattern since the returned standard inquiry data will always be the same.
- * <p>
- * Not all fields in the serialized form of the singleton have a corresponding member variable, only those fields
- * containing ASCII information.
- * 
+ *
  * @author Andreas Ergenzinger
+ * @author CHEN Qingcan
  */
 public final class StandardInquiryData implements IResponseData {
 
@@ -36,25 +36,37 @@ public final class StandardInquiryData implements IResponseData {
     private static final int PRODUCT_REVISION_LEVEL_FIELD_POSITION = 32;
     private static final int PRODUCT_REVISION_LEVEL_FIELD_LENGTH = 4;
 
-    /**
-     * The singleton.
-     */
-    private static StandardInquiryData instance;
+    private String inquiryVendorID, inquiryProductID, inquiryProductRevisionLevel;
 
-    private StandardInquiryData () {
-        // singleton pattern
+    public StandardInquiryData (final Configuration config) {
+        inquiryVendorID = VENDOR_ID;
+        inquiryProductID = PRODUCT_ID;
+        inquiryProductRevisionLevel = PRODUCT_REVISION_LEVEL;
+
+        if (config != null) {
+            String configVendorID               = config.getVendorID (),
+                   configProductID              = config.getProductID (),
+                   configProductRevisionLevel   = config.getProductRevisionLevel ();
+            if (! Strings.isNullOrEmpty (configVendorID)) {
+                inquiryVendorID = configVendorID;
+            }
+            if (! Strings.isNullOrEmpty (configProductID)) {
+                inquiryProductID = configProductID;
+            }
+            if (! Strings.isNullOrEmpty (configProductRevisionLevel)) {
+                inquiryProductRevisionLevel = configProductRevisionLevel;
+            }
+        }
+
+        inquiryVendorID = Utils.fixedLengthString
+            (inquiryVendorID, VENDOR_ID_FIELD_LENGTH, ' ');
+        inquiryProductID = Utils.fixedLengthString
+            (inquiryProductID, PRODUCT_ID_FIELD_LENGTH, ' ');
+        inquiryProductRevisionLevel = Utils.fixedLengthString
+            (inquiryProductRevisionLevel, PRODUCT_REVISION_LEVEL_FIELD_LENGTH, ' ');
     }
 
-    /**
-     * Returns the one and only {@link StandardInquiryData} object.
-     * 
-     * @return the one and only {@link StandardInquiryData} object
-     */
-    public static StandardInquiryData getInstance () {
-        if (instance == null) instance = new StandardInquiryData();
-        return instance;
-    }
-
+    @Override
     public void serialize (ByteBuffer byteBuffer, int index) {
 
         // *** byte 0 ****
@@ -143,27 +155,27 @@ public final class StandardInquiryData implements IResponseData {
          * data identifying the vendor of the product. The T10 vendor identification shall be one assigned by INCITS,
          * but obviously that is not the case here. disyUKon
          */
-        putString(byteBuffer, VENDOR_ID, index + VENDOR_ID_FIELD_POSITION, VENDOR_ID_FIELD_LENGTH);
+        putString(byteBuffer, inquiryVendorID, index + VENDOR_ID_FIELD_POSITION, VENDOR_ID_FIELD_LENGTH);
 
         // *** bytes 16 to 31
         /*
          * PRODUCT IDENTIFICATION: The PRODUCT IDENTIFICATION field contains sixteen bytes of left-aligned ASCII data
          * defined by the vendor.
          */
-        putString(byteBuffer, PRODUCT_ID, index + PRODUCT_ID_FIELD_POSITION, PRODUCT_ID_FIELD_LENGTH);
+        putString(byteBuffer, inquiryProductID, index + PRODUCT_ID_FIELD_POSITION, PRODUCT_ID_FIELD_LENGTH);
 
         // *** bytes 32 to 35 ***
         /*
          * PRODUCT REVISION LEVEL: The PRODUCT REVISION LEVEL field contains four bytes of left-aligned ASCII data
          * defined by the vendor.
          */
-        putString(byteBuffer, PRODUCT_REVISION_LEVEL, index + PRODUCT_REVISION_LEVEL_FIELD_POSITION, PRODUCT_REVISION_LEVEL_FIELD_LENGTH);
+        putString(byteBuffer, inquiryProductRevisionLevel, index + PRODUCT_REVISION_LEVEL_FIELD_POSITION, PRODUCT_REVISION_LEVEL_FIELD_LENGTH);
     }
 
     /**
      * Puts up to <i>fieldLength</i> of the passed {@link String} into a {@link ByteBuffer} and fills the remaining
      * bytes with zeros.
-     * 
+     *
      * @param byteBuffer where the {@link String}'s characters will be copied
      * @param string contains the characters to copy
      * @param position where the first character of the {@link String} will be put
@@ -181,6 +193,7 @@ public final class StandardInquiryData implements IResponseData {
             byteBuffer.put((byte) 0);
     }
 
+    @Override
     public int size () {
         return SIZE;
     }
