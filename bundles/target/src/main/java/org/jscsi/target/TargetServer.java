@@ -90,7 +90,6 @@ public class TargetServer implements Callable<Void> {
 
     public TargetServer (final Configuration conf) {
         this.config = conf;
-
         LOGGER.debug("Starting jSCSI-target: ");
 
         // read target settings from configuration file
@@ -107,6 +106,7 @@ public class TargetServer implements Callable<Void> {
             targets.put(curTargetInfo.getTargetName(), curTargetInfo);
             // print configuration and medium details
             LOGGER.debug("   target name:      " + curTargetInfo.getTargetName() + " loaded.");
+            LOGGER.debug("   storage module:   " + curTargetInfo.getStorageModule().getClass().getName());
         }
 
         this.deviceIdentificationVpdPage = new DeviceIdentificationVpdPage(this);

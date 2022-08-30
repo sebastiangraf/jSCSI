@@ -61,9 +61,11 @@ public class Configuration {
     public static final String ELEMENT_ASYNCFILESTORAGE = "AsyncFileStorage";
     public static final String ELEMENT_JCLOUDSSTORAGE = "JCloudsStorage";
     public static final String ELEMENT_FILESTORAGE = "FileStorage";
+    public static final String ELEMENT_EXTENDEDSTORAGE = "ExtendedStorage";
     public static final String ELEMENT_PATH= "Path";
     public static final String ELEMENT_CREATE = "Create";
     public static final String ATTRIBUTE_SIZE = "size";
+    public static final String ATTRIBUTE_CLASS = "class";
 
     // Global configuration elements
     public static final String ELEMENT_ALLOWSLOPPYNEGOTIATION = "AllowSloppyNegotiation";
@@ -395,6 +397,17 @@ public class Configuration {
                 break;
             case ELEMENT_JCLOUDSSTORAGE :
                 kind = JCloudsStorageModule.class;
+                break;
+            case ELEMENT_EXTENDEDSTORAGE :
+                Node   attrClass = nextNode.getAttributes().getNamedItem(ATTRIBUTE_CLASS);
+                String nameClass = attrClass.getTextContent();
+                try {
+                    @SuppressWarnings ("unchecked")
+                    Class<? extends IStorageModule> unc = (Class<? extends IStorageModule>) Class.forName (nameClass);
+                    kind = unc;
+                } catch (ClassNotFoundException e) {
+                    throw new IOException ("Storage class not found: " + nameClass + " (" + e.getMessage() + ")");
+                }
                 break;
             default:
                 throw new IOException ("Unknown storage: " + nextNode.getLocalName());

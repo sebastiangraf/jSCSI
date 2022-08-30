@@ -38,6 +38,10 @@
 			* SyncFileStorage   - Implemented by SynchronizedRandomAccessStorageModule class.
 			                      Adds synchronized keyword around read, write methods.
 			* JCloudsStorage    - Implemented by JCloudsStorageModule class.
+			* ExtendedStorage   - Implemented by a class specified in the class attribute. e.g.
+			                      <ExtendedStorage class="my.pretty.ExStorageModule">
+			                      The class implements IStorageModule interface, and a constructor with two parameters
+			                      (long lStorageLengthIn512BytesBlocks, File fStorageMedium).
 			-->
 			<AsyncFileStorage>
 				<Path>/tmp/vbox.dat</Path>
