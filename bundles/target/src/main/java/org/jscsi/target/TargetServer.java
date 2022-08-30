@@ -90,13 +90,14 @@ public class TargetServer implements Callable<Void> {
 
     public TargetServer (final Configuration conf) {
         this.config = conf;
-
         LOGGER.debug("Starting jSCSI-target: ");
 
         // read target settings from configuration file
 
-        LOGGER.debug("   target address: " + getConfig().getTargetAddress());
-        LOGGER.debug("   port:           " + getConfig().getPort());
+        LOGGER.debug("   target address:   " + getConfig().getTargetAddress());
+        LOGGER.debug("   port:             " + getConfig().getPort());
+        LOGGER.debug("   external address: " + getConfig().getExternalTargetAddress());
+        LOGGER.debug("   external port:    " + getConfig().getExternalPort());
         LOGGER.debug("   loading targets.");
         // open the storage medium
         List<Target> targetInfo = getConfig().getTargets();
@@ -104,7 +105,8 @@ public class TargetServer implements Callable<Void> {
 
             targets.put(curTargetInfo.getTargetName(), curTargetInfo);
             // print configuration and medium details
-            LOGGER.debug("   target name:    " + curTargetInfo.getTargetName() + " loaded.");
+            LOGGER.debug("   target name:      " + curTargetInfo.getTargetName() + " loaded.");
+            LOGGER.debug("   storage module:   " + curTargetInfo.getStorageModule().getClass().getName());
         }
 
         this.deviceIdentificationVpdPage = new DeviceIdentificationVpdPage(this);
@@ -137,6 +139,32 @@ public class TargetServer implements Callable<Void> {
     public static void main (String[] args) throws Exception {
         TargetServer target;
 
+        switch (args.length) {
+            case 0 :
+                target = new TargetServer(Configuration.create(chooseTargetAddress()));
+                break;
+
+            case 1 :
+                // Checking if the schema file is at the default location
+                target = new TargetServer(
+                        Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE.exists() ?
+                                        new FileInputStream(Configuration.CONFIGURATION_SCHEMA_FILE) :
+                                        TargetServer.class.getResourceAsStream("/jscsi-target.xsd"),
+                                new FileInputStream(args[0]), ""));
+                break;
+
+            case 2 :
+                target = new TargetServer(Configuration.create(new File(args[0]), new File(args[1]), ""));
+                break;
+
+            default :
+                throw new IllegalArgumentException("Only zero or one Parameter (Path to Configuration-File) allowed!");
+        }
+
+        target.call();
+    }
+
+    private static String chooseTargetAddress () throws Exception {
         System.out.println("This system provides more than one IP Address to advertise.\n");
 
         Enumeration<NetworkInterface> interfaceEnum = NetworkInterface.getNetworkInterfaces();
@@ -174,30 +202,8 @@ public class TargetServer implements Callable<Void> {
         }
 
         String targetAddress = addresses.get(chosenIndex).getHostAddress();
-        System.out.println("Using ip address " + addresses.get(chosenIndex).getHostAddress());
-
-
-        switch (args.length) {
-            case 0 :
-                target = new TargetServer(Configuration.create(targetAddress));
-                break;
-            case 1 :
-
-                // Checking if the schema file is at the default location
-                target = new TargetServer(
-                        Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE.exists() ?
-                                        new FileInputStream(Configuration.CONFIGURATION_SCHEMA_FILE) :
-                                        TargetServer.class.getResourceAsStream("/jscsi-target.xsd"),
-                                new FileInputStream(args[0]), targetAddress));
-                break;
-            case 2 :
-                target = new TargetServer(Configuration.create(new File(args[0]), new File(args[1]), targetAddress));
-                break;
-            default :
-                throw new IllegalArgumentException("Only zero or one Parameter (Path to Configuration-File) allowed!");
-        }
-
-        target.call();
+        System.out.println("Using ip address " + targetAddress);
+        return targetAddress;
     }
 
     private class ConnectionHandler implements Callable<Void> {

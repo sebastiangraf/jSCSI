@@ -106,9 +106,9 @@ public interface IStorageModule extends Closeable {
      * <p>
      * Implements may keep the default empty method if no synchronization is needed.
      *
-     * @param syncLogicalBlockAddress   LOGICAL BLOCK ADDRESS field
-     * @param syncNumberOfBlocks        NUMBER OF BLOCKS field
-     * @throws IOException
+     * @param   syncLogicalBlockAddress LOGICAL BLOCK ADDRESS field
+     * @param   syncNumberOfBlocks      NUMBER OF BLOCKS field
+     * @throws  IOException
      */
     default void syncCahe (long syncLogicalBlockAddress, int syncNumberOfBlocks)
     throws IOException {}

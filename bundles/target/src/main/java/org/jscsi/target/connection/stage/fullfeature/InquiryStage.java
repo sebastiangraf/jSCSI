@@ -10,6 +10,7 @@ import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.BasicHeaderSegment;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.scsi.SCSICommandParser;
+import org.jscsi.target.Configuration;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.scsi.IResponseData;
 import org.jscsi.target.scsi.cdb.InquiryCDB;
@@ -82,7 +83,8 @@ public class InquiryStage extends TargetFullFeatureStage {
             if (!cdb.getEnableVitalProductData()) {
                 // ... the device server shall return the standard INQUIRY
                 // data."
-                responseData = StandardInquiryData.getInstance();
+                final Configuration config = connection.getTargetSession ().getTargetServer ().getConfig ();
+                responseData = new StandardInquiryData (config);
             } else {
                 /*
                  * SCSI initiator is requesting either "device identification" or "supported VPD pages" or this else

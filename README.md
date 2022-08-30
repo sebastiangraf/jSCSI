@@ -34,6 +34,25 @@ The schema and an example config are accessible as download as well and included
 
 For further documentation and as an example, please refer to the examples in the initiator- and target-module.
 
+* Run the target as standalone executable jar
+
+  1. Put the target configuration XML file in a sub-folder named ```config```.
+  See also ```bundles/target/src/main/resources/jscsi-target.xml```
+  2. Put the log configuration XML file in the ```config``` sub-folder.
+  See also ```bundles/target/src/main/resources/logback.xml```
+  3. Put commons-{version}.jar, target-{version}.jar and their dependencies jar in a sub-folder named ```lib```.
+  4. Run
+```bash
+java                                                    \
+     --class-path "lib/*"                               \
+     -Dlogback.configurationFile=config/logback.xml     \
+     org.jscsi.target.TargetServer                      \
+     config/jscsi-target.xml                            \
+     > log/console.log                                  \
+     2>&1                                               \
+&
+```
+
 ## Content
 
 * README: this readme file
