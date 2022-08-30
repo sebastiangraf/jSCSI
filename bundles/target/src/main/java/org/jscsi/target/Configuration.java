@@ -246,6 +246,8 @@ public class Configuration {
     /**
      * Reads the given configuration file in memory and creates a DOM representation.
      *
+     * @param  pTargetAddress   Get from configuration XML if this parameter is null or empty.
+     *
      * @throws SAXException If this operation is supported but failed for some reason.
      * @throws ParserConfigurationException If a {@link DocumentBuilder} cannot be created which satisfies the
      *             configuration requested.
@@ -269,6 +271,8 @@ public class Configuration {
 
     /**
      * Reads the given configuration file in memory and creates a DOM representation.
+     *
+     * @param  pTargetAddress   Get from configuration XML if this parameter is null or empty.
      *
      * @throws SAXException If this operation is supported but failed for some reason.
      * @throws ParserConfigurationException If a {@link DocumentBuilder} cannot be created which satisfies the
