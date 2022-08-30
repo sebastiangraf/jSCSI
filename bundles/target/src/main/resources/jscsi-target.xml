@@ -25,20 +25,41 @@
 	xsi:schemaLocation="http://www.jscsi.org/2010-04 jscsi-target.xsd">
 
 	<TargetList>
-        <Target>
-            <TargetName>box.vm:disk-1</TargetName>
-            <TargetAlias>jSCSI Target</TargetAlias>
-            <AsyncFileStorage>
-                <Path>/tmp/vbox.dat</Path>
-                <NoCreate />
-            </AsyncFileStorage>
-        </Target>
+		<Target>
+			<TargetName>box.vm:disk-1</TargetName>
+			<!-- Optional, default to empty string "". -->
+			<TargetAlias>jSCSI Target</TargetAlias>
+			<!--
+			Available storage:
+			* AsyncFileStorage  - Implemented by RandomAccessStorageModule class.
+			                      Access the storage file by java.io.RandomAccessFile, opened in "rwd" mode,
+			                      which requires that every update to the file's content be written synchronously
+			                      to the underlying storage device.
+			* SyncFileStorage   - Implemented by SynchronizedRandomAccessStorageModule class.
+			                      Adds synchronized keyword around read, write methods.
+			* JCloudsStorage    - Implemented by JCloudsStorageModule class.
+			* ExtendedStorage   - Implemented by a class specified in the class attribute. e.g.
+			                      <ExtendedStorage class="my.pretty.ExStorageModule">
+			                      The class implements IStorageModule interface, and a constructor with two parameters
+			                      (long lStorageLengthIn512BytesBlocks, File fStorageMedium).
+			-->
+			<AsyncFileStorage>
+				<Path>/tmp/vbox.dat</Path>
+				<!--
+				<NoCreate />
+				or
+				<Create size="{size in GB}"/>
+				e.g. <Create size="1"/> will create 1 GB storage file automatically.
+				-->
+				<NoCreate />
+			</AsyncFileStorage>
+		</Target>
 		<Target>
 			<TargetName>iqn.2010-04.local-test:disk-1</TargetName>
 			<TargetAlias>jSCSI Target</TargetAlias>
 			<AsyncFileStorage>
 				<Path>/tmp/storage1.dat</Path>
-                <NoCreate />
+				<NoCreate />
 			</AsyncFileStorage>
 		</Target>
 		<Target>
@@ -46,13 +67,46 @@
 			<TargetAlias>jSCSI Target</TargetAlias>
 			<AsyncFileStorage>
 				<Path>/tmp/storage2.dat</Path>
-                <NoCreate />
+				<NoCreate />
 			</AsyncFileStorage>
 		</Target>
 	</TargetList>
 	<GlobalConfig>
 		<AllowSloppyNegotiation>true</AllowSloppyNegotiation>
+		<!--
+		Target server listening address,
+		optional, default to local host address returned by java.net.InetAddress.getLocalHost()
+		-->
+		<Address>0.0.0.0</Address>
+		<!--
+		Listening address returned to iSCSI initiator,
+		optional, default to local host address returned by java.net.InetAddress.getLocalHost()
+		-->
+		<ExternalAddress>127.0.0.1</ExternalAddress>
+		<!--
+		Target server listening port,
+		optional, default to 3260 according to the iSCSI protocol.
+		-->
 		<Port>3260</Port>
+		<!--
+		Listening port returned to iSCSI initiator,
+		optional, default to 3260 according to the iSCSI protocol.
+		-->
+		<ExternalPort>3260</ExternalPort>
+		<!--
+		Optional, no more than  8 ASCII characters, automatically truncated if too long,
+		see StandardInquiryData class for default value.
+		-->
+		<VendorID>jSCSIorg</VendorID>
+		<!--
+		Optional, no more than 16 ASCII characters, automatically truncated if too long,
+		see StandardInquiryData class for default value.
+		-->
+		<ProductID>iSCSI target</ProductID>
+		<!--
+		Optional, no more than  4 ASCII characters, automatically truncated if too long,
+		see StandardInquiryData class for default value.
+		-->
+		<ProductRevisionLevel>1.00</ProductRevisionLevel>
 	</GlobalConfig>
 </configuration>
-

@@ -9,12 +9,33 @@ package org.jscsi.target.scsi.cdb;
  * thirty-two command codes in each group. A total of 256 possible operation codes exist.
  * <p>
  * The value of the GROUP CODE field specifies the {@link CommandDescriptorBlock}'s length.
- * 
+ *
  * @see CdbType
  * @author Andreas Ergenzinger
  */
 public enum ScsiOperationCode {
-    TEST_UNIT_READY((byte) 0x00), REQUEST_SENSE((byte) 0x03), FORMAT_UNIT((byte) 0x04), READ_6((byte) 0x08), WRITE_6((byte) 0x0a), INQUIRY((byte) 0x12), MODE_SELECT_6((byte) 0x15), MODE_SENSE_6((byte) 0x1a), SEND_DIAGNOSTIC((byte) 0x1d), READ_CAPACITY_10((byte) 0x25), READ_10((byte) 0x28), WRITE_10((byte) 0x2a), READ_CAPACITY_16((byte) 0x9e), REPORT_LUNS((byte) 0xa0);
+    TEST_UNIT_READY     ((byte) 0x00),
+    REQUEST_SENSE       ((byte) 0x03),
+    FORMAT_UNIT         ((byte) 0x04),
+    READ_6              ((byte) 0x08),
+    WRITE_6             ((byte) 0x0a),
+    INQUIRY             ((byte) 0x12),
+    MODE_SELECT_6       ((byte) 0x15),
+    MODE_SENSE_6        ((byte) 0x1a),
+    SEND_DIAGNOSTIC     ((byte) 0x1d),
+    READ_CAPACITY_10    ((byte) 0x25),
+    READ_10             ((byte) 0x28),
+    WRITE_10            ((byte) 0x2a),
+    SYNCHRONIZE_CACHE_10((byte) 0x35),
+    READ_16             ((byte) 0x88),
+    WRITE_16            ((byte) 0x8a),
+    SYNCHRONIZE_CACHE_16((byte) 0x91),
+    READ_CAPACITY_16    ((byte) 0x9e),
+    REPORT_LUNS         ((byte) 0xa0),
+    /** REPORT SUPPORTED OPERATION CODES */
+    REPORT_OP_CODES     ((byte) 0xa3),
+    READ_12             ((byte) 0xa8),
+    WRITE_12            ((byte) 0xaa);
 
     /**
      * The serialized value of the operation code.
@@ -36,7 +57,7 @@ public enum ScsiOperationCode {
 
     /**
      * Returns the {@link ScsiOperationCode} corresponding to the passed byte value.
-     * 
+     *
      * @param value the serialized value of a SCSI operation code
      * @return the corresponding {@link ScsiOperationCode} or <code>null</code> if the passed value is not known by the
      *         jSCSI Target
@@ -51,7 +72,7 @@ public enum ScsiOperationCode {
 
     /**
      * Returns the serialized value of the operation code.
-     * 
+     *
      * @return the serialized value of the operation code
      */
     public final byte value () {
@@ -60,7 +81,7 @@ public enum ScsiOperationCode {
 
     /**
      * The three-bit GROUP CODE field provides for eight groups of command codes.
-     * 
+     *
      * @return the three-bit GROUP CODE field
      */
     public int getGroupCode () {
@@ -69,7 +90,7 @@ public enum ScsiOperationCode {
 
     /**
      * Returns the five-bit COMMAND CODE field.
-     * 
+     *
      * @return the five-bit COMMAND CODE field
      */
     public int getCommandCode () {
@@ -78,7 +99,7 @@ public enum ScsiOperationCode {
 
     /**
      * Returns the {@link CdbType} for this operation code.
-     * 
+     *
      * @return the {@link CdbType} for this operation code
      */
     public CdbType getCdbType () {

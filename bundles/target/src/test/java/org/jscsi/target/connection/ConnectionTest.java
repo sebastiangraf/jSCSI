@@ -25,6 +25,7 @@ import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIResponseParser.ServiceResponse;
 import org.jscsi.parser.scsi.SCSIStatus;
+import org.jscsi.target.Configuration;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.connection.stage.TargetStage;
 import org.jscsi.target.connection.stage.fullfeature.FormatUnitStage;
@@ -308,7 +309,8 @@ public class ConnectionTest {
                 IResponseData responseData;
 
                 if (!cdb.getEnableVitalProductData()) {
-                    responseData = StandardInquiryData.getInstance();
+                    final Configuration config = pConnection.getTargetSession ().getTargetServer ().getConfig ();
+                    responseData = new StandardInquiryData (config);
                 } else {
                     final VitalProductDataPageName pageName = cdb.getPageCode().getVitalProductDataPageName();
 

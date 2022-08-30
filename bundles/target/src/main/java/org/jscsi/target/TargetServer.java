@@ -28,7 +28,6 @@ import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
 import org.jscsi.parser.login.ISID;
 import org.jscsi.parser.login.LoginRequestParser;
-import org.jscsi.target.connection.Connection;
 import org.jscsi.target.connection.Connection.TargetConnection;
 import org.jscsi.target.connection.TargetSession;
 import org.jscsi.target.scsi.inquiry.DeviceIdentificationVpdPage;
@@ -40,7 +39,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The central class of the jSCSI Target, which keeps track of all active {@link TargetSession}s, stores target-wide
  * parameters and variables, and which contains the {@link #main(String[])} method for starting the program.
- * 
+ *
  * @author Andreas Ergenzinger, University of Konstanz
  * @author Sebastian Graf, University of Konstanz
  */
@@ -64,7 +63,7 @@ public class TargetServer implements Callable<Void> {
     private Configuration config;
 
     /**
-     * 
+     *
      */
     private DeviceIdentificationVpdPage deviceIdentificationVpdPage;
 
@@ -91,12 +90,14 @@ public class TargetServer implements Callable<Void> {
 
     public TargetServer (final Configuration conf) {
         this.config = conf;
-
         LOGGER.debug("Starting jSCSI-target: ");
 
         // read target settings from configuration file
 
-        LOGGER.debug("   port:           " + getConfig().getPort());
+        LOGGER.debug("   target address:   " + getConfig().getTargetAddress());
+        LOGGER.debug("   port:             " + getConfig().getPort());
+        LOGGER.debug("   external address: " + getConfig().getExternalTargetAddress());
+        LOGGER.debug("   external port:    " + getConfig().getExternalPort());
         LOGGER.debug("   loading targets.");
         // open the storage medium
         List<Target> targetInfo = getConfig().getTargets();
@@ -104,7 +105,8 @@ public class TargetServer implements Callable<Void> {
 
             targets.put(curTargetInfo.getTargetName(), curTargetInfo);
             // print configuration and medium details
-            LOGGER.debug("   target name:    " + curTargetInfo.getTargetName() + " loaded.");
+            LOGGER.debug("   target name:      " + curTargetInfo.getTargetName() + " loaded.");
+            LOGGER.debug("   storage module:   " + curTargetInfo.getStorageModule().getClass().getName());
         }
 
         this.deviceIdentificationVpdPage = new DeviceIdentificationVpdPage(this);
@@ -114,7 +116,7 @@ public class TargetServer implements Callable<Void> {
     /**
      * Gets and increments the value to use in the next unreserved <code>Target Transfer Tag</code> field of the next
      * PDU to be sent by the jSCSI Target.
-     * 
+     *
      * @see #nextTargetTransferTag
      * @return the value to use in the next unreserved <code>Target Transfer Tag
      * </code> field
@@ -130,13 +132,39 @@ public class TargetServer implements Callable<Void> {
 
     /**
      * Starts the jSCSI target.
-     * 
+     *
      * @param args all command line arguments are ignored
      * @throws IOException
      */
     public static void main (String[] args) throws Exception {
         TargetServer target;
 
+        switch (args.length) {
+            case 0 :
+                target = new TargetServer(Configuration.create(chooseTargetAddress()));
+                break;
+
+            case 1 :
+                // Checking if the schema file is at the default location
+                target = new TargetServer(
+                        Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE.exists() ?
+                                        new FileInputStream(Configuration.CONFIGURATION_SCHEMA_FILE) :
+                                        TargetServer.class.getResourceAsStream("/jscsi-target.xsd"),
+                                new FileInputStream(args[0]), ""));
+                break;
+
+            case 2 :
+                target = new TargetServer(Configuration.create(new File(args[0]), new File(args[1]), ""));
+                break;
+
+            default :
+                throw new IllegalArgumentException("Only zero or one Parameter (Path to Configuration-File) allowed!");
+        }
+
+        target.call();
+    }
+
+    private static String chooseTargetAddress () throws Exception {
         System.out.println("This system provides more than one IP Address to advertise.\n");
 
         Enumeration<NetworkInterface> interfaceEnum = NetworkInterface.getNetworkInterfaces();
@@ -174,33 +202,11 @@ public class TargetServer implements Callable<Void> {
         }
 
         String targetAddress = addresses.get(chosenIndex).getHostAddress();
-        System.out.println("Using ip address " + addresses.get(chosenIndex).getHostAddress());
-        
-        
-        switch (args.length) {
-            case 0 :
-                target = new TargetServer(Configuration.create(targetAddress));
-                break;
-            case 1 :
-
-                // Checking if the schema file is at the default location
-                target = new TargetServer(
-                        Configuration.create(Configuration.CONFIGURATION_SCHEMA_FILE.exists() ?
-                                        new FileInputStream(Configuration.CONFIGURATION_SCHEMA_FILE) :
-                                        TargetServer.class.getResourceAsStream("/jscsi-target.xsd"),
-                                new FileInputStream(args[0]), targetAddress));
-                break;
-            case 2 :
-                target = new TargetServer(Configuration.create(new File(args[0]), new File(args[1]), targetAddress));
-                break;
-            default :
-                throw new IllegalArgumentException("Only zero or one Parameter (Path to Configuration-File) allowed!");
-        }
-
-        target.call();
+        System.out.println("Using ip address " + targetAddress);
+        return targetAddress;
     }
 
-    private class ConnectionHandler implements Callable {
+    private class ConnectionHandler implements Callable<Void> {
 
         private final TargetConnection targetConnection;
 
@@ -217,6 +223,9 @@ public class TargetServer implements Callable<Void> {
             } finally {
                 // coming back from call() means the session is ended
                 // we can delete the target from local cache.
+                // - - - -
+                // No, it is not local cache, but shared by all sessions.
+                /*
                 synchronized (targets) {
                     Target target = targetConnection.getTargetSession().getTarget();
                     if (target != null) {
@@ -231,11 +240,13 @@ public class TargetServer implements Callable<Void> {
                         LOGGER.warn("No target to delete on logout?");
                     }
                 }
+                */
             }
             return null;
         }
     }
 
+    @Override
     public Void call () throws Exception {
 
         // Create a blocking server socket and check for connections
@@ -263,7 +274,7 @@ public class TargetServer implements Callable<Void> {
                     // confirm OpCode-
                     if (pdu.getBasicHeaderSegment().getOpCode() != OperationCode.LOGIN_REQUEST) throw new InternetSCSIException();
                     // get initiatorSessionID
-                    
+
                     LoginRequestParser parser = (LoginRequestParser) pdu.getBasicHeaderSegment().getParser();
                     ISID initiatorSessionID = parser.getInitiatorSessionID();
 
@@ -319,7 +330,7 @@ public class TargetServer implements Callable<Void> {
 
     /**
      * Removes a session from the jSCSI Target's list of active sessions.
-     * 
+     *
      * @param session the session to remove from the list of active sessions
      */
     public synchronized void removeTargetSession (TargetSession session) {
@@ -334,14 +345,14 @@ public class TargetServer implements Callable<Void> {
 
     /**
      * Checks to see if this target name is valid.
-     * 
+     *
      * @param checkTargetName
      * @return true if the the target name is configured
      */
     public boolean isValidTargetName (String checkTargetName) {
         return targets.containsKey(checkTargetName);
     }
-    
+
     /**
      * Stop this target server
      */
