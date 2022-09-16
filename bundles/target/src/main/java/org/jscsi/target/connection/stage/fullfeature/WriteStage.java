@@ -22,6 +22,7 @@ import org.jscsi.target.scsi.cdb.Write12Cdb;
 import org.jscsi.target.scsi.cdb.Write16Cdb;
 import org.jscsi.target.scsi.cdb.Write6Cdb;
 import org.jscsi.target.scsi.cdb.WriteCdb;
+import org.jscsi.target.scsi.sense.senseDataDescriptor.senseKeySpecific.FieldPointerSenseKeySpecificData;
 import org.jscsi.target.settings.SettingsException;
 import org.jscsi.target.util.Debug;
 import org.slf4j.Logger;
@@ -124,6 +125,10 @@ public final class WriteStage extends ReadOrWriteStage {
              * unsolicited Data-Out PDUs, which the jSCSI Target is currently unable to ignore or process properly.
              */
             LOGGER.error("illegal field in Write CDB");
+            for (FieldPointerSenseKeySpecificData field1 : cdb.getIllegalFieldPointers()) {
+                LOGGER.error("  field pointer = {} bit pointer = {}",
+                    field1.getFieldPointer (), field1.getBitPointer ());
+            }
             LOGGER.error("CDB:\n" + Debug.byteBufferToString(parser.getCDB()));
 
             // Not necessarily close the connection
