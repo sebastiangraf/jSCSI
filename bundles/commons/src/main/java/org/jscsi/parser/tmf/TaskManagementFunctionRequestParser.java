@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
  * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
  * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
  * endorse or promote products derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
@@ -42,7 +42,7 @@ import org.jscsi.utils.Utils;
  * <h4>LUN</h4> This field is required for functions that address a specific LU (ABORT TASK, CLEAR TASK SET, ABORT TASK
  * SET, CLEAR ACA, LOGICAL UNIT RESET) and is reserved in all others.
  * <p>
- * 
+ *
  * @author Volker Wildi
  */
 public final class TaskManagementFunctionRequestParser extends InitiatorMessageParser {
@@ -95,7 +95,7 @@ public final class TaskManagementFunctionRequestParser extends InitiatorMessageP
 
         /**
          * Returns the value of this enumeration.
-         * 
+         *
          * @return The value of this enumeration.
          */
         public final byte value () {
@@ -105,7 +105,7 @@ public final class TaskManagementFunctionRequestParser extends InitiatorMessageP
 
         /**
          * Returns the constant defined for the given <code>value</code>.
-         * 
+         *
          * @param value The value to search for.
          * @return The constant defined for the given <code>value</code>. Or <code>null</code>, if this value is not
          *         defined by this enumeration.
@@ -136,7 +136,7 @@ public final class TaskManagementFunctionRequestParser extends InitiatorMessageP
 
     /**
      * Default constructor, creates a new, empty <code>TaskManagementFunctionRequestParser</code> object.
-     * 
+     *
      * @param initProtocolDataUnit The reference <code>ProtocolDataUnit</code> instance, which contains this
      *            <code>TaskManagementFunctionRequestParser</code> subclass object.
      */
@@ -154,7 +154,7 @@ public final class TaskManagementFunctionRequestParser extends InitiatorMessageP
 
         final StringBuilder sb = new StringBuilder(Constants.LOG_INITIAL_SIZE);
 
-        // Utils.printField(sb, "Function", functionCode.value(), 1);
+        Utils.printField(sb, "Function", functionCode.value(), 1);
         Utils.printField(sb, "LUN", logicalUnitNumber, 1);
         Utils.printField(sb, "Referenced Task Tag", referencedTaskTag, 1);
         sb.append(super.toString());
@@ -204,7 +204,7 @@ public final class TaskManagementFunctionRequestParser extends InitiatorMessageP
      * <p/>
      * For other functions this field is reserved.
      * <p/>
-     * 
+     *
      * @return The expected data sequence number of this <code>TaskManagementFunctionRequestParser</code> object.
      */
     public final int getExpDataSN () {
@@ -330,7 +330,7 @@ public final class TaskManagementFunctionRequestParser extends InitiatorMessageP
      * in Task Management response of "Function rejected".
      * <p>
      * TASK REASSIGN MUST be issued as an immediate command.
-     * 
+     *
      * @return The function code of this <code>TaskManagementFunctionRequestParser</code> object.
      */
     public final FunctionCode getFunction () {
@@ -347,7 +347,7 @@ public final class TaskManagementFunctionRequestParser extends InitiatorMessageP
      * described in section 10.6.1 when the task identified by the Referenced Task Tag field is not with the target.
      * <p>
      * Otherwise, this field is reserved.
-     * 
+     *
      * @return The referenced command sequence number of this <code>TaskManagementFunctionRequestParser</code> object.
      */
     public final int getRefCmdSN () {
@@ -358,7 +358,7 @@ public final class TaskManagementFunctionRequestParser extends InitiatorMessageP
     /**
      * The Initiator Task Tag of the task to be aborted for the ABORT TASK function or reassigned for the TASK REASSIGN
      * function. For all the other functions this field MUST be set to the reserved value <code>0xffffffff</code>.
-     * 
+     *
      * @return The referenced task tag of this <code>TaskManagementFunctionRequestParser</code> object.
      */
     public final int getReferencedTaskTag () {

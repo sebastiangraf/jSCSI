@@ -6,8 +6,6 @@ import java.nio.channels.SocketChannel;
 import java.security.DigestException;
 import java.util.concurrent.Callable;
 
-import javax.naming.OperationNotSupportedException;
-
 import org.jscsi.exception.InternetSCSIException;
 import org.jscsi.parser.OperationCode;
 import org.jscsi.parser.ProtocolDataUnit;
@@ -34,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * more general states (phases). Commands send by the initiator are carried out in these stages, usually without
  * transitioning to a different phase. A connection's current phase determines which stages are reachable, limiting the
  * kind of commands the initiator may issue at any given moment.
- * 
+ *
  * @author Andreas Ergenzinger
  */
 public interface Connection extends Callable<Void> {
@@ -60,7 +58,7 @@ public interface Connection extends Callable<Void> {
     void initializeConnectionSettingsNegotiator (SessionSettingsNegotiator pSettingsNegotiator);
 
     byte[] getDataInArray (int pLength);
-    
+
     public boolean stop();
 
     public static class TargetConnection implements Connection {
@@ -114,7 +112,7 @@ public interface Connection extends Callable<Void> {
 
         /**
          * The {@link TargetConnection} constructor.
-         * 
+         *
          * @param socketChannel used for sending and receiving PDUs
          * @param isLeadingConnection <code>true</code> if and only if this connection is the first connection
          *            associated with its enclosing session
@@ -127,17 +125,18 @@ public interface Connection extends Callable<Void> {
         /**
          * Returns a byte array that can be used for holding data segment data of Data In PDUs sent during the
          * {@link ReadStage}.
-         * 
+         *
          * @param length the length of the array
          * @return a byte array of the specified length
          */
+        @Override
         public byte[] getDataInArray (final int length) {
             return dataInArrayProvider.getArray(length);
         }
 
         /**
          * Returns the {@link TargetSession} this connection belongs to.
-         * 
+         *
          * @return the {@link TargetSession} this connection belongs to
          */
         TargetSession getSession () {
@@ -146,9 +145,10 @@ public interface Connection extends Callable<Void> {
 
         /**
          * Sets the {@link TargetSession} this connection belongs to.
-         * 
+         *
          * @param session the {@link TargetSession} this connection belongs to
          */
+        @Override
         public void setSession (TargetSession session) {
             this.targetSession = session;
             senderWorker.setSession(session);
@@ -158,13 +158,14 @@ public interface Connection extends Callable<Void> {
          * Returns the next {@link ProtocolDataUnit} to be received on the connection.
          * <p>
          * The method will block until a PDU has been completely received.
-         * 
+         *
          * @return the next received PDU
          * @throws DigestException if a digest error has occured
          * @throws InternetSCSIException if a general iSCSI protocol error has been detected
          * @throws IOException if the connection was closed
          * @throws SettingsException will not happen
          */
+        @Override
         public ProtocolDataUnit receivePdu () throws DigestException , InternetSCSIException , IOException , SettingsException {
             lastReceivedPDU = senderWorker.receiveFromWire();
 
@@ -187,12 +188,13 @@ public interface Connection extends Callable<Void> {
 
         /**
          * Serializes and sends a {@link ProtocolDataUnit} over the connection.
-         * 
+         *
          * @param pdu the PDU to send
          * @throws InterruptedException
          * @throws IOException
          * @throws InternetSCSIException
          */
+        @Override
         public void sendPdu (ProtocolDataUnit pdu) throws InterruptedException , IOException , InternetSCSIException {
             // System.out.println("******************************\nSending\nSystem Time: " + new
             // java.sql.Timestamp(System.currentTimeMillis()).toString() + "\n" + pdu +
@@ -205,8 +207,9 @@ public interface Connection extends Callable<Void> {
          * <p>
          * For this method to work properly, the leading PDU send by the initiator over this connection must have been
          * received via {@link #receivePdu()}.
-         * 
+         *
          */
+        @Override
         public Void call () {
 
             try {
@@ -224,19 +227,21 @@ public interface Connection extends Callable<Void> {
 
                     phase.execute();
                 }
-                senderWorker.close();
-            } catch (OperationNotSupportedException | IOException | InterruptedException | InternetSCSIException | DigestException
-                    | SettingsException e) {
-                LOGGER.error("Exception throws", e);
+            } catch (Exception e) {
+                LOGGER.error("Exception when handling target phase, connection will be closed.", e);
             }
 
-            targetSession.removeTargetConnection(this);
-
-            LOGGER.debug("closed connection");
-
+            try {
+                senderWorker.close();
+                targetSession.removeTargetConnection(this);
+                LOGGER.debug("closed connection");
+            } catch (IOException e) {
+                LOGGER.warn("Exception when closing connection.", e);
+            }
             return null;
         }
 
+        @Override
         public TargetSession getTargetSession () {
             return targetSession;
         }
@@ -244,9 +249,10 @@ public interface Connection extends Callable<Void> {
         /**
          * Returns <code>true</code> if this is the leading connection, i.e. the first TargetConnection in the
          * connection's {@link TargetSession}. Otherwise <code>false</code> is returned.
-         * 
+         *
          * @return <code>true</code> if this is the leading connection
          */
+        @Override
         public boolean isLeadingConnection () {
             return isLeadingConnection;
         }
@@ -256,37 +262,43 @@ public interface Connection extends Callable<Void> {
          * <p>
          * This method must be be called after the this connection has been added to its session.
          */
+        @Override
         public void initializeConnectionSettingsNegotiator (final SessionSettingsNegotiator sessionSettingsNegotiator) {
             connectionSettingsNegotiator = new ConnectionSettingsNegotiator(sessionSettingsNegotiator);
         }
 
         /**
          * Returns a {@link Settings} object with a snapshot of the current connection and session parameters.
-         * 
+         *
          * @return the current {@link Settings}
          */
+        @Override
         public Settings getSettings () {
             return connectionSettingsNegotiator.getSettings();
         }
 
+        @Override
         public ConnectionSettingsNegotiator getConnectionSettingsNegotiator () {
             return connectionSettingsNegotiator;
         }
 
+        @Override
         public SerialArithmeticNumber getStatusSequenceNumber () {
             return statusSequenceNumber;
         }
 
+        @Override
         public void setStatusSequenceNumber (final int statusSequenceNumber) {
             this.statusSequenceNumber = new SerialArithmeticNumber(statusSequenceNumber);
         }
-        
+
+        @Override
         public boolean stop(){
             if(phase instanceof TargetFullFeaturePhase){
                 ((TargetFullFeaturePhase)phase).stop();
                 return true;
             }
-            
+
             return false;
         }
     }

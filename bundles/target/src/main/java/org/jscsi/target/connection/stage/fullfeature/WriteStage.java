@@ -12,9 +12,11 @@ import org.jscsi.parser.nop.NOPOutParser;
 import org.jscsi.parser.scsi.SCSICommandParser;
 import org.jscsi.parser.scsi.SCSIResponseParser;
 import org.jscsi.parser.scsi.SCSIStatus;
+import org.jscsi.parser.tmf.TaskManagementFunctionRequestParser;
 import org.jscsi.target.TargetServer;
 import org.jscsi.target.connection.TargetPduFactory;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
+import org.jscsi.target.connection.stage.TMStage;
 import org.jscsi.target.scsi.ScsiResponseDataSegment;
 import org.jscsi.target.scsi.cdb.ScsiOperationCode;
 import org.jscsi.target.scsi.cdb.Write10Cdb;
@@ -59,11 +61,13 @@ public final class WriteStage extends ReadOrWriteStage {
         if (parser instanceof DataOutParser) {
             final DataOutParser p = (DataOutParser) parser;
             if (p.getDataSequenceNumber() != expectedDataSequenceNumber++) { throw new InternetSCSIException("received erroneous PDU in data-out sequence, expected " + (expectedDataSequenceNumber - 1)); }
-        } else if (parser instanceof NOPOutParser || parser instanceof SCSICommandParser) {
+        } else if (parser instanceof NOPOutParser || parser instanceof TaskManagementFunctionRequestParser) {
 
         } else {
             if (parser != null) {
-                throw new InternetSCSIException("received erroneous PDU in data-out sequence, " + parser.getClass().getName());
+                final String name = parser.getClass().getName();
+                LOGGER.error ("In data-out sequence received {}:\n{}", name, parser.toString ());
+                throw new InternetSCSIException("received erroneous PDU in data-out sequence, " + name);
             } else {
                 throw new InternetSCSIException("received erroneous PDU in data-out sequence, parser is null");
             }
@@ -73,7 +77,6 @@ public final class WriteStage extends ReadOrWriteStage {
 
     @Override
     public void execute (ProtocolDataUnit pdu) throws IOException , DigestException , InterruptedException , InternetSCSIException , SettingsException {
-
         if (LOGGER.isDebugEnabled()) LOGGER.debug("Entering WRITE STAGE");
 
         // get relevant values from settings
@@ -161,16 +164,24 @@ public final class WriteStage extends ReadOrWriteStage {
             boolean firstBurstOver = false;
             while (!firstBurstOver && bytesReceived <= firstBurstLength) {
 
-                // receive and check PDU
-                pdu = connection.receivePdu();
-                bhs = pdu.getBasicHeaderSegment();
+                DataOutParser dataOutParser = null;
+                while (dataOutParser == null) {
+                    // receive and check PDU
+                    pdu = connection.receivePdu();
+                    bhs = pdu.getBasicHeaderSegment();
+                    AbstractMessageParser outparser = bhs.getParser();
+                    checkDataOutParser(outparser);
 
-                checkDataOutParser(bhs.getParser());
-
-                final DataOutParser dataOutParser = (DataOutParser) bhs.getParser();
+                    if (outparser instanceof DataOutParser) {
+                        dataOutParser = (DataOutParser) outparser;
+                    } else if (outparser instanceof NOPOutParser) {
+                        new PingStage((TargetFullFeaturePhase) targetPhase).execute (pdu);
+                    } else if (outparser instanceof TaskManagementFunctionRequestParser) {
+                        new TMStage((TargetFullFeaturePhase) targetPhase).execute (pdu);
+                    }
+                }
 
                 session.getStorageModule().write(pdu.getDataSegment().array(), storageIndex + dataOutParser.getBufferOffset());
-                ;
                 bytesReceived += bhs.getDataSegmentLength();
 
                 if (bhs.isFinalFlag()) firstBurstOver = true;

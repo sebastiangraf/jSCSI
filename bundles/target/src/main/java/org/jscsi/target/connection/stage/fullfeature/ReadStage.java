@@ -39,9 +39,9 @@ public class ReadStage extends ReadOrWriteStage {
 
     @Override
     public void execute (ProtocolDataUnit pdu) throws IOException , InterruptedException , InternetSCSIException , SettingsException {
+        if (LOGGER.isDebugEnabled()) LOGGER.debug("Entering READ STAGE");
 
-        // get relevant variables ...
-        // ... from settings
+        // get relevant values from settings
         final boolean immediateData = settings.getImmediateData();
 
         if (LOGGER.isDebugEnabled()) {
