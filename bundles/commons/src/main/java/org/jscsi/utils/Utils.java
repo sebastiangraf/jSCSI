@@ -24,6 +24,7 @@ import java.nio.ByteBuffer;
 import org.jscsi.exception.InternetSCSIException;
 
 import com.google.common.base.Strings;
+import com.google.common.io.BaseEncoding;
 
 
 /**
@@ -196,9 +197,15 @@ public final class Utils {
         fieldValue.rewind();
         indent(sb, indent);
         sb.append(fieldName);
-        sb.append(": ");
-        sb.append(fieldValue);
+        // sb.append(": ");
+        // sb.append(fieldValue.getClass ().getName ());
+        sb.append(" (first 16 bytes): 0x");
+        byte[] preview = new byte [Math.min (fieldValue.limit (), 16)];
+        fieldValue.get (preview);
+        BaseEncoding base16 = BaseEncoding.base16 ().withSeparator (" ", 2).lowerCase ();
+        sb.append (base16.encode (preview));
         sb.append("\n");
+        fieldValue.rewind();
     }
 
     // --------------------------------------------------------------------------
