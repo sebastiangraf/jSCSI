@@ -57,9 +57,11 @@ public class TMStage extends TargetFullFeatureStage {
                 LOGGER.error("ABORT_TASK_SET");
                 break;
             case CLEAR_ACA :
+                LOGGER.info("CLEAR_ACA");
                 responseCode = ResponseCode.FUNCTION_COMPLETE;
                 break;
             case CLEAR_TASK_SET :
+                LOGGER.info("CLEAR_TASK_SET");
                 responseCode = ResponseCode.FUNCTION_COMPLETE;
                 break;
             case LUN_RESET :
