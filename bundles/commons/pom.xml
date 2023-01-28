@@ -2,12 +2,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jscsi</groupId>
-        <artifactId>pom</artifactId>
+        <artifactId>jscsi-pom</artifactId>
         <version>2.7.0</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>commons</artifactId>
+    <artifactId>jscsi-commons</artifactId>
     <packaging>jar</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
 </project>
