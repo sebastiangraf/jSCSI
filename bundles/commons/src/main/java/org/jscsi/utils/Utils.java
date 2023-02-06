@@ -1,13 +1,13 @@
 /**
  * Copyright (c) 2012, University of Konstanz, Distributed Systems Group All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met: * Redistributions of source code must retain the above copyright notice, this list of
  * conditions and the following disclaimer. * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation and/or other materials provided with the
  * distribution. * Neither the name of the University of Konstanz nor the names of its contributors may be used to
  * endorse or promote products derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
  * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
@@ -23,12 +23,15 @@ import java.nio.ByteBuffer;
 
 import org.jscsi.exception.InternetSCSIException;
 
+import com.google.common.base.Strings;
+import com.google.common.io.BaseEncoding;
+
 
 /**
  * This class encapsulate all the needed common constants and methods with are needed by the used classes for the
  * parsing and logging process. There are also common used bit masks for the extraction of the needed field in such a
  * iSCSI message.
- * 
+ *
  * @author Volker Wildi, University of Konstanz
  */
 public final class Utils {
@@ -65,7 +68,7 @@ public final class Utils {
 
     /**
      * Method to guarantee that a given field is not zero.
-     * 
+     *
      * @param field Field to check
      * @throws InternetSCSIException If the field is not reserved, then throw an exception
      */
@@ -76,7 +79,7 @@ public final class Utils {
 
     /**
      * Checks for equality of a given value with the expected value.
-     * 
+     *
      * @param field This value should be equal to the expected value
      * @param expected This is what we expect
      * @throws InternetSCSIException If this comparison failed, this exception will be thrown
@@ -88,7 +91,7 @@ public final class Utils {
 
     /**
      * Checks with a given int is unequal to zero.
-     * 
+     *
      * @param num Number to check
      * @return Returns true if the line unequal than zero
      */
@@ -102,7 +105,7 @@ public final class Utils {
 
     /**
      * This methods creates an easy to use interface to print out a logging message of a specific variable.
-     * 
+     *
      * @param sb StringBuilder to directly write the logging messages in.
      * @param fieldName The name of the variable.
      * @param fieldValue The value of the given variable.
@@ -119,7 +122,7 @@ public final class Utils {
 
     /**
      * This methods creates an easy to use interface to print out a logging message of a specific variable.
-     * 
+     *
      * @param sb StringBuilder to directly write the logging messages in.
      * @param fieldName The name of the variable.
      * @param fieldValue The value of the given variable.
@@ -136,7 +139,7 @@ public final class Utils {
 
     /**
      * This methods creates an easy to use interface to print out a logging message of a specific variable.
-     * 
+     *
      * @param sb StringBuilder to directly write the logging messages in.
      * @param fieldName The name of the variable.
      * @param fieldValue The value of the given variable.
@@ -153,7 +156,7 @@ public final class Utils {
 
     /**
      * This methods creates an easy to use interface to print out a logging message of a specific variable.
-     * 
+     *
      * @param sb StringBuilder to directly write the logging messages in.
      * @param fieldName The name of the variable.
      * @param fieldValue The value of the given variable.
@@ -166,7 +169,7 @@ public final class Utils {
 
     /**
      * This methods creates an easy to use interface to print out a logging message of a specific variable.
-     * 
+     *
      * @param sb StringBuilder to directly write the logging messages in.
      * @param fieldName The name of the variable.
      * @param fieldValue The value of the given variable.
@@ -183,7 +186,7 @@ public final class Utils {
 
     /**
      * This methods creates an easy to use interface to print out a logging message of a specific variable.
-     * 
+     *
      * @param sb StringBuilder to directly write the logging messages in.
      * @param fieldName The name of the variable.
      * @param fieldValue The value of the given variable.
@@ -194,9 +197,15 @@ public final class Utils {
         fieldValue.rewind();
         indent(sb, indent);
         sb.append(fieldName);
-        sb.append(": ");
-        sb.append(fieldValue);
+        // sb.append(": ");
+        // sb.append(fieldValue.getClass ().getName ());
+        sb.append(" (first 16 bytes): 0x");
+        byte[] preview = new byte [Math.min (fieldValue.limit (), 16)];
+        fieldValue.get (preview);
+        BaseEncoding base16 = BaseEncoding.base16 ().withSeparator (" ", 2).lowerCase ();
+        sb.append (base16.encode (preview));
         sb.append("\n");
+        fieldValue.rewind();
     }
 
     // --------------------------------------------------------------------------
@@ -206,7 +215,7 @@ public final class Utils {
 
     /**
      * Appends to a given StringBuilder the given indents depending on the indent level.
-     * 
+     *
      * @param sb StringBuilder to write in.
      * @param indent The number (level) of indents.
      */
@@ -219,7 +228,7 @@ public final class Utils {
 
     /**
      * This method converts a byte with the highest (sign) bit set, to an unsigned int value.
-     * 
+     *
      * @param b The signed <code>byte</code> number.
      * @return The unsigned <code>int</code> number.
      */
@@ -230,7 +239,7 @@ public final class Utils {
 
     /**
      * This method converts an integer with the highest (sign) bit set, to an unsigned long value.
-     * 
+     *
      * @param i The signed <code>int</code> number.
      * @return The unsigned <code>long</code> number.
      */
@@ -241,13 +250,40 @@ public final class Utils {
 
     /**
      * This method converts an short integer with the highest (sign) bit set, to an unsigned long value.
-     * 
+     *
      * @param i The signed integer number.
      * @return The unsigned long number.
      */
     public static final long getUnsignedLong (final short i) {
 
         return i & SHORT_FLAG_MASK_LONG;
+    }
+
+    /**
+     * Returns a string with fixed length.
+     * <p>
+     * The input string will be truncated if it is shorter than required length,
+     * or will be padded if it is longer than required length.
+     *
+     * @param s     Input string. Null is treated as empty string ("").
+     * @param len   Required length. Negative is treated as zero (0).
+     * @param pad   Padding with this character if the input string is shorter than required length.
+     *              Null is treated as space (' ').
+     * @return      Output string with fixed length.
+     */
+    public static final String fixedLengthString (String s, int len, Character pad) {
+
+        s = Strings.nullToEmpty (s);
+        if (len < 0) len = 0;
+        if (pad == null) pad = ' ';
+
+        if (s.length () > len) {
+            return s.substring (0, len);
+        } else if (s.length () < len) {
+            return Strings.padEnd (s, len, pad);
+        } else { // ==
+            return s;
+        }
     }
 
     // --------------------------------------------------------------------------

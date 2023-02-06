@@ -1,9 +1,10 @@
 /**
- * 
+ *
  */
 package org.jscsi.target.storage;
 
 
+import java.io.Closeable;
 import java.io.IOException;
 
 import org.jscsi.target.scsi.cdb.CommandDescriptorBlock;
@@ -15,10 +16,11 @@ import org.jscsi.target.scsi.cdb.CommandDescriptorBlock;
  * <p>
  * All index and length parameters used by the read and write methods are referring to bytes, unlike the values sent in
  * {@link CommandDescriptorBlock} s.
- * 
+ *
  * @author Andreas Ergenzinger
+ * @author CHEN Qingcan
  */
-public interface IStorageModule {
+public interface IStorageModule extends Closeable {
     /**
      * This method can be used for checking if a (series of) I/O operations will result in an {@link IOException} due to
      * trying to access blocks outside the medium's boundaries.
@@ -51,7 +53,7 @@ public interface IStorageModule {
      * </table>
      * <p>
      * Note that the parameters of this method are referring to blocks, not to byte indices.
-     * 
+     *
      * @param logicalBlockAddress the index of the first block of data to be read or written
      * @param transferLengthInBlocks the total number of consecutive blocks about to be read or written
      * @return see table in description
@@ -60,14 +62,14 @@ public interface IStorageModule {
 
     /**
      * Returns the storage space size in bytes divided by the block size in bytes (rounded down).
-     * 
+     *
      * @return the virtual amount of storage blocks available
      */
     long getSizeInBlocks ();
 
     /**
      * Copies bytes from storage to the passed byte array.
-     * 
+     *
      * @param bytes the array into which the data will be copied will be filled with data from storage
      * @param storageIndex the position of the first byte to be copied
      * @throws IOException
@@ -76,7 +78,7 @@ public interface IStorageModule {
 
     /**
      * Saves part of the passed byte array's content.
-     * 
+     *
      * @param bytes the source of the data to be stored
      * @param storageIndex byte offset in the storage area
      * @throws IOException
@@ -85,9 +87,10 @@ public interface IStorageModule {
 
     /**
      * Closing the storage.
-     * 
+     *
      * @throws IOException to be closed
      */
+    @Override
     void close () throws IOException;
 
     /**
@@ -96,4 +99,18 @@ public interface IStorageModule {
      * @return block size.
      */
     int getBlockSize();
+
+    /**
+     * Requests that the implements ensure that the specified logical blocks
+     * have their most recent data values recorded in non-volatile cache and/or on the medium.
+     * <p>
+     * Implements may keep the default empty method if no synchronization is needed.
+     *
+     * @param   syncLogicalBlockAddress LOGICAL BLOCK ADDRESS field
+     * @param   syncNumberOfBlocks      NUMBER OF BLOCKS field
+     * @throws  IOException
+     */
+    default void syncCahe (long syncLogicalBlockAddress, int syncNumberOfBlocks)
+    throws IOException {}
+
 }

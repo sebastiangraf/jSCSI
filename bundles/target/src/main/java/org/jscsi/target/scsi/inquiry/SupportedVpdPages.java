@@ -11,8 +11,9 @@ import org.jscsi.target.scsi.inquiry.PageCode.VitalProductDataPageName;
  * This Vital Product Data page contains a list of the VPD page codes supported by the logical unit.
  * <p>
  * This class uses the singleton pattern since the list of supported Vital Product Data page requests will never change.
- * 
+ *
  * @author Andreas Ergenzinger
+ * @author CHEN Qingcan
  */
 public final class SupportedVpdPages implements IResponseData {
 
@@ -29,14 +30,20 @@ public final class SupportedVpdPages implements IResponseData {
     /*
      * determine which pages to support must be in ascending order see PAGECode.VitalProductDataPageName
      */
-    public static final byte[] SUPPORTED_VPD_PAGES = new byte[] { (byte) 0x00,// SUPPORTED_VPD_PAGES,
-            // mandatory
-    (byte) 0x83,// DECIVE_IDENTIFICATION, mandatory
+    public static final byte[] SUPPORTED_VPD_PAGES = new byte[] {
+        (byte) 0x00,// SUPPORTED_VPD_PAGES, mandatory
+        (byte) 0x80,// UNIT_SERIAL_NUMBER, parted bundled in Linux CentOS 7 fires this
+                    // without inquiry SUPPORTED_VPD_PAGES first.
+        (byte) 0x83,// DECIVE_IDENTIFICATION, mandatory
+        (byte) 0xb0,// BLOCK_LIMITS
+        (byte) 0xb2,// LOGICAL_BLOCK_PROVISIONING
+                    // Linux CentOS 7 bundled iSCSI target support these two pages.
+                    // So do I.
     };
 
     /**
      * Returns the singleton.
-     * 
+     *
      * @return the singleton
      */
     public static SupportedVpdPages getInstance () {
@@ -48,6 +55,7 @@ public final class SupportedVpdPages implements IResponseData {
         // private due to singleton pattern
     }
 
+    @Override
     public void serialize (ByteBuffer byteBuffer, int index) {
 
         // *** byte 0 ***
@@ -73,22 +81,22 @@ public final class SupportedVpdPages implements IResponseData {
 
         // *** byte 3 ***
         /*
-         * Page Length: n - 3 = 5 - 3 = 2 (for now)
+         * Page Length: n - 3
          */
         byteBuffer.put((byte) SUPPORTED_VPD_PAGES.length);
 
-        // *** bytes 4 and 5 - Supported VPD Pages ***
-        for (int i = 0; i < SUPPORTED_VPD_PAGES.length; ++i)
-            byteBuffer.put(SUPPORTED_VPD_PAGES[i]);
+        // *** bytes 4 and above - Supported VPD Pages ***
+        byteBuffer.put(SUPPORTED_VPD_PAGES);
     }
 
+    @Override
     public int size () {
         return HEADER_SIZE + SUPPORTED_VPD_PAGES.length;
     }
 
     /**
      * Returns <code>true</code> for those and only for those VPD Page Codes which are supported by the jSCSI Target.
-     * 
+     *
      * @param vitalProductDataPageName VPD Page Name whose support is inquired
      * @return <code>true</code> for those and only for those VPD Page Codes which are supported by the jSCSI Target
      */

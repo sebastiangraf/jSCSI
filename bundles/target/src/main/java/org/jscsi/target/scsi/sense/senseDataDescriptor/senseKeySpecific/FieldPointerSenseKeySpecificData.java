@@ -11,7 +11,7 @@ import org.jscsi.target.util.ReadWrite;
 /**
  * Field pointer sense-key-specific data is used to indicate that a certain field of a received command descriptor block
  * contained an illegal value.
- * 
+ *
  * @see CommandDescriptorBlock
  * @author Andreas Ergenzinger
  */
@@ -34,6 +34,7 @@ public final class FieldPointerSenseKeySpecificData extends SenseKeySpecificData
      * designated by the FIELD POINTER field is in error. When a multiple-bit field is in error, the BIT POINTER field
      * shall point to the first bit (i.e., the left-most bit) of the field.
      */
+    public int getBitPointer () { return this.bitPointer; }
     private final int bitPointer;
 
     /**
@@ -42,6 +43,7 @@ public final class FieldPointerSenseKeySpecificData extends SenseKeySpecificData
      * in error, the field pointer shall point to the first byte (i.e., the left-most byte) of the field. If several
      * consecutive bytes are reserved, each shall be treated as a single-byte field.
      */
+    public short getFieldPointer () { return this.fieldPointer; }
     private final short fieldPointer;
 
     public FieldPointerSenseKeySpecificData (final boolean senseKeySpecificDataValid, final boolean commandData, final boolean bitPointerValid, final int bitPointer, final int fieldPointer) {

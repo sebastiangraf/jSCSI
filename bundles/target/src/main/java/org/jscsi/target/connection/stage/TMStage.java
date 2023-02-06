@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A stage for processing Task Management Function Request defined in RFC(7320).
- * 
+ *
  * Warning, this class is only a dummy to react on the request without functionality except for response.
- * 
+ *
  * @author Andreas Rain
  */
 public class TMStage extends TargetFullFeatureStage {
@@ -46,6 +46,10 @@ public class TMStage extends TargetFullFeatureStage {
         TaskManagementFunctionResponseParser.ResponseCode responseCode = ResponseCode.TASK_DOES_NOT_EXIST;
 
         switch (parser.getFunction()) {
+            case UNSET :
+                LOGGER.warn("Task Management Function not set");
+                responseCode = ResponseCode.FUNCTION_COMPLETE;
+                break;
             case ABORT_TASK :
                 LOGGER.error("ABORT_TASK");
                 break;
@@ -53,9 +57,11 @@ public class TMStage extends TargetFullFeatureStage {
                 LOGGER.error("ABORT_TASK_SET");
                 break;
             case CLEAR_ACA :
+                LOGGER.info("CLEAR_ACA");
                 responseCode = ResponseCode.FUNCTION_COMPLETE;
                 break;
             case CLEAR_TASK_SET :
+                LOGGER.info("CLEAR_TASK_SET");
                 responseCode = ResponseCode.FUNCTION_COMPLETE;
                 break;
             case LUN_RESET :
@@ -71,6 +77,8 @@ public class TMStage extends TargetFullFeatureStage {
                 LOGGER.error("TASK_REASSIGN");
                 break;
             default :
+                LOGGER.error("Task Management Function not in range: {}", parser.getFunction());
+                responseCode = ResponseCode.FUNCTION_COMPLETE;
                 break;
         }
 

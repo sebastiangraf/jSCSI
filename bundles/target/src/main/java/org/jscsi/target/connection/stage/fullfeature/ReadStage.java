@@ -13,17 +13,20 @@ import org.jscsi.target.connection.TargetPduFactory;
 import org.jscsi.target.connection.phase.TargetFullFeaturePhase;
 import org.jscsi.target.scsi.ScsiResponseDataSegment;
 import org.jscsi.target.scsi.cdb.Read10Cdb;
+import org.jscsi.target.scsi.cdb.Read12Cdb;
+import org.jscsi.target.scsi.cdb.Read16Cdb;
 import org.jscsi.target.scsi.cdb.Read6Cdb;
 import org.jscsi.target.scsi.cdb.ReadCdb;
 import org.jscsi.target.scsi.cdb.ScsiOperationCode;
 import org.jscsi.target.settings.SettingsException;
+import org.jscsi.target.util.Debug;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
  * A stage for processing <code>READ (6)</code> and <code>READ (10)</code> SCSI commands.
- * 
+ *
  * @author Andreas Ergenzinger
  */
 public class ReadStage extends ReadOrWriteStage {
@@ -36,9 +39,9 @@ public class ReadStage extends ReadOrWriteStage {
 
     @Override
     public void execute (ProtocolDataUnit pdu) throws IOException , InterruptedException , InternetSCSIException , SettingsException {
+        if (LOGGER.isDebugEnabled()) LOGGER.debug("Entering READ STAGE");
 
-        // get relevant variables ...
-        // ... from settings
+        // get relevant values from settings
         final boolean immediateData = settings.getImmediateData();
 
         if (LOGGER.isDebugEnabled()) {
@@ -54,7 +57,11 @@ public class ReadStage extends ReadOrWriteStage {
         // get the Read(6) or Read(10) CDB
         ReadCdb cdb;
         final ScsiOperationCode scsiOpCode = ScsiOperationCode.valueOf(parser.getCDB().get(0));
-        if (scsiOpCode == ScsiOperationCode.READ_10)// most likely option first
+        if (scsiOpCode == ScsiOperationCode.READ_16)// most likely option first
+            cdb = new Read16Cdb(parser.getCDB());
+        else if (scsiOpCode == ScsiOperationCode.READ_12)
+            cdb = new Read12Cdb(parser.getCDB());
+        else if (scsiOpCode == ScsiOperationCode.READ_10)
             cdb = new Read10Cdb(parser.getCDB());
         else if (scsiOpCode == ScsiOperationCode.READ_6)
             cdb = new Read6Cdb(parser.getCDB());
@@ -71,7 +78,8 @@ public class ReadStage extends ReadOrWriteStage {
         if (cdb.getIllegalFieldPointers() != null) {
             // the command must fail
 
-            LOGGER.debug("illegal field in Read CDB");
+            LOGGER.error("illegal field in Read CDB");
+            LOGGER.error("CDB:\n" + Debug.byteBufferToString(parser.getCDB()));
 
             // create and send error PDU and leave stage
             final ProtocolDataUnit responsePdu = createFixedFormatErrorPdu(cdb.getIllegalFieldPointers(),// senseKeySpecificData
