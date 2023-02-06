@@ -49,8 +49,9 @@ public final class WriteStage extends ReadOrWriteStage {
         super(targetFullFeaturePhase);
     }
 
-    private Queue<ProtocolDataUnit> queueWritePDU = new LinkedList<>();
-    private boolean logQueueWrite = false;
+    private Queue<ProtocolDataUnit>
+        queueWritePDU = new LinkedList<>(),
+        queueReadPDU  = new LinkedList<>();
 
     private static enum Checked { NORMAL, SKIP, ABORT }
     /**
@@ -102,6 +103,15 @@ public final class WriteStage extends ReadOrWriteStage {
                 scsiOpCode == ScsiOperationCode.WRITE_6) {
                 queueWritePDU.add (pdu);
                 LOGGER.info ("put another write PDU into pending queue (size = {}).", queueWritePDU.size ());
+                return Checked.SKIP;
+            }
+
+            if (scsiOpCode == ScsiOperationCode.READ_16 ||
+                scsiOpCode == ScsiOperationCode.READ_12 ||
+                scsiOpCode == ScsiOperationCode.READ_10 ||
+                scsiOpCode == ScsiOperationCode.READ_6) {
+                queueReadPDU.add (pdu);
+                LOGGER.info ("put another read PDU into pending queue (size = {}).", queueReadPDU.size ());
                 return Checked.SKIP;
             }
 
@@ -303,10 +313,11 @@ public final class WriteStage extends ReadOrWriteStage {
         }
 
         if (! queueWritePDU.isEmpty()) {
-            logQueueWrite = true;
-        }
-        if (logQueueWrite) {
             LOGGER.info ("queue writing:\n  queueWritePDU: {}\n  logicalBlockAddress: {}\n  transferLength: {}\n   bytesReceived: {}\n",
+                queueWritePDU.size(), logicalBlockAddress, transferLength, bytesReceived);
+        }
+        if (! queueReadPDU.isEmpty()) {
+            LOGGER.info ("queue reading:\n  queueReadPDU: {}\n  logicalBlockAddress: {}\n  transferLength: {}\n   bytesReceived: {}\n",
                 queueWritePDU.size(), logicalBlockAddress, transferLength, bytesReceived);
         }
 
@@ -334,6 +345,10 @@ public final class WriteStage extends ReadOrWriteStage {
         while (! queueWritePDU.isEmpty ()) {
             LOGGER.info ("processing pending WRITE PDU queue (size = {})", queueWritePDU.size ());
             execute (queueWritePDU.remove ());
+        }
+        while (! queueReadPDU.isEmpty ()) {
+            LOGGER.info ("processing pending READ PDU queue (size = {})", queueReadPDU.size ());
+            new ReadStage((TargetFullFeaturePhase) targetPhase).execute (pdu);
         }
     }
 }
